@@ -1,12 +1,18 @@
-## <center> ![mGira logo](https://afonsosousah.eu.org/assets/images/mGira_big.png)</center>
-<center> Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA </center>
+<p align="middle"> <img src="https://afonsosousah.eu.org/assets/images/mGira_big.png" width="400"/> </p>
+
+<p align="middle">
+Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA 
+</p>
 
 ## 
-<center>
-<img src="https://afonsosousah.eu.org/assets/images/screenshot_landing.png" width="200"/>
-<img src="https://afonsosousah.eu.org/assets/images/screenshot_stations.png" width="200"/>
-<img src="https://afonsosousah.eu.org/assets/images/screenshot_routing.png" width="200"/>
-</center>
+<p align="middle">
+	<img src="https://afonsosousah.eu.org/assets/images/screenshot_landing.png" width="200"/>
+	<img src="https://afonsosousah.eu.org/assets/images/screenshot_stations.png" width="200"/>
+	<img src="https://afonsosousah.eu.org/assets/images/screenshot_routing.png" width="200"/>
+</p>
+
+<br>
+<br>
 
 ## Principais funcionalidades
  - Navegação na aplicação, que calcula a melhor rota tendo em conta:
@@ -22,7 +28,10 @@
 	- Estimativa de CO2 poupado**
 
 > *assume-se uma velocidade média de 18km/h
+
 > **assume-se uma poupança de 250g/km
+
+<br>
 
 ## Utilização
 
@@ -30,10 +39,14 @@ Para utilizar a aplicação mGira, basta abrir o link [por inserir] num navegado
 
 Há também a possibilidade de instalar como aplicação utilizando o Chrome em Android ou adicionar à página inicial no Firefox para Android
 
-## Licença
-
-Este software é source-available, ou seja, não é permitida a sua comercialização. O regime source-available permite, a quem quiser, avaliar a segurança da aplicação, assim como o seu funcionamento.
+<br>
 
 ## Versões
 
  - v1.0.0 - Lançamento inicial - data a definir
+
+<br>
+
+## Licença
+
+Este software é source-available, ou seja, não é permitida a sua comercialização. O regime source-available permite, a quem quiser, avaliar a segurança da aplicação, assim como o seu funcionamento.
