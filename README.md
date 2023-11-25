@@ -8,7 +8,7 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 <p align="middle">
 	<img src="https://afonsosousah.eu.org/assets/images/screenshot_landing.png" width="200"/>
 	<img src="https://afonsosousah.eu.org/assets/images/screenshot_stations.png" width="200"/>
-	<img src="https://afonsosousah.eu.org/assets/images/screenshot_routing.png" width="200"/>
+	<img src="https://afonsosousah.eu.org/assets/images/screenshot_routing.png?" width="200"/>
 </p>
 
 <br>
