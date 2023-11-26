@@ -27,7 +27,7 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 	- Estimativa de quilómetros percorridos*
 	- Estimativa de CO2 poupado**
 
-> *assume-se uma velocidade média de 18km/h
+> *assume-se uma velocidade média de 15km/h
 
 > **assume-se uma poupança de 250g/km
 
