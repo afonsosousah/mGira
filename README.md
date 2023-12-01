@@ -28,6 +28,13 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 
 <br>
 
+## Limitações
+- Não é possível registar uma nova conta da EMEL
+- Não é possível pagar tarifários
+- Não é possível pagar uma viagem com o saldo, apenas pontos
+
+<br>
+
 ## Utilização
 
 Para utilizar a aplicação mGira, basta abrir o [website](https://mgira.pt/) num navegador no seu smartphone Android ou iOS e seguir as instruções!
