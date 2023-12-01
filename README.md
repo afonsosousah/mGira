@@ -14,39 +14,38 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 <br>
 <br>
 
-## Principais funcionalidades
+## Funcionalidades adicionais
  - Navegação na aplicação, que calcula a melhor rota tendo em conta:
 	 -  Onde se localizam as estações
 	 - Se há bicicletas disponíveis na estação
 	 - Rota otimizada para bicicleta
-- Retirar bicicleta que aparenta estar disponível na estação mas não aparece na aplicação
-- Ver quantas bicicletas há na estação olhando para o ícone da sua localização
+- Tentar retirar bicicleta que aparenta estar disponível na estação mas não aparece na aplicação
 - Ver estatísticas de uso, como:
 	- Número de viagens realizadas
 	- Tempo total de utilização
 	- Estimativa de quilómetros percorridos*
 	- Estimativa de CO2 poupado**
 
-> *assume-se uma velocidade média de 15km/h
-
-> **assume-se uma poupança de 250g/km
-
 <br>
 
 ## Utilização
 
-Para utilizar a aplicação mGira, basta abrir o link [por inserir] num navegador no seu smartphone Android ou iOS
-
-Há também a possibilidade de instalar como aplicação utilizando o Chrome em Android ou adicionar à página inicial no Firefox para Android
+Para utilizar a aplicação mGira, basta abrir o [website](https://mgira.pt/) num navegador no seu smartphone Android ou iOS e seguir as instruções!
 
 <br>
 
 ## Versões
 
- - v1.0.0 - Lançamento inicial - data a definir
+ - v0.0.1 - Versão beta inicial - 01/12/2023
 
 <br>
 
 ## Licença
 
 Este software é source-available, ou seja, não é permitida a sua comercialização. O regime source-available permite, a quem quiser, avaliar a segurança da aplicação, assim como o seu funcionamento.
+
+<br>
+<br>
+<br>
+
+> *assume-se uma velocidade média de 15km/h<br>**assume-se uma poupança de 250g/km
