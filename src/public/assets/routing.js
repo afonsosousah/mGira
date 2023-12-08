@@ -1,5 +1,3 @@
-let orsApiKey = "REMOVED FOR GITHUB";
-
 async function calculateFullRoute(fromCoordinates, toCoordinates) {
 
     // Loading animation over the map while the route is being calculated

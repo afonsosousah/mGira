@@ -15,6 +15,7 @@
   "dependencies": {
     "@capacitor/android": "^5.5.1",
     "@capacitor/core": "latest",
+    "@capacitor/geolocation": "^5.0.6",
     "@capacitor/splash-screen": "latest"
   },
   "devDependencies": {
