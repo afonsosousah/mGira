@@ -1,7 +1,6 @@
 {
   "appId": "dev.tteles.gira",
   "appName": "mGira",
-  "bundledWebRuntime": false,
   "webDir": "dist",
   "plugins": {
     "SplashScreen": {

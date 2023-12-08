@@ -88,10 +88,9 @@ async function get_user_information(){
 async function token_refresh(){
     tokenRefreshed = false;
     console.log("Token has not been refreshed...");
-    response = await fetch("proxy.php", {
+    response = await fetch("https://api-auth.emel.pt/token/refresh", {
         method: "POST",
         headers: {
-            "X-Proxy-URL": "https://api-auth.emel.pt/token/refresh",
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
