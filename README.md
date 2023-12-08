@@ -56,3 +56,9 @@ Este software é source-available, ou seja, não é permitida a sua comercializa
 <br>
 
 > *assume-se uma velocidade média de 15km/h<br>**assume-se uma poupança de 250g/km
+
+
+Para dar build da app correr
+```sh
+npm install;
+npm run build && npx cap sync && cd android && ANDROID_HOME=$YOUR_ANDROID_SDK_HOME ./gradlew build --info && cd ..```
