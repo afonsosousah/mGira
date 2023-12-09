@@ -1,0 +1,13 @@
+{
+  "appId": "dev.tteles.gira",
+  "appName": "mGira",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    },
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}
