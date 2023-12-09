@@ -39,6 +39,8 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 
 Para utilizar a aplicação mGira, basta abrir o [website](https://mgira.pt/) num navegador no seu smartphone Android ou iOS e seguir as instruções!
 
+Há também uma aplicação nativa para Android que não necessita de proxy, feita pelo [@ttmx](https://github.com/ttmx), disponível na [release](https://github.com/afonsosousah/mGira/releases/tag/0.0.1)!
+
 <br>
 
 ## Versões
@@ -56,9 +58,3 @@ Este software é source-available, ou seja, não é permitida a sua comercializa
 <br>
 
 > *assume-se uma velocidade média de 15km/h<br>**assume-se uma poupança de 250g/km
-
-
-Para dar build da app correr
-```sh
-npm install;
-npm run build && npx cap sync && cd android && ANDROID_HOME=$YOUR_ANDROID_SDK_HOME ./gradlew build --info && cd ..```
