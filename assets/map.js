@@ -4,7 +4,7 @@ let currentLocationMarker;
 let previousSelectedMarker;
 let pos;
 let heading;
-
+    
 async function initMap() {
     // Initialize the Map, centered on Lisbon
     map = new ol.Map({
@@ -174,8 +174,8 @@ function zoomOut() {
 
 function getLocation(zoom=true) {
     // Try HTML5 geolocation.
-    if (Geolocation) {
-        Geolocation.watchPosition(
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
             async (position) => {
                 // Convert to the OpenLayers format
                 pos = [

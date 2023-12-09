@@ -1,13 +1,14 @@
 let ws;
 
 async function make_post_request(url, body, accessToken=null){
-    response = await fetch(url, {
+    response = await fetch("proxy.php", {
         method: "POST",
         headers: {
             "User-Agent": "Gira/3.2.8 (Android 34)",
+            "X-Proxy-URL": url,
             "Content-Type": "application/json",
             "Priority": "high",
-            "Authorization": `Bearer ${accessToken}`
+            "X-Authorization": `Bearer ${accessToken}`
         },
         body: body
     });
@@ -62,10 +63,11 @@ async function make_post_request(url, body, accessToken=null){
 }
 
 async function make_get_request(url, accessToken=null){
-    response = await fetch(url, {
+    response = await fetch("proxy.php", {
         method: "GET",
         headers: {
-            "Authorization": `Bearer ${accessToken}`
+            "X-Proxy-URL": url,
+            "X-Authorization": `Bearer ${accessToken}`
         }
     });
     if(response.status == 401) {

@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-VEVHWBPKXD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-VEVHWBPKXD');
+    </script>
     <meta charset="UTF-8">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <meta name= "viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0"/>
@@ -15,12 +24,7 @@
     <meta property="og:locale" content="pt_PT">
     <link rel="manifest" href="manifest.json"/>    
     <title>mGira</title>
-    <link rel="stylesheet" href="./css/style.css">
-    <script type="module">
-        import { Geolocation } from '@capacitor/geolocation';
-        window.orsApiKey = import.meta.env.VITE_ORS_KEY;
-        window.Geolocation = Geolocation;
-    </script>
+    <link rel="stylesheet" href="assets/style.css">
     <script src="assets/bikeSerialNumberMapping.js"></script>
     <script src="assets/requests.js"></script>
     <script src="assets/user.js"></script>
@@ -29,7 +33,6 @@
     <script src="assets/fulltilt.js"></script>
     <script src="assets/map.js"></script>
     <script src="assets/routing.js"></script>
-    <script>let initialWindowHeight = window.innerHeight;</script>
     <script src="assets/navigation.js"></script>
     <script src="assets/dialogs.js"></script>
     <script src="assets/extras.js"></script>
@@ -70,6 +73,11 @@
     </div>
 
 <script>
+    // Register the web app service worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register("assets/serviceworker.js");
+    }
+
 
     // Check if location permission is given
     navigator.permissions.query({ name: "geolocation" }).then((result) => {
@@ -94,6 +102,7 @@
 
 
     // Prevent resize on keyboard open
+    let initialWindowHeight = window.innerHeight;
 
     document.addEventListener('focusin', function (e) {
         if (isInputElement(e.target) && (!document.body.style.height.includes('px') || !document.body.style.height)) {
