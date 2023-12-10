@@ -19,7 +19,8 @@ async function initMap() {
             zoom: 12,
         }),
         controls: [
-            new ol.control.Rotate()
+            new ol.control.Rotate(),
+            new ol.control.Attribution()
         ],
     });
 

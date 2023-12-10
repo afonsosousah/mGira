@@ -22,7 +22,7 @@ function createCustomAlert(message) {
     document.body.appendChild(mObj);
 }
 
-function createCustomYesNoPrompt(message, yesHandler, noHandler) {
+function createCustomYesNoPrompt(message, yesHandler, noHandler, yesText="Sim", noText="Não") {
     if(document.getElementById("modalContainer")) return;
 
     mObj = document.createElement("div");
@@ -36,7 +36,7 @@ function createCustomYesNoPrompt(message, yesHandler, noHandler) {
 
     btn = alertObj.appendChild(document.createElement("div"));
     btn.id = "yesBtn";
-    btn.appendChild(document.createTextNode("Sim"));
+    btn.appendChild(document.createTextNode(yesText));
     btn.addEventListener('click', () => {
         yesHandler();
         document.getElementById("modalContainer").remove();
@@ -45,7 +45,7 @@ function createCustomYesNoPrompt(message, yesHandler, noHandler) {
 
     btn = alertObj.appendChild(document.createElement("div"));
     btn.id = "noBtn";
-    btn.appendChild(document.createTextNode("Não"));
+    btn.appendChild(document.createTextNode(noText));
     btn.addEventListener('click', () => {
         noHandler();
         document.getElementById("modalContainer").remove();
@@ -55,7 +55,7 @@ function createCustomYesNoPrompt(message, yesHandler, noHandler) {
 }
 
 
-function createCustomTextPrompt(message, yesHandler, noHandler) {
+function createCustomTextPrompt(message, yesHandler, noHandler, yesText="Enviar", noText="Ignorar") {
     if(document.getElementById("modalContainer")) return;
 
     mObj = document.createElement("div");
@@ -70,7 +70,7 @@ function createCustomTextPrompt(message, yesHandler, noHandler) {
 
     btn = alertObj.appendChild(document.createElement("div"));
     btn.id = "yesBtn";
-    btn.appendChild(document.createTextNode("Enviar"));
+    btn.appendChild(document.createTextNode(yesText));
     btn.addEventListener('click', () => {
         yesHandler();
         document.getElementById("modalContainer").remove();
@@ -79,7 +79,7 @@ function createCustomTextPrompt(message, yesHandler, noHandler) {
 
     btn = alertObj.appendChild(document.createElement("div"));
     btn.id = "noBtn";
-    btn.appendChild(document.createTextNode("Ignorar"));
+    btn.appendChild(document.createTextNode(noText));
     btn.addEventListener('click', () => {
         noHandler();
         document.getElementById("modalContainer").remove();

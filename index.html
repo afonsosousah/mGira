@@ -26,6 +26,7 @@
     <title>mGira</title>
     <link rel="stylesheet" href="assets/style.css">
     <script src="assets/bikeSerialNumberMapping.js"></script>
+    <script src="assets/tokenRefresh.js"></script>
     <script src="assets/requests.js"></script>
     <script src="assets/user.js"></script>
     <script src="assets/bikes.js"></script>
@@ -79,6 +80,27 @@
     }
 
 
+    // Check version to show update notes
+    temp_version = getCookie("version");
+    if (temp_version) {
+        if (temp_version != "0.0.2") {
+            createCustomAlert(`
+            Nova versão 0.0.2!<br>
+            <ul>
+                <li>Adicionada a opção de usar proxy definido pelo utilizador</li>
+                <li>Erro de pagar viagem sem pontos resolvido</li>
+                <li>Atribuição OpenStreetMaps adicionada <br>(obrigado CaldeiraG)</li>
+                <li>Melhoria estimativa de poupanças de CO2 <br>(obrigado temospena)</li>
+                <li>Melhoria de persistência do login</li>
+            </ul>
+            `);
+            document.cookie = "version=0.0.2";
+        }
+    } else {
+        document.cookie = "version=0.0.2";
+    }
+
+
     // Check if location permission is given
     navigator.permissions.query({ name: "geolocation" }).then((result) => {
         if (result.state === "granted") {
@@ -89,6 +111,16 @@
             alert("Location permission was denied")
         }
     });
+
+    // Check if the user has set customProxy. if not, use default proxy
+    temp_customProxy = getCookie("customProxy");
+    if(temp_customProxy) {
+        console.log("Using custom proxy");
+        proxyURL = decodeURI(temp_customProxy);
+    } else {
+        console.log("Using default proxy");
+        proxyURL = "proxy.php";
+    }
 
 
     // Check if the user is logged in, if not, prompt to login

@@ -1,7 +1,8 @@
 let ws;
+let proxyURL;
 
 async function make_post_request(url, body, accessToken=null){
-    response = await fetch("proxy.php", {
+    response = await fetch(proxyURL, {
         method: "POST",
         headers: {
             "User-Agent": "Gira/3.2.8 (Android 34)",
@@ -63,7 +64,7 @@ async function make_post_request(url, body, accessToken=null){
 }
 
 async function make_get_request(url, accessToken=null){
-    response = await fetch("proxy.php", {
+    response = await fetch(proxyURL, {
         method: "GET",
         headers: {
             "X-Proxy-URL": url,

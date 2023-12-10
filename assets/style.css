@@ -596,7 +596,7 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 /* #endregion */
 
-/* #region User settings */
+/* #region User menu */
 .user-settings {
     background-color: var(--white);
     width: 100%;
@@ -831,10 +831,85 @@ input[type="search"]::-webkit-search-results-decoration {
     display: flex;
     justify-content: center;
 }
+.user-settings #settingsContainer {
+    position: absolute;
+    top: 109%;
+    left: 10px;
+    width: calc(100% - 20px);
+    height: 25%;
+    background-color: var(--green);
+    border-radius: 30px;
+}
+.user-settings #settingsContainer #proxy {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    background-color: var(--black);
+    color: white;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.user-settings #settingsContainer #proxy > div:first-child{
+    width: 100%;
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    top: 8%;
+    text-align: center;
+}
+
+.user-settings #settingsContainer #proxy #proxyUrlInput{
+    background-color: rgb(255, 255, 255);
+    width: 85%;
+    height: 25%;
+    position: absolute;
+    z-index: 2;
+    left: 5%;
+    top: 30%;
+    outline: 3px solid var(--green);
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    padding-left: 5%;
+    color: var(--green);
+    border: none;
+    font-size: medium;
+}
+
+.user-settings #settingsContainer #proxy #resetProxyButton{
+    background-color: var(--green);
+    position: absolute;
+    z-index: 2;
+    left: 5%;
+    top: 66%;
+    text-align: center;
+    padding: 10px 40px;
+    border-radius: 999px;
+    color: white;
+    font-size: large;
+}
+
+.user-settings #settingsContainer #proxy #setProxyButton{
+    background-color: var(--green);
+    position: absolute;
+    z-index: 2;
+    right: 5%;
+    top: 66%;
+    text-align: center;
+    padding: 10px 40px;
+    border-radius: 999px;
+    color: white;
+    font-size: large;
+}
+
 .user-settings #versionNumber {
     padding: 10px 10px;
     position: absolute;
-    top: 108%;
+    top: 138%;
     left: 10px;
     border-radius: 999px;
     color: var(--black);
@@ -844,7 +919,7 @@ input[type="search"]::-webkit-search-results-decoration {
     padding: 10px 40px;
     background-color: var(--black);
     position: absolute;
-    top: 108%;
+    top: 137%;
     right: 10px;
     border-radius: 999px;
     color: white;
@@ -854,8 +929,15 @@ input[type="search"]::-webkit-search-results-decoration {
     height: 3%;
     width: 100%;
     position: absolute;
-    top: 113%;
+    top: 142%;
     left: 0;
+}
+.user-settings #proxyNotWorking {
+    text-decoration: underline;
+    color: var(--green);
+    position: absolute;
+    bottom: 5vw;
+    right: 5vw;
 }
 /* #endregion */
 
@@ -1376,6 +1458,7 @@ input[type="search"]::-webkit-search-results-decoration {
     float: right;
     margin-bottom: 10px;
     margin-right: 10px;
+    padding: 10px 40px;
 }
 #alertBox #yesBtn {
     display: block;
@@ -1389,6 +1472,7 @@ input[type="search"]::-webkit-search-results-decoration {
     float: left;
     margin-bottom: 10px;
     margin-left: 10px;
+    padding: 10px 20px;
 }
 #alertBox #noBtn {
     display: block;
@@ -1402,6 +1486,13 @@ input[type="search"]::-webkit-search-results-decoration {
     float: right;
     margin-bottom: 10px;
     margin-right: 10px;
+    padding: 10px 20px;
+}
+#alertBox ul {
+    padding-left: 20px;
+}
+#alertBox li {
+    margin-top: 10px;
 }
 /* #endregion */
 

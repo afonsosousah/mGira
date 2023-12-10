@@ -46,6 +46,12 @@ Há também uma aplicação nativa para Android que não necessita de proxy, fei
 ## Versões
 
  - v0.0.1 - Versão beta inicial - 01/12/2023
+ - v0.0.2 - 10/12/2023
+ - - Adicionada a opção de usar proxy definido pelo utilizador
+ - - Erro de pagar viagem sem pontos resolvido
+ - - Atribuição OpenStreetMaps adicionada (obrigado CaldeiraG)
+ - - Melhoria estimativa de poupanças de CO2 (obrigado temospena)
+ - - Melhoria de persistência do login
 
 <br>
 
@@ -57,4 +63,4 @@ Este software é source-available, ou seja, não é permitida a sua comercializa
 <br>
 <br>
 
-> *assume-se uma velocidade média de 15km/h<br>**assume-se uma poupança de 250g/km
+> *assume-se uma velocidade média de 15km/h<br>**assume-se uma poupança de 54g/km (obrigado [temospena](https://github.com/temospena))

@@ -39,7 +39,14 @@ async function login(event){
 async function get_user_information(){
     // get the general information
     response = await make_get_request("https://api-auth.emel.pt/user", user.accessToken)
-    user = {...user, ...response.data};
+    if (typeof response != 'undefined')
+        user = {...user, ...response.data};
+    else {
+        // Try again after some time to wait for a possible token refresh
+        console.log("Try again after some time to wait for a possible token refresh");
+        await delay(200);
+        return get_user_information();
+    }
 
     // Update user image based on user details
     if(document.getElementById('userPicture'))
@@ -57,73 +64,7 @@ async function get_user_information(){
     user.activeUserSubscriptions = response.data.activeUserSubscriptions;
     user.tripHistory = response.data.tripHistory;
 
-    /*// get Gira client information
-    response = await make_post_request("https://apigira.emel.pt/graphql", JSON.stringify({
-        "operationName": "client",
-        "variables": {},
-        "query": "query client($code: String) {client(code: $code) {code, type, balance, paypalReference, bonus, numberNavegante}}"
-    }), user.accessToken)
-    user = {...user, ...response.data.client[0]};
-
-    // get activeUserSubscriptions
-    response = await make_post_request("https://apigira.emel.pt/graphql", JSON.stringify({
-        "operationName": "activeUserSubscriptions",
-        "variables": {},
-        "query": "query activeUserSubscriptions {activeUserSubscriptions {code, cost, expirationDate, name, nameEnglish, subscriptionCost, subscriptionPeriod, subscriptionStatus, type, active}}"
-    }), user.accessToken)
-    user.activeUserSubscriptions = response.data.activeUserSubscriptions;
-
-    // get tripHistory
-    response = await make_post_request("https://apigira.emel.pt/graphql", JSON.stringify(    {
-        "operationName": "tripHistory",
-        "variables": {"in": {"_pageNum": 1, "_pageSize": 1000}},
-        "query": "query tripHistory($in: PageInput) { tripHistory(pageInput: $in) { bikeName bikeType bonus code cost endDate endLocation rating startDate startLocation usedPoints }}"
-    }), user.accessToken)
-    user.tripHistory = response.data.tripHistory;*/
-
     return user;
-}
-
-// Refreshes current user accessToken, using refreshToken
-async function token_refresh(){
-    tokenRefreshed = false;
-    console.log("Token has not been refreshed...");
-    response = await fetch("proxy.php", {
-        method: "POST",
-        headers: {
-            "X-Proxy-URL": "https://api-auth.emel.pt/token/refresh",
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            "token": user.refreshToken
-        })
-    });
-    if(response.status == 200) {
-        responseObject = await response.json();
-        if(Object.hasOwn(responseObject, 'data')) {
-            // Store the received tokens
-            user.accessToken = responseObject.data.accessToken
-            user.refreshToken = responseObject.data.refreshToken
-            user.expiration = responseObject.data.expiration
-
-            // Store refreshToken cookie (stay logged in)
-            document.cookie = "refreshToken=" + user.refreshToken;
-
-            // Hide login menu if it is showing
-            if (document.querySelector('.login-menu'))
-                document.querySelector('.login-menu').remove();
-
-            // Set that the token has been refreshed successfully
-            tokenRefreshed = true;
-        }
-    } else if (response.status == 400) {
-        // unset the refreshToken cookie
-        //document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-        // prompt for new login
-        openLoginMenu();
-    } else {
-        alert("Token refresh failed!");
-    }
 }
 
 // Open the login menu element and populate it
@@ -139,7 +80,7 @@ function openLoginMenu() {
                 <input type="email" name="email" id="email" placeholder="e-Mail">
                 <input type="password" name="password" id="password" placeholder="Palavra-passe">
             </form>
-            <div id="registerButton" onclick="alert('Registe-se na aplicação original da Gira para utilizar a mGira.')">Registar</div>
+            <div id="registerButton" onclick="openSetProxyPrompt()"">Proxy</div>
             <div id="loginButton" onclick="login(event)">Entrar</div>
             <img src="assets/images/gira_footer.svg" id="footer" alt="footer" width="100%">
         </div>
@@ -180,6 +121,7 @@ async function openUserSettings() {
     settingsElement.innerHTML = `
     <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
     <div id="backButton" onclick="document.getElementById('userSettings').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
+    <div id="proxyNotWorking" onclick="openSetProxyPrompt()">Proxy não funciona?</div>
     `;
     
     // Get all the user information
@@ -211,7 +153,7 @@ async function openUserSettings() {
     var formattedAvgTime = correctMinutesSeconds(avgTime.getMinutes()) + 'm';
 
     // Calculate an estimate for C02 saved using total time (assuming an avg speed of 15km/h)
-    let co2Saved = Math.floor(hoursFloat * 15 * 0.250) // hours * km in 1 hour * kg of co2 saved per km
+    let co2Saved = Math.floor(hoursFloat * 15 * 0.054) // hours * km in 1 hour * kg of co2 saved per km
 
     // Populate the element
     settingsElement.innerHTML = 
@@ -257,8 +199,48 @@ async function openUserSettings() {
                 <div id="numberOfTrips">${userObj.tripHistory.length}</div>
             </div>
         </div>
-        <div id="versionNumber">v0.0.1</div>
+        <div id="settingsContainer">
+            <div id="proxy">
+                <div>Proxy definido pelo utilizador</div>
+                <input id="proxyUrlInput" value="${proxyURL}" placeholder="Insere aqui o URL para o proxy"/>
+                <div id="resetProxyButton">Padrão</div>
+                <div id="setProxyButton">Definir</div>
+            </div>
+        </div>
+        <div id="versionNumber">0.0.2</div>
         <div id="logoutButton" onclick="openLoginMenu()">Sair</div>
         <div id="bottomSpacing"></div>
     `.trim();
+
+    document.getElementById("setProxyButton").addEventListener('click', (evt) => {
+        // Store customProxy cookie
+        proxyURL = document.getElementById("proxyUrlInput").value;
+        document.cookie = "customProxy=" + encodeURI(proxyURL);
+    });
+
+    document.getElementById("resetProxyButton").addEventListener('click', (evt) => {
+        // Delete customProxy cookie
+        proxyURL = "proxy.php";
+        document.cookie = "customProxy=None;path=\"/\";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+        // Update input
+        document.getElementById("proxyUrlInput").value = proxyURL;
+    });
+}
+
+function openSetProxyPrompt() {
+    createCustomTextPrompt(
+        "Por favor defina um novo proxy.",
+        () => {
+            // Store customProxy cookie
+            proxyURL = document.getElementById("customTextPromptInput").value;
+            document.cookie = "customProxy=" + encodeURI(proxyURL);
+        },
+        () => {
+            // Delete customProxy cookie
+            proxyURL = "proxy.php";
+            document.cookie = "customProxy=None;path=\"/\";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+            openLoginMenu();
+        },
+        "Definir",
+        "Padrão")
 }

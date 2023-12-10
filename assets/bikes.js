@@ -405,7 +405,7 @@ async function payTrip(tripCode, tripCost) {
         });
     } else {
         // If the trip cost 0, then just pay with no points
-        if(!(await trip_pay_with_no_points(tripCode)))
+        if((await trip_pay_with_no_points(tripCode)) !== 0)
         alert("Não foi possível pagar a viagem.");
     }
 }
