@@ -6,9 +6,9 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 
 ## 
 <p align="middle">
-	<img src="https://app.mgira.pt/assets/images/screenshot_landing.png" width="200"/>
-	<img src="https://app.mgira.pt/assets/images/screenshot_stations.png" width="200"/>
-	<img src="https://app.mgira.pt/assets/images/screenshot_routing.png?" width="200"/>
+	<img src="https://app.mgira.pt/assets/images/screenshot_landing.png?v=0.0.3" width="200"/>
+	<img src="https://app.mgira.pt/assets/images/screenshot_stations.png?v=0.0.3" width="200"/>
+	<img src="https://app.mgira.pt/assets/images/screenshot_routing.png?v=0.0.3" width="200"/>
 </p>
 
 <br>
@@ -16,7 +16,7 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 
 ## Funcionalidades adicionais
  - Navegação na aplicação, que calcula a melhor rota tendo em conta:
-	 -  Onde se localizam as estações
+	 - Onde se localizam as estações
 	 - Se há bicicletas disponíveis na estação
 	 - Rota otimizada para bicicleta
 - Tentar retirar bicicleta que aparenta estar disponível na estação mas não aparece na aplicação
@@ -47,11 +47,12 @@ Há também uma aplicação nativa para Android que não necessita de proxy, fei
 
  - v0.0.1 - Versão beta inicial - 01/12/2023
  - v0.0.2 - 10/12/2023
-   - Adicionada a opção de usar proxy definido pelo utilizador
-   - Erro de pagar viagem sem pontos resolvido
-   - Atribuição OpenStreetMaps adicionada (obrigado CaldeiraG)
-   - Melhoria estimativa de poupanças de CO2 (obrigado temospena)
-   - Melhoria de persistência do login
+ - v0.0.3 - 21/12/2023
+   - Mudança da UI
+   - Suporte para botão voltar atrás nativo (obrigado DanielAgostinho)
+   - Pedidos e error handling melhorados (obrigado rodrigoleitao)
+   - Proxy já não é utilizado no login na API da EMEL (obrigado j0dd)
+   - Melhorias no sistema de navegação (já não utiliza a bússola do dispositivo)
 
 <br>
 
