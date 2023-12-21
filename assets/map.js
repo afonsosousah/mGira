@@ -3,7 +3,7 @@ let infoWindow;
 let currentLocationMarker;
 let previousSelectedMarker;
 let pos;
-let heading;
+let gpsHeading;
     
 async function initMap() {
     // Initialize the Map, centered on Lisbon
@@ -81,8 +81,14 @@ async function loadStationMarkersFromArray(stationsArray) {
     }
     
     let featuresArray = [];
+    let featureID = 0;
 
     for (var station of stationsArray) {
+
+        // Don't show deactivated stations
+        if (station.docks === 0)
+            continue;
+
         let position = [station.longitude, station.latitude]
 
         const iconFeature = new ol.Feature({
@@ -90,43 +96,48 @@ async function loadStationMarkersFromArray(stationsArray) {
             name: station.serialNumber
         });
     
-        let width;
+        let filled;
     
         if (station.bikes == 0) {
-            width = 12;
-        } else if (15 + station.bikes * 0.2 < 22) {
-            width = 15 + station.bikes * 0.2;
+            filled = 0;
+        } else if (station.bikes/station.docks <= 0.15) {
+            filled = 15;
+        } else if (station.bikes/station.docks <= 0.30) {
+            filled = 30;
+        } else if (station.bikes/station.docks <= 0.50) {
+            filled = 50;
+        } else if (station.bikes/station.docks <= 0.80) {
+            filled = 80;
         } else {
-            width = 22;
+            filled = 100;
         }
     
         const iconStyle = new ol.style.Style({
-        image: new ol.style.Circle({
-            radius: width,
-            fill: new ol.style.Fill({
-                color: "#79C000",
+            image: new ol.style.Icon({
+                width: 40,
+                height: 50,
+                anchor: [0.5, 1],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                src: `assets/images/mapDot_${filled}.png`
             }),
-            stroke: new ol.style.Stroke({
-                color: "#FFFFFF",
-                width: 1,
+            text: new ol.style.Text({
+                text: station.bikes.toString(),
+                font: "bold 15px sans-serif",
+                offsetX: 0,
+                offsetY: -30,
+                textAlign: "center",
+                fill: new ol.style.Fill({
+                    color: "#FFFFFF"
+                })
             }),
-            zIndex: 0,
-        }),
-        text: new ol.style.Text({
-            text: station.bikes.toString(),
-            font: "bold 15px sans-serif",
-            offsetX: 0,
-            textAlign: "center",
-            fill: new ol.style.Fill({
-                color: "#FFFFFF"
-            }),
-            zIndex: 0,
-        })
+            zIndex: featureID
         });
         
         iconFeature.setStyle(iconStyle);
 
         featuresArray.push(iconFeature);
+        featureID += 1;
     }
 
     if (map.getLayers().getArray().filter(layer => layer.get('name') === "stationsLayer").length == 0) {
@@ -139,7 +150,7 @@ async function loadStationMarkersFromArray(stationsArray) {
             name: 'stationsLayer',
             source: vectorSource,
             zIndex: 0,
-            declutter: true
+            //declutter: true
         });
     
         // Add the layer
@@ -184,17 +195,7 @@ function getLocation(zoom=true) {
                     position.coords.latitude
                 ];
 
-                // rotate and update map if the user is in navigation mode
-                deviceOrientation = await new FULLTILT.getDeviceOrientation({ 'type': 'world' });
-                var currentOrientation = deviceOrientation.getScreenAdjustedEuler(); // Get the current *screen-adjusted* device orientation angles    
-                heading = 360 - currentOrientation.alpha; // Calculate the current compass heading that the user is 'looking at' (in degrees)
-                if (navigationActive) {
-                    map.getView().setRotation(- (Math.PI / 180) * heading); // not sure if this will fix a bit of the accuracy
-                    if (navigationMode == "bike")
-                        map.getView().centerOn(ol.proj.fromLonLat(pos), map.getSize(), [map.getSize()[0]/2, map.getSize()[1] - 75]);
-                    else
-                        map.getView().setCenter(ol.proj.fromLonLat(pos));
-                }
+                updatePositionAndRotationWhenNavigating();
 
                 const iconFeature = new ol.Feature({
                     geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
@@ -251,7 +252,7 @@ function getLocation(zoom=true) {
 
             },
             (error) => {
-                console.log(true ? error.message : "Error: Your browser doesn't support geolocation.");
+                console.log(error ? error : "Error: Your browser doesn't support geolocation.");
             },
             {
                 enableHighAccuracy: true

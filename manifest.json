@@ -1,7 +1,7 @@
 {
     "name": "mGira",
     "short_name": "mGira",
-    "start_url": "index.html",
+    "start_url": "index?version=0.0.3",
     "scope": "./",
     "icons": [
       {

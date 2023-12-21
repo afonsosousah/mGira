@@ -101,7 +101,7 @@ function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, unregistered=
         }
 
         // check if the user is close to the station (less than 25 meters)
-        if(!(distance(pos[1], pos[0], stationObj.latitude, stationObj.longitude) < 25)) {
+        if(!(distance(pos[1], pos[0], stationObj.latitude, stationObj.longitude) < 30)) {
             alert("Não está próximo da estação!");
             return;
         }
@@ -166,7 +166,7 @@ function openTakeUnregisteredBikeMenu(stationSerialNumber) {
     }
 
     // check if the user is close to the station (less than 25 meters)
-    if(!(distance(pos[1], pos[0], stationObj.latitude, stationObj.longitude) < 25)) {
+    if(!(distance(pos[1], pos[0], stationObj.latitude, stationObj.longitude) < 30)) {
         alert("Não está próximo da estação!");
         return;
     }
@@ -207,7 +207,7 @@ function takeUnregisteredBike() {
 async function startBikeTrip(event, bikeSerialNumber){
     if(event.target.value == 100){
         console.log("The bike will be reserved!");
-
+        
         // reserve the bike
         if(typeof await reserve_bike(bikeSerialNumber) == "undefined")
             return;
@@ -215,7 +215,7 @@ async function startBikeTrip(event, bikeSerialNumber){
         // start the trip
         if(typeof await start_trip() == "undefined")
             return;
-
+        
         // hide the unlock card if it is showing
         if (document.querySelector('#unlockBikeCard'))
             document.querySelector('#unlockBikeCard').remove();
@@ -235,7 +235,7 @@ async function startBikeTrip(event, bikeSerialNumber){
                 <img src="assets/images/mGira_bike_black.png" alt="bike" id="bikeLogo">
                 <span id="tripCost">0.00€</span>
                 <span id="tripTime">00:00:00</span>
-                <img src="assets/images/gira_footer.svg" alt="footer" id="footer">
+                <img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
             `.trim();
             document.body.appendChild(tripOverlay);
         }
@@ -257,12 +257,17 @@ function tripTimer(startTime) {
             var minutes = elapsedTime.getMinutes();
             var seconds = elapsedTime.getSeconds();
             var formattedTime = hours + ':' + correctMinutesSeconds(minutes) + ':' + correctMinutesSeconds(seconds);
-            document.querySelector('#tripTime').innerHTML = formattedTime;
+            for (let element of document.querySelectorAll('#tripTime')) {
+                element.innerHTML = formattedTime;
+            }
         }
-        if (document.querySelector("#tripCost")) {
+        if (document.querySelector("#tripCost") && activeTripObj) {
             let cost = activeTripObj.cost;
-            if (cost)
-             document.querySelector('#tripCost').innerHTML = parseFloat(cost).toFixed(2) + "€";
+            if (cost) {
+                for (let element of document.querySelectorAll("#tripCost")) {
+                    element.innerHTML = parseFloat(cost).toFixed(2) + "€";
+                }
+            }
         }
         tripTimerRunning = true;
         setTimeout(tripTimer.bind(null, startTime), 1000);
@@ -303,38 +308,40 @@ function openRateTripMenu(tripObj) {
             </div>
             <img src="assets/images/mGira_station.png" alt="station">
             <div id="ratingLabel">Como foi a viagem?</div>
-            <form class="rating">
-                <label>
-                <input type="radio" name="stars" value="1" />
-                <span class="icon">★</span>
-                </label>
-                <label>
-                <input type="radio" name="stars" value="2" />
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                </label>
-                <label>
-                <input type="radio" name="stars" value="3" />
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                <span class="icon">★</span>   
-                </label>
-                <label>
-                <input type="radio" name="stars" value="4" />
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                </label>
-                <label>
-                <input type="radio" name="stars" value="5" />
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                </label>
-            </form>
+            <div id="ratingFormContainer">
+                <form class="rating">
+                    <label>
+                    <input type="radio" name="stars" value="1" />
+                    <span class="icon">★</span>
+                    </label>
+                    <label>
+                    <input type="radio" name="stars" value="2" />
+                    <span class="icon">★</span>
+                    <span class="icon">★</span>
+                    </label>
+                    <label>
+                    <input type="radio" name="stars" value="3" />
+                    <span class="icon">★</span>
+                    <span class="icon">★</span>
+                    <span class="icon">★</span>   
+                    </label>
+                    <label>
+                    <input type="radio" name="stars" value="4" />
+                    <span class="icon">★</span>
+                    <span class="icon">★</span>
+                    <span class="icon">★</span>
+                    <span class="icon">★</span>
+                    </label>
+                    <label>
+                    <input type="radio" name="stars" value="5" />
+                    <span class="icon">★</span>
+                    <span class="icon">★</span>
+                    <span class="icon">★</span>
+                    <span class="icon">★</span>
+                    <span class="icon">★</span>
+                    </label>
+                </form>
+            </div>
             <div id="sendButton" onclick="rateTrip('${tripObj.code}',${tripObj.cost})">Enviar</div>
         </div>
     </div>
@@ -353,6 +360,7 @@ async function rateTrip(tripCode, tripCost) {
     if (tripRating <= 3) {
         createCustomTextPrompt("Descreva a sua experiência",
         async () => {
+            // Yes handler
             let comment = document.getElementById("customTextPromptInput").value;
             let success = await rate_trip(tripCode, tripRating, comment);
             if (success) {
@@ -361,11 +369,15 @@ async function rateTrip(tripCode, tripCost) {
         
                 // Pay the trip after rating it
                 payTrip(tripCode, tripCost);
+
+                // Thank the user for the feedback
+                alert("Agradecemos o feedback!")
             } else {
                 alert("Não foi possível avaliar a viagem.")
             }
         },
         async () => {
+            // No handler
             let success = await rate_trip(tripCode, tripRating, ''); // send empty comment if the user ignored
             if (success) {
                 // store that this trip was already rated, to not prompt again
@@ -373,6 +385,9 @@ async function rateTrip(tripCode, tripCost) {
         
                 // Pay the trip after rating it
                 payTrip(tripCode, tripCost);
+
+                // Thank the user for the feedback
+                alert("Agradecemos o feedback!")
             } else {
                 alert("Não foi possível avaliar a viagem.")
             }
@@ -385,6 +400,9 @@ async function rateTrip(tripCode, tripCost) {
     
             // Pay the trip after rating it
             payTrip(tripCode, tripCost);
+
+            // Thank the user for the feedback
+            alert("Agradecemos o feedback!")
         } else {
             alert("Não foi possível avaliar a viagem.")
         }

@@ -24,8 +24,12 @@ async function token_refresh(){
             user.refreshToken = responseObject.data.refreshToken
             user.expiration = responseObject.data.expiration
 
+            // Set the cookie expiry to 1 month after today.
+            var expiryDate = new Date();
+            expiryDate.setMonth(expiryDate.getMonth() + 1);
+
             // Store refreshToken cookie (stay logged in)
-            document.cookie = "refreshToken=" + user.refreshToken;
+            document.cookie = "refreshToken=" + user.refreshToken + '; expires=' + expiryDate.toGMTString();;
 
             // Hide login menu if it is showing
             if (document.querySelector('.login-menu'))
@@ -34,13 +38,15 @@ async function token_refresh(){
             // Set that the token has been refreshed successfully
             tokenRefreshed = true;
             currentTry = 0;  // reset the number of tries
+
+            return user.accessToken;
         }
     } else if (response.status == 400) {
         // try for x times to refresh the token, otherwise prompt for new login
         if (currentTry < numberOfTokenRefreshTries) {
             // Wait before making next request (reduce error rate)
             await delay(200);
-            token_refresh();
+            return token_refresh();
         }
         else
             openLoginMenu();

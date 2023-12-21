@@ -1,4 +1,8 @@
-let orsApiKey = "REMOVED_FOR_GITHUB";
+let orsApiKey = "REMOVED FOR GITHUB";
+let currentRouteCoordinates;
+
+
+
 
 async function calculateFullRoute(fromCoordinates, toCoordinates) {
 
@@ -47,7 +51,9 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
     let totalDistance = 0; // will be in meters and exact
     let totalTime = 0; // will be in seconds
     let routeSummaryBike;
+    let routeSummary;
     let walkingOnly = false;
+    let allCoordinates = [];
 
     // If the grab station and droppoff station are the same, we should calculate the route on foot
     if (grabStation.code == dropoffStation.code) {
@@ -58,6 +64,7 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
         totalDistance += routeSummary.distance;
         totalTime += routeSummary.duration;
         routeSummaryBike = routeSummary; // we need to set this for the bbox to be set
+        allCoordinates.push(...routeSummary.coordinates);
 
         // Set that the route is walking only
         walkingOnly = true;
@@ -68,16 +75,19 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
         routeSummary = await calculateRoute(fromCoordinates, [grabStation.longitude, grabStation.latitude], false);
         totalDistance += routeSummary.distance;
         totalTime += routeSummary.duration;
+        allCoordinates.push(...routeSummary.coordinates);
 
         // Now calculate cycling route from start station to end station
         routeSummaryBike = await calculateRoute([grabStation.longitude, grabStation.latitude], [dropoffStation.longitude, dropoffStation.latitude], true);
         totalDistance += routeSummaryBike.distance;
         totalTime += routeSummaryBike.duration * 0.8; // Adjust time because the Gira ebike will be faster than the default on openrouteservice
+        allCoordinates.push(...routeSummaryBike.coordinates);
 
         // Finnaly, calculate walking route from station to end
         routeSummary = await calculateRoute([dropoffStation.longitude, dropoffStation.latitude], toCoordinates, false);
         totalDistance += routeSummary.distance;
         totalTime += routeSummary.duration;
+        allCoordinates.push(...routeSummary.coordinates);
 
         // Add start station point to map
         addStationPointToMap(grabStation, true);
@@ -86,6 +96,12 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
         addStationPointToMap(dropoffStation, false);
     }
 
+    // Remove the duplicate coordinates arrays inside allCoordinates
+    allCoordinates = allCoordinates.filter(( t={}, a=> !(t[a]=a in t) )); // explanation https://stackoverflow.com/questions/53452875/find-if-two-arrays-are-repeated-in-array-and-then-select-them
+
+    // Save the coordinates in a global variable to be used in the navigation
+    currentRouteCoordinates = allCoordinates;
+
     // Hide loading animation
     loadingElement.remove();
 
@@ -93,7 +109,8 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
     let coords1 = ol.proj.fromLonLat([routeSummaryBike.bbox[0], routeSummaryBike.bbox[1]]);
     let coords2 = ol.proj.fromLonLat([routeSummaryBike.bbox[2], routeSummaryBike.bbox[3]]);
     let converted_bbox = [coords1[0], coords1[1], coords2[0], coords2[1]];
-    map.getView().fit(converted_bbox, {size:map.getSize(), padding: [50, 50, 50, 50], maxZoom: 14, minZoom: 1});
+    viewable_box = [ map.getSize()[0], map.getSize()[1] - document.getElementById("placeSearchMenu").clientHeight ];
+    map.getView().fit(converted_bbox, {size: viewable_box, padding: [50, 100, document.getElementById("placeSearchMenu").clientHeight + 50, 100], maxZoom: 18});
 
     // Show the start navigation button and route details panel
     if(document.querySelector('#placeSearchMenu')) {
@@ -109,13 +126,16 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 
         let routeDetailsElement = document.createElement('div');
         routeDetailsElement.id = 'routeDetails';
-        routeDetailsElement.innerHTML = `${new Date(totalTime * 1000).toISOString().slice(11, 19)}  ${Math.round(totalDistance/1000 * 10) / 10}km`; // round distance to 1 decimal place
+        routeDetailsElement.innerHTML = `<i class="bi bi-clock"></i>&nbsp;${new Date(totalTime * 1000).toISOString().slice(11, 19)}&nbsp;&nbsp;&nbsp;<i class="bi bi-signpost"></i>&nbsp;${Math.round((totalDistance/1000) * 10) / 10}km`; // round distance to 1 decimal place
 
         placeSearchMenuElement.appendChild(startNavigationButtonElement);
         placeSearchMenuElement.appendChild(routeDetailsElement);
     }
     
 };
+
+
+
 
 async function calculateRoute(fromCoordinates, toCoordinates, cycling=true) {
     let orsDirections = new Openrouteservice.Directions({ api_key: orsApiKey});
@@ -159,8 +179,11 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling=true) {
 
         map.addLayer(vectorLayer);
 
+        if (cycling)
+            BikeRouteGeoJSON = response;
+
         let summary = response.features[0].properties.summary;
-        return { distance: summary.distance, duration: summary.duration, bbox: response.bbox };
+        return { distance: summary.distance, duration: summary.duration, bbox: response.bbox, coordinates: response.features[0].geometry.coordinates };
 
     } catch (err) {
         console.log(err)
@@ -168,6 +191,9 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling=true) {
         console.error(await err.response.json())
     }
 }
+
+
+
 
 // Calculate the distance between two points in meters (given the latitude/longitude of those points).
 function distance(lat1, lon1, lat2, lon2) {
@@ -190,6 +216,9 @@ function distance(lat1, lon1, lat2, lon2) {
         return dist;
     }
 }
+
+
+
 
 function getStationsByDistance(currentLocation) {
     // Copy the stattions array
@@ -214,6 +243,57 @@ function getStationsByDistance(currentLocation) {
 }
 
 
+
+
+function showSearchBar() {
+
+    // don't show another search bar if one is shown
+    if (document.getElementById("searchBarDiv"))
+        return;
+
+    // add search bar to document
+    appendElementToBodyFromHTML(`
+        <div id="searchBarDiv">
+            <div id="searchBarCancelButton" onclick="hidePlaceSearchMenu()"><i class="bi bi-arrow-90deg-left"></i></div>
+            <input type="search" id="searchBar" placeholder="Para onde vais a seguir?"></input>
+        </div>
+    `);
+
+    // Search after user has stopped writing setup
+    let typingTimer;                //timer identifier
+    let doneTypingInterval = 600;  //time in ms
+    let searchBar = document.getElementById('searchBar');
+
+    //on keyup, start the countdown
+    searchBar.addEventListener('keyup', () => {
+        clearTimeout(typingTimer);
+        if (searchBar.value) {
+            typingTimer = setTimeout(doneTyping, doneTypingInterval);
+        }
+        else {
+            // hide the placeSearchMenu if it is showing and put map to normal
+            if (document.querySelector('#placeSearchMenu')) {
+                hidePlaceSearchMenu()
+            }
+        }
+    });
+
+    // user is "finished typing," do something
+    function doneTyping () {
+        searchPlace();
+    }
+
+    // define a custom alert box
+    if(document.getElementById) {
+        window.alert = function(message) {
+            // set timeout so that if the user clicks on the place where the button is, it doesn't get automatically clicked
+            setTimeout(createCustomAlert.bind(null, message), 50);
+        }
+    }
+}
+
+
+
 async function searchPlace() {
     let query = document.getElementById('searchBar').value;
 
@@ -225,7 +305,7 @@ async function searchPlace() {
         // hide the placeSearchMenu if it is showing and put map to normal
         if (document.querySelector('#placeSearchMenu')) {
             mapElement = document.getElementById('map');
-            mapElement.style.height = '92%';
+            mapElement.style.height = '100%';
             mapElement.style.bottom = '0';
             document.querySelector('#placeSearchMenu').remove();
         }
@@ -236,10 +316,9 @@ async function searchPlace() {
         menu.id = "placeSearchMenu";
         document.body.appendChild(menu);
 
-        // resize map
-        mapElement = document.getElementById('map');
-        mapElement.style.height = '50%';
-        mapElement.style.bottom = '42%';
+        // move zoom controls to top, to not be behind the place search menu
+        document.getElementById("zoomControls").classList.remove('smooth-slide-top-zoom-controls', 'smooth-slide-bottom-zoom-controls', 'smooth-slide-up-zoom-controls', 'smooth-slide-down-zoom-controls') // reset classes
+        document.getElementById("zoomControls").classList.add('smooth-slide-top-zoom-controls') // move zoom controls up
 
         // Remove previous layer containing the previous results, the stations layer and the route layer
         map.getLayers().getArray()
@@ -261,7 +340,6 @@ async function searchPlace() {
                 <ul id="placeList">
                     <!-- Populate with the list here -->
                 </ul>
-                <div id="cancelButton" onclick="hidePlaceSearchMenu()">Cancelar</div>
             `.trim();
 
             let featuresArray = [];
@@ -270,7 +348,9 @@ async function searchPlace() {
             let coords1 = ol.proj.fromLonLat([response.bbox[0], response.bbox[1]]);
             let coords2 = ol.proj.fromLonLat([response.bbox[2], response.bbox[3]]);
             let converted_bbox = [coords1[0], coords1[1], coords2[0], coords2[1]];
-            map.getView().fit(converted_bbox, {size:map.getSize(), padding: [40, 40, 40, 40], maxZoom: 16});
+            let viewable_box = [ map.getSize()[0], map.getSize()[1] - document.getElementById("placeSearchMenu").clientHeight ];
+            let padding = [50, 100, 50 + document.getElementById("placeSearchMenu").clientHeight, 100];
+            map.getView().fit(converted_bbox, {size: viewable_box, padding: padding, maxZoom: 16.5});
 
             // get the results
             for(let result of response.features) {
@@ -395,20 +475,37 @@ async function searchPlace() {
     }
 }
 
+
+
 function hidePlaceSearchMenu() {
+
+    // Hide search bar
+    let searchBar = document.getElementById("searchBarDiv");
+    if (searchBar) {
+        searchBar.classList.add('slide-back-top');
+        setTimeout(() => searchBar.remove(), 1000); // remove element after animation end 
+    }
+    else
+        return;
+
     // Hide the place search menu
-    document.getElementById('placeSearchMenu').remove()
+    if (document.getElementById('placeSearchMenu'))
+        document.getElementById('placeSearchMenu').remove();
+    else
+        return;
 
     // Set the map back to default
     mapElement = document.getElementById('map');
-    mapElement.style.height = '92%';
+    mapElement.style.height = '100%';
     mapElement.style.bottom = '0';
-    document.getElementById('searchBar').value = '';
+
+    // move zoom controls back down
+    document.getElementById("zoomControls").classList.add('smooth-slide-bottom-zoom-controls')
 
     // Hide the loading animation if it is showing
     if (document.querySelector(".lds-ring"))
         document.querySelector(".lds-ring").remove();
-
+    
     // Remove the results layer
     map.getLayers().getArray()
     .filter(layer => layer.get('name') === "placesLayer" || layer.get('name') === "stationsLayer" || layer.get('name') === "routeLayer")
@@ -417,6 +514,9 @@ function hidePlaceSearchMenu() {
     // Add back the stations layer
     get_stations();
 }
+
+
+
 
 function viewRoute(toCoordinates) {
     // Remove the stationsLayer from the map
@@ -437,6 +537,9 @@ function viewRoute(toCoordinates) {
 
     checkPos(toCoordinates);
 }
+
+
+
 
 function addStationPointToMap(station, start=true) {
     

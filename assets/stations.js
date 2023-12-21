@@ -60,6 +60,44 @@ async function get_stations() {
         // Get all user details
         get_user_information();
 
+        // Check if update info should be shown
+        setTimeout(() => {
+            // Set the cookie expiry to 1 year after today.
+            var expiryDate = new Date();
+            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+
+
+            // Check version to show update notes
+            temp_version = getCookie("version");
+            if (temp_version) {
+                if (temp_version != "0.0.3") {
+                    alert(`
+                    Nova versão 0.0.3!<br>
+                    <ul>
+                        <li>Mudança da UI</li>
+                        <li>Suporte para botão voltar atrás nativo (obrigado DanielAgostinho)</li>
+                        <li>Pedidos e error handling melhorados (obrigado rodrigoleitao)</li>
+                        <li>Proxy já não é utilizado no login na API da EMEL (obrigado j0dd)</li>
+                        <li>Melhorias no sistema de navegação (já não utiliza a bússola do dispositivo)</li>
+                    </ul>
+                    `);
+                    document.cookie = "version=0.0.3" + '; expires=' + expiryDate.toGMTString();
+                }
+            } else {
+                alert(`
+                Nova versão 0.0.3!<br>
+                <ul>
+                    <li>Mudança da UI</li>
+                    <li>Suporte para botão voltar atrás nativo (obrigado DanielAgostinho)</li>
+                    <li>Pedidos e error handling melhorados (obrigado rodrigoleitao)</li>
+                    <li>Proxy já não é utilizado no login na API da EMEL (obrigado j0dd)</li>
+                    <li>Melhorias no sistema de navegação (já não utiliza a bússola do dispositivo)</li>
+                </ul>
+                `);
+                document.cookie = "version=0.0.3" + '; expires=' + expiryDate.toGMTString();
+            }
+        }, 2000);
+
         return response.data.getStations;
     }
     else {
@@ -82,9 +120,17 @@ async function openStationMenu(stationSerialNumber) {
     })[0];
     lastStationObj = stationObj;
 
+    // remove previous station card
+    if (document.getElementById("stationMenu"))
+        document.getElementById("stationMenu").remove();
+
+    // move zoom controls up, to not be behind the station card
+    document.getElementById("zoomControls").classList.remove('smooth-slide-top-zoom-controls', 'smooth-slide-bottom-zoom-controls', 'smooth-slide-up-zoom-controls', 'smooth-slide-down-zoom-controls') // reset classes
+    document.getElementById("zoomControls").classList.add('smooth-slide-up-zoom-controls') // move zoom controls up
+
     // show the bottom panel from the start so that the request delay is less noticeable
     let menu = document.createElement("div");
-    menu.className = "station-menu";
+    menu.className = "station-card";
     menu.id = "stationMenu";
     document.body.appendChild(menu);
 
@@ -102,16 +148,18 @@ async function openStationMenu(stationSerialNumber) {
     stationObj.bikeList = bikeList;
     numBikes = stationObj.bikeList.length;
     stationObj.dockList = dockList;
+    numDocks = stationObj.dockList.length - numBikes; // number of free docks
 
     // set the inner HTML after the animation has started
     if(typeof bikeList != "undefined" && typeof dockList != "undefined") {
         menu.innerHTML = 
         `
+            <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
             <div id="stationName">${stationObj.name}</div>
-            <img id="stationImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
-            <div id="availableBikesNumber">${(numBikes === 1) ? '1 bicicleta disponível' : `${numBikes} bicicletas disponíveis` }</div>
-            <div id="cancelButton" onclick="document.getElementById('stationMenu').remove()">Cancelar</div>
-            <div id="seeBikesButton" onclick="openBikeList('${stationSerialNumber}')">Ver bicicletas</div>
+            <img id="docksImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
+            <div id="docksButton">${(numDocks === 1) ? '1 doca' : `${numDocks} docas` }</div>
+            <img id="bikesImage" src="assets/images/mGira_bike.png" alt="Gira bike" width="25%">
+            <div id="bikesButton" onclick="openBikeList('${stationSerialNumber}')">${(numBikes === 1) ? '1 bicicleta' : `${numBikes} bicicletas` }</div>
         `.trim();
     } else {
         menu.innerHTML = 
@@ -120,6 +168,19 @@ async function openStationMenu(stationSerialNumber) {
             <div id="cancelButton" onclick="document.getElementById('stationMenu').remove()">Voltar</div>
         `.trim();
     }
+
+    // Add swipe event for hiding the station card
+    addSwipeEvent(menu,
+        () => {
+            menu.classList.add('smooth-slide-to-left');
+            setTimeout(() => menu.remove(), 1000)  // remove element after animation
+            document.getElementById("zoomControls").classList.add('smooth-slide-down-zoom-controls') // move zoom controls back down
+        },
+        () => {
+            menu.classList.add('smooth-slide-to-right');
+            setTimeout(() => menu.remove(), 1000)  // remove element after animation
+            document.getElementById("zoomControls").classList.add('smooth-slide-down-zoom-controls') // move zoom controls back down
+        });
 }
 
 // Open the bike list element and populate it
@@ -134,7 +195,8 @@ async function openBikeList(stationSerialNumber) {
     menu.id = "bikeMenu";
     menu.innerHTML = 
     `
-        <div id="backButton" onclick="document.getElementById('bikeMenu').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
+        <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
+        <div id="backButton" onclick="hideBikeList();"><i class="bi bi-arrow-90deg-left"></i></div>
         <div id="stationName">${stationObj.name}</div>
         <img id="stationImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
         <ul id="bikeList">
@@ -159,12 +221,15 @@ async function openBikeList(stationSerialNumber) {
 
         bikeListElement.innerHTML = 
         `
-            ${(bike.name[0] == "E") ? `${bike.name} - ${bike.battery}% - Doca ${dockObj.name}` : `${bike.name} - Doca ${dockObj.name}` }
-            <div id="reserveBikeButton" onclick="openUnlockBikeCard('${stationSerialNumber}','${bike.serialNumber}')">Retirar</div>
+            <div id="battery" style="width: ${(bike.name[0] == "E") ? `${bike.battery}%` : `0` }"></div>
+            <div id="content">
+                ${bike.name} - Doca ${dockObj.name}
+                <div id="reserveBikeButton" onclick="openUnlockBikeCard('${stationSerialNumber}','${bike.serialNumber}')">Retirar</div>
+            </div>
         `.trim();
         document.getElementById("bikeList").appendChild(bikeListElement);
     }
-    
+
     // if there are no bikes, put a message saying that
     if(document.getElementById("bikeList").childElementCount == 0)
         document.getElementById("bikeList").innerHTML = "Não há bicicletas na estação.";
@@ -177,6 +242,17 @@ async function openBikeList(stationSerialNumber) {
     `,
     document.getElementById("bikeList"));
 }
+
+
+function hideBikeList() {
+    let bikeListMenu = document.getElementById("bikeMenu");
+    if (bikeListMenu) {
+        bikeListMenu.classList.add('smooth-slide-to-bottom');
+        setTimeout(() => bikeListMenu.remove(), 1000);  // remove element after animation
+    }
+}
+
+
 
 async function getMissingBikesList() {
 

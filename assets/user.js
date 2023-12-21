@@ -26,8 +26,13 @@ async function login(event){
         // Get all user details
         get_user_information();
 
+        // Set the cookie expiry to 1 month after today.
+        var expiryDate = new Date();
+        expiryDate.setMonth(expiryDate.getMonth() + 1);
+
         // Store refreshToken cookie (stay logged in)
-        document.cookie = "refreshToken=" + user.refreshToken;
+        document.cookie = "refreshToken=" + user.refreshToken + '; expires=' + expiryDate.toGMTString();
+
         document.getElementById('loginMenu').remove()
         tokenRefreshed = true;
     } else {
@@ -37,16 +42,10 @@ async function login(event){
 
 // Gets all the user information
 async function get_user_information(){
-    // get the general information
+    // get the general information (without using the proxy)
     response = await make_get_request("https://api-auth.emel.pt/user", user.accessToken)
     if (typeof response != 'undefined')
         user = {...user, ...response.data};
-    else {
-        // Try again after some time to wait for a possible token refresh
-        console.log("Try again after some time to wait for a possible token refresh");
-        await delay(200);
-        return get_user_information();
-    }
 
     // Update user image based on user details
     if(document.getElementById('userPicture'))
@@ -69,20 +68,23 @@ async function get_user_information(){
 
 // Open the login menu element and populate it
 function openLoginMenu() {
+    document.cookie = "version=0.0.0"; // Force show update notes after logout
+    document.cookie = "refreshToken=None;path=\"/\";expires=Thu, 01 Jan 1970 00:00:01 GMT"; // delete cookie
+
     let menu = document.createElement("div");
     menu.className = "login-menu";
     menu.id = "loginMenu";
     menu.innerHTML = 
     `
-        <img src="assets/images/mGira_big.png" alt="mGira logo" width="50%">
         <div id="loginCard">
+            <img id="logo" src="assets/images/mGira_big.png" alt="mGira logo">
             <form id="loginForm">
                 <input type="email" name="email" id="email" placeholder="e-Mail">
                 <input type="password" name="password" id="password" placeholder="Palavra-passe">
             </form>
             <div id="registerButton" onclick="openSetProxyPrompt()"">Proxy</div>
             <div id="loginButton" onclick="login(event)">Entrar</div>
-            <img src="assets/images/gira_footer.svg" id="footer" alt="footer" width="100%">
+            <img id="footer" src="assets/images/gira_footer.svg" alt="footer">
         </div>
     `.trim();
 
@@ -114,13 +116,14 @@ async function openUserSettings() {
     let settingsElement = document.createElement("div");
     settingsElement.className = "user-settings";
     settingsElement.id = "userSettings";
+
     if(document.querySelectorAll('.user-settings').length == 0)
         document.body.appendChild(settingsElement);
 
     // show loading animation
     settingsElement.innerHTML = `
     <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-    <div id="backButton" onclick="document.getElementById('userSettings').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
+    <div id="backButton" onclick="hideUserSettings()"><i class="bi bi-arrow-90deg-left"></i></div>
     <div id="proxyNotWorking" onclick="openSetProxyPrompt()">Proxy não funciona?</div>
     `;
     
@@ -159,10 +162,10 @@ async function openUserSettings() {
     settingsElement.innerHTML = 
     `
         <div id="topUserContainer">
-            <div id="backButton" onclick="document.getElementById('userSettings').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
-            <img src="assets/images/gira_footer.svg" alt="backImage">
+            <div id="backButton" onclick="hideUserSettings()"><i class="bi bi-arrow-90deg-left"></i></div>
+            <img id="footer" src="assets/images/gira_footer_white.svg" alt="backImage">
+            <img id="userImage" src="https://ui-avatars.com/api/?name=${encodeURI(userObj.name)}&size=175&background=231F20&color=fff&rounded=true">
         </div>
-        <img id="userImage" src="https://ui-avatars.com/api/?name=${encodeURI(userObj.name)}&size=175&background=231F20&color=fff&rounded=true">
         <div id="userName">${userObj.name}</div>
         <div id="balanceAndBonusContainer">
             <div id="balanceContainer">
@@ -203,19 +206,26 @@ async function openUserSettings() {
             <div id="proxy">
                 <div>Proxy definido pelo utilizador</div>
                 <input id="proxyUrlInput" value="${proxyURL}" placeholder="Insere aqui o URL para o proxy"/>
-                <div id="resetProxyButton">Padrão</div>
-                <div id="setProxyButton">Definir</div>
+                <div id="resetProxyButton"><i class="bi bi-arrow-counterclockwise"></i></div>
+                <div id="setProxyButton"><i class="bi bi-check-lg"></i></div>
             </div>
         </div>
-        <div id="versionNumber">0.0.2</div>
-        <div id="logoutButton" onclick="openLoginMenu()">Sair</div>
-        <div id="bottomSpacing"></div>
+        <div id="bottom">
+            <div id="versionNumber">0.0.3</div>
+            <div id="logoutButton" onclick="openLoginMenu()">Sair</div>
+        </div>
     `.trim();
 
     document.getElementById("setProxyButton").addEventListener('click', (evt) => {
+        // Set the cookie expiry to 1 year after today.
+        var expiryDate = new Date();
+        expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+
         // Store customProxy cookie
         proxyURL = document.getElementById("proxyUrlInput").value;
-        document.cookie = "customProxy=" + encodeURI(proxyURL);
+        document.cookie = "customProxy=" + encodeURI(proxyURL) + '; expires=' + expiryDate.toGMTString();
+
+        alert('O proxy foi definido.');
     });
 
     document.getElementById("resetProxyButton").addEventListener('click', (evt) => {
@@ -224,8 +234,21 @@ async function openUserSettings() {
         document.cookie = "customProxy=None;path=\"/\";expires=Thu, 01 Jan 1970 00:00:01 GMT";
         // Update input
         document.getElementById("proxyUrlInput").value = proxyURL;
+
+        alert('O proxy foi redefinido.')
     });
 }
+
+
+function hideUserSettings() {
+    let userSettings = document.getElementById('userSettings');
+    if (userSettings) {
+        userSettings.classList.add('smooth-slide-to-bottom');
+        setTimeout(() => userSettings.remove(), 1000); // remove element after animation end 
+    }
+}
+
+
 
 function openSetProxyPrompt() {
     createCustomTextPrompt(

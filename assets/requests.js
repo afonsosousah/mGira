@@ -15,7 +15,14 @@ async function make_post_request(url, body, accessToken=null){
     });
     if(response.status == 401) {
         // refresh token
-        token_refresh();
+        accessToken = await token_refresh();
+
+        // check if token refresh was successful
+        if (typeof accessToken != 'undefined') {
+            // try to make request again
+            return await make_post_request(url, body, accessToken); // be sure to use latest available token
+        }
+
     } else if(response.ok) {
         responseObject = await response.json();
 
@@ -30,45 +37,44 @@ async function make_post_request(url, body, accessToken=null){
         responseObject = await response.json();
         if (responseObject.errors[0].message == "trip_interval_limit") {
             alert("Tem de esperar 5 minutos entre viagens.");
-            return;
         }
         else if (responseObject.errors[0].message == "already_active_trip") {
             alert("Já tem uma viagem a decorrer!");
-            return;
         }
         else if (responseObject.errors[0].message == "unable_to_start_trip") {
             alert("Não foi possível iniciar a viagem.");
-            return;
         }
         else if (responseObject.errors[0].message == "trip_not_found") {
             alert("Viagem não encontrada.");
-            return;
         }
         else if (responseObject.errors[0].message == "invalid_arguments") {
             alert("Argumentos inválidos.");
-            return;
         }
-        else if (responseObject.errors[0].message != "Error executing document.")
+        else if (responseObject.errors[0].message == "bike_already_in_trip") {
+            alert("Bicicleta já em viagem.");
+        }
+        else if (responseObject.errors[0].message == "already_has_active_trip") {
+            alert("Já tem uma viagem a decorrer.");
+        }
+        else if (responseObject.errors[0].message == "no_bike_found") {
+            alert("Bicicleta não encontrada.");
+        }
+        else if (responseObject.errors[0].message == "bike_on_repair") {
+            alert("Bicicleta a ser reparada.");
+        }
+        else if (responseObject.errors[0].message != "Error executing document.") {
+            // Show general error message for unknown errors
             alert(responseObject.errors[0].message);
-
-        // Hide login menu if it is showing
-        if (document.querySelector('.login-menu'))
-        document.querySelector('.login-menu').remove();
-
-        // Wait before making next request (to allow token to get refreshed)
-        await delay(200);
-
-        return await make_post_request(url, body, accessToken);
-        //return responseObject;
+        }
     }
 }
 
 async function make_get_request(url, accessToken=null){
-    response = await fetch(proxyURL, {
+    // Proxy is not needed for these GET requests
+    response = await fetch(url, {
         method: "GET",
         headers: {
-            "X-Proxy-URL": url,
-            "X-Authorization": `Bearer ${accessToken}`
+            "Authorization": `Bearer ${accessToken}`
         }
     });
     if(response.status == 401) {
@@ -157,7 +163,7 @@ function startWSConnection(force=false) {
                                 tripOverlay.innerHTML = 
                                 `
                                     <span id="onTripText">Em viagem</span>
-                                    <img src="assets/images/mGira_bike_black.png" alt="bike" id="bikeLogo">
+                                    <img src="assets/images/mGira_bike_white.png" alt="bike" id="bikeLogo">
                                     <span id="tripCost">0.00€</span>
                                     <span id="tripTime">00:00:00</span>
                                     <img src="assets/images/gira_footer.svg" alt="footer" id="footer">
@@ -207,7 +213,7 @@ function startWSConnection(force=false) {
 
 function checkToken(callback) {
     if(tokenRefreshed === false)
-        setTimeout(checkToken.bind(null, callback, arguments[1], arguments[2], user.accessToken), 0);
+        return setTimeout(checkToken.bind(null, callback, arguments[1], arguments[2], user.accessToken), 0);
     else {
         tokenRefreshSuccessHandler()
 

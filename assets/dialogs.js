@@ -20,6 +20,9 @@ function createCustomAlert(message) {
     });
 
     document.body.appendChild(mObj);
+
+    if (document.getElementById('userSettings'))
+        mObj.style.height = document.getElementById('userSettings').clientHeight  + 'px';
 }
 
 function createCustomYesNoPrompt(message, yesHandler, noHandler, yesText="Sim", noText="Não") {
