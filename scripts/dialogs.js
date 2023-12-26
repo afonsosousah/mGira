@@ -15,9 +15,7 @@ function createCustomAlert(message) {
 	btn.id = "closeBtn";
 	btn.appendChild(document.createTextNode("OK"));
 	//btn.focus();
-	btn.addEventListener("click", () => {
-		document.getElementById("modalContainer").remove();
-	});
+	btn.addEventListener("click", () => document.getElementById("modalContainer").remove());
 
 	document.body.appendChild(mObj);
 

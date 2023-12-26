@@ -95,7 +95,7 @@ function startWSConnection(force = false) {
 
 	ws = new WebSocket("wss://apigira.emel.pt/graphql", "graphql-ws");
 
-	ws.onopen = function () {
+	ws.onopen = () => {
 		ws.send(JSON.stringify({ type: "connection_init" }));
 		ws.send(
 			JSON.stringify({
@@ -127,7 +127,7 @@ function startWSConnection(force = false) {
 		);
 	};
 
-	ws.onmessage = function (msg) {
+	ws.onmessage = msg => {
 		//console.log(msg);
 		if (typeof msg.data !== "undefined") {
 			let msgObj = JSON.parse(msg.data);
@@ -195,11 +195,8 @@ function startWSConnection(force = false) {
 		}
 	};
 
-	ws.onerror = function (ev) {
-		console.log(ev);
-	};
-
-	ws.onclose = function (ev) {
+	ws.onerror = ev => console.log(ev);
+	ws.onclose = ev => {
 		console.log(ev);
 		startWSConnection(); // reconnect automatically if the connection gets closed
 	};
@@ -207,7 +204,7 @@ function startWSConnection(force = false) {
 
 function checkToken(callback) {
 	if (tokenRefreshed === false)
-		return setTimeout(checkToken.bind(null, callback, arguments[1], arguments[2], user.accessToken), 0);
+		return setTimeout(() => checkToken(callback, arguments[1], arguments[2], user.accessToken), 0);
 	else {
 		tokenRefreshSuccessHandler();
 

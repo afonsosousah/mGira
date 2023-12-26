@@ -126,10 +126,7 @@ async function openStationMenu(stationSerialNumber) {
 	}
 
 	// get station object
-	stationObj = stationsArray.filter(obj => {
-		return obj.serialNumber === stationSerialNumber;
-	})[0];
-	lastStationObj = stationObj;
+	lastStationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
 
 	// remove previous station card
 	if (document.getElementById("stationMenu")) document.getElementById("stationMenu").remove();
@@ -204,9 +201,7 @@ async function openStationMenu(stationSerialNumber) {
 // Open the bike list element and populate it
 async function openBikeList(stationSerialNumber) {
 	// get station object
-	stationObj = stationsArray.filter(obj => {
-		return obj.serialNumber === stationSerialNumber;
-	})[0];
+	const stationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
 
 	let menu = document.createElement("div");
 	menu.className = "bike-list";
@@ -231,9 +226,7 @@ async function openBikeList(stationSerialNumber) {
 		bikeListElement.className = "bike-list-element";
 
 		// get the name of the dock in which the bike is
-		dockObj = stationObj.dockList.filter(obj => {
-			return obj.code === bike.parent;
-		})[0];
+		const dockObj = stationObj.dockList.find(obj => obj.code === bike.parent);
 
 		bikeListElement.innerHTML = `
             <div id="battery" style="width: ${bike.name[0] === "E" ? `${bike.battery}%` : `0`}"></div>
@@ -300,9 +293,7 @@ async function getMissingBikesList() {
 		);
 
 		// compact the missing bikes list
-		missingBikes = missingBikes.map(bike => {
-			return { name: bike.name, serialNumber: bike.serialNumber };
-		});
+		missingBikes = missingBikes.map(bike => ({ name: bike.name, serialNumber: bike.serialNumber }));
 
 		console.log(missingBikes);
 	} else {

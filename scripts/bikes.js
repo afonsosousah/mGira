@@ -124,9 +124,7 @@ async function trip_pay_with_points(tripCode) {
 function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, unregistered = false) {
 	if (stationSerialNumber !== null) {
 		// get station object
-		stationObj = stationsArray.filter(obj => {
-			return obj.serialNumber === stationSerialNumber;
-		})[0];
+		const stationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
 
 		// check if the app has access to the user location
 		if (!pos) {
@@ -145,13 +143,9 @@ function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, unregistered 
 	let bikeObj;
 
 	if (!unregistered) {
-		bikeObj = lastStationObj.bikeList.filter(obj => {
-			return obj.serialNumber === bikeSerialNumber;
-		})[0];
+		bikeObj = lastStationObj.bikeList.find(obj => obj.serialNumber === bikeSerialNumber);
 	} else {
-		bikeObj = bikeSerialNumberMapping.filter(obj => {
-			return obj.serialNumber === bikeSerialNumber;
-		})[0];
+		bikeObj = bikeSerialNumberMapping.find(obj => obj.serialNumber === bikeSerialNumber);
 		bikeObj.battery = "?";
 		lastStationObj = { name: "Bicicleta não registada" };
 	}
@@ -183,9 +177,7 @@ function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, unregistered 
 
 function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 	// get station object
-	stationObj = stationsArray.filter(obj => {
-		return obj.serialNumber === stationSerialNumber;
-	})[0];
+	const stationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
 
 	// check if the app has access to the user location
 	if (!pos) {

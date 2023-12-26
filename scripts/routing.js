@@ -133,9 +133,7 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 		startNavigationButtonElement.id = "startNavigationButton";
 		startNavigationButtonElement.innerHTML = '<i class="bi bi-sign-turn-slight-right"></i>';
 
-		startNavigationButtonElement.addEventListener("click", function () {
-			startNavigation(walkingOnly);
-		});
+		startNavigationButtonElement.addEventListener("click", () => startNavigation(walkingOnly));
 
 		let routeDetailsElement = document.createElement("div");
 		routeDetailsElement.id = "routeDetails";
@@ -178,10 +176,7 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 			}),
 		};
 
-		const styleFunction = function (feature) {
-			return styles[feature.getGeometry().getType()];
-		};
-
+		const styleFunction = feature => styles[feature.getGeometry().getType()];
 		let vectorLayer = new ol.layer.Vector({
 			name: "routeLayer",
 			source: new ol.source.Vector({
@@ -241,9 +236,7 @@ function getStationsByDistance(currentLocation) {
 	let temp_stationsArray = stationsArray;
 
 	// Remove all the empty stations
-	temp_stationsArray = temp_stationsArray.filter(obj => {
-		return obj.bikes !== 0;
-	});
+	tempStationsArray = tempStationsArray.filter(obj => obj.bikes !== 0);
 
 	// Calculate the distance for all the stations
 	for (let station of temp_stationsArray) {
@@ -251,9 +244,7 @@ function getStationsByDistance(currentLocation) {
 	}
 
 	// Sort by distance
-	temp_stationsArray.sort(function (a, b) {
-		return a.distance - b.distance;
-	});
+	tempStationsArray.sort((a, b) => a.distance - b.distance);
 
 	return temp_stationsArray;
 }
@@ -295,7 +286,7 @@ function showSearchBar() {
 
 	// define a custom alert box
 	if (document.getElementById) {
-		window.alert = function (message) {
+		window.alert = message =>
 			// set timeout so that if the user clicks on the place where the button is, it doesn't get automatically clicked
 			setTimeout(createCustomAlert.bind(null, message), 50);
 		};
@@ -387,19 +378,15 @@ async function searchPlace() {
                     ${result.properties.name}
                 `.trim();
 
-				resultElement.addEventListener("click", function () {
-					viewRoute(position);
-				});
-				resultElement.addEventListener("mouseout", function () {
+				resultElement.addEventListener("click", () => viewRoute(position));
+				resultElement.addEventListener("mouseout", () => {
 					let pixels = map.getPixelFromCoordinate(ol.proj.fromLonLat(position));
 
 					// correct to the point
 					pixels[1] -= 25;
 					pixels[0] -= 10;
 
-					const result = map.forEachFeatureAtPixel(pixels, function (feature, layer) {
-						return { feature: feature, layer: layer };
-					});
+					const result = map.forEachFeatureAtPixel(pixels, (feature, layer) => ({ feature: feature, layer: layer }));
 					if (!result) {
 						return;
 					}
@@ -415,19 +402,15 @@ async function searchPlace() {
 
 					result.feature.setStyle(iconStyle);
 				});
-				resultElement.addEventListener("mouseover", function () {
+				resultElement.addEventListener("mouseover", () => {
 					let pixels = map.getPixelFromCoordinate(ol.proj.fromLonLat(position));
 
 					// correct to the point
 					pixels[1] -= 25;
 					pixels[0] -= 10;
 
-					const result = map.forEachFeatureAtPixel(pixels, function (feature, layer) {
-						return { feature: feature, layer: layer };
-					});
-					if (!result) {
-						return;
-					}
+					const result = map.forEachFeatureAtPixel(pixels, (feature, layer) => ({ feature: feature, layer: layer }));
+					if (!result) return;
 
 					const iconStyle = new ol.style.Style({
 						image: new ol.style.Icon({
@@ -544,7 +527,7 @@ function viewRoute(toCoordinates) {
 	getLocation(false);
 
 	checkPos = function (toCoordinates) {
-		if (typeof pos === "undefined" || typeof pos === "null") setTimeout(checkPos.bind(null, toCoordinates), 0);
+		if (typeof pos === "undefined" || typeof pos === "null") setTimeout(() => checkPos(toCoordinates), 0);
 		else {
 			// Calculate and display the route on the map when we have the user position
 			calculateFullRoute(pos, toCoordinates);

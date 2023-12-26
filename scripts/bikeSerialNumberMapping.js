@@ -1,4 +1,4 @@
-let bikeSerialNumberMapping = [
+const bikeSerialNumberMapping = [
 	{
 		name: "C0503",
 		serialNumber: "b05981ed85",

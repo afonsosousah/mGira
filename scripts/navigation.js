@@ -43,33 +43,6 @@ async function startNavigation(walkingOnly = false) {
 	// Pan to user location and set the correct rotation based on the route
 	updatePositionAndRotationWhenNavigating();
 	updatePositionAndRotationWhenNavigating(); // do twice because the first time the alignment is not right (no idea why)
-
-	/*
-    // Alert user to calibrate compass
-    alert(`
-        Se o compasso não estiver calibrado, por favor calibre para utilizar a navegação.
-        <img src="assets/images/figure-8-compass-calibration.gif" alt="compass calibration">
-    `);
-
-    // Start the FULLTILT DeviceOrientation listeners and update true north
-    // bearing indicator whenever a new deviceorientation event is fired.
-    var promise = FULLTILT.getDeviceOrientation({'type': 'world'});
-    promise.then(function(orientationControl) {
-
-        orientationControl.listen(function() {
-
-            // Get latest screen-adjusted deviceorientation data
-            var screenAdjustedEvent = orientationControl.getScreenAdjustedEuler();
-
-            // Calculate the current compass heading that the user is 'looking at'
-            var compassHeading = 360 - screenAdjustedEvent.alpha;
-            compassHeading = -(Math.PI / 180) * compassHeading; // convert back to radians for the map
-
-            updateRotationWhenNavigating(compassHeading);
-
-        });
-
-    });*/
 }
 
 function onBikeNavigation() {
@@ -144,9 +117,7 @@ function stopNavigation() {
 
 	// Don't force device to be awake anymore
 	if (wakeLock) {
-		wakeLock.release().then(() => {
-			wakeLock = null;
-		});
+		wakeLock.release().then(() => (wakeLock = null));
 	}
 
 	// Remove all the navigation elements

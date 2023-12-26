@@ -131,14 +131,14 @@
 			// Prevent resize on keyboard open
 			let initialWindowHeight = window.innerHeight;
 
-			document.addEventListener("focusin", function (e) {
+			document.addEventListener("focusin", e => {
 				if (isInputElement(e.target) && (!document.body.style.height.includes("px") || !document.body.style.height)) {
 					document.body.style.height = initialWindowHeight + "px";
 					window.scrollTo(0, document.body.scrollHeight); // scroll to the bottom of the page
 				}
 			});
 
-			document.addEventListener("focusout", function (e) {
+			document.addEventListener("focusout", e => {
 				if (isInputElement(e.target)) {
 					document.body.style.height = "100%";
 				}
@@ -154,18 +154,16 @@
 
 			// define a custom alert box
 			if (document.getElementById) {
-				window.alert = function (message) {
+				window.alert = message => {
 					// set timeout so that if the user clicks on the place where the button is, it doesn't get automatically clicked
 					setTimeout(createCustomAlert.bind(null, message), 50);
 				};
 			}
 
 			// Prevent system back button exiting the app
-			window.addEventListener("load", function () {
-				window.history.pushState({}, "");
-			});
+			window.addEventListener("load", () => window.history.pushState({}, ""));
 
-			window.addEventListener("popstate", function () {
+			window.addEventListener("popstate", () => {
 				// Back button was pressed
 				window.history.pushState({}, "");
 

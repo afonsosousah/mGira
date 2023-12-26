@@ -219,7 +219,7 @@ async function openUserSettings() {
         </div>
     `.trim();
 
-	document.getElementById("setProxyButton").addEventListener("click", evt => {
+	document.getElementById("setProxyButton").addEventListener("click", () => {
 		// Set the cookie expiry to 1 year after today.
 		var expiryDate = new Date();
 		expiryDate.setFullYear(expiryDate.getFullYear() + 1);
@@ -231,7 +231,7 @@ async function openUserSettings() {
 		alert("O proxy foi definido.");
 	});
 
-	document.getElementById("resetProxyButton").addEventListener("click", evt => {
+	document.getElementById("resetProxyButton").addEventListener("click", () => {
 		// Delete customProxy cookie
 		proxyURL = "proxy.php";
 		document.cookie = 'customProxy=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT';

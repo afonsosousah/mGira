@@ -21,35 +21,10 @@ async function initMap() {
 		controls: [new ol.control.Rotate(), new ol.control.Attribution()],
 	});
 
-	// Styled map
-	/*const key = 'REMOVED FOR GITHUB';
-    const styleJson = `https://api.maptiler.com/maps/positron/style.json?key=${key}`;
-
-    map = new ol.Map({
-        target: 'map',
-        layers: [
-            new ol.layer.Tile({
-            source: new ol.source.OSM(),
-            }),
-        ],
-        view: new ol.View({
-            center: ol.proj.fromLonLat([-9.142685, 38.736946]),
-            zoom: 12,
-        }),
-        controls: [
-            new ol.control.Rotate()
-        ],
-    });
-    olms.apply(map, styleJson);*/
-
 	// display popup on click
-	map.on("click", function (evt) {
-		const result = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
-			return { feature: feature, layer: layer };
-		});
-		if (!result) {
-			return;
-		}
+	map.on("click", evt => {
+		const result = map.forEachFeatureAtPixel(evt.pixel, (feature, layer) => ({ feature: feature, layer: layer }));
+		if (!result) return;
 
 		let feature = result.feature;
 		let layer = result.layer;
@@ -171,7 +146,7 @@ async function loadStationMarkersFromArray(stationsArray) {
 		stationsLayer = map
 			.getLayers()
 			.getArray()
-			.filter(layer => layer.get("name") === "stationsLayer")[0];
+			.find(layer => layer.get("name") === "stationsLayer");
 
 		// Refresh the features
 		stationsLayer.getSource().set("features", featuresArray, true);
@@ -256,7 +231,7 @@ function getLocation(zoom = true) {
 					currentLocationLayer = map
 						.getLayers()
 						.getArray()
-						.filter(layer => layer.get("name") === "currentLocationLayer")[0];
+						.find(layer => layer.get("name") === "currentLocationLayer");
 
 					// Refresh the feature
 					let feature = currentLocationLayer.getSource().getFeatures()[0];
@@ -264,9 +239,7 @@ function getLocation(zoom = true) {
 					feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
 				}
 			},
-			error => {
-				console.log(error ? error : "Error: Your browser doesn't support geolocation.");
-			},
+			error => console.log(error ? error : "Error: Your browser doesn't support geolocation."),
 			{
 				enableHighAccuracy: true,
 			}
@@ -274,8 +247,8 @@ function getLocation(zoom = true) {
 
 		// Pan to location only once when position has been set
 		if (zoom) {
-			checkPos = function () {
-				if (typeof pos === "undefined" || typeof pos === "null") setTimeout(checkPos, 0);
+			checkPos = () => {
+				if (!pos) setTimeout(checkPos, 0);
 				else {
 					// Draw the new location dot only once
 					const iconFeature = new ol.Feature({
