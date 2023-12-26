@@ -180,13 +180,13 @@ function updatePositionAndRotationWhenNavigating() {
 		let closestPoint_index;
 
 		// Get the closest route point to current location
-		for (let i = 0; i < currentRouteCoordinates.length; i++) {
-			let routePoint = currentRouteCoordinates[i];
+		for (const [i, routePoint] of currentRouteCoordinates.entries()) {
+			const computedDistance = distance(pos, routePoint);
 			if (!closestDistance) {
-				closestDistance = distance(curLat, curLon, routePoint[1], routePoint[0]);
+				closestDistance = computedDistance;
 				closestPoint_index = i;
-			} else if (distance(curLat, curLon, routePoint[1], routePoint[0]) < closestDistance) {
-				closestDistance = distance(curLat, curLon, routePoint[1], routePoint[0]);
+			} else if (computedDistance < closestDistance) {
+				closestDistance = computedDistance;
 				closestPoint_index = i;
 			}
 		}

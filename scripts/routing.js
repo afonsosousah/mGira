@@ -33,23 +33,10 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 
 	for (stationStart of nearestStationsStart) {
 		for (stationEnd of nearestStationsEnd) {
-			walkingDistanceToStartStation = distance(
-				fromCoordinates[1],
-				fromCoordinates[0],
-				stationStart.latitude,
-				stationStart.longitude
-			);
+			walkingDistanceToStartStation = distance(fromCoordinates, [stationStart.longitude, stationStart.latitude]);
 			cyclingDistanceFromStartToEnd = distance(
-				stationStart.latitude,
-				stationStart.longitude,
-				stationEnd.latitude,
-				stationEnd.longitude
-			);
-			walkingDistanceFromEndStation = distance(
-				stationEnd.latitude,
-				stationEnd.longitude,
-				toCoordinates[1],
-				toCoordinates[0]
+				[stationStart.longitude, stationStart.latitude],
+				[stationEnd.longitude, stationEnd.latitude]
 			);
 
 			totalTripDistance = walkingDistanceToStartStation + cyclingDistanceFromStartToEnd + walkingDistanceFromEndStation;
@@ -223,24 +210,29 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 	}
 }
 
+const EARTH_RADIUS_KM = 6371;
 // Calculate the distance between two points in meters (given the latitude/longitude of those points).
-function distance(lat1, lon1, lat2, lon2) {
+function distance(point1, point2) {
+	// Points are in [lon, lat] format
+	const [lon1, lat1] = point1;
+	const [lon2, lat2] = point2;
 	if (lat1 === lat2 && lon1 === lon2) {
 		return 0;
 	} else {
-		var radlat1 = (Math.PI * lat1) / 180;
-		var radlat2 = (Math.PI * lat2) / 180;
-		var theta = lon1 - lon2;
-		var radtheta = (Math.PI * theta) / 180;
-		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-		if (dist > 1) {
-			dist = 1;
-		}
-		dist = Math.acos(dist);
-		dist = (dist * 180) / Math.PI;
-		dist = dist * 60 * 1.1515;
-		dist = dist * 1.609344 * 1000;
-		return dist;
+		// Differences in coordinates
+		const deltaLat = (lat2 - lat1) * degToRad;
+		const deltaLon = (lon2 - lon1) * degToRad;
+
+		// Haversine formula
+		const haversineFormula =
+			Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+			Math.cos(lat1 * degToRad) * Math.cos(lat2 * degToRad) * Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+		const angularDistance = 2 * Math.atan2(Math.sqrt(haversineFormula), Math.sqrt(1 - haversineFormula));
+
+		// Distance in kilometers
+		const distance = EARTH_RADIUS_KM * angularDistance;
+
+		return distance * 1000;
 	}
 }
 

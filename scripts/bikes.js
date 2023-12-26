@@ -134,8 +134,8 @@ function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, unregistered 
 			return;
 		}
 
-		// check if the user is close to the station (less than 25 meters)
-		if (!(distance(pos[1], pos[0], stationObj.latitude, stationObj.longitude) < 30)) {
+		// check if the user is close to the station (less than 50 meters)
+		if (!(distance(pos, [stationObj.longitude, stationObj.latitude]) < 50)) {
 			alert("Não está próximo da estação!");
 			return;
 		}
@@ -193,8 +193,8 @@ function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 		return;
 	}
 
-	// check if the user is close to the station (less than 25 meters)
-	if (!(distance(pos[1], pos[0], stationObj.latitude, stationObj.longitude) < 30)) {
+	// check if the user is close to the station (less than 50 meters)
+	if (!(distance(pos, [stationObj.longitude, stationObj.latitude]) < 50)) {
 		alert("Não está próximo da estação!");
 		return;
 	}
