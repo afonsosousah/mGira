@@ -47,7 +47,7 @@ async function login(event) {
 async function get_user_information() {
 	// get the general information (without using the proxy)
 	response = await make_get_request("https://api-auth.emel.pt/user", user.accessToken);
-	if (typeof response != "undefined") user = { ...user, ...response.data };
+	if (typeof response !== "undefined") user = { ...user, ...response.data };
 
 	// Update user image based on user details
 	if (document.getElementById("userPicture"))
@@ -105,7 +105,7 @@ function openLoginMenu() {
 	if (document.querySelector(".bike-list")) document.querySelector(".bike-list").remove();
 
 	// Add to the document
-	if (document.querySelectorAll(".login-menu").length == 0) document.body.appendChild(menu);
+	if (document.querySelectorAll(".login-menu").length === 0) document.body.appendChild(menu);
 }
 
 // Open user settings element and populate it
@@ -115,7 +115,7 @@ async function openUserSettings() {
 	settingsElement.className = "user-settings";
 	settingsElement.id = "userSettings";
 
-	if (document.querySelectorAll(".user-settings").length == 0) document.body.appendChild(settingsElement);
+	if (document.querySelectorAll(".user-settings").length === 0) document.body.appendChild(settingsElement);
 
 	// show loading animation
 	settingsElement.innerHTML = `

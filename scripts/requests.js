@@ -13,12 +13,12 @@ async function make_post_request(url, body, accessToken = null) {
 		},
 		body: body,
 	});
-	if (response.status == 401) {
+	if (response.status === 401) {
 		// refresh token
 		accessToken = await token_refresh();
 
 		// check if token refresh was successful
-		if (typeof accessToken != "undefined") {
+		if (typeof accessToken !== "undefined") {
 			// try to make request again
 			return await make_post_request(url, body, accessToken); // be sure to use latest available token
 		}
@@ -26,33 +26,33 @@ async function make_post_request(url, body, accessToken = null) {
 		responseObject = await response.json();
 
 		// Handle wrong credentials error
-		if (responseObject.error && responseObject.error.message == "Invalid credentials.") {
+		if (responseObject.error && responseObject.error.message === "Invalid credentials.") {
 			alert("Crendenciais inválidas");
 			return;
 		}
 
 		return responseObject;
-	} else if (response.status == 400) {
+	} else if (response.status === 400) {
 		responseObject = await response.json();
-		if (responseObject.errors[0].message == "trip_interval_limit") {
+		if (responseObject.errors[0].message === "trip_interval_limit") {
 			alert("Tem de esperar 5 minutos entre viagens.");
-		} else if (responseObject.errors[0].message == "already_active_trip") {
+		} else if (responseObject.errors[0].message === "already_active_trip") {
 			alert("Já tem uma viagem a decorrer!");
-		} else if (responseObject.errors[0].message == "unable_to_start_trip") {
+		} else if (responseObject.errors[0].message === "unable_to_start_trip") {
 			alert("Não foi possível iniciar a viagem.");
-		} else if (responseObject.errors[0].message == "trip_not_found") {
+		} else if (responseObject.errors[0].message === "trip_not_found") {
 			alert("Viagem não encontrada.");
-		} else if (responseObject.errors[0].message == "invalid_arguments") {
+		} else if (responseObject.errors[0].message === "invalid_arguments") {
 			alert("Argumentos inválidos.");
-		} else if (responseObject.errors[0].message == "bike_already_in_trip") {
+		} else if (responseObject.errors[0].message === "bike_already_in_trip") {
 			alert("Bicicleta já em viagem.");
-		} else if (responseObject.errors[0].message == "already_has_active_trip") {
+		} else if (responseObject.errors[0].message === "already_has_active_trip") {
 			alert("Já tem uma viagem a decorrer.");
-		} else if (responseObject.errors[0].message == "no_bike_found") {
+		} else if (responseObject.errors[0].message === "no_bike_found") {
 			alert("Bicicleta não encontrada.");
-		} else if (responseObject.errors[0].message == "bike_on_repair") {
+		} else if (responseObject.errors[0].message === "bike_on_repair") {
 			alert("Bicicleta a ser reparada.");
-		} else if (responseObject.errors[0].message != "Error executing document.") {
+		} else if (responseObject.errors[0].message !== "Error executing document.") {
 			// Show general error message for unknown errors
 			alert(responseObject.errors[0].message);
 		}
@@ -67,13 +67,13 @@ async function make_get_request(url, accessToken = null) {
 			Authorization: `Bearer ${accessToken}`,
 		},
 	});
-	if (response.status == 401) {
+	if (response.status === 401) {
 		// refresh token
 		token_refresh();
 	} else if (response.ok) {
 		responseObject = await response.json();
 		return responseObject;
-	} else if (response.status == 400) {
+	} else if (response.status === 400) {
 		responseObject = await response.json();
 		//alert(responseObject.errors[0].message);
 		return await make_get_request(url, accessToken);
@@ -129,7 +129,7 @@ function startWSConnection(force = false) {
 
 	ws.onmessage = function (msg) {
 		//console.log(msg);
-		if (typeof msg.data != "undefined") {
+		if (typeof msg.data !== "undefined") {
 			let msgObj = JSON.parse(msg.data);
 			if (Object.hasOwn(msgObj, "payload") && msgObj.payload) {
 				if (
@@ -139,7 +139,7 @@ function startWSConnection(force = false) {
 				) {
 					activeTripObj = msgObj.payload.data.activeTripSubscription;
 					//console.log(activeTripObj);
-					if (activeTripObj.code != "no_trip" && activeTripObj.code != "unauthorized") {
+					if (activeTripObj.code !== "no_trip" && activeTripObj.code !== "unauthorized") {
 						// Real trip info
 						if (activeTripObj.finished === true && !ratedTripsList.includes(activeTripObj.code)) {
 							// End trip
@@ -177,7 +177,7 @@ function startWSConnection(force = false) {
 								tripTimer(new Date(activeTripObj.startDate));
 							}
 						}
-					} else if (activeTripObj.code == "unauthorized") {
+					} else if (activeTripObj.code === "unauthorized") {
 						// close current connection
 						ws.send(JSON.stringify({ type: "stop" }));
 						ws = undefined;

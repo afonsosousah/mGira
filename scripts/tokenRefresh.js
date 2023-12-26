@@ -16,7 +16,7 @@ async function token_refresh() {
 			token: user.refreshToken,
 		}),
 	});
-	if (response.status == 200) {
+	if (response.status === 200) {
 		responseObject = await response.json();
 		if (Object.hasOwn(responseObject, "data")) {
 			// Store the received tokens
@@ -40,7 +40,7 @@ async function token_refresh() {
 
 			return user.accessToken;
 		}
-	} else if (response.status == 400) {
+	} else if (response.status === 400) {
 		// try for x times to refresh the token, otherwise prompt for new login
 		if (currentTry < numberOfTokenRefreshTries) {
 			// Wait before making next request (reduce error rate)

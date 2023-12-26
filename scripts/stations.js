@@ -13,7 +13,7 @@ async function get_bikes(stationID) {
 		}),
 		user.accessToken
 	);
-	if (typeof response != "undefined") return response.data.getBikes;
+	if (typeof response !== "undefined") return response.data.getBikes;
 }
 
 // returns an array with all the docks in a station
@@ -28,7 +28,7 @@ async function get_docks(stationID) {
 		}),
 		user.accessToken
 	);
-	if (typeof response != "undefined") return response.data.getDocks;
+	if (typeof response !== "undefined") return response.data.getDocks;
 }
 
 // using batch querying to get bikes and docks faster
@@ -44,7 +44,7 @@ async function get_bikes_and_docks(stationID) {
 		}),
 		user.accessToken
 	);
-	if (typeof response != "undefined") return response.data;
+	if (typeof response !== "undefined") return response.data;
 }
 
 // sets the global array stationArray
@@ -60,7 +60,7 @@ async function get_stations() {
 		user.accessToken
 	);
 
-	if (typeof response != "undefined") {
+	if (typeof response !== "undefined") {
 		// Load the stations to the map
 		stationsArray = response.data.getStations;
 		loadStationMarkersFromArray(stationsArray);
@@ -83,7 +83,7 @@ async function get_stations() {
 			// Check version to show update notes
 			temp_version = getCookie("version");
 			if (temp_version) {
-				if (temp_version != "0.0.3") {
+				if (temp_version !== "0.0.3") {
 					alert(`
                     Nova versão 0.0.3!<br>
                     <ul>
@@ -120,7 +120,7 @@ async function get_stations() {
 
 // Open the station menu element and populate it
 async function openStationMenu(stationSerialNumber) {
-	if (stationSerialNumber == null) {
+	if (stationSerialNumber === null) {
 		alert("A estação não está ativa!");
 		return;
 	}
@@ -167,16 +167,16 @@ async function openStationMenu(stationSerialNumber) {
 	numDocks = stationObj.dockList.length - numBikes; // number of free docks
 
 	// set the inner HTML after the animation has started
-	if (typeof bikeList != "undefined" && typeof dockList != "undefined") {
+	if (typeof bikeList !== "undefined" && typeof dockList !== "undefined") {
 		menu.innerHTML = `
             <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
             <div id="stationName">${stationObj.name}</div>
             <img id="docksImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
             <div id="docksButton">${numDocks === 1 ? "1 doca" : `${numDocks} docas`}</div>
             <img id="bikesImage" src="assets/images/mGira_bike.png" alt="Gira bike" width="25%">
-            <div id="bikesButton${stationObj.docks === 0 ? "Disabled" : ""}" ${
-			stationObj.docks !== 0 ? `onclick="openBikeList('${stationSerialNumber}')"` : ""
-		}>${numBikes === 1 ? "1 bicicleta" : `${numBikes} bicicletas`}</div>
+            <div id="bikesButton${
+							stationObj.docks === 0 ? 'Disabled"' : `" onclick="openBikeList('${stationSerialNumber}')`
+						}>${numBikes === 1 ? "1 bicicleta" : `${numBikes} bicicletas`}</div>
         `.trim();
 	} else {
 		menu.innerHTML = `
@@ -236,7 +236,7 @@ async function openBikeList(stationSerialNumber) {
 		})[0];
 
 		bikeListElement.innerHTML = `
-            <div id="battery" style="width: ${bike.name[0] == "E" ? `${bike.battery}%` : `0`}"></div>
+            <div id="battery" style="width: ${bike.name[0] === "E" ? `${bike.battery}%` : `0`}"></div>
             <div id="content">
                 ${bike.name} - Doca ${dockObj.name}
                 <div id="reserveBikeButton" onclick="openUnlockBikeCard('${stationSerialNumber}','${
@@ -248,7 +248,7 @@ async function openBikeList(stationSerialNumber) {
 	}
 
 	// if there are no bikes, put a message saying that
-	if (document.getElementById("bikeList").childElementCount == 0)
+	if (document.getElementById("bikeList").childElementCount === 0)
 		document.getElementById("bikeList").innerHTML = "Não há bicicletas na estação.";
 
 	// allow user to try to take bike not appearing in app
@@ -290,7 +290,7 @@ async function getMissingBikesList() {
 		user.accessToken
 	);
 
-	if (typeof response != "undefined") {
+	if (typeof response !== "undefined") {
 		// Flatten the resulting array
 		allBikesList = Object.values(response.data).flat(Infinity);
 

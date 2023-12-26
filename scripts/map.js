@@ -93,7 +93,7 @@ async function loadStationMarkersFromArray(stationsArray) {
         let iconStyle;
         if (station.docks !== 0) {
             let filled;
-            if (station.bikes == 0) {
+            if (station.bikes === 0) {
                 filled = 0;
             } else if (station.bikes/station.docks <= 0.15) {
                 filled = 15;
@@ -150,7 +150,7 @@ async function loadStationMarkersFromArray(stationsArray) {
 		map
 			.getLayers()
 			.getArray()
-			.filter(layer => layer.get("name") === "stationsLayer").length == 0
+			.filter(layer => layer.get("name") === "stationsLayer").length === 0
 	) {
 		// Add a new layer if there is none
 		const vectorSource = new ol.source.Vector({
@@ -212,7 +212,7 @@ function getLocation(zoom = true) {
 
 				let iconStyle;
 
-				if (navigationMode == "bike") {
+				if (navigationMode === "bike") {
 					iconStyle = new ol.style.Style({
 						image: new ol.style.Icon({
 							anchor: [0.5, 0.5],
@@ -247,7 +247,7 @@ function getLocation(zoom = true) {
 					map
 						.getLayers()
 						.getArray()
-						.filter(layer => layer.get("name") === "currentLocationLayer").length == 0
+						.filter(layer => layer.get("name") === "currentLocationLayer").length === 0
 				) {
 					// Add the layer
 					map.addLayer(vectorLayer);
@@ -275,7 +275,7 @@ function getLocation(zoom = true) {
 		// Pan to location only once when position has been set
 		if (zoom) {
 			checkPos = function () {
-				if (typeof pos == "undefined" || typeof pos == "null") setTimeout(checkPos, 0);
+				if (typeof pos === "undefined" || typeof pos === "null") setTimeout(checkPos, 0);
 				else {
 					// Draw the new location dot only once
 					const iconFeature = new ol.Feature({
@@ -307,7 +307,7 @@ function getLocation(zoom = true) {
 						map
 							.getLayers()
 							.getArray()
-							.filter(layer => layer.get("name") === "currentLocationLayer").length == 0
+							.filter(layer => layer.get("name") === "currentLocationLayer").length === 0
 					) {
 						// Add the layer
 						map.addLayer(vectorLayer);

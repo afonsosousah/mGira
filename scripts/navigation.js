@@ -15,7 +15,7 @@ async function startNavigation(walkingOnly = false) {
 	}
 
 	// Navigation on-foot from user location to nearest station
-	navigationMode == "foot";
+	navigationMode === "foot";
 
 	// Request fullscreen
 	document.body.requestFullscreen();
@@ -111,7 +111,7 @@ function finalOnFootNavigation() {
 	navigationMode = "foot";
 
 	// Remove all the on bike navigation elements
-	navigationElements = Array.from(document.querySelectorAll("*")).filter(e => getComputedStyle(e).zIndex == 16);
+	navigationElements = Array.from(document.querySelectorAll("*")).filter(e => getComputedStyle(e).zIndex === 16);
 	for (element of navigationElements) {
 		element.remove();
 	}
@@ -151,7 +151,7 @@ function stopNavigation() {
 
 	// Remove all the navigation elements
 	navigationElements = Array.from(document.querySelectorAll("*")).filter(
-		e => getComputedStyle(e).zIndex == 11 || getComputedStyle(e).zIndex == 16
+		e => getComputedStyle(e).zIndex === 11 || getComputedStyle(e).zIndex === 16
 	);
 	for (element of navigationElements) {
 		element.remove();
@@ -214,7 +214,7 @@ function updatePositionAndRotationWhenNavigating() {
 function orientationChangeHandler(event) {
 	if (event.matches) {
 		// Portrait mode
-		if (navigationActive && navigationMode == "bike") {
+		if (navigationActive && navigationMode === "bike") {
 			// Tell the user that there is navigation going, so he needs to rotate the screen
 			appendElementToBodyFromHTML(`
                 <div class="rotate-screen-notice" id="rotateScreenNotice">
@@ -234,7 +234,7 @@ function orientationChangeHandler(event) {
 		}
 	} else {
 		// Landscape
-		if (navigationActive && navigationMode == "bike") {
+		if (navigationActive && navigationMode === "bike") {
 			// Hide the rotate screen notice
 			if (document.querySelector("#rotateScreenNotice")) document.querySelector("#rotateScreenNotice").remove();
 		} else {

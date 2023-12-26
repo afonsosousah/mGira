@@ -13,7 +13,7 @@ async function reserve_bike(serialNumber) {
 		}),
 		user.accessToken
 	);
-	if (typeof response != "undefined") return response.data.reserveBike;
+	if (typeof response !== "undefined") return response.data.reserveBike;
 }
 
 // cancels the bike reserve and returns a success boolean
@@ -27,7 +27,7 @@ async function cancel_bike_reserve() {
 		}),
 		user.accessToken
 	);
-	if (typeof response != "undefined") return response.data.cancelBikeReserve;
+	if (typeof response !== "undefined") return response.data.cancelBikeReserve;
 }
 
 // starts a trip and returns a success boolean
@@ -41,7 +41,7 @@ async function start_trip() {
 		}),
 		user.accessToken
 	);
-	if (typeof response != "undefined") return response.data.startTrip;
+	if (typeof response !== "undefined") return response.data.startTrip;
 }
 
 // returns an int or float of the active trip cost
@@ -122,7 +122,7 @@ async function trip_pay_with_points(tripCode) {
 }
 
 function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, unregistered = false) {
-	if (stationSerialNumber != null) {
+	if (stationSerialNumber !== null) {
 		// get station object
 		stationObj = stationsArray.filter(obj => {
 			return obj.serialNumber === stationSerialNumber;
@@ -166,7 +166,7 @@ function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, unregistered 
         <div id="bikeReserveCard">
             <div id="backButton" onclick="document.getElementById('unlockBikeCard').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
             <div id="textContent">
-                ${bikeObj.name[0] == "E" ? `${bikeObj.name}<br>${bikeObj.battery}% de bateria` : `${bikeObj.name}`}
+                ${bikeObj.name[0] === "E" ? `${bikeObj.name}<br>${bikeObj.battery}% de bateria` : `${bikeObj.name}`}
                 <br><br>
                 ${lastStationObj.name}
             </div>
@@ -216,10 +216,10 @@ function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 function takeUnregisteredBike() {
 	// Get the bike object from the name written on the input element
 	let bikeName = document.getElementById("unregisteredBikeNameInput").value;
-	let bikeObj = bikeSerialNumberMapping.filter(bike => bike.name == bikeName)[0];
+	let bikeObj = bikeSerialNumberMapping.filter(bike => bike.name === bikeName)[0];
 
 	// Try to open the unlock bike card, to take bike
-	if (typeof bikeObj != "undefined") {
+	if (typeof bikeObj !== "undefined") {
 		let serialNumber = bikeObj.serialNumber;
 		openUnlockBikeCard(null, serialNumber, true);
 		if (document.getElementById("takeUnregisteredBike")) document.getElementById("takeUnregisteredBike").remove();
@@ -231,14 +231,14 @@ function takeUnregisteredBike() {
 
 // Handles the range input value changed event, and starts the trip if the slider is all the way to the right
 async function startBikeTrip(event, bikeSerialNumber) {
-	if (event.target.value == 100) {
+	if (event.target.value === 100) {
 		console.log("The bike will be reserved!");
 
 		// reserve the bike
-		if (typeof (await reserve_bike(bikeSerialNumber)) == "undefined") return;
+		if (typeof (await reserve_bike(bikeSerialNumber)) === "undefined") return;
 
 		// start the trip
-		if (typeof (await start_trip()) == "undefined") return;
+		if (typeof (await start_trip()) === "undefined") return;
 
 		// hide the unlock card if it is showing
 		if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
@@ -310,7 +310,7 @@ function openRateTripMenu(tripObj) {
 	elapsedTime.setTime(elapsedTime.getTime() + elapsedTime.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
 	var hours = elapsedTime.getHours();
 	var minutes = elapsedTime.getMinutes();
-	var formattedTime = hours + ":" + correctMinutesSeconds(minutes);
+	const formattedTime = hours + ":" + correctMinutesSeconds(minutes);
 
 	// Show the rate trip menu
 	appendElementToBodyFromHTML(`
@@ -319,8 +319,8 @@ function openRateTripMenu(tripObj) {
             <div id="backButton" onclick="document.getElementById('rateTripMenu').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
             <div id="textContent">
                 <i class="bi bi-clock"></i>&nbsp;${formattedTime} &nbsp;&nbsp;&nbsp;&nbsp; <i class="bi bi-cash-coin"></i>&nbsp;${parseFloat(
-									tripObj.cost
-								).toFixed(2)}€
+		tripObj.cost
+	).toFixed(2)}€
                 <br><br>
                 Bicicleta: ${tripObj.bike}
                 <br><br>
@@ -432,7 +432,7 @@ async function rateTrip(tripCode, tripCost) {
 
 async function payTrip(tripCode, tripCost) {
 	// Allow the user to select if he wants to use points to pay the trip
-	if (tripCost != 0) {
+	if (tripCost !== 0) {
 		createCustomYesNoPrompt(
 			`Deseja pagar a viagem com ${tripCost * 500} pontos?`,
 			async () => {

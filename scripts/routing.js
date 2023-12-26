@@ -74,7 +74,7 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	let allCoordinates = [];
 
 	// If the grab station and droppoff station are the same, we should calculate the route on foot
-	if (grabStation.code == dropoffStation.code) {
+	if (grabStation.code === dropoffStation.code) {
 		// Calculate only on foot route
 
 		// Calculate walking route from start to end
@@ -132,13 +132,11 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	let coords2 = ol.proj.fromLonLat([routeSummaryBike.bbox[2], routeSummaryBike.bbox[3]]);
 	let converted_bbox = [coords1[0], coords1[1], coords2[0], coords2[1]];
 	viewable_box = [map.getSize()[0], map.getSize()[1] - document.getElementById("placeSearchMenu").clientHeight];
-	map
-		.getView()
-		.fit(converted_bbox, {
-			size: viewable_box,
-			padding: [50, 100, document.getElementById("placeSearchMenu").clientHeight + 50, 100],
-			maxZoom: 18,
-		});
+	map.getView().fit(converted_bbox, {
+		size: viewable_box,
+		padding: [50, 100, document.getElementById("placeSearchMenu").clientHeight + 50, 100],
+		maxZoom: 18,
+	});
 
 	// Show the start navigation button and route details panel
 	if (document.querySelector("#placeSearchMenu")) {
@@ -227,7 +225,7 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 
 // Calculate the distance between two points in meters (given the latitude/longitude of those points).
 function distance(lat1, lon1, lat2, lon2) {
-	if (lat1 == lat2 && lon1 == lon2) {
+	if (lat1 === lat2 && lon1 === lon2) {
 		return 0;
 	} else {
 		var radlat1 = (Math.PI * lat1) / 180;
@@ -252,7 +250,7 @@ function getStationsByDistance(currentLocation) {
 
 	// Remove all the empty stations
 	temp_stationsArray = temp_stationsArray.filter(obj => {
-		return obj.bikes != 0;
+		return obj.bikes !== 0;
 	});
 
 	// Calculate the distance for all the stations
@@ -489,7 +487,7 @@ async function searchPlace() {
 			map.addLayer(vectorLayer);
 
 			// if there are no results, put a message saying that
-			if (document.getElementById("placeList") && document.getElementById("placeList").childElementCount == 0)
+			if (document.getElementById("placeList") && document.getElementById("placeList").childElementCount === 0)
 				document.getElementById("placeList").innerHTML = "Nenhum lugar encontrado.";
 		} catch (err) {
 			console.log(err);
@@ -554,7 +552,7 @@ function viewRoute(toCoordinates) {
 	getLocation(false);
 
 	checkPos = function (toCoordinates) {
-		if (typeof pos == "undefined" || typeof pos == "null") setTimeout(checkPos.bind(null, toCoordinates), 0);
+		if (typeof pos === "undefined" || typeof pos === "null") setTimeout(checkPos.bind(null, toCoordinates), 0);
 		else {
 			// Calculate and display the route on the map when we have the user position
 			calculateFullRoute(pos, toCoordinates);
@@ -575,7 +573,7 @@ function addStationPointToMap(station, start = true) {
 	let width;
 
 	if (start) {
-		if (station.bikes == 0) {
+		if (station.bikes === 0) {
 			width = 10;
 		} else if (12 + station.bikes * 0.2 < 18) {
 			width = 12 + station.bikes * 0.2;
@@ -583,7 +581,7 @@ function addStationPointToMap(station, start = true) {
 			width = 18;
 		}
 	} else {
-		if (station.docks - station.bikes == 0) {
+		if (station.docks - station.bikes === 0) {
 			width = 10;
 		} else if (12 + (station.docks - station.bikes) * 0.2 < 18) {
 			width = 12 + (station.docks - station.bikes) * 0.2;
