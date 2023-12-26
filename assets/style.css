@@ -1,329 +1,327 @@
 /* #region CSS Variables */
 :root {
-    --green: #79C000;
-    --black: #231f20;
-    --white: #ffffff;
-    --gray: #D9D9DA;
-    --shadow-black: rgba(35, 31, 32, 0.2);
-    --shadow-green: rgba(121, 192, 0, 0.2);
-    --glass-white: rgba(255, 255, 255, 0.9);
-    --glass-green: rgba(121, 192, 0, 0.9);
+	--green: #79c000;
+	--black: #231f20;
+	--white: #ffffff;
+	--gray: #d9d9da;
+	--shadow-black: rgba(35, 31, 32, 0.2);
+	--shadow-green: rgba(121, 192, 0, 0.2);
+	--glass-white: rgba(255, 255, 255, 0.9);
+	--glass-green: rgba(121, 192, 0, 0.9);
 }
 /* #endregion */
 
 /* #region Loading animation */
 
 .lds-ring {
-    display: inline-block;
-    width: 80px;
-    height: 80px;
-    position: absolute;
-    top: calc(50% - 40px);
-    left: calc(50% - 40px);
+	display: inline-block;
+	width: 80px;
+	height: 80px;
+	position: absolute;
+	top: calc(50% - 40px);
+	left: calc(50% - 40px);
 }
 .lds-ring div {
-    box-sizing: border-box;
-    display: block;
-    position: absolute;
-    width: 64px;
-    height: 64px;
-    margin: 8px;
-    border: 8px solid var(--green);
-    border-radius: 50%;
-    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    border-color: var(--green) transparent transparent transparent;
+	box-sizing: border-box;
+	display: block;
+	position: absolute;
+	width: 64px;
+	height: 64px;
+	margin: 8px;
+	border: 8px solid var(--green);
+	border-radius: 50%;
+	animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+	border-color: var(--green) transparent transparent transparent;
 }
 .lds-ring div:nth-child(1) {
-    animation-delay: -0.45s;
+	animation-delay: -0.45s;
 }
 .lds-ring div:nth-child(2) {
-    animation-delay: -0.3s;
+	animation-delay: -0.3s;
 }
 .lds-ring div:nth-child(3) {
-    animation-delay: -0.15s;
+	animation-delay: -0.15s;
 }
 @keyframes lds-ring {
-0% {
-    transform: rotate(0deg);
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
-100% {
-    transform: rotate(360deg);
-}
-}
-  
 
 /* #endregion */
 
 /* #region Icons */
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css");
 .icon-green {
-    color: var(--green);
+	color: var(--green);
 }
-.icon-white{
-    color: white;
+.icon-white {
+	color: white;
 }
 .bi::before {
-    vertical-align: 0 !important;
+	vertical-align: 0 !important;
 }
 /* #endregion */
 
 /* #region Animations and Transitions */
 
-    /* appear from bottom animations */
-    @keyframes smooth-appear {
-        from {
-            bottom: -35%;
-            opacity: 0;
-        }
-        to {
-            bottom: 0px;
-            opacity:1;
-        }
-    }
+/* appear from bottom animations */
+@keyframes smooth-appear {
+	from {
+		bottom: -35%;
+		opacity: 0;
+	}
+	to {
+		bottom: 0px;
+		opacity: 1;
+	}
+}
 
-    /* slide appear animations (station cards)*/ 
-    @keyframes smooth-slide-from-left {
-        from {
-            left: -100%;
-            opacity: 0;
-        }
-    }
-    @keyframes smooth-slide-from-right {
-        from {
-            left: 100%;
-            opacity: 0;
-        }
-    }
-    @keyframes smooth-slide-to-left {
-        to {
-            left: -100%;
-            opacity: 0;
-        }
-    }
-    @keyframes smooth-slide-to-right {
-        to {
-            left: 100%;
-            opacity: 0;
-        }
-    }
-    @keyframes smooth-slide-from-bottom {
-        from {
-            top: 100%;
-            opacity: 0;
-        }
-    }
-    @keyframes smooth-slide-to-bottom {
-        to {
-            top: 100%;
-            opacity: 0;
-        }
-    }
-    .smooth-slide-to-left {
-        animation: smooth-slide-to-left 1s ease forwards !important; 
-    }
-    .smooth-slide-to-right {
-        animation: smooth-slide-to-right 1s ease forwards !important;
-    }
-    .smooth-slide-to-bottom {
-        animation: smooth-slide-to-bottom 1s ease forwards !important;
-    }
+/* slide appear animations (station cards)*/
+@keyframes smooth-slide-from-left {
+	from {
+		left: -100%;
+		opacity: 0;
+	}
+}
+@keyframes smooth-slide-from-right {
+	from {
+		left: 100%;
+		opacity: 0;
+	}
+}
+@keyframes smooth-slide-to-left {
+	to {
+		left: -100%;
+		opacity: 0;
+	}
+}
+@keyframes smooth-slide-to-right {
+	to {
+		left: 100%;
+		opacity: 0;
+	}
+}
+@keyframes smooth-slide-from-bottom {
+	from {
+		top: 100%;
+		opacity: 0;
+	}
+}
+@keyframes smooth-slide-to-bottom {
+	to {
+		top: 100%;
+		opacity: 0;
+	}
+}
+.smooth-slide-to-left {
+	animation: smooth-slide-to-left 1s ease forwards !important;
+}
+.smooth-slide-to-right {
+	animation: smooth-slide-to-right 1s ease forwards !important;
+}
+.smooth-slide-to-bottom {
+	animation: smooth-slide-to-bottom 1s ease forwards !important;
+}
 
-    /* Zoom controls animations */
-    @keyframes smooth-slide-up-zoom-controls {
-        to {
-            bottom: calc(2vh + 7vh + 2vh + 55vw + 2vh);
-        }
-    }
-    @keyframes smooth-slide-down-zoom-controls {
-        from {
-            bottom: calc(2vh + 7vh + 2vh + 55vw + 2vh);
-        }
-        to {
-            bottom: calc(2vh + 7vh + 2vh);
-        }
-    }
-    .smooth-slide-up-zoom-controls {
-        animation: smooth-slide-up-zoom-controls 1s ease forwards !important; 
-    }
-    .smooth-slide-down-zoom-controls {
-        animation: smooth-slide-down-zoom-controls 1s ease forwards !important; 
-    }
-    @keyframes smooth-slide-top-zoom-controls {
-        to {
-            bottom: calc(100dvh - 22vh - 2vw);
-        }
-    }
-    @keyframes smooth-slide-bottom-zoom-controls {
-        from {
-            bottom: calc(100dvh - 22vh - 2vw);
-        }
-        to {
-            bottom: calc(2vh + 7vh + 2vh);
-        }
-    }
-    .smooth-slide-top-zoom-controls {
-        animation: smooth-slide-top-zoom-controls 1s ease forwards !important; 
-    }
-    .smooth-slide-bottom-zoom-controls {
-        animation: smooth-slide-bottom-zoom-controls 1s ease forwards !important; 
-    }
+/* Zoom controls animations */
+@keyframes smooth-slide-up-zoom-controls {
+	to {
+		bottom: calc(2vh + 7vh + 2vh + 55vw + 2vh);
+	}
+}
+@keyframes smooth-slide-down-zoom-controls {
+	from {
+		bottom: calc(2vh + 7vh + 2vh + 55vw + 2vh);
+	}
+	to {
+		bottom: calc(2vh + 7vh + 2vh);
+	}
+}
+.smooth-slide-up-zoom-controls {
+	animation: smooth-slide-up-zoom-controls 1s ease forwards !important;
+}
+.smooth-slide-down-zoom-controls {
+	animation: smooth-slide-down-zoom-controls 1s ease forwards !important;
+}
+@keyframes smooth-slide-top-zoom-controls {
+	to {
+		bottom: calc(100dvh - 22vh - 2vw);
+	}
+}
+@keyframes smooth-slide-bottom-zoom-controls {
+	from {
+		bottom: calc(100dvh - 22vh - 2vw);
+	}
+	to {
+		bottom: calc(2vh + 7vh + 2vh);
+	}
+}
+.smooth-slide-top-zoom-controls {
+	animation: smooth-slide-top-zoom-controls 1s ease forwards !important;
+}
+.smooth-slide-bottom-zoom-controls {
+	animation: smooth-slide-bottom-zoom-controls 1s ease forwards !important;
+}
 
+/* Search bar appear animations */
+@keyframes slide-fwd-top {
+	from {
+		-webkit-transform: translateZ(-12dvh) translateY(10dvh);
+		transform: translateZ(-12dvh) translateY(10dvh);
+	}
+	to {
+		-webkit-transform: translateZ(0) translateY(0);
+		transform: translateZ(0) translateY(0);
+	}
+}
+@keyframes slide-back-top {
+	from {
+		-webkit-transform: translateZ(0) translateY(0);
+		transform: translateZ(0) translateY(0);
+	}
+	to {
+		-webkit-transform: translateZ(-12dvh) translateY(10dvh);
+		transform: translateZ(-12dvh) translateY(10dvh);
+	}
+}
+.slide-fwd-top {
+	animation: slide-fwd-top 0.5s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+}
+.slide-back-top {
+	animation: slide-back-top 0.5s cubic-bezier(0.39, 0.575, 0.565, 1) both !important;
+}
 
-
-    /* Search bar appear animations */
-    @keyframes slide-fwd-top {
-        from {
-        -webkit-transform: translateZ(-12dvh) translateY(10dvh);
-                transform: translateZ(-12dvh) translateY(10dvh);
-        }
-        to {
-        -webkit-transform: translateZ(0) translateY(0);
-                transform: translateZ(0) translateY(0);
-        }
-    }
-    @keyframes slide-back-top {
-        from {
-            -webkit-transform: translateZ(0) translateY(0);
-            transform: translateZ(0) translateY(0);
-        }
-        to {
-            -webkit-transform: translateZ(-12dvh) translateY(10dvh);
-            transform: translateZ(-12dvh) translateY(10dvh);
-        }
-    }
-    .slide-fwd-top {
-        animation: slide-fwd-top 0.5s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
-    }
-    .slide-back-top {
-        animation: slide-back-top 0.5s cubic-bezier(0.390, 0.575, 0.565, 1.000) both !important;
-    }
-
-    /* Bike list elements fill animation */
-    @keyframes filler {
-        0% {
-            width: 0;
-            border-radius: 999px;
-        }
-    }
+/* Bike list elements fill animation */
+@keyframes filler {
+	0% {
+		width: 0;
+		border-radius: 999px;
+	}
+}
 /* #endregion */
 
 /* #region Fill the window and set font */
-html, body {
-    height: 100dvh;
-    width: 100dvw;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    font-family: Roboto, Arial, sans-serif;
-    font-weight: normal;
-    user-select: none;
-    overflow: scroll;
+html,
+body {
+	height: 100dvh;
+	width: 100dvw;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	font-family: Roboto, Arial, sans-serif;
+	font-weight: normal;
+	user-select: none;
+	overflow: scroll;
 }
 /* #endregion */
 
 /* #region Map */
 #map {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    z-index: 0;
-    bottom: 0;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	z-index: 0;
+	bottom: 0;
 }
 #mapOverlay {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: linear-gradient(0deg, rgba(255,255,255,1) 5%, rgba(255,255,255,0) 40%);
-    pointer-events: none;
-    touch-action: none;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: linear-gradient(0deg, rgba(255, 255, 255, 1) 5%, rgba(255, 255, 255, 0) 40%);
+	pointer-events: none;
+	touch-action: none;
 }
 /* #endregion */
 
 /* #region Logo */
 #logo {
-    width: 35%;
-    position: absolute;
-    left: 2vh;
-    bottom: 2vh;
+	width: 35%;
+	position: absolute;
+	left: 2vh;
+	bottom: 2vh;
 }
 /* #endregion */
 
 /* #region Zoom controls */
 #zoomControls {
-    background-color: transparent;
-    width: fit-content;
-    height: fit-content;
-    position: absolute;
-    right: 2vh;
-    bottom: calc(2vh + 7vh + 2vh);
-    display: flex;
-    flex-direction: column;
-    gap: 1vh;
+	background-color: transparent;
+	width: fit-content;
+	height: fit-content;
+	position: absolute;
+	right: 2vh;
+	bottom: calc(2vh + 7vh + 2vh);
+	display: flex;
+	flex-direction: column;
+	gap: 1vh;
 }
 #zoomControls div {
-    background-color: var(--green);
-    width: 6vh;
-    height: 6vh;
-    font-size: calc(0.20 * 20vh);
-    border-radius: 999px;
-    color: white;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
+	background-color: var(--green);
+	width: 6vh;
+	height: 6vh;
+	font-size: calc(0.2 * 20vh);
+	border-radius: 999px;
+	color: white;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
 }
 #zoomControls div i {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	width: 32px;
+	height: 32px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 /* #endregion */
 
 /* #region Search bar */
 #searchBarDiv {
-    border-radius: 999px;
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    z-index: 2;
-    animation: slide-fwd-top 0.5s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+	border-radius: 999px;
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	z-index: 2;
+	animation: slide-fwd-top 0.5s cubic-bezier(0.39, 0.575, 0.565, 1) both;
 }
-#searchBarCancelButton  {
-    background-color: var(--white);
-    border-radius: 999px 0 0 999px;
-    color: var(--green);
-    outline: 2px solid var(--green);
-    position: absolute;
-    left: 2vh;
-    bottom: 2vh;
-    width: 7vh;
-    height: 7vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+#searchBarCancelButton {
+	background-color: var(--white);
+	border-radius: 999px 0 0 999px;
+	color: var(--green);
+	outline: 2px solid var(--green);
+	position: absolute;
+	left: 2vh;
+	bottom: 2vh;
+	width: 7vh;
+	height: 7vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 #searchBar {
-    background-color: rgb(255, 255, 255);
-    width: calc(100vw - 4vh - 7vh);
-    height: 7vh;
-    position: absolute;
-    left: calc(2vh + 7vh);
-    bottom: 2vh;
-    outline: 2px solid var(--green);
-    border-radius: 0 999px 999px 0;
-    display: flex;
-    align-items: center;
-    padding-left: 5%;
-    color: var(--green);
-    border: none;
-    font-size: medium;
+	background-color: rgb(255, 255, 255);
+	width: calc(100vw - 4vh - 7vh);
+	height: 7vh;
+	position: absolute;
+	left: calc(2vh + 7vh);
+	bottom: 2vh;
+	outline: 2px solid var(--green);
+	border-radius: 0 999px 999px 0;
+	display: flex;
+	align-items: center;
+	padding-left: 5%;
+	color: var(--green);
+	border: none;
+	font-size: medium;
 }
 #searchBar::-webkit-input-placeholder {
-    color: var(--green);
+	color: var(--green);
 }
 
 /* Remove default webkit styling */
@@ -331,204 +329,208 @@ input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
-  -webkit-appearance:none;
+	-webkit-appearance: none;
 }
 /* #endregion */
 
 /* #region Navigation Button */
 #navigationButton {
-    background-color: var(--white);
-    width: 7vh;
-    height: 7vh;
-    position: absolute;
-    z-index: 2;
-    right: calc(2vh + 7vh + 2vh);
-    bottom: 2vh;
-    border-radius: 999px;
-    outline: 2px solid var(--green);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	background-color: var(--white);
+	width: 7vh;
+	height: 7vh;
+	position: absolute;
+	z-index: 2;
+	right: calc(2vh + 7vh + 2vh);
+	bottom: 2vh;
+	border-radius: 999px;
+	outline: 2px solid var(--green);
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 #navigationButton img {
-    border-radius: 999px;
-    width: 4vh;
-    height: 4vh;
+	border-radius: 999px;
+	width: 4vh;
+	height: 4vh;
 }
 /* #endregion */
 
 /* #region User picture */
 #userPicture {
-    background-color: var(--white);
-    width: 7vh;
-    height: 7vh;
-    position: absolute;
-    z-index: 2;
-    right: 2vh;
-    bottom: 2vh;
-    border-radius: 999px;
-    outline: 2px solid var(--green);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	background-color: var(--white);
+	width: 7vh;
+	height: 7vh;
+	position: absolute;
+	z-index: 2;
+	right: 2vh;
+	bottom: 2vh;
+	border-radius: 999px;
+	outline: 2px solid var(--green);
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 #userPicture img {
-    border-radius: 999px;
-    width: 7vh;
-    height: 7vh;
+	border-radius: 999px;
+	width: 7vh;
+	height: 7vh;
 }
 #userPicture i {
-    font-size: calc(0.20 * 25vh);
+	font-size: calc(0.2 * 25vh);
 }
 /* #endregion */
 
 /* #region Station menu */
 .station-menu {
-    background-color: var(--white);
-    width: 100%;
-    height: 45%;
-    position: absolute;
-    z-index: 1;
-    left: 0;
-    bottom: -45%;
-    border-radius: 20px 20px 0 0;
-    animation: smooth-appear 1s ease forwards;
+	background-color: var(--white);
+	width: 100%;
+	height: 45%;
+	position: absolute;
+	z-index: 1;
+	left: 0;
+	bottom: -45%;
+	border-radius: 20px 20px 0 0;
+	animation: smooth-appear 1s ease forwards;
 }
 .station-menu #stationName {
-    width: 55%;
-    height: 25%;
-    position: absolute;
-    z-index: 2;
-    left: 5%;
-    top: 5%;
-    display: flex;
-    align-items: center;
-    text-align: center;
+	width: 55%;
+	height: 25%;
+	position: absolute;
+	z-index: 2;
+	left: 5%;
+	top: 5%;
+	display: flex;
+	align-items: center;
+	text-align: center;
 }
 .station-menu #stationImage {
-    width: 30%;
-    position: absolute;
-    z-index: 2;
-    right: 5%;
-    top: 5%;
+	width: 30%;
+	position: absolute;
+	z-index: 2;
+	right: 5%;
+	top: 5%;
 }
 .station-menu #availableBikesNumber {
-    width: 90%;
-    height: 10%;
-    position: absolute;
-    z-index: 2;
-    left: 5%;
-    top: 35%;
-    text-align: center;
+	width: 90%;
+	height: 10%;
+	position: absolute;
+	z-index: 2;
+	left: 5%;
+	top: 35%;
+	text-align: center;
 }
 .station-menu #cancelButton {
-    background-color: var(--green);
-    width: 42.5%;
-    height: 15%;
-    position: absolute;
-    z-index: 2;
-    left: 5%;
-    top: 52%;
-    border-radius: 999px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-weight: bold;
+	background-color: var(--green);
+	width: 42.5%;
+	height: 15%;
+	position: absolute;
+	z-index: 2;
+	left: 5%;
+	top: 52%;
+	border-radius: 999px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-weight: bold;
 }
 .station-menu #seeBikesButton {
-    background-color: var(--green);
-    width: 42.5%;
-    height: 15%;
-    position: absolute;
-    z-index: 2;
-    left: 52.5%;
-    top: 52%;
-    border-radius: 999px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-weight: bold;
+	background-color: var(--green);
+	width: 42.5%;
+	height: 15%;
+	position: absolute;
+	z-index: 2;
+	left: 52.5%;
+	top: 52%;
+	border-radius: 999px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-weight: bold;
 }
 /* #endregion */
 
 /* #region Station card */
 .station-card {
-    background-color: var(--white);
-    width: 90vw;
-    height: 55vw;
-    position: absolute;
-    z-index: 1;
-    left: 5vw;
-    bottom: calc(2vh + 7vh + 2vh);
-    border-radius: 20px;
-    box-shadow: 5px 5px 15px 0px var(--shadow-black);
-    opacity: 95%;
-    animation: smooth-slide-from-left 1s ease forwards;
+	background-color: var(--white);
+	width: 90vw;
+	height: 55vw;
+	position: absolute;
+	z-index: 1;
+	left: 5vw;
+	bottom: calc(2vh + 7vh + 2vh);
+	border-radius: 20px;
+	box-shadow: 5px 5px 15px 0px var(--shadow-black);
+	opacity: 95%;
+	animation: smooth-slide-from-left 1s ease forwards;
 }
 .station-card #graphics {
-    height: 50%;
-    width: 100%;
-    object-fit: cover;
-    rotate: 180deg;
-    opacity: 5%;
+	height: 50%;
+	width: 100%;
+	object-fit: cover;
+	rotate: 180deg;
+	opacity: 5%;
 }
 .station-card #stationName {
-    width: calc(100% - 10vw);
-    position: absolute;
-    left: 5vw;
-    top: 5vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+	width: calc(100% - 10vw);
+	position: absolute;
+	left: 5vw;
+	top: 5vw;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
 }
 .station-card #docksImage {
-    width: 42.5%;
-    height: 25%;
-    object-fit: contain;
-    position: absolute;
-    left: 5vw;
-    bottom: calc(5vw + 20% + 2vw);
+	width: 42.5%;
+	height: 25%;
+	object-fit: contain;
+	position: absolute;
+	left: 5vw;
+	bottom: calc(5vw + 20% + 2vw);
 }
 .station-card #docksButton {
-    background-color: var(--white);
-    outline: 2px solid var(--black);
-    width: 42.5%;
-    height: 20%;
-    position: absolute;
-    left: 5vw;
-    bottom: 5vw;
-    border-radius: 999px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--black);
-    box-shadow: 5px 5px 15px 0px var(--shadow-black), 0px 0px 5px 0px var(--shadow-black) inset;
+	background-color: var(--white);
+	outline: 2px solid var(--black);
+	width: 42.5%;
+	height: 20%;
+	position: absolute;
+	left: 5vw;
+	bottom: 5vw;
+	border-radius: 999px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: var(--black);
+	box-shadow:
+		5px 5px 15px 0px var(--shadow-black),
+		0px 0px 5px 0px var(--shadow-black) inset;
 }
 .station-card #bikesImage {
-    width: 42.5%;
-    height: 25%;
-    object-fit: contain;
-    position: absolute;
-    right: 5vw;
-    bottom: calc(5vw + 20% + 2vw);
+	width: 42.5%;
+	height: 25%;
+	object-fit: contain;
+	position: absolute;
+	right: 5vw;
+	bottom: calc(5vw + 20% + 2vw);
 }
 .station-card #bikesButton {
-    background-color: var(--white);
-    outline: 2px solid var(--green);
-    width: 42.5%;
-    height: 20%;
-    position: absolute;
-    right: 5vw;
-    bottom: 5vw;
-    border-radius: 999px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--green);
-    box-shadow: 5px 5px 15px 0px var(--shadow-green), 0px 0px 5px 0px var(--shadow-green) inset;
+	background-color: var(--white);
+	outline: 2px solid var(--green);
+	width: 42.5%;
+	height: 20%;
+	position: absolute;
+	right: 5vw;
+	bottom: 5vw;
+	border-radius: 999px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: var(--green);
+	box-shadow:
+		5px 5px 15px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .station-card #bikesButtonDisabled {
     /* Same as above, but with gray instead of green */
@@ -547,1142 +549,1166 @@ input[type="search"]::-webkit-search-results-decoration {
     box-shadow: 5px 5px 15px 0px var(--shadow-gray), 0px 0px 5px 0px var(--shadow-gray) inset;
 }
 .station-card #availableBikesNumber {
-    width: 90%;
-    height: 10%;
-    position: absolute;
-    z-index: 2;
-    left: 5%;
-    top: 35%;
-    text-align: center;
+	width: 90%;
+	height: 10%;
+	position: absolute;
+	z-index: 2;
+	left: 5%;
+	top: 35%;
+	text-align: center;
 }
 .station-card #cancelButton {
-    background-color: var(--green);
-    width: 42.5%;
-    height: 15%;
-    position: absolute;
-    z-index: 2;
-    left: 5%;
-    top: 52%;
-    border-radius: 999px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-weight: bold;
+	background-color: var(--green);
+	width: 42.5%;
+	height: 15%;
+	position: absolute;
+	z-index: 2;
+	left: 5%;
+	top: 52%;
+	border-radius: 999px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-weight: bold;
 }
 /* #endregion */
 
 /* #region Login menu */
 .login-menu {
-    background-color: rgba(35, 31, 32, 0.9);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 3;
+	background-color: rgba(35, 31, 32, 0.9);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 3;
 }
 #loginCard #logo {
-    position: absolute;
-    top: calc(-15.625% - 3dvh); /* the -15.625 is calculated using the aspect ratio of the logo (800x250) */
-    width: 50%;
-    left: 25%;
+	position: absolute;
+	top: calc(-15.625% - 3dvh); /* the -15.625 is calculated using the aspect ratio of the logo (800x250) */
+	width: 50%;
+	left: 25%;
 }
 #loginCard {
-    background-color: white;
-    width: 100%;
-    height: 30dvh;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    border-radius: 20px 20px 0 0;
-    animation: smooth-appear 1s ease forwards;
+	background-color: white;
+	width: 100%;
+	height: 30dvh;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	border-radius: 20px 20px 0 0;
+	animation: smooth-appear 1s ease forwards;
 }
-#loginCard input{
-    position: absolute;
-    width: calc(70% - 35px - 15px);
-    height: 5.25dvh;
-    left: 15%;
-    top: 10%;
-    line-height: 15%;
-    text-decoration: none;
-    border: none;
-    outline: 2px solid var(--green);
-    padding: 5px 15px;
-    border-radius: 999px;
-    background-color: var(--glass-white);
-    background-image: url("https://icons.getbootstrap.com/assets/icons/envelope-at.svg");
-    background-repeat: no-repeat;
-    background-position-x: calc(100% - 10px);
-    background-position-y: calc(100% - 14px);
-    padding-right: 35px;
-    z-index: 1;
+#loginCard input {
+	position: absolute;
+	width: calc(70% - 35px - 15px);
+	height: 5.25dvh;
+	left: 15%;
+	top: 10%;
+	line-height: 15%;
+	text-decoration: none;
+	border: none;
+	outline: 2px solid var(--green);
+	padding: 5px 15px;
+	border-radius: 999px;
+	background-color: var(--glass-white);
+	background-image: url("https://icons.getbootstrap.com/assets/icons/envelope-at.svg");
+	background-repeat: no-repeat;
+	background-position-x: calc(100% - 10px);
+	background-position-y: calc(100% - 14px);
+	padding-right: 35px;
+	z-index: 1;
 }
-#loginCard input[name=password]{
-    top: calc(10% + 5.25dvh + 10px + 2dvh);
-    background-image: url("https://icons.getbootstrap.com/assets/icons/key.svg");
+#loginCard input[name="password"] {
+	top: calc(10% + 5.25dvh + 10px + 2dvh);
+	background-image: url("https://icons.getbootstrap.com/assets/icons/key.svg");
 }
-#registerButton, #loginButton {
-    background-color: var(--green);
-    color: var(--white);
-    width: 37.5%;
-    height: 6dvh;
-    position: absolute;
-    z-index: 1;
-    left: 7.5%;
-    bottom: 10%;
-    border-radius: 999px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+#registerButton,
+#loginButton {
+	background-color: var(--green);
+	color: var(--white);
+	width: 37.5%;
+	height: 6dvh;
+	position: absolute;
+	z-index: 1;
+	left: 7.5%;
+	bottom: 10%;
+	border-radius: 999px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 #loginButton {
-    left: unset;
-    right: 7.5%;
+	left: unset;
+	right: 7.5%;
 }
 #loginCard #footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    animation: none;
-    height: 14dvh;
-    width: 100%;
-    object-fit: cover;
-    z-index: 0;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	animation: none;
+	height: 14dvh;
+	width: 100%;
+	object-fit: cover;
+	z-index: 0;
 }
 /* #endregion */
 
 /* #region Bike list */
 .bike-list {
-    background-color: var(--white);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: 3;
-    left: 0;
-    top: 0;
-    border-radius: 0;
-    animation: smooth-slide-from-bottom 1s ease forwards;
+	background-color: var(--white);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: 3;
+	left: 0;
+	top: 0;
+	border-radius: 0;
+	animation: smooth-slide-from-bottom 1s ease forwards;
 }
 .bike-list #graphics {
-    height: 25vw;
-    width: 100%;
-    object-fit: cover;
-    rotate: 180deg;
-    opacity: 5%;
+	height: 25vw;
+	width: 100%;
+	object-fit: cover;
+	rotate: 180deg;
+	opacity: 5%;
 }
 .bike-list #backButton {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 7vh;
-    height: 7vh;
-    font-size: calc(0.35 * 7vh);
-    margin-bottom: 1vh;
-    border-radius: 999px;
-    color: var(--green);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	width: 7vh;
+	height: 7vh;
+	font-size: calc(0.35 * 7vh);
+	margin-bottom: 1vh;
+	border-radius: 999px;
+	color: var(--green);
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 .bike-list #backButton i {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	width: 32px;
+	height: 32px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 .bike-list #stationName {
-    width: 50%;
-    height: 10%;
-    position: absolute;
-    z-index: 2;
-    left: 20%;
-    top: 2%;
-    display: flex;
-    align-items: center;
-    text-align: center;
-    word-break: normal;
-    white-space: pre-wrap;
+	width: 50%;
+	height: 10%;
+	position: absolute;
+	z-index: 2;
+	left: 20%;
+	top: 2%;
+	display: flex;
+	align-items: center;
+	text-align: center;
+	word-break: normal;
+	white-space: pre-wrap;
 }
 .bike-list #stationImage {
-    width: 20%;
-    position: absolute;
-    z-index: 2;
-    right: 5%;
-    top: 4%;
+	width: 20%;
+	position: absolute;
+	z-index: 2;
+	right: 5%;
+	top: 4%;
 }
 .bike-list #bikeList {
-    position: absolute;
-    width: 90%;
-    left: 5%;
-    top: 15%;
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    max-height: 84%;
-    overflow: scroll;
+	position: absolute;
+	width: 90%;
+	left: 5%;
+	top: 15%;
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	max-height: 84%;
+	overflow: scroll;
 }
 .bike-list-element {
-    background-color: var(--white);
-    border-radius: 999px;
-    position: relative;
-    margin-bottom: 10px;
-    border: 2px solid var(--green);
-    box-shadow: 5px 5px 15px 0px var(--shadow-green), 0px 0px 5px 0px var(--shadow-green) inset;
-
+	background-color: var(--white);
+	border-radius: 999px;
+	position: relative;
+	margin-bottom: 10px;
+	border: 2px solid var(--green);
+	box-shadow:
+		5px 5px 15px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .bike-list-element #battery {
-    position: absolute;
-    background: var(--green);
-    border-radius: 999px;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 100%;
-    animation: filler 0.8s ease-in-out;
+	position: absolute;
+	background: var(--green);
+	border-radius: 999px;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 0;
+	height: 100%;
+	animation: filler 0.8s ease-in-out;
 }
 .bike-list-element #content {
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 15px 25px;
-    position: relative;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	padding: 15px 25px;
+	position: relative;
 }
 .bike-list-element #content #reserveBikeButton {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: rgba(0, 0, 0, 0.2);
-    outline: 2px solid var(--black);
-    border-radius: 999px;
-    color: var(--black);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px 15px;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	background-color: rgba(0, 0, 0, 0.2);
+	outline: 2px solid var(--black);
+	border-radius: 999px;
+	color: var(--black);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 10px 15px;
 }
 /* #endregion */
 
 /* #region Bike reserve */
 .bike-reserve {
-    background-color: rgba(35, 31, 32, 0.9);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 3;
+	background-color: rgba(35, 31, 32, 0.9);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 3;
 }
 #bikeReserveCard {
-    background-color: white;
-    width: 100%;
-    height: 35%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    border-radius: 20px 20px 0 0;
+	background-color: white;
+	width: 100%;
+	height: 35%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	border-radius: 20px 20px 0 0;
 }
 #bikeReserveCard #backButton {
-    position: absolute;
-    top: 2%;
-    left: 2%;
-    background-color: transparent;
-    width: 8vh;
-    height: 8vh;
-    font-size: calc(0.35 * 8vh);
-    margin-bottom: 1vh;
-    border-radius: 999px;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	position: absolute;
+	top: 2%;
+	left: 2%;
+	background-color: transparent;
+	width: 8vh;
+	height: 8vh;
+	font-size: calc(0.35 * 8vh);
+	margin-bottom: 1vh;
+	border-radius: 999px;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 #bikeReserveCard #backButton i {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--green);
+	width: 32px;
+	height: 32px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: var(--green);
 }
 #bikeReserveCard #textContent {
-    position: absolute;
-    top: 30px;
-    left: calc(8vh + 2% + 5px);
-    width: calc(80% - 20px - 20px);
+	position: absolute;
+	top: 30px;
+	left: calc(8vh + 2% + 5px);
+	width: calc(80% - 20px - 20px);
 }
 #bikeReserveCard img {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    width: 20%;
+	position: absolute;
+	top: 10px;
+	right: 20px;
+	width: 20%;
 }
 #bikeReserveCard #unlockSlider {
-    appearance: none;
-    background-color: var(--black);
-    width: 90%;
-    height: 20%;
-    position: absolute;
-    left: 5%;
-    bottom: 10%;
-    border-radius: 999px;
-    z-index: 4;
+	appearance: none;
+	background-color: var(--black);
+	width: 90%;
+	height: 20%;
+	position: absolute;
+	left: 5%;
+	bottom: 10%;
+	border-radius: 999px;
+	z-index: 4;
 }
 #bikeReserveCard #unlockSlider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    height: calc(0.2 * 35vh);
-    width: 45vw;
-    border-radius: 999px;
-    background-color: var(--green);
-    background-image: url('images/unlockSlider_PT.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    cursor: pointer;
+	-webkit-appearance: none;
+	height: calc(0.2 * 35vh);
+	width: 45vw;
+	border-radius: 999px;
+	background-color: var(--green);
+	background-image: url("images/unlockSlider_PT.png");
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
 }
 #bikeReserveCard #unlockSlider::-moz-range-thumb {
-    height: 100%;
-    width: 50%;
-    background-color: var(--green);
-    cursor: pointer;
-    border-radius: 999px;
-    border: none;
-    background-image: url('images/unlockSlider_PT.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center; 
+	height: 100%;
+	width: 50%;
+	background-color: var(--green);
+	cursor: pointer;
+	border-radius: 999px;
+	border: none;
+	background-image: url("images/unlockSlider_PT.png");
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
 }
 #bikeReserveCard #footer {
-    position: absolute;
-    right: unset;
-    top: unset;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+	position: absolute;
+	right: unset;
+	top: unset;
+	bottom: 0;
+	left: 0;
+	width: 100%;
 }
 /* #endregion */
 
 /* #region Trip overlay */
 .trip-overlay {
-    background-color: var(--green);
-    width: 100%;
-    height: 23%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-radius: 20px;
-    z-index: 3;
+	background-color: var(--green);
+	width: 100%;
+	height: 23%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border-radius: 20px;
+	z-index: 3;
 }
 .trip-overlay #onTripText {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    font-size: 38px;
-    color: var(--black);
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	font-size: 38px;
+	color: var(--black);
 }
 .trip-overlay #bikeLogo {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 25%;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 25%;
 }
 .trip-overlay #tripCost {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    font-size: 24px;
-    color: var(--black);
+	position: absolute;
+	bottom: 20px;
+	left: 20px;
+	font-size: 24px;
+	color: var(--black);
 }
 .trip-overlay #tripTime {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    font-size: 24px;
-    color: var(--black);
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
+	font-size: 24px;
+	color: var(--black);
 }
 .trip-overlay #footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    transform: translateX(-50%);
-    width: 200%;
-    opacity: 10%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	transform: translateX(-50%);
+	width: 200%;
+	opacity: 10%;
 }
 /* #endregion */
 
 /* #region User menu */
 .user-settings {
-    background-color: var(--white);
-    width: 100%;
-    min-height: 100%;
-    position: absolute;
-    z-index: 3;
-    left: 0;
-    top: 0;
-    border-radius: 0;
-    display: flex;
-    flex-direction: column;
-    animation: smooth-slide-from-bottom 1s ease forwards;
+	background-color: var(--white);
+	width: 100%;
+	min-height: 100%;
+	position: absolute;
+	z-index: 3;
+	left: 0;
+	top: 0;
+	border-radius: 0;
+	display: flex;
+	flex-direction: column;
+	animation: smooth-slide-from-bottom 1s ease forwards;
 }
 .user-settings #backButton {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: transparent;
-    width: 6vh;
-    height: 6vh;
-    font-size: calc(0.35 * 6vh);
-    margin-bottom: 1vh;
-    color: var(--green);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	background-color: transparent;
+	width: 6vh;
+	height: 6vh;
+	font-size: calc(0.35 * 6vh);
+	margin-bottom: 1vh;
+	color: var(--green);
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 .user-settings i {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	width: 32px;
+	height: 32px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 .user-settings #topUserContainer {
-    position: relative;
-    width: 100vw;
-    height: 20vh;
-    background-color: var(--green);
-    border-radius: 20px;
+	position: relative;
+	width: 100vw;
+	height: 20vh;
+	background-color: var(--green);
+	border-radius: 20px;
 }
 .user-settings #topUserContainer #footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 55%;
-    object-fit: cover;
-    opacity: 70%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 55%;
+	object-fit: cover;
+	opacity: 70%;
 }
 .user-settings #topUserContainer #backButton {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: var(--green);
-    width: 6vh;
-    height: 6vh;
-    font-size: calc(0.35 * 6vh);
-    margin-bottom: 1vh;
-    border-radius: 999px;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	background-color: var(--green);
+	width: 6vh;
+	height: 6vh;
+	font-size: calc(0.35 * 6vh);
+	margin-bottom: 1vh;
+	border-radius: 999px;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 .user-settings #topUserContainer i {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	width: 32px;
+	height: 32px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 .user-settings #topUserContainer #userImage {
-    background-color: var(--black);
-    border-radius: 999px;
-    width: 20vh;
-    height: 20vh;
-    position: absolute;
-    top: calc(80% - (20vh/2));
-    left: calc(50% - (20vh/2));
+	background-color: var(--black);
+	border-radius: 999px;
+	width: 20vh;
+	height: 20vh;
+	position: absolute;
+	top: calc(80% - (20vh / 2));
+	left: calc(50% - (20vh / 2));
 }
 .user-settings #userName {
-    width: 100%;
-    text-align: center;
-    font-size: larger;
-    margin-top: 9vh;
+	width: 100%;
+	text-align: center;
+	font-size: larger;
+	margin-top: 9vh;
 }
 .user-settings #balanceAndBonusContainer {
-    width: 100vw;
-    height: 12vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 3vh;
+	width: 100vw;
+	height: 12vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	margin-top: 3vh;
 }
 .user-settings #balanceAndBonusContainer #balanceContainer {
-    width: 45%;
-    height: 100%;
-    color: var(--green);
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    position: relative;
-    outline: 2px solid var(--green);
-    box-shadow: 5px 5px 15px 0px var(--shadow-green), 0px 0px 5px 0px var(--shadow-green) inset;
+	width: 45%;
+	height: 100%;
+	color: var(--green);
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	position: relative;
+	outline: 2px solid var(--green);
+	box-shadow:
+		5px 5px 15px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #balanceAndBonusContainer #bonusContainer {
-    width: 45%;
-    height: 100%;
-    color: var(--green);
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    position: relative;
-    outline: 2px solid var(--green);
-    box-shadow: 5px 5px 15px 0px var(--shadow-green), 0px 0px 5px 0px var(--shadow-green) inset;
+	width: 45%;
+	height: 100%;
+	color: var(--green);
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	position: relative;
+	outline: 2px solid var(--green);
+	box-shadow:
+		5px 5px 15px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
-.user-settings #balanceAndBonusContainer #balanceContainer #balanceLabel, .user-settings #balanceAndBonusContainer #bonusContainer #bonusLabel,
-.user-settings #statsContainer #totalDistanceContainer #totalDistanceLabel, .user-settings #statsContainer #totalTimeContainer #totalTimeLabel,
-.user-settings #statsContainer #co2SavedContainer #co2SavedLabel, .user-settings #statsContainer #numberOfTripsContainer #numberOfTripsLabel {
-    position: absolute;
-    top: 5%;
+.user-settings #balanceAndBonusContainer #balanceContainer #balanceLabel,
+.user-settings #balanceAndBonusContainer #bonusContainer #bonusLabel,
+.user-settings #statsContainer #totalDistanceContainer #totalDistanceLabel,
+.user-settings #statsContainer #totalTimeContainer #totalTimeLabel,
+.user-settings #statsContainer #co2SavedContainer #co2SavedLabel,
+.user-settings #statsContainer #numberOfTripsContainer #numberOfTripsLabel {
+	position: absolute;
+	top: 5%;
 }
-.user-settings #balanceAndBonusContainer #balanceContainer #balance, .user-settings #balanceAndBonusContainer #bonusContainer #bonus,
-.user-settings #statsContainer #totalDistanceContainer #totalDistance, .user-settings #statsContainer #totalTimeContainer #totalTime,
-.user-settings #statsContainer #co2SavedContainer #co2Saved, .user-settings #statsContainer #numberOfTripsContainer #numberOfTrips {
-    position: absolute;
-    bottom: 20%;
-    font-size: x-large;
+.user-settings #balanceAndBonusContainer #balanceContainer #balance,
+.user-settings #balanceAndBonusContainer #bonusContainer #bonus,
+.user-settings #statsContainer #totalDistanceContainer #totalDistance,
+.user-settings #statsContainer #totalTimeContainer #totalTime,
+.user-settings #statsContainer #co2SavedContainer #co2Saved,
+.user-settings #statsContainer #numberOfTripsContainer #numberOfTrips {
+	position: absolute;
+	bottom: 20%;
+	font-size: x-large;
 }
 .user-settings #subscriptionContainer {
-    width: 100vw;
-    height: 12vh;
-    margin-top: 5vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	width: 100vw;
+	height: 12vh;
+	margin-top: 5vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 .user-settings #subscriptionContainer div:first-child {
-    width: calc(90% + 10px);
-    height: 100%;
-    color: var(--green);
-    border-radius: 20px;
-    display: flex;
-    position: relative;
-    outline: 2px solid var(--green);
-    box-shadow: 5px 5px 15px 0px var(--shadow-green), 0px 0px 5px 0px var(--shadow-green) inset;
+	width: calc(90% + 10px);
+	height: 100%;
+	color: var(--green);
+	border-radius: 20px;
+	display: flex;
+	position: relative;
+	outline: 2px solid var(--green);
+	box-shadow:
+		5px 5px 15px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #subscriptionContainer div #cardSVG {
-    position: absolute;
-    height: 6vh;
-    width: 6vh;
-    font-size: 6vh;
-    top: 10px;
-    left: calc(25% - 3vh);
+	position: absolute;
+	height: 6vh;
+	width: 6vh;
+	font-size: 6vh;
+	top: 10px;
+	left: calc(25% - 3vh);
 }
 .user-settings #subscriptionContainer div #subscriptionName {
-    position: absolute;
-    left: 5%;
-    width: 40%;
-    top: 7vh;
-    text-align: center;
+	position: absolute;
+	left: 5%;
+	width: 40%;
+	top: 7vh;
+	text-align: center;
 }
 .user-settings #subscriptionContainer div #subscriptionValidity {
-    position: absolute;
-    right: 5%;
-    width: 40%;
-    align-self: center;
-    text-align: center;
-    text-wrap: pretty;
+	position: absolute;
+	right: 5%;
+	width: 40%;
+	align-self: center;
+	text-align: center;
+	text-wrap: pretty;
 }
 .user-settings #statsContainer {
-    width: 100vw;
-    height: 24vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 5vh;
+	width: 100vw;
+	height: 24vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 5vh;
 }
 .user-settings #statsContainer #totalDistanceContainer {
-    width: 45%;
-    height: 50%;
-    color: var(--green);
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    flex-basis: 45%; 
-    position: relative;
-    outline: 2px solid var(--green);
-    box-shadow: 5px 5px 15px 0px var(--shadow-green), 0px 0px 5px 0px var(--shadow-green) inset;
+	width: 45%;
+	height: 50%;
+	color: var(--green);
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	flex-basis: 45%;
+	position: relative;
+	outline: 2px solid var(--green);
+	box-shadow:
+		5px 5px 15px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #statsContainer #totalTimeContainer {
-    width: 45%;
-    height: 50%;
-    color: var(--green);
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    flex-basis: 45%;
-    position: relative;
-    outline: 2px solid var(--green);
-    box-shadow: 5px 5px 15px 0px var(--shadow-green), 0px 0px 5px 0px var(--shadow-green) inset;
+	width: 45%;
+	height: 50%;
+	color: var(--green);
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	flex-basis: 45%;
+	position: relative;
+	outline: 2px solid var(--green);
+	box-shadow:
+		5px 5px 15px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #statsContainer #co2SavedContainer {
-    width: 45%;
-    height: 50%;
-    color: var(--green);
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    flex-basis: 45%;
-    position: relative;
-    outline: 2px solid var(--green);
-    box-shadow: 5px 5px 15px 0px var(--shadow-green), 0px 0px 5px 0px var(--shadow-green) inset;
+	width: 45%;
+	height: 50%;
+	color: var(--green);
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	flex-basis: 45%;
+	position: relative;
+	outline: 2px solid var(--green);
+	box-shadow:
+		5px 5px 15px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #statsContainer #numberOfTripsContainer {
-    width: 45%;
-    height: 50%;
-    color: var(--green);
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    flex-basis: 45%;
-    position: relative;
-    outline: 2px solid var(--green);
-    box-shadow: 5px 5px 15px 0px var(--shadow-green), 0px 0px 5px 0px var(--shadow-green) inset;
+	width: 45%;
+	height: 50%;
+	color: var(--green);
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	flex-basis: 45%;
+	position: relative;
+	outline: 2px solid var(--green);
+	box-shadow:
+		5px 5px 15px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #settingsContainer {
-    width: 100vw;
-    height: 16vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 5vh;
+	width: 100vw;
+	height: 16vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 5vh;
 }
 .user-settings #settingsContainer #proxy {
-    width: 90%;
-    height: 100%;
-    color: var(--green);
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    position: relative;
-    outline: 2px solid var(--green);
-    box-shadow: 5px 5px 15px 0px var(--shadow-green), 0px 0px 5px 0px var(--shadow-green) inset;
+	width: 90%;
+	height: 100%;
+	color: var(--green);
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	position: relative;
+	outline: 2px solid var(--green);
+	box-shadow:
+		5px 5px 15px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 
-.user-settings #settingsContainer #proxy > div:first-child{
-    width: 100%;
-    position: absolute;
-    z-index: 2;
-    left: 0;
-    top: 8%;
-    text-align: center;
+.user-settings #settingsContainer #proxy > div:first-child {
+	width: 100%;
+	position: absolute;
+	z-index: 2;
+	left: 0;
+	top: 8%;
+	text-align: center;
 }
 
-.user-settings #settingsContainer #proxy #proxyUrlInput{
-    background-color: rgb(255, 255, 255);
-    width: 85%;
-    height: 40%;
-    position: absolute;
-    left: 5%;
-    top: 35%;
-    outline: 2px solid var(--green);
-    border-radius: 999px;
-    display: flex;
-    align-items: center;
-    padding-left: 5%;
-    color: var(--green);
-    border: none;
-    font-size: medium;
+.user-settings #settingsContainer #proxy #proxyUrlInput {
+	background-color: rgb(255, 255, 255);
+	width: 85%;
+	height: 40%;
+	position: absolute;
+	left: 5%;
+	top: 35%;
+	outline: 2px solid var(--green);
+	border-radius: 999px;
+	display: flex;
+	align-items: center;
+	padding-left: 5%;
+	color: var(--green);
+	border: none;
+	font-size: medium;
 }
 
-.user-settings #settingsContainer #proxy #resetProxyButton{
-    background-color: var(--black);
-    position: absolute;
-    right: 13%;
-    top: calc(35% - 2px);
-    height: calc(40% + 6px);
-    width: 20%;
-    padding-left: 5%;
-    text-align: center;
-    border-radius: 999px 0 0 999px;
-    color: white;
-    font-size: large;
-    display: flex;
-    justify-content: left;
-    align-items: center;
+.user-settings #settingsContainer #proxy #resetProxyButton {
+	background-color: var(--black);
+	position: absolute;
+	right: 13%;
+	top: calc(35% - 2px);
+	height: calc(40% + 6px);
+	width: 20%;
+	padding-left: 5%;
+	text-align: center;
+	border-radius: 999px 0 0 999px;
+	color: white;
+	font-size: large;
+	display: flex;
+	justify-content: left;
+	align-items: center;
 }
 
-.user-settings #settingsContainer #proxy #setProxyButton{
-    background-color: var(--green);
-    position: absolute;
-    right: calc(5% - 2px);
-    top: calc(35% - 2px);
-    height: calc(40% + 6px);
-    aspect-ratio: 1/1;
-    text-align: center;
-    border-radius: 999px;
-    color: white;
-    font-size: large;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.user-settings #settingsContainer #proxy #setProxyButton {
+	background-color: var(--green);
+	position: absolute;
+	right: calc(5% - 2px);
+	top: calc(35% - 2px);
+	height: calc(40% + 6px);
+	aspect-ratio: 1/1;
+	text-align: center;
+	border-radius: 999px;
+	color: white;
+	font-size: large;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 #bottom {
-    margin-top: 3vh;
-    display: flex;
-    width: 100vw;
-    margin-bottom: 5vw;
+	margin-top: 3vh;
+	display: flex;
+	width: 100vw;
+	margin-bottom: 5vw;
 }
 .user-settings #versionNumber {
-    padding: 10px 10px;
-    color: var(--black);
-    font-size: large;
-    margin-left: 5vw;
+	padding: 10px 10px;
+	color: var(--black);
+	font-size: large;
+	margin-left: 5vw;
 }
 .user-settings #logoutButton {
-    padding: 10px 40px;
-    background-color: var(--black);
-    border-radius: 999px;
-    color: white;
-    font-size: large;
-    margin-left: auto;
-    margin-right: 5vw;
+	padding: 10px 40px;
+	background-color: var(--black);
+	border-radius: 999px;
+	color: white;
+	font-size: large;
+	margin-left: auto;
+	margin-right: 5vw;
 }
 
 .user-settings #proxyNotWorking {
-    text-decoration: underline;
-    color: var(--green);
-    position: absolute;
-    bottom: 5vw;
-    right: 5vw;
+	text-decoration: underline;
+	color: var(--green);
+	position: absolute;
+	bottom: 5vw;
+	right: 5vw;
 }
 /* #endregion */
 
 /* #region Place search menu */
 .place-search-menu {
-    background: linear-gradient(0deg, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
-    width: 100%;
-    min-height: 20%;
-    max-height: 45%;
-    position: absolute;
-    z-index: 1;
-    left: 0;
-    bottom: 0;
-    border-radius: 20px 20px 0 0;
-    animation: smooth-appear 1s ease forwards;
+	background: linear-gradient(0deg, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%);
+	width: 100%;
+	min-height: 20%;
+	max-height: 45%;
+	position: absolute;
+	z-index: 1;
+	left: 0;
+	bottom: 0;
+	border-radius: 20px 20px 0 0;
+	animation: smooth-appear 1s ease forwards;
 }
 .place-search-menu #placeList {
-    position: relative;
-    padding: 0;
-    width: calc(100% - 4vh);
-    margin-top: 0;
-    margin-bottom: calc(2vh + 7vh);
-    margin-left: 2vh;
-    list-style-type: none;
-    max-height: 25vh;
-    overflow: scroll;
-    display: flex;
-    align-items: end;
-    flex-direction: column;
+	position: relative;
+	padding: 0;
+	width: calc(100% - 4vh);
+	margin-top: 0;
+	margin-bottom: calc(2vh + 7vh);
+	margin-left: 2vh;
+	list-style-type: none;
+	max-height: 25vh;
+	overflow: scroll;
+	display: flex;
+	align-items: end;
+	flex-direction: column;
 }
 .place-search-element {
-    background-color: var(--glass-white);
-    border-radius: 999px;
-    padding: 15px 25px;
-    position: relative;
-    margin-bottom: 10px;
-    border: 2px solid var(--green);
-    color: #79C000;
-    width: calc(100% - 25*2px - 2*2px);
+	background-color: var(--glass-white);
+	border-radius: 999px;
+	padding: 15px 25px;
+	position: relative;
+	margin-bottom: 10px;
+	border: 2px solid var(--green);
+	color: #79c000;
+	width: calc(100% - 25 * 2px - 2 * 2px);
 }
 .place-search-element:hover {
-    background-color: var(--green);
-    color: #ffffff;
-    cursor: pointer;
+	background-color: var(--green);
+	color: #ffffff;
+	cursor: pointer;
 }
 .place-search-menu #startNavigationButton {
-    position: absolute;
-    top: -10dvh;
-    right: 2dvh;
-    background-color: var(--black);
-    border-radius: 999px;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 8dvh;
-    width: 8dvh;
+	position: absolute;
+	top: -10dvh;
+	right: 2dvh;
+	background-color: var(--black);
+	border-radius: 999px;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 8dvh;
+	width: 8dvh;
 }
 .place-search-menu #startNavigationButton:hover {
-    cursor: pointer;
+	cursor: pointer;
 }
 .place-search-menu #startNavigationButton i {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 180%;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 180%;
 }
 .place-search-menu #routeDetails {
-    position: absolute;
-    top: -10dvh;
-    left: 2dvh;
-    background-color: var(--black);
-    border-radius: 999px;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 8dvh;
-    padding: 0 15px;
+	position: absolute;
+	top: -10dvh;
+	left: 2dvh;
+	background-color: var(--black);
+	border-radius: 999px;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 8dvh;
+	padding: 0 15px;
 }
 /* #endregion */
 
 /* #region Rotate screen notice */
 .rotate-screen-notice {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--green);
-    z-index: 99;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: var(--green);
+	z-index: 99;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
 }
 .rotate-screen-notice #phone {
-    height: 50px;
-    width: 100px;
-    border: 3px solid white;
-    border-radius: 10px;
-    animation: rotate 1.5s ease-in-out infinite alternate;
-    display: block;
+	height: 50px;
+	width: 100px;
+	border: 3px solid white;
+	border-radius: 10px;
+	animation: rotate 1.5s ease-in-out infinite alternate;
+	display: block;
 }
-  
+
 .rotate-screen-notice #message {
-    color: white;
-    font-size: 1em;
-    margin-top: 40px;
-    display: block;
-    max-width: 60%;
-    text-wrap: wrap;
-    text-align: center;
+	color: white;
+	font-size: 1em;
+	margin-top: 40px;
+	display: block;
+	max-width: 60%;
+	text-wrap: wrap;
+	text-align: center;
 }
-  
+
 @keyframes rotate {
-    0% {
-        transform: rotate(0deg)
-    }
-    50% {
-        transform: rotate(-90deg)
-    }
-    100% {
-        transform: rotate(-90deg)
-    }
+	0% {
+		transform: rotate(0deg);
+	}
+	50% {
+		transform: rotate(-90deg);
+	}
+	100% {
+		transform: rotate(-90deg);
+	}
 }
 /* #endregion */
 
 /* #region Navigation information panel landscape */
 #navigationInfoPanel {
-    position: absolute;
-    top: 5%;
-    left: 5%;
-    width: calc(90% - 2vw);
-    height: calc(15% - 2vw);
-    padding: 1vw;
-    background-color: var(--green);
-    color: white;
-    border-radius: 999px;
-    z-index: 16;
-    display: flex;
-    align-items: center;
-    justify-content: right;
-    flex-direction: row;
-    gap: 2vw;
+	position: absolute;
+	top: 5%;
+	left: 5%;
+	width: calc(90% - 2vw);
+	height: calc(15% - 2vw);
+	padding: 1vw;
+	background-color: var(--green);
+	color: white;
+	border-radius: 999px;
+	z-index: 16;
+	display: flex;
+	align-items: center;
+	justify-content: right;
+	flex-direction: row;
+	gap: 2vw;
 }
 #navigationInfoPanel img {
-    height: 100%;
-    margin-right: auto;
+	height: 100%;
+	margin-right: auto;
 }
 #navigationInfoPanel #endNavigationButton {
-    height: 100%;
-    background-color: var(--black);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    padding: 0 15px;
+	height: 100%;
+	background-color: var(--black);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	padding: 0 15px;
 }
 #reachedFinalStation {
-    height: 8%;
-    position: absolute;
-    bottom: 2%;
-    right: 1%;
-    background-color: var(--green);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    padding: 10px 15px;
-    z-index: 16;
-    color: white;
+	height: 8%;
+	position: absolute;
+	bottom: 2%;
+	right: 1%;
+	background-color: var(--green);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	padding: 10px 15px;
+	z-index: 16;
+	color: white;
 }
 /* #endregion */
 
 /* #region Navigation information panel portrait */
 #navigationInfoPanelPortrait {
-    position: absolute;
-    top: 2%;
-    left: 2.5%;
-    width: calc(95% - 2vh);
-    height: calc(8% - 2vh);
-    background-color: var(--green);
-    padding: 1vh;
-    color: white;
-    border-radius: 999px;
-    z-index: 11;
-    display: flex;
-    align-items: center;
-    justify-content: left;
+	position: absolute;
+	top: 2%;
+	left: 2.5%;
+	width: calc(95% - 2vh);
+	height: calc(8% - 2vh);
+	background-color: var(--green);
+	padding: 1vh;
+	color: white;
+	border-radius: 999px;
+	z-index: 11;
+	display: flex;
+	align-items: center;
+	justify-content: left;
 }
 #navigationInfoPanelPortrait img {
-    height: 100%;
+	height: 100%;
 }
 #navigationInfoPanelPortrait #endNavigationButton {
-    height: 100%;
-    background-color: var(--black);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    padding: 0 15px;
-    margin-left: auto;
+	height: 100%;
+	background-color: var(--black);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	padding: 0 15px;
+	margin-left: auto;
 }
 #onBikeButton {
-    height: 8%;
-    position: absolute;
-    bottom: 2%;
-    right: 2.5%;
-    background-color: var(--green);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    padding: 0 15px;
-    z-index: 11;
-    color: white;
+	height: 8%;
+	position: absolute;
+	bottom: 2%;
+	right: 2.5%;
+	background-color: var(--green);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	padding: 0 15px;
+	z-index: 11;
+	color: white;
 }
 /* #endregion */
 
 /* #region Rate trip menu */
 .rate-trip-menu {
-    background-color: rgba(35, 31, 32, 0.9);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 3;
+	background-color: rgba(35, 31, 32, 0.9);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 3;
 }
 #rateTripMenuCard {
-    background-color: white;
-    width: 100%;
-    height: 40%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    border-radius: 20px 20px 0 0;
+	background-color: white;
+	width: 100%;
+	height: 40%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	border-radius: 20px 20px 0 0;
 }
 #rateTripMenuCard #backButton {
-    position: absolute;
-    top: 2%;
-    left: 2%;
-    background-color: transparent;
-    width: 8vh;
-    height: 8vh;
-    font-size: calc(0.35 * 8vh);
-    margin-bottom: 1vh;
-    border-radius: 999px;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	position: absolute;
+	top: 2%;
+	left: 2%;
+	background-color: transparent;
+	width: 8vh;
+	height: 8vh;
+	font-size: calc(0.35 * 8vh);
+	margin-bottom: 1vh;
+	border-radius: 999px;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 #rateTripMenuCard #backButton i {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--green);
+	width: 32px;
+	height: 32px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: var(--green);
 }
 #rateTripMenuCard #textContent {
-    position: absolute;
-    top: 30px;
-    left: calc(8vh + 2% + 5px);
-    width: calc(80% - 20px - 20px);
+	position: absolute;
+	top: 30px;
+	left: calc(8vh + 2% + 5px);
+	width: calc(80% - 20px - 20px);
 }
 #rateTripMenuCard img {
-    position: absolute;
-    top: 2%;
-    right: 2%;
-    width: 25%;
+	position: absolute;
+	top: 2%;
+	right: 2%;
+	width: 25%;
 }
 #rateTripMenuCard #ratingLabel {
-    position: absolute;
-    bottom: 45%;
-    width: 100%;
-    text-align: center;
+	position: absolute;
+	bottom: 45%;
+	width: 100%;
+	text-align: center;
 }
 #rateTripMenuCard #ratingFormContainer {
-    position: absolute;
-    bottom: 25%;
-    left: 0;
-    width: 100%;
-    height: 7vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	position: absolute;
+	bottom: 25%;
+	left: 0;
+	width: 100%;
+	height: 7vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 #rateTripMenuCard #ratingFormContainer .rating {
-    display: block;
-    line-height: 7vh;
-    font-size: 7vh;
-    position: relative;
+	display: block;
+	line-height: 7vh;
+	font-size: 7vh;
+	position: relative;
 }
 #rateTripMenuCard #ratingFormContainer .rating label {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    cursor: pointer;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	cursor: pointer;
 }
 #rateTripMenuCard #ratingFormContainer .rating label:last-child {
-    position: static;
+	position: static;
 }
 #rateTripMenuCard #ratingFormContainer .rating label:nth-child(1) {
-    z-index: 5;
+	z-index: 5;
 }
 #rateTripMenuCard #ratingFormContainer .rating label:nth-child(2) {
-    z-index: 4;
+	z-index: 4;
 }
 #rateTripMenuCard #ratingFormContainer .rating label:nth-child(3) {
-    z-index: 3;
+	z-index: 3;
 }
 #rateTripMenuCard #ratingFormContainer .rating label:nth-child(4) {
-    z-index: 2;
+	z-index: 2;
 }
 #rateTripMenuCard #ratingFormContainer .rating label:nth-child(5) {
-    z-index: 1;
+	z-index: 1;
 }
 #rateTripMenuCard #ratingFormContainer .rating label input {
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0;
 }
 #rateTripMenuCard #ratingFormContainer .rating label .icon {
-    float: left;
-    color: transparent;
+	float: left;
+	color: transparent;
 }
 #rateTripMenuCard #ratingFormContainer .rating label:last-child .icon {
-    color: var(--black);
+	color: var(--black);
 }
 #rateTripMenuCard #ratingFormContainer .rating:not(:hover) label input:checked ~ .icon,
 #rateTripMenuCard #ratingFormContainer .rating:hover label:hover input ~ .icon {
-    color: var(--green);
+	color: var(--green);
 }
 #rateTripMenuCard #ratingFormContainer .rating label input:focus:not(:checked) ~ .icon:last-child {
-    color: var(--black);
-    text-shadow: 0 0 5px var(--green);
+	color: var(--black);
+	text-shadow: 0 0 5px var(--green);
 }
 #rateTripMenuCard #sendButton {
-    background-color: var(--green);
-    width: 30%;
-    height: 15%;
-    position: absolute;
-    z-index: 2;
-    right: 5%;
-    bottom: 5%;
-    border-radius: 999px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-weight: bold;
+	background-color: var(--green);
+	width: 30%;
+	height: 15%;
+	position: absolute;
+	z-index: 2;
+	right: 5%;
+	bottom: 5%;
+	border-radius: 999px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-weight: bold;
 }
 #rateTripMenuCard #sendButton:focus {
-    cursor: pointer;
+	cursor: pointer;
 }
 /* #endregion */
 
 /* #region Take unregistered bike */
 #openTakeUnregisteredBikeButton {
-    background-color: rgba(0, 0, 0, 0.2);
-    border: 2px solid var(--black);
-    color: var(--black);
-    border-radius: 999px;
-    padding: 15px 25px;
-    position: relative;
-    margin-bottom: 10px;
-    cursor: pointer;
-    text-align: center;
+	background-color: rgba(0, 0, 0, 0.2);
+	border: 2px solid var(--black);
+	color: var(--black);
+	border-radius: 999px;
+	padding: 15px 25px;
+	position: relative;
+	margin-bottom: 10px;
+	cursor: pointer;
+	text-align: center;
 }
 #takeUnregisteredBike {
-    z-index: 5;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 20%;
-    background-color: var(--white);
-    border-radius: 20px 20px 0 0;
+	z-index: 5;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 20%;
+	background-color: var(--white);
+	border-radius: 20px 20px 0 0;
 }
 #takeUnregisteredBike #unregisteredBikeNameInput {
-    background-color: rgb(255, 255, 255);
-    width: 85%;
-    height: 30%;
-    position: absolute;
-    z-index: 2;
-    left: 5%;
-    top: 15%;
-    outline: 3px solid var(--green);
-    border-radius: 999px;
-    display: flex;
-    align-items: center;
-    padding-left: 5%;
-    color: var(--green);
-    border: none;
-    font-size: medium;
+	background-color: rgb(255, 255, 255);
+	width: 85%;
+	height: 30%;
+	position: absolute;
+	z-index: 2;
+	left: 5%;
+	top: 15%;
+	outline: 3px solid var(--green);
+	border-radius: 999px;
+	display: flex;
+	align-items: center;
+	padding-left: 5%;
+	color: var(--green);
+	border: none;
+	font-size: medium;
 }
 #takeUnregisteredBike #cancelButton {
-    background-color: var(--green);
-    width: 30%;
-    height: 28%;
-    position: absolute;
-    z-index: 2;
-    left: 5%;
-    bottom: 15%;
-    border-radius: 999px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-weight: bold;
+	background-color: var(--green);
+	width: 30%;
+	height: 28%;
+	position: absolute;
+	z-index: 2;
+	left: 5%;
+	bottom: 15%;
+	border-radius: 999px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-weight: bold;
 }
 #takeUnregisteredBike #takeUnregisteredBikeButton {
-    background-color: var(--green);
-    width: 58%;
-    height: 30%;
-    position: absolute;
-    z-index: 2;
-    right: 5%;
-    bottom: 15%;
-    border-radius: 999px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-weight: bold;
+	background-color: var(--green);
+	width: 58%;
+	height: 30%;
+	position: absolute;
+	z-index: 2;
+	right: 5%;
+	bottom: 15%;
+	border-radius: 999px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-weight: bold;
 }
 /* #endregion */
 
@@ -1695,9 +1721,9 @@ input[type="search"]::-webkit-search-results-decoration {
 	top: 0px;
 	left: 0px;
 	z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 #alertBox {
@@ -1708,30 +1734,30 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 #modalContainer > #alertBox {
-	position:fixed;
+	position: fixed;
 }
 
 #alertBox img {
-    max-width: 100%;
+	max-width: 100%;
 }
 
 #alertBox p {
-    padding: 8%;
+	padding: 8%;
 }
 
 #alertBox input {
-    background-color: rgb(255, 255, 255);
-    width: calc(100% - 5% - 20px - 6px);
-    height: 40px;
-    outline: 3px solid var(--green);
-    border: none;
-    border-radius: 999px;
-    display: block;
-    padding-left: 5%;
-    color: var(--green);
-    font-size: medium;
-    margin: 10px;
-    margin-left: 13px;
+	background-color: rgb(255, 255, 255);
+	width: calc(100% - 5% - 20px - 6px);
+	height: 40px;
+	outline: 3px solid var(--green);
+	border: none;
+	border-radius: 999px;
+	display: block;
+	padding-left: 5%;
+	color: var(--green);
+	font-size: medium;
+	margin: 10px;
+	margin-left: 13px;
 }
 
 #alertBox #closeBtn {
@@ -1741,49 +1767,46 @@ input[type="search"]::-webkit-search-results-decoration {
 	width: 30%;
 	text-transform: uppercase;
 	text-align: center;
-	color: #FFF;
+	color: #fff;
 	background-color: var(--green);
 	border-radius: 999px;
-    float: right;
-    margin-bottom: 10px;
-    margin-right: 10px;
-    padding: 10px 40px;
+	float: right;
+	margin-bottom: 10px;
+	margin-right: 10px;
+	padding: 10px 40px;
 }
 #alertBox #yesBtn {
-    display: block;
+	display: block;
 	position: relative;
 	padding: 7px;
 	width: 30%;
 	text-align: center;
-	color: #FFF;
+	color: #fff;
 	background-color: var(--green);
 	border-radius: 999px;
-    float: left;
-    margin-bottom: 10px;
-    margin-left: 10px;
-    padding: 10px 20px;
+	float: left;
+	margin-bottom: 10px;
+	margin-left: 10px;
+	padding: 10px 20px;
 }
 #alertBox #noBtn {
-    display: block;
+	display: block;
 	position: relative;
 	padding: 7px;
 	width: 30%;
 	text-align: center;
-	color: #FFF;
+	color: #fff;
 	background-color: var(--black);
 	border-radius: 999px;
-    float: right;
-    margin-bottom: 10px;
-    margin-right: 10px;
-    padding: 10px 20px;
+	float: right;
+	margin-bottom: 10px;
+	margin-right: 10px;
+	padding: 10px 20px;
 }
 #alertBox ul {
-    padding-left: 20px;
+	padding-left: 20px;
 }
 #alertBox li {
-    margin-top: 10px;
+	margin-top: 10px;
 }
 /* #endregion */
-
-
-

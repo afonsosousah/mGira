@@ -4,78 +4,85 @@ let tokenRefreshed = false;
 let user = {};
 
 // Login to the emel API and get the tokens
-async function login(event){
-    event.preventDefault();
-    const loginForm = document.getElementById("loginForm");
-    
-    // Do the login request
-    response = await make_post_request("https://api-auth.emel.pt/auth", JSON.stringify({
-        Provider: "EmailPassword",
-        CredentialsEmailPassword: {
-            email: loginForm.email.value,
-            password: loginForm.password.value
-        }
-    }))
+async function login(event) {
+	event.preventDefault();
+	const loginForm = document.getElementById("loginForm");
 
-    if(response.data){
-        // Store the received tokens
-        user.accessToken = response.data.accessToken
-        user.refreshToken = response.data.refreshToken
-        user.expiration = response.data.expiration
+	// Do the login request
+	response = await make_post_request(
+		"https://api-auth.emel.pt/auth",
+		JSON.stringify({
+			Provider: "EmailPassword",
+			CredentialsEmailPassword: {
+				email: loginForm.email.value,
+				password: loginForm.password.value,
+			},
+		})
+	);
 
-        // Get all user details
-        get_user_information();
+	if (response.data) {
+		// Store the received tokens
+		user.accessToken = response.data.accessToken;
+		user.refreshToken = response.data.refreshToken;
+		user.expiration = response.data.expiration;
 
-        // Set the cookie expiry to 1 month after today.
-        var expiryDate = new Date();
-        expiryDate.setMonth(expiryDate.getMonth() + 1);
+		// Get all user details
+		get_user_information();
 
-        // Store refreshToken cookie (stay logged in)
-        document.cookie = "refreshToken=" + user.refreshToken + '; expires=' + expiryDate.toGMTString();
+		// Set the cookie expiry to 1 month after today.
+		var expiryDate = new Date();
+		expiryDate.setMonth(expiryDate.getMonth() + 1);
 
-        document.getElementById('loginMenu').remove()
-        tokenRefreshed = true;
-    } else {
-        alert("Login failed!");
-    } 
+		// Store refreshToken cookie (stay logged in)
+		document.cookie = "refreshToken=" + user.refreshToken + "; expires=" + expiryDate.toGMTString();
+
+		document.getElementById("loginMenu").remove();
+		tokenRefreshed = true;
+	} else {
+		alert("Login failed!");
+	}
 }
 
 // Gets all the user information
-async function get_user_information(){
-    // get the general information (without using the proxy)
-    response = await make_get_request("https://api-auth.emel.pt/user", user.accessToken)
-    if (typeof response != 'undefined')
-        user = {...user, ...response.data};
+async function get_user_information() {
+	// get the general information (without using the proxy)
+	response = await make_get_request("https://api-auth.emel.pt/user", user.accessToken);
+	if (typeof response != "undefined") user = { ...user, ...response.data };
 
-    // Update user image based on user details
-    if(document.getElementById('userPicture'))
-        document.getElementById('userPicture').innerHTML = `<img src="https://ui-avatars.com/api/?name=${encodeURI(user.name)}&size=${document.documentElement.clientHeight * 0.14}&background=ffffff&color=79C000&rounded=true">`;
+	// Update user image based on user details
+	if (document.getElementById("userPicture"))
+		document.getElementById("userPicture").innerHTML = `<img src="https://ui-avatars.com/api/?name=${encodeURI(
+			user.name
+		)}&size=${document.documentElement.clientHeight * 0.14}&background=ffffff&color=79C000&rounded=true">`;
 
-    // Make batch query for Gira client information, activeUserSubscriptions and tripHistory to speed up request
-    response = await make_post_request("https://apigira.emel.pt/graphql", JSON.stringify({
-        "query": `query {
+	// Make batch query for Gira client information, activeUserSubscriptions and tripHistory to speed up request
+	response = await make_post_request(
+		"https://apigira.emel.pt/graphql",
+		JSON.stringify({
+			query: `query {
             client: client { code, type, balance, paypalReference, bonus, numberNavegante }
             activeUserSubscriptions: activeUserSubscriptions { code, cost, expirationDate, name, nameEnglish, subscriptionCost, subscriptionPeriod, subscriptionStatus, type, active }
             tripHistory: tripHistory(pageInput: { _pageNum: 1, _pageSize: 1000 }) { bikeName bikeType bonus code cost endDate endLocation rating startDate startLocation usedPoints }
-        }`
-    }), user.accessToken)
-    user = {...user, ...response.data.client[0]};
-    user.activeUserSubscriptions = response.data.activeUserSubscriptions;
-    user.tripHistory = response.data.tripHistory;
+        }`,
+		}),
+		user.accessToken
+	);
+	user = { ...user, ...response.data.client[0] };
+	user.activeUserSubscriptions = response.data.activeUserSubscriptions;
+	user.tripHistory = response.data.tripHistory;
 
-    return user;
+	return user;
 }
 
 // Open the login menu element and populate it
 function openLoginMenu() {
-    document.cookie = "version=0.0.0"; // Force show update notes after logout
-    document.cookie = "refreshToken=None;path=\"/\";expires=Thu, 01 Jan 1970 00:00:01 GMT"; // delete cookie
+	document.cookie = "version=0.0.0"; // Force show update notes after logout
+	document.cookie = 'refreshToken=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT'; // delete cookie
 
-    let menu = document.createElement("div");
-    menu.className = "login-menu";
-    menu.id = "loginMenu";
-    menu.innerHTML = 
-    `
+	let menu = document.createElement("div");
+	menu.className = "login-menu";
+	menu.id = "loginMenu";
+	menu.innerHTML = `
         <div id="loginCard">
             <img id="logo" src="assets/images/mGira_big.png" alt="mGira logo">
             <form id="loginForm">
@@ -88,83 +95,79 @@ function openLoginMenu() {
         </div>
     `.trim();
 
+	// Hide any menu already open
+	if (document.querySelector(".user-settings")) document.querySelector(".user-settings").remove();
 
-    // Hide any menu already open
-    if(document.querySelector('.user-settings'))
-        document.querySelector('.user-settings').remove();
+	if (document.querySelector(".bike-reserve")) document.querySelector(".bike-reserve").remove();
 
-    if(document.querySelector('.bike-reserve'))
-        document.querySelector('.bike-reserve').remove();
+	if (document.querySelector(".station-menu")) document.querySelector(".station-menu").remove();
 
-    if(document.querySelector('.station-menu'))
-        document.querySelector('.station-menu').remove();
+	if (document.querySelector(".bike-list")) document.querySelector(".bike-list").remove();
 
-    if(document.querySelector('.bike-list'))
-        document.querySelector('.bike-list').remove();
-    
-    
-    // Add to the document
-    if(document.querySelectorAll('.login-menu').length == 0)
-        document.body.appendChild(menu);
+	// Add to the document
+	if (document.querySelectorAll(".login-menu").length == 0) document.body.appendChild(menu);
 }
-
 
 // Open user settings element and populate it
 async function openUserSettings() {
+	// show the container from the start so that the request delay is less noticeable
+	let settingsElement = document.createElement("div");
+	settingsElement.className = "user-settings";
+	settingsElement.id = "userSettings";
 
-    // show the container from the start so that the request delay is less noticeable
-    let settingsElement = document.createElement("div");
-    settingsElement.className = "user-settings";
-    settingsElement.id = "userSettings";
+	if (document.querySelectorAll(".user-settings").length == 0) document.body.appendChild(settingsElement);
 
-    if(document.querySelectorAll('.user-settings').length == 0)
-        document.body.appendChild(settingsElement);
-
-    // show loading animation
-    settingsElement.innerHTML = `
+	// show loading animation
+	settingsElement.innerHTML = `
     <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
     <div id="backButton" onclick="hideUserSettings()"><i class="bi bi-arrow-90deg-left"></i></div>
     <div id="proxyNotWorking" onclick="openSetProxyPrompt()">Proxy não funciona?</div>
     `;
-    
-    // Get all the user information
-    userObj = await get_user_information();
 
-    // Format the subscription expiration date
-    subscriptionExpiration = new Date(userObj.activeUserSubscriptions[0].expirationDate);
-    expirationDateFormatted = subscriptionExpiration.getDate() +'/' + (subscriptionExpiration.getMonth()+1) +'/'+ subscriptionExpiration.getFullYear();
+	// Get all the user information
+	userObj = await get_user_information();
 
-    // Calculate the total time of the tripHistory
-    let totalTime = 0;
-    for (trip of userObj.tripHistory) {
-        let elapsedTime = new Date(new Date(trip.endDate) - new Date(trip.startDate));
-        totalTime += elapsedTime.getTime();
-    }
-    totalTime = new Date(totalTime);
-    totalTime.setTime(totalTime.getTime() + totalTime.getTimezoneOffset()*60*1000);  // Correct because of Daylight Saving Time
-    var days = Math.round(Math.abs(totalTime.getTime() / (24 * 60 * 60 * 1000)));
-    var hours = totalTime.getHours();
-    var minutes = totalTime.getMinutes();
-    var formattedTotalTime = days + 'd' + hours + 'h' + correctMinutesSeconds(minutes) + 'm';
+	// Format the subscription expiration date
+	subscriptionExpiration = new Date(userObj.activeUserSubscriptions[0].expirationDate);
+	expirationDateFormatted =
+		subscriptionExpiration.getDate() +
+		"/" +
+		(subscriptionExpiration.getMonth() + 1) +
+		"/" +
+		subscriptionExpiration.getFullYear();
 
-    // Calculate an estimate for total distance (assuming an avg speed of 15km/h)
-    let hoursFloat = days*60 + hours + minutes/60;
-    let totalDistance = Math.floor(hoursFloat * 15) // hours * km in 1 hour
+	// Calculate the total time of the tripHistory
+	let totalTime = 0;
+	for (trip of userObj.tripHistory) {
+		let elapsedTime = new Date(new Date(trip.endDate) - new Date(trip.startDate));
+		totalTime += elapsedTime.getTime();
+	}
+	totalTime = new Date(totalTime);
+	totalTime.setTime(totalTime.getTime() + totalTime.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
+	var days = Math.round(Math.abs(totalTime.getTime() / (24 * 60 * 60 * 1000)));
+	var hours = totalTime.getHours();
+	var minutes = totalTime.getMinutes();
+	var formattedTotalTime = days + "d" + hours + "h" + correctMinutesSeconds(minutes) + "m";
 
-    // Calculate the average time of a trip
-    let avgTime = new Date(totalTime.getTime() / userObj.tripHistory.length);
-    var formattedAvgTime = correctMinutesSeconds(avgTime.getMinutes()) + 'm';
+	// Calculate an estimate for total distance (assuming an avg speed of 15km/h)
+	let hoursFloat = days * 60 + hours + minutes / 60;
+	let totalDistance = Math.floor(hoursFloat * 15); // hours * km in 1 hour
 
-    // Calculate an estimate for C02 saved using total time (assuming an avg speed of 15km/h)
-    let co2Saved = Math.floor(hoursFloat * 15 * 0.054) // hours * km in 1 hour * kg of co2 saved per km
+	// Calculate the average time of a trip
+	let avgTime = new Date(totalTime.getTime() / userObj.tripHistory.length);
+	var formattedAvgTime = correctMinutesSeconds(avgTime.getMinutes()) + "m";
 
-    // Populate the element
-    settingsElement.innerHTML = 
-    `
+	// Calculate an estimate for C02 saved using total time (assuming an avg speed of 15km/h)
+	let co2Saved = Math.floor(hoursFloat * 15 * 0.054); // hours * km in 1 hour * kg of co2 saved per km
+
+	// Populate the element
+	settingsElement.innerHTML = `
         <div id="topUserContainer">
             <div id="backButton" onclick="hideUserSettings()"><i class="bi bi-arrow-90deg-left"></i></div>
             <img id="footer" src="assets/images/gira_footer_white.svg" alt="backImage">
-            <img id="userImage" src="https://ui-avatars.com/api/?name=${encodeURI(userObj.name)}&size=175&background=231F20&color=fff&rounded=true">
+            <img id="userImage" src="https://ui-avatars.com/api/?name=${encodeURI(
+							userObj.name
+						)}&size=175&background=231F20&color=fff&rounded=true">
         </div>
         <div id="userName">${userObj.name}</div>
         <div id="balanceAndBonusContainer">
@@ -216,54 +219,52 @@ async function openUserSettings() {
         </div>
     `.trim();
 
-    document.getElementById("setProxyButton").addEventListener('click', (evt) => {
-        // Set the cookie expiry to 1 year after today.
-        var expiryDate = new Date();
-        expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+	document.getElementById("setProxyButton").addEventListener("click", evt => {
+		// Set the cookie expiry to 1 year after today.
+		var expiryDate = new Date();
+		expiryDate.setFullYear(expiryDate.getFullYear() + 1);
 
-        // Store customProxy cookie
-        proxyURL = document.getElementById("proxyUrlInput").value;
-        document.cookie = "customProxy=" + encodeURI(proxyURL) + '; expires=' + expiryDate.toGMTString();
+		// Store customProxy cookie
+		proxyURL = document.getElementById("proxyUrlInput").value;
+		document.cookie = "customProxy=" + encodeURI(proxyURL) + "; expires=" + expiryDate.toGMTString();
 
-        alert('O proxy foi definido.');
-    });
+		alert("O proxy foi definido.");
+	});
 
-    document.getElementById("resetProxyButton").addEventListener('click', (evt) => {
-        // Delete customProxy cookie
-        proxyURL = "proxy.php";
-        document.cookie = "customProxy=None;path=\"/\";expires=Thu, 01 Jan 1970 00:00:01 GMT";
-        // Update input
-        document.getElementById("proxyUrlInput").value = proxyURL;
+	document.getElementById("resetProxyButton").addEventListener("click", evt => {
+		// Delete customProxy cookie
+		proxyURL = "proxy.php";
+		document.cookie = 'customProxy=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT';
+		// Update input
+		document.getElementById("proxyUrlInput").value = proxyURL;
 
-        alert('O proxy foi redefinido.')
-    });
+		alert("O proxy foi redefinido.");
+	});
 }
-
 
 function hideUserSettings() {
-    let userSettings = document.getElementById('userSettings');
-    if (userSettings) {
-        userSettings.classList.add('smooth-slide-to-bottom');
-        setTimeout(() => userSettings.remove(), 1000); // remove element after animation end 
-    }
+	let userSettings = document.getElementById("userSettings");
+	if (userSettings) {
+		userSettings.classList.add("smooth-slide-to-bottom");
+		setTimeout(() => userSettings.remove(), 1000); // remove element after animation end
+	}
 }
 
-
-
 function openSetProxyPrompt() {
-    createCustomTextPrompt(
-        "Por favor defina um novo proxy.",
-        () => {
-            // Store customProxy cookie
-            proxyURL = document.getElementById("customTextPromptInput").value;
-            document.cookie = "customProxy=" + encodeURI(proxyURL);
-        },
-        () => {
-            // Delete customProxy cookie
-            proxyURL = "proxy.php";
-            document.cookie = "customProxy=None;path=\"/\";expires=Thu, 01 Jan 1970 00:00:01 GMT";
-            openLoginMenu();
-        },
-        "Definir",
-        "Padrão")
+	createCustomTextPrompt(
+		"Por favor defina um novo proxy.",
+		() => {
+			// Store customProxy cookie
+			proxyURL = document.getElementById("customTextPromptInput").value;
+			document.cookie = "customProxy=" + encodeURI(proxyURL);
+		},
+		() => {
+			// Delete customProxy cookie
+			proxyURL = "proxy.php";
+			document.cookie = 'customProxy=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT';
+			openLoginMenu();
+		},
+		"Definir",
+		"Padrão"
+	);
 }

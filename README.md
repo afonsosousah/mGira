@@ -4,7 +4,8 @@
 Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA 
 </p>
 
-## 
+##
+
 <p align="middle">
 	<img src="https://app.mgira.pt/assets/images/screenshot_landing.png?v=0.0.3" width="200"/>
 	<img src="https://app.mgira.pt/assets/images/screenshot_stations.png?v=0.0.3" width="200"/>
@@ -15,20 +16,22 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 <br>
 
 ## Funcionalidades adicionais
- - Navegação na aplicação, que calcula a melhor rota tendo em conta:
-	 - Onde se localizam as estações
-	 - Se há bicicletas disponíveis na estação
-	 - Rota otimizada para bicicleta
+
+- Navegação na aplicação, que calcula a melhor rota tendo em conta:
+  - Onde se localizam as estações
+  - Se há bicicletas disponíveis na estação
+  - Rota otimizada para bicicleta
 - Tentar retirar bicicleta que aparenta estar disponível na estação mas não aparece na aplicação
 - Ver estatísticas de uso, como:
-	- Número de viagens realizadas
-	- Tempo total de utilização
-	- Estimativa de quilómetros percorridos*
-	- Estimativa de CO2 poupado**
+  - Número de viagens realizadas
+  - Tempo total de utilização
+  - Estimativa de quilómetros percorridos\*
+  - Estimativa de CO2 poupado\*\*
 
 <br>
 
 ## Limitações
+
 - Não é possível registar uma nova conta da EMEL
 - Não é possível pagar tarifários
 - Não é possível pagar uma viagem com o saldo, apenas pontos
@@ -45,14 +48,14 @@ Há também uma aplicação nativa para Android que não necessita de proxy, fei
 
 ## Versões
 
- - v0.0.1 - Versão beta inicial - 01/12/2023
- - v0.0.2 - 10/12/2023
- - v0.0.3 - 21/12/2023
-   - Mudança da UI
-   - Suporte para botão voltar atrás nativo (obrigado DanielAgostinho)
-   - Pedidos e error handling melhorados (obrigado rodrigoleitao)
-   - Proxy já não é utilizado no login na API da EMEL (obrigado j0dd)
-   - Melhorias no sistema de navegação (já não utiliza a bússola do dispositivo)
+- v0.0.1 - Versão beta inicial - 01/12/2023
+- v0.0.2 - 10/12/2023
+- v0.0.3 - 21/12/2023
+  - Mudança da UI
+  - Suporte para botão voltar atrás nativo (obrigado DanielAgostinho)
+  - Pedidos e error handling melhorados (obrigado rodrigoleitao)
+  - Proxy já não é utilizado no login na API da EMEL (obrigado j0dd)
+  - Melhorias no sistema de navegação (já não utiliza a bússola do dispositivo)
 
 <br>
 
@@ -64,4 +67,4 @@ Este software é source-available, ou seja, não é permitida a sua comercializa
 <br>
 <br>
 
-> *assume-se uma velocidade média de 15km/h<br>**assume-se uma poupança de 54g/km (obrigado [temospena](https://github.com/temospena))
+> \*assume-se uma velocidade média de 15km/h<br>\*\*assume-se uma poupança de 54g/km (obrigado [temospena](https://github.com/temospena))
