@@ -159,7 +159,7 @@ async function openStationMenu(stationSerialNumber) {
             <img id="docksImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
             <div id="docksButton">${(numDocks === 1) ? '1 doca' : `${numDocks} docas` }</div>
             <img id="bikesImage" src="assets/images/mGira_bike.png" alt="Gira bike" width="25%">
-            <div id="bikesButton" onclick="openBikeList('${stationSerialNumber}')">${(numBikes === 1) ? '1 bicicleta' : `${numBikes} bicicletas` }</div>
+            <div id="bikesButton" ${stationObj.docks !== 0 ? `onclick="openBikeList('${stationSerialNumber}')"` : ""}>${(numBikes === 1) ? '1 bicicleta' : `${numBikes} bicicletas` }</div>
         `.trim();
     } else {
         menu.innerHTML = 

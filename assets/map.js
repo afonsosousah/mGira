@@ -81,14 +81,8 @@ async function loadStationMarkersFromArray(stationsArray) {
     }
     
     let featuresArray = [];
-    let featureID = 0;
 
-    for (var station of stationsArray) {
-
-        // Don't show deactivated stations
-        if (station.docks === 0)
-            continue;
-
+    for (const [featureID, station] of stationsArray.entries()) {
         let position = [station.longitude, station.latitude]
 
         const iconFeature = new ol.Feature({
@@ -96,48 +90,59 @@ async function loadStationMarkersFromArray(stationsArray) {
             name: station.serialNumber
         });
     
-        let filled;
-    
-        if (station.bikes == 0) {
-            filled = 0;
-        } else if (station.bikes/station.docks <= 0.15) {
-            filled = 15;
-        } else if (station.bikes/station.docks <= 0.30) {
-            filled = 30;
-        } else if (station.bikes/station.docks <= 0.50) {
-            filled = 50;
-        } else if (station.bikes/station.docks <= 0.80) {
-            filled = 80;
-        } else {
-            filled = 100;
-        }
-    
-        const iconStyle = new ol.style.Style({
-            image: new ol.style.Icon({
-                width: 40,
-                height: 50,
-                anchor: [0.5, 1],
-                anchorXUnits: 'fraction',
-                anchorYUnits: 'fraction',
-                src: `assets/images/mapDot_${filled}.png`
-            }),
-            text: new ol.style.Text({
-                text: station.bikes.toString(),
-                font: "bold 15px sans-serif",
-                offsetX: 0,
-                offsetY: -30,
-                textAlign: "center",
-                fill: new ol.style.Fill({
-                    color: "#FFFFFF"
-                })
-            }),
-            zIndex: featureID
-        });
+        let iconStyle;
+        if (station.docks !== 0) {
+            let filled;
+            if (station.bikes == 0) {
+                filled = 0;
+            } else if (station.bikes/station.docks <= 0.15) {
+                filled = 15;
+            } else if (station.bikes/station.docks <= 0.30) {
+                filled = 30;
+            } else if (station.bikes/station.docks <= 0.50) {
+                filled = 50;
+            } else if (station.bikes/station.docks <= 0.80) {
+                filled = 80;
+            } else {
+                filled = 100;
+            }
+            
+            iconStyle = new ol.style.Style({
+                image: new ol.style.Icon({
+                    width: 40,
+                    height: 50,
+                    anchor: [0.5, 1],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
+                    src: `assets/images/mapDot_${filled}.png`
+                }),
+                text: new ol.style.Text({
+                    text: station.bikes.toString(),
+                    font: "bold 15px sans-serif",
+                    offsetX: 0,
+                    offsetY: -30,
+                    textAlign: "center",
+                    fill: new ol.style.Fill({
+                        color: "#FFFFFF"
+                    })
+                }),
+                zIndex: featureID
+            });
+        } else iconStyle = new ol.style.Style({
+			image: new ol.style.Icon({
+				width: 40,
+				height: 50,
+				anchor: [0.5, 1],
+				anchorXUnits: "fraction",
+				anchorYUnits: "fraction",
+				src: `assets/images/mapDot_Deactivated.png`,
+			}),
+			zIndex: featureID,
+		})
         
         iconFeature.setStyle(iconStyle);
 
         featuresArray.push(iconFeature);
-        featureID += 1;
     }
 
     if (map.getLayers().getArray().filter(layer => layer.get('name') === "stationsLayer").length == 0) {
