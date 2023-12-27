@@ -290,8 +290,7 @@ function showSearchBar() {
 	if (document.getElementById) {
 		window.alert = message =>
 			// set timeout so that if the user clicks on the place where the button is, it doesn't get automatically clicked
-			setTimeout(createCustomAlert.bind(null, message), 50);
-		};
+			setTimeout(() => createCustomAlert(message), 50);
 	}
 }
 

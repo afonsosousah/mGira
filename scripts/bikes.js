@@ -279,7 +279,7 @@ function tripTimer(startTime) {
 			}
 		}
 		tripTimerRunning = true;
-		setTimeout(tripTimer.bind(null, startTime), 1000);
+		setTimeout(() => tripTimer(startTime), 1000);
 	} else {
 		console.log("Trip has ended...");
 		tripTimerRunning = false;
