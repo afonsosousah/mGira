@@ -2,16 +2,16 @@
 function createCustomAlert(message) {
 	if (document.getElementById("modalContainer")) return;
 
-	mObj = document.createElement("div");
+	const mObj = document.createElement("div");
 	mObj.id = "modalContainer";
 
-	alertObj = mObj.appendChild(document.createElement("div"));
+	const alertObj = mObj.appendChild(document.createElement("div"));
 	alertObj.id = "alertBox";
 
-	msg = alertObj.appendChild(document.createElement("p"));
+	const msg = alertObj.appendChild(document.createElement("p"));
 	msg.innerHTML = message;
 
-	btn = alertObj.appendChild(document.createElement("div"));
+	const btn = alertObj.appendChild(document.createElement("div"));
 	btn.id = "closeBtn";
 	btn.appendChild(document.createTextNode("OK"));
 	//btn.focus();
@@ -26,27 +26,27 @@ function createCustomAlert(message) {
 function createCustomYesNoPrompt(message, yesHandler, noHandler, yesText = "Sim", noText = "Não") {
 	if (document.getElementById("modalContainer")) return;
 
-	mObj = document.createElement("div");
+	const mObj = document.createElement("div");
 	mObj.id = "modalContainer";
 
-	alertObj = mObj.appendChild(document.createElement("div"));
+	const alertObj = mObj.appendChild(document.createElement("div"));
 	alertObj.id = "alertBox";
 
-	msg = alertObj.appendChild(document.createElement("p"));
+	const msg = alertObj.appendChild(document.createElement("p"));
 	msg.innerHTML = message;
 
-	btn = alertObj.appendChild(document.createElement("div"));
-	btn.id = "yesBtn";
-	btn.appendChild(document.createTextNode(yesText));
-	btn.addEventListener("click", () => {
+	const yesBtn = alertObj.appendChild(document.createElement("div"));
+	yesBtn.id = "yesBtn";
+	yesBtn.appendChild(document.createTextNode(yesText));
+	yesBtn.addEventListener("click", () => {
 		yesHandler();
 		document.getElementById("modalContainer").remove();
 	});
 
-	btn = alertObj.appendChild(document.createElement("div"));
-	btn.id = "noBtn";
-	btn.appendChild(document.createTextNode(noText));
-	btn.addEventListener("click", () => {
+	const noBtn = alertObj.appendChild(document.createElement("div"));
+	noBtn.id = "noBtn";
+	noBtn.appendChild(document.createTextNode(noText));
+	noBtn.addEventListener("click", () => {
 		noHandler();
 		document.getElementById("modalContainer").remove();
 	});
@@ -57,28 +57,28 @@ function createCustomYesNoPrompt(message, yesHandler, noHandler, yesText = "Sim"
 function createCustomTextPrompt(message, yesHandler, noHandler, yesText = "Enviar", noText = "Ignorar") {
 	if (document.getElementById("modalContainer")) return;
 
-	mObj = document.createElement("div");
+	const mObj = document.createElement("div");
 	mObj.id = "modalContainer";
 
-	alertObj = mObj.appendChild(document.createElement("div"));
+	const alertObj = mObj.appendChild(document.createElement("div"));
 	alertObj.id = "alertBox";
 
-	input = alertObj.appendChild(document.createElement("input"));
+	const input = alertObj.appendChild(document.createElement("input"));
 	input.id = "customTextPromptInput";
 	input.placeholder = message;
 
-	btn = alertObj.appendChild(document.createElement("div"));
-	btn.id = "yesBtn";
-	btn.appendChild(document.createTextNode(yesText));
-	btn.addEventListener("click", () => {
+	const yesBtn = alertObj.appendChild(document.createElement("div"));
+	yesBtn.id = "yesBtn";
+	yesBtn.appendChild(document.createTextNode(yesText));
+	yesBtn.addEventListener("click", () => {
 		yesHandler();
 		document.getElementById("modalContainer").remove();
 	});
 
-	btn = alertObj.appendChild(document.createElement("div"));
-	btn.id = "noBtn";
-	btn.appendChild(document.createTextNode(noText));
-	btn.addEventListener("click", () => {
+	const noBtn = alertObj.appendChild(document.createElement("div"));
+	noBtn.id = "noBtn";
+	noBtn.appendChild(document.createTextNode(noText));
+	noBtn.addEventListener("click", () => {
 		noHandler();
 		document.getElementById("modalContainer").remove();
 	});

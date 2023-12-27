@@ -3,7 +3,7 @@ let lastStationObj;
 
 // returns an array with all the bikes in a station
 async function get_bikes(stationID) {
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
 			operationName: "getBikes",
@@ -18,7 +18,7 @@ async function get_bikes(stationID) {
 
 // returns an array with all the docks in a station
 async function get_docks(stationID) {
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
 			operationName: "getDocks",
@@ -34,7 +34,7 @@ async function get_docks(stationID) {
 // using batch querying to get bikes and docks faster
 // returns an object with both getBikes and getDocks properties
 async function get_bikes_and_docks(stationID) {
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
 			query: `query { 
@@ -49,7 +49,7 @@ async function get_bikes_and_docks(stationID) {
 
 // sets the global array stationArray
 async function get_stations() {
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
 			operationName: "getStations",
@@ -77,13 +77,13 @@ async function get_stations() {
 		// Check if update info should be shown
 		setTimeout(() => {
 			// Set the cookie expiry to 1 year after today.
-			var expiryDate = new Date();
+			const expiryDate = new Date();
 			expiryDate.setFullYear(expiryDate.getFullYear() + 1);
 
 			// Check version to show update notes
-			temp_version = getCookie("version");
-			if (temp_version) {
-				if (temp_version !== "0.0.3") {
+			const tempVersion = getCookie("version");
+			if (tempVersion) {
+				if (tempVersion !== "0.0.3") {
 					alert(`
                     Nova versão 0.0.3!<br>
                     <ul>
@@ -155,19 +155,17 @@ async function openStationMenu(stationSerialNumber) {
 	menu.innerHTML = `<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
 
 	// get list of available bikes and docks
-	bikeAndDocks = await get_bikes_and_docks(stationSerialNumber);
-	let bikeList = bikeAndDocks.getBikes;
-	let dockList = bikeAndDocks.getDocks;
-	stationObj.bikeList = bikeList;
-	numBikes = stationObj.bikeList.length;
-	stationObj.dockList = dockList;
-	numDocks = stationObj.dockList.length - numBikes; // number of free docks
+	const bikeAndDocks = await getBikesAndDocks(stationSerialNumber);
+	lastStationObj.bikeList = bikeAndDocks.getBikes;
+	lastStationObj.dockList = bikeAndDocks.getDocks;
+	const numBikes = lastStationObj.bikeList.length;
+	const numDocks = lastStationObj.dockList.length - numBikes; // number of free docks
 
 	// set the inner HTML after the animation has started
-	if (typeof bikeList !== "undefined" && typeof dockList !== "undefined") {
+	if (typeof bikeAndDocks.getBikes !== "undefined" && typeof bikeAndDocks.getDocks !== "undefined") {
 		menu.innerHTML = `
             <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
-            <div id="stationName">${stationObj.name}</div>
+            <div id="stationName">${lastStationObj.name}</div>
             <img id="docksImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
             <div id="docksButton">${numDocks === 1 ? "1 doca" : `${numDocks} docas`}</div>
             <img id="bikesImage" src="assets/images/mGira_bike.png" alt="Gira bike" width="25%">
@@ -222,7 +220,7 @@ async function openBikeList(stationSerialNumber) {
 
 	// get the bikes in the station
 	for (let bike of stationObj.bikeList) {
-		bikeListElement = document.createElement("li");
+		const bikeListElement = document.createElement("li");
 		bikeListElement.className = "bike-list-element";
 
 		// get the name of the dock in which the bike is
@@ -273,9 +271,7 @@ async function getMissingBikesList() {
 
 	queryString += "}";
 
-	//console.log(queryString);
-
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
 			query: queryString,
@@ -285,10 +281,10 @@ async function getMissingBikesList() {
 
 	if (typeof response !== "undefined") {
 		// Flatten the resulting array
-		allBikesList = Object.values(response.data).flat(Infinity);
+		const allBikesList = Object.values(response.data).flat(1);
 
 		// get the bikes not in the bikeSerialNumberMapping
-		missingBikes = allBikesList.filter(
+		let missingBikes = allBikesList.filter(
 			({ name: name1 }) => !bikeSerialNumberMapping.some(({ name: name2 }) => name2 === name1)
 		);
 

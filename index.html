@@ -110,20 +110,20 @@
 			});
 
 			// Check if the user has set customProxy. if not, use default proxy
-			temp_customProxy = getCookie("customProxy");
-			if (temp_customProxy) {
+			const tempCustomProxy = getCookie("customProxy");
+			if (tempCustomProxy) {
 				console.log("Using custom proxy");
-				proxyURL = decodeURI(temp_customProxy);
+				proxyURL = decodeURI(tempCustomProxy);
 			} else {
 				console.log("Using default proxy");
 				proxyURL = "proxy.php";
 			}
 
 			// Check if the user is logged in, if not, prompt to login
-			temp_tokenRefresh = getCookie("refreshToken");
-			if (temp_tokenRefresh) {
-				user.refreshToken = temp_tokenRefresh;
 				//token_refresh();
+			const tempTokenRefresh = getCookie("refreshToken");
+			if (tempTokenRefresh) {
+				user.refreshToken = tempTokenRefresh;
 			} else {
 				openLoginMenu();
 			}

@@ -48,72 +48,72 @@ async function loadStationMarkersFromArray(stationsArray) {
 		await new Promise(resolve => setTimeout(resolve, 200));
 	}
 
-    // Wait for map to finish loading
-    while(typeof map !== "object")
-    {
-        console.log('map has not loaded')
-        await new Promise(resolve => setTimeout(resolve, 200));
-    }
-    
+	// Wait for map to finish loading
+	while (typeof map !== "object") {
+		console.log("map has not loaded");
+		await new Promise(resolve => setTimeout(resolve, 200));
+	}
+
 	let featuresArray = [];
 
 	for (const [featureID, station] of stationsArray.entries()) {
-        let position = [station.longitude, station.latitude]
+		let position = [station.longitude, station.latitude];
 
-        const iconFeature = new ol.Feature({
-            geometry: new ol.geom.Point(ol.proj.fromLonLat(position)),
-            name: station.serialNumber
-        });
-    
-        let iconStyle;
-        if (station.docks !== 0) {
-            let filled;
-            if (station.bikes === 0) {
-                filled = 0;
-            } else if (station.bikes/station.docks <= 0.15) {
-                filled = 15;
-            } else if (station.bikes/station.docks <= 0.30) {
-                filled = 30;
-            } else if (station.bikes/station.docks <= 0.50) {
-                filled = 50;
-            } else if (station.bikes/station.docks <= 0.80) {
-                filled = 80;
-            } else {
-                filled = 100;
-            }
-            
-            iconStyle = new ol.style.Style({
-                image: new ol.style.Icon({
-                    width: 40,
-                    height: 50,
-                    anchor: [0.5, 1],
-                    anchorXUnits: 'fraction',
-                    anchorYUnits: 'fraction',
-                    src: `assets/images/mapDot_${filled}.png`
-                }),
-                text: new ol.style.Text({
-                    text: station.bikes.toString(),
-                    font: "bold 15px sans-serif",
-                    offsetX: 0,
-                    offsetY: -30,
-                    textAlign: "center",
-                    fill: new ol.style.Fill({
-                        color: "#FFFFFF"
-                    })
-                }),
-                zIndex: featureID
-            });
-        } else iconStyle = new ol.style.Style({
-			image: new ol.style.Icon({
-				width: 40,
-				height: 50,
-				anchor: [0.5, 1],
-				anchorXUnits: "fraction",
-				anchorYUnits: "fraction",
-				src: `assets/images/mapDot_Deactivated.png`,
-			}),
-			zIndex: featureID,
-		})
+		const iconFeature = new ol.Feature({
+			geometry: new ol.geom.Point(ol.proj.fromLonLat(position)),
+			name: station.serialNumber,
+		});
+
+		let iconStyle;
+		if (station.docks !== 0) {
+			let filled;
+			if (station.bikes === 0) {
+				filled = 0;
+			} else if (station.bikes / station.docks <= 0.15) {
+				filled = 15;
+			} else if (station.bikes / station.docks <= 0.3) {
+				filled = 30;
+			} else if (station.bikes / station.docks <= 0.5) {
+				filled = 50;
+			} else if (station.bikes / station.docks <= 0.8) {
+				filled = 80;
+			} else {
+				filled = 100;
+			}
+
+			iconStyle = new ol.style.Style({
+				image: new ol.style.Icon({
+					width: 40,
+					height: 50,
+					anchor: [0.5, 1],
+					anchorXUnits: "fraction",
+					anchorYUnits: "fraction",
+					src: `assets/images/mapDot_${filled}.png`,
+				}),
+				text: new ol.style.Text({
+					text: station.bikes.toString(),
+					font: "bold 15px sans-serif",
+					offsetX: 0,
+					offsetY: -30,
+					textAlign: "center",
+					fill: new ol.style.Fill({
+						color: "#FFFFFF",
+					}),
+				}),
+				zIndex: featureID,
+			});
+		} else
+			iconStyle = new ol.style.Style({
+				image: new ol.style.Icon({
+					width: 40,
+					height: 50,
+					anchor: [0.5, 1],
+					anchorXUnits: "fraction",
+					anchorYUnits: "fraction",
+					src: `assets/images/mapDot_Deactivated.png`,
+				}),
+				zIndex: featureID,
+			});
 
 		iconFeature.setStyle(iconStyle);
 
@@ -143,7 +143,7 @@ async function loadStationMarkersFromArray(stationsArray) {
 		map.addLayer(vectorLayer);
 	} else {
 		// Get the layer containing the previous current location
-		stationsLayer = map
+		const stationsLayer = map
 			.getLayers()
 			.getArray()
 			.find(layer => layer.get("name") === "stationsLayer");
@@ -228,7 +228,7 @@ function getLocation(zoom = true) {
 					map.addLayer(vectorLayer);
 				} else {
 					// Get the layer containing the previous current location
-					currentLocationLayer = map
+					const currentLocationLayer = map
 						.getLayers()
 						.getArray()
 						.find(layer => layer.get("name") === "currentLocationLayer");
@@ -286,7 +286,7 @@ function getLocation(zoom = true) {
 						map.addLayer(vectorLayer);
 					} else {
 						// Get the layer containing the previous current location
-						currentLocationLayer = map
+						const currentLocationLayer = map
 							.getLayers()
 							.getArray()
 							.filter(layer => layer.get("name") === "currentLocationLayer")[0];
@@ -300,7 +300,7 @@ function getLocation(zoom = true) {
 					// Pan to location only once
 					if (map.getView().getZoom() < 13.5) {
 						// Pan to location
-						var view = map.getView();
+						const view = map.getView();
 						view.animate({
 							center: ol.proj.fromLonLat(pos),
 							zoom: 17,
@@ -308,7 +308,7 @@ function getLocation(zoom = true) {
 						});
 					} else {
 						// Pan to location
-						var view = map.getView();
+						const view = map.getView();
 						view.animate({
 							center: ol.proj.fromLonLat(pos),
 							zoom: map.getView().getZoom(), // use the current zoom

@@ -9,7 +9,7 @@ async function login(event) {
 	const loginForm = document.getElementById("loginForm");
 
 	// Do the login request
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"https://api-auth.emel.pt/auth",
 		JSON.stringify({
 			Provider: "EmailPassword",
@@ -30,7 +30,7 @@ async function login(event) {
 		get_user_information();
 
 		// Set the cookie expiry to 1 month after today.
-		var expiryDate = new Date();
+		const expiryDate = new Date();
 		expiryDate.setMonth(expiryDate.getMonth() + 1);
 
 		// Store refreshToken cookie (stay logged in)
@@ -46,7 +46,7 @@ async function login(event) {
 // Gets all the user information
 async function get_user_information() {
 	// get the general information (without using the proxy)
-	response = await make_get_request("https://api-auth.emel.pt/user", user.accessToken);
+	let response = await makeGetRequest("https://api-auth.emel.pt/user", user.accessToken);
 	if (typeof response !== "undefined") user = { ...user, ...response.data };
 
 	// Update user image based on user details
@@ -56,7 +56,7 @@ async function get_user_information() {
 		)}&size=${document.documentElement.clientHeight * 0.14}&background=ffffff&color=79C000&rounded=true">`;
 
 	// Make batch query for Gira client information, activeUserSubscriptions and tripHistory to speed up request
-	response = await make_post_request(
+	response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
 			query: `query {
@@ -125,16 +125,9 @@ async function openUserSettings() {
     `;
 
 	// Get all the user information
-	userObj = await get_user_information();
+	const userObj = await getUserInformation();
 
-	// Format the subscription expiration date
-	subscriptionExpiration = new Date(userObj.activeUserSubscriptions[0].expirationDate);
-	expirationDateFormatted =
-		subscriptionExpiration.getDate() +
-		"/" +
-		(subscriptionExpiration.getMonth() + 1) +
-		"/" +
-		subscriptionExpiration.getFullYear();
+	const subscriptionExpiration = new Date(userObj.activeUserSubscriptions[0].expirationDate);
 
 	// Calculate the total time of the tripHistory
 	let totalTime = 0;
@@ -144,10 +137,10 @@ async function openUserSettings() {
 	}
 	totalTime = new Date(totalTime);
 	totalTime.setTime(totalTime.getTime() + totalTime.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
-	var days = Math.round(Math.abs(totalTime.getTime() / (24 * 60 * 60 * 1000)));
-	var hours = totalTime.getHours();
-	var minutes = totalTime.getMinutes();
-	var formattedTotalTime = days + "d" + hours + "h" + correctMinutesSeconds(minutes) + "m";
+	const days = Math.round(Math.abs(totalTime.getTime() / (24 * 60 * 60 * 1000)));
+	const hours = totalTime.getHours();
+	const minutes = totalTime.getMinutes();
+	const formattedTotalTime = days + "d" + hours + "h" + minutes.toString().padStart(2, "0") + "m";
 
 	// Calculate an estimate for total distance (assuming an avg speed of 15km/h)
 	let hoursFloat = days * 60 + hours + minutes / 60;
@@ -155,7 +148,7 @@ async function openUserSettings() {
 
 	// Calculate the average time of a trip
 	let avgTime = new Date(totalTime.getTime() / userObj.tripHistory.length);
-	var formattedAvgTime = correctMinutesSeconds(avgTime.getMinutes()) + "m";
+	const formattedAvgTime = avgTime.getMinutes().toString().padStart(2, "0") + "m";
 
 	// Calculate an estimate for C02 saved using total time (assuming an avg speed of 15km/h)
 	let co2Saved = Math.floor(hoursFloat * 15 * 0.054); // hours * km in 1 hour * kg of co2 saved per km
@@ -184,7 +177,7 @@ async function openUserSettings() {
             <div>
                 <i class="bi bi-credit-card" id="cardSVG"></i>
                 <div id="subscriptionName">${userObj.activeUserSubscriptions[0].name}</div>
-                <div id="subscriptionValidity">Válido até ${expirationDateFormatted}</div>
+                <div id="subscriptionValidity">Válido até ${subscriptionExpiration.toLocaleDateString("pt")}</div>
             </div>
         </div>
         <div id="statsContainer">
@@ -221,7 +214,7 @@ async function openUserSettings() {
 
 	document.getElementById("setProxyButton").addEventListener("click", () => {
 		// Set the cookie expiry to 1 year after today.
-		var expiryDate = new Date();
+		const expiryDate = new Date();
 		expiryDate.setFullYear(expiryDate.getFullYear() + 1);
 
 		// Store customProxy cookie

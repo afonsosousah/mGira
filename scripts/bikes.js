@@ -4,7 +4,7 @@ let ratedTripsList = [];
 
 // reserves the bike and returns a success boolean
 async function reserve_bike(serialNumber) {
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
 			operationName: "reserveBike",
@@ -18,7 +18,7 @@ async function reserve_bike(serialNumber) {
 
 // cancels the bike reserve and returns a success boolean
 async function cancel_bike_reserve() {
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
 			operationName: "cancelBikeReserve",
@@ -32,7 +32,7 @@ async function cancel_bike_reserve() {
 
 // starts a trip and returns a success boolean
 async function start_trip() {
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
 			operationName: "startTrip",
@@ -46,7 +46,7 @@ async function start_trip() {
 
 // returns an int or float of the active trip cost
 async function get_active_trip_cost() {
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
 			operationName: "activeTripCost",
@@ -60,7 +60,7 @@ async function get_active_trip_cost() {
 
 // returns the activeTrip object
 async function get_active_trip() {
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
 			operationName: "activeTrip",
@@ -74,7 +74,7 @@ async function get_active_trip() {
 
 // returns success boolean
 async function rate_trip(tripCode, tripRating, tripComment) {
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
 			operationName: "rateTrip",
@@ -95,7 +95,7 @@ async function rate_trip(tripCode, tripRating, tripComment) {
 
 // returns int? (0 for success)
 async function trip_pay_with_no_points(tripCode) {
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
 			operationName: "tripPayWithNoPoints",
@@ -109,7 +109,7 @@ async function trip_pay_with_no_points(tripCode) {
 
 // returns int? (0 for success)
 async function trip_pay_with_points(tripCode) {
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
 			operationName: "tripPayWithPoints",
@@ -264,14 +264,10 @@ function tripTimer(startTime) {
 		// Update timer on trip overlay
 		if (document.querySelector("#tripTime")) {
 			// Calculate elapsed time
-			elapsedTime = new Date(Date.now() - startTime);
+			const elapsedTime = new Date(Date.now() - startTime);
 			elapsedTime.setTime(elapsedTime.getTime() + elapsedTime.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
-			var hours = elapsedTime.getHours();
-			var minutes = elapsedTime.getMinutes();
-			var seconds = elapsedTime.getSeconds();
-			var formattedTime = hours + ":" + correctMinutesSeconds(minutes) + ":" + correctMinutesSeconds(seconds);
 			for (let element of document.querySelectorAll("#tripTime")) {
-				element.innerHTML = formattedTime;
+				element.innerHTML = elapsedTime.toLocaleTimeString("pt");
 			}
 		}
 		if (document.querySelector("#tripCost") && activeTripObj) {
@@ -298,11 +294,10 @@ function tripTimer(startTime) {
 
 function openRateTripMenu(tripObj) {
 	// Calculate the trip time
-	elapsedTime = new Date(new Date(tripObj.endDate) - new Date(tripObj.startDate));
+	const elapsedTime = new Date(Date.parse(tripObj.endDate) - Date.parse(tripObj.startDate));
 	elapsedTime.setTime(elapsedTime.getTime() + elapsedTime.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
-	var hours = elapsedTime.getHours();
-	var minutes = elapsedTime.getMinutes();
-	const formattedTime = hours + ":" + correctMinutesSeconds(minutes);
+	// Only keeps the hours and minutes (first 2 elements)
+	const formattedTime = elapsedTime.toLocaleTimeString("pt").split(":", 2).join();
 
 	// Show the rate trip menu
 	appendElementToBodyFromHTML(`
@@ -362,7 +357,7 @@ function openRateTripMenu(tripObj) {
 
 async function rateTrip(tripCode, tripCost) {
 	// Get the selected input for the stars
-	tripRating = Number(document.querySelector(`input[type="radio"]:checked`).value);
+	const tripRating = Number(document.querySelector(`input[type="radio"]:checked`).value);
 
 	// hide the rate trip menu
 	if (document.getElementById("rateTripMenu")) document.getElementById("rateTripMenu").remove();

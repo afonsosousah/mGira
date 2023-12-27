@@ -2,7 +2,7 @@ let ws;
 let proxyURL;
 
 async function make_post_request(url, body, accessToken = null) {
-	response = await fetch(proxyURL, {
+	const response = await fetch(proxyURL, {
 		method: "POST",
 		headers: {
 			"User-Agent": "Gira/3.2.8 (Android 34)",
@@ -23,7 +23,7 @@ async function make_post_request(url, body, accessToken = null) {
 			return await make_post_request(url, body, accessToken); // be sure to use latest available token
 		}
 	} else if (response.ok) {
-		responseObject = await response.json();
+		const responseObject = await response.json();
 
 		// Handle wrong credentials error
 		if (responseObject.error && responseObject.error.message === "Invalid credentials.") {
@@ -33,7 +33,7 @@ async function make_post_request(url, body, accessToken = null) {
 
 		return responseObject;
 	} else if (response.status === 400) {
-		responseObject = await response.json();
+		const responseObject = await response.json();
 		if (responseObject.errors[0].message === "trip_interval_limit") {
 			alert("Tem de esperar 5 minutos entre viagens.");
 		} else if (responseObject.errors[0].message === "already_active_trip") {
@@ -61,7 +61,7 @@ async function make_post_request(url, body, accessToken = null) {
 
 async function make_get_request(url, accessToken = null) {
 	// Proxy is not needed for these GET requests
-	response = await fetch(url, {
+	const response = await fetch(url, {
 		method: "GET",
 		headers: {
 			Authorization: `Bearer ${accessToken}`,
@@ -71,10 +71,10 @@ async function make_get_request(url, accessToken = null) {
 		// refresh token
 		token_refresh();
 	} else if (response.ok) {
-		responseObject = await response.json();
+		const responseObject = await response.json();
 		return responseObject;
 	} else if (response.status === 400) {
-		responseObject = await response.json();
+		const responseObject = await response.json();
 		//alert(responseObject.errors[0].message);
 		return await make_get_request(url, accessToken);
 		//return responseObject;
@@ -137,7 +137,7 @@ function startWSConnection(force = false) {
 					msgObj.payload.data &&
 					Object.hasOwn(msgObj.payload.data, "activeTripSubscription")
 				) {
-					activeTripObj = msgObj.payload.data.activeTripSubscription;
+					const activeTripObj = msgObj.payload.data.activeTripSubscription;
 					//console.log(activeTripObj);
 					if (activeTripObj.code !== "no_trip" && activeTripObj.code !== "unauthorized") {
 						// Real trip info

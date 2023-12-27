@@ -1,6 +1,6 @@
 // returns Date and Time in ISO 8601(?) format
 async function get_server_time() {
-	response = await make_post_request(
+	const response = await makePostRequest(
 		"http://apigira.emel.pt/graphql",
 		JSON.stringify({
 			operationName: "getServerTime",

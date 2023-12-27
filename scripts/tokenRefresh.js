@@ -6,7 +6,7 @@ async function token_refresh() {
 	tokenRefreshed = false;
 	currentTry += 1;
 	console.log("Token has not been refreshed...");
-	response = await fetch(proxyURL, {
+	const response = await fetch(proxyURL, {
 		method: "POST",
 		headers: {
 			"X-Proxy-URL": "https://api-auth.emel.pt/token/refresh",
@@ -17,7 +17,7 @@ async function token_refresh() {
 		}),
 	});
 	if (response.status === 200) {
-		responseObject = await response.json();
+		const responseObject = await response.json();
 		if (Object.hasOwn(responseObject, "data")) {
 			// Store the received tokens
 			user.accessToken = responseObject.data.accessToken;
@@ -25,7 +25,7 @@ async function token_refresh() {
 			user.expiration = responseObject.data.expiration;
 
 			// Set the cookie expiry to 1 month after today.
-			var expiryDate = new Date();
+			const expiryDate = new Date();
 			expiryDate.setMonth(expiryDate.getMonth() + 1);
 
 			// Store refreshToken cookie (stay logged in)

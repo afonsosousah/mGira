@@ -33,13 +33,15 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 
 	for (stationStart of nearestStationsStart) {
 		for (stationEnd of nearestStationsEnd) {
-			walkingDistanceToStartStation = distance(fromCoordinates, [stationStart.longitude, stationStart.latitude]);
-			cyclingDistanceFromStartToEnd = distance(
+			const walkingDistanceToStartStation = distance(fromCoordinates, [stationStart.longitude, stationStart.latitude]);
+			const cyclingDistanceFromStartToEnd = distance(
 				[stationStart.longitude, stationStart.latitude],
 				[stationEnd.longitude, stationEnd.latitude]
 			);
+			const walkingDistanceFromEndStation = distance([stationEnd.longitude, stationEnd.latitude], toCoordinates);
 
-			totalTripDistance = walkingDistanceToStartStation + cyclingDistanceFromStartToEnd + walkingDistanceFromEndStation;
+			const totalTripDistance =
+				walkingDistanceToStartStation + cyclingDistanceFromStartToEnd + walkingDistanceFromEndStation;
 
 			if (bestDistance && totalTripDistance < bestDistance) {
 				bestDistance = totalTripDistance;
@@ -303,7 +305,7 @@ async function searchPlace() {
 
 		// hide the placeSearchMenu if it is showing and put map to normal
 		if (document.querySelector("#placeSearchMenu")) {
-			mapElement = document.getElementById("map");
+			const mapElement = document.getElementById("map");
 			mapElement.style.height = "100%";
 			mapElement.style.bottom = "0";
 			document.querySelector("#placeSearchMenu").remove();
@@ -369,7 +371,7 @@ async function searchPlace() {
 
 			// get the results
 			for (let result of response.features) {
-				resultElement = document.createElement("li");
+				const resultElement = document.createElement("li");
 				resultElement.className = "place-search-element";
 
 				let position = result.geometry.coordinates;
