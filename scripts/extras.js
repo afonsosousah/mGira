@@ -34,25 +34,9 @@ function appendElementToElementFromHTML(htmlString, parentElement) {
 	parentElement.appendChild(element);
 }
 
-function getCookie(cname) {
-	let name = cname + "=";
-	let decodedCookie = decodeURIComponent(document.cookie);
-	let ca = decodedCookie.split(";");
-	for (let i = 0; i < ca.length; i++) {
-		let c = ca[i];
-		while (c.charAt(0) === " ") {
-			c = c.substring(1);
-		}
-		if (c.indexOf(name) === 0) {
-			return c.substring(name.length, c.length);
-		}
+function getCookie(name) {
+	for (const cookie of decodeURIComponent(document.cookie).split(";")) {
+		if (cookie.split("=", 1)[0] === name) return c.replace(`${name}=`, "");
 	}
 	return "";
-}
-
-function correctMinutesSeconds(i) {
-	if (i < 10) {
-		i = "0" + i;
-	} // add zero in front of numbers < 10
-	return i;
 }
