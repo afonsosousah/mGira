@@ -66,20 +66,19 @@ async function loadStationMarkersFromArray(stationsArray) {
 
 		let iconStyle;
 		if (station.docks !== 0) {
-			let filled;
-			if (station.bikes === 0) {
-				filled = 0;
-			} else if (station.bikes / station.docks <= 0.15) {
-				filled = 15;
-			} else if (station.bikes / station.docks <= 0.3) {
-				filled = 30;
-			} else if (station.bikes / station.docks <= 0.5) {
-				filled = 50;
-			} else if (station.bikes / station.docks <= 0.8) {
-				filled = 80;
-			} else {
-				filled = 100;
-			}
+			const bikeRatio = station.bikes / station.docks;
+			const filled =
+				station.bikes === 0
+					? 0
+					: bikeRatio <= 0.15
+					? 15
+					: bikeRatio <= 0.3
+					? 30
+					: bikeRatio <= 0.5
+					? 50
+					: bikeRatio < 1
+					? 80
+					: 100;
 
 			iconStyle = new ol.style.Style({
 				image: new ol.style.Icon({

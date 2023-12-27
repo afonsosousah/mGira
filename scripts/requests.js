@@ -168,13 +168,13 @@ function startWSConnection(force = false) {
 
 								// start the trip timer
 								tripEnded = false;
-								tripTimer(new Date(activeTripObj.startDate));
+								tripTimer(Date.parse(activeTripObj.startDate));
 							}
 							// If there is navigation happening and ther is no trip timer already running, start the trip timer
 							else if (navigationActive && !tripTimerRunning) {
 								// start the trip timer
 								tripEnded = false;
-								tripTimer(new Date(activeTripObj.startDate));
+								tripTimer(Date.parse(activeTripObj.startDate));
 							}
 						}
 					} else if (activeTripObj.code === "unauthorized") {

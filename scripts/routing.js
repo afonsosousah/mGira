@@ -551,18 +551,14 @@ function addStationPointToMap(station, start = true) {
 	if (start) {
 		if (station.bikes === 0) {
 			width = 10;
-		} else if (12 + station.bikes * 0.2 < 18) {
-			width = 12 + station.bikes * 0.2;
 		} else {
-			width = 18;
+			width = Math.min(12 + station.bikes * 0.2, 18);
 		}
 	} else {
 		if (station.docks - station.bikes === 0) {
 			width = 10;
-		} else if (12 + (station.docks - station.bikes) * 0.2 < 18) {
-			width = 12 + (station.docks - station.bikes) * 0.2;
 		} else {
-			width = 18;
+			width = Math.min(12 + (station.docks - station.bikes) * 0.2, 18);
 		}
 	}
 
