@@ -1,7 +1,7 @@
 let ws;
 let proxyURL;
 
-async function make_post_request(url, body, accessToken = null) {
+async function makePostRequest(url, body, accessToken = null) {
 	const response = await fetch(proxyURL, {
 		method: "POST",
 		headers: {
@@ -15,12 +15,12 @@ async function make_post_request(url, body, accessToken = null) {
 	});
 	if (response.status === 401) {
 		// refresh token
-		accessToken = await token_refresh();
+		accessToken = await tokenRefresh();
 
 		// check if token refresh was successful
 		if (typeof accessToken !== "undefined") {
 			// try to make request again
-			return await make_post_request(url, body, accessToken); // be sure to use latest available token
+			return await makePostRequest(url, body, accessToken); // be sure to use latest available token
 		}
 	} else if (response.ok) {
 		const responseObject = await response.json();
@@ -59,7 +59,7 @@ async function make_post_request(url, body, accessToken = null) {
 	}
 }
 
-async function make_get_request(url, accessToken = null) {
+async function makeGetRequest(url, accessToken = null) {
 	// Proxy is not needed for these GET requests
 	const response = await fetch(url, {
 		method: "GET",
@@ -69,14 +69,14 @@ async function make_get_request(url, accessToken = null) {
 	});
 	if (response.status === 401) {
 		// refresh token
-		token_refresh();
+		tokenRefresh();
 	} else if (response.ok) {
 		const responseObject = await response.json();
 		return responseObject;
 	} else if (response.status === 400) {
 		const responseObject = await response.json();
 		//alert(responseObject.errors[0].message);
-		return await make_get_request(url, accessToken);
+		return await makeGetRequest(url, accessToken);
 		//return responseObject;
 	}
 }
@@ -144,7 +144,7 @@ function startWSConnection(force = false) {
 						if (activeTripObj.finished === true && !ratedTripsList.includes(activeTripObj.code)) {
 							// End trip
 							tripEnded = true;
-							cancel_bike_reserve();
+							cancelBikeReserve();
 
 							// Show the rate trip menu
 							if (!document.getElementById("rateTripMenu"))
@@ -183,7 +183,7 @@ function startWSConnection(force = false) {
 						ws = undefined;
 
 						// refresh token
-						token_refresh();
+						tokenRefresh();
 					}
 				} else if (Object.hasOwn(msgObj.payload, "errors") && msgObj.payload.errors) {
 					//alert(msgObj.payload.errors[0].message);

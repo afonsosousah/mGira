@@ -2,7 +2,7 @@ let stationsArray;
 let lastStationObj;
 
 // returns an array with all the bikes in a station
-async function get_bikes(stationID) {
+async function getBikes(stationID) {
 	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
@@ -17,7 +17,7 @@ async function get_bikes(stationID) {
 }
 
 // returns an array with all the docks in a station
-async function get_docks(stationID) {
+async function getDocks(stationID) {
 	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
@@ -33,7 +33,7 @@ async function get_docks(stationID) {
 
 // using batch querying to get bikes and docks faster
 // returns an object with both getBikes and getDocks properties
-async function get_bikes_and_docks(stationID) {
+async function getBikesAndDocks(stationID) {
 	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
@@ -48,7 +48,7 @@ async function get_bikes_and_docks(stationID) {
 }
 
 // sets the global array stationArray
-async function get_stations() {
+async function getStations() {
 	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
@@ -72,7 +72,7 @@ async function get_stations() {
 		startWSConnection();
 
 		// Get all user details
-		get_user_information();
+		getUserInformation();
 
 		// Check if update info should be shown
 		setTimeout(() => {
@@ -114,7 +114,7 @@ async function get_stations() {
 		return response.data.getStations;
 	} else {
 		// Wait for token refresh
-		checkToken(get_stations);
+		checkToken(getStations);
 	}
 }
 
@@ -171,8 +171,7 @@ async function openStationMenu(stationSerialNumber) {
             <img id="bikesImage" src="assets/images/mGira_bike.png" alt="Gira bike" width="25%">
             <div id="bikesButton${
 							stationObj.docks === 0 ? 'Disabled"' : `" onclick="openBikeList('${stationSerialNumber}')`
-						}>${numBikes === 1 ? "1 bicicleta" : `${numBikes} bicicletas`}</div>
-        `.trim();
+						}>${numBikes === 1 ? "1 bicicleta" : `${numBikes} bicicletas`}</div>`;
 	} else {
 		menu.innerHTML = `
             <div id="availableBikesNumber">Ocorreu um erro.</div>

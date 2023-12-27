@@ -3,7 +3,7 @@ let tripTimerRunning = false;
 let ratedTripsList = [];
 
 // reserves the bike and returns a success boolean
-async function reserve_bike(serialNumber) {
+async function reserveBike(serialNumber) {
 	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
@@ -17,7 +17,7 @@ async function reserve_bike(serialNumber) {
 }
 
 // cancels the bike reserve and returns a success boolean
-async function cancel_bike_reserve() {
+async function cancelBikeReserve() {
 	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
@@ -31,7 +31,7 @@ async function cancel_bike_reserve() {
 }
 
 // starts a trip and returns a success boolean
-async function start_trip() {
+async function startTrip() {
 	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
@@ -45,7 +45,7 @@ async function start_trip() {
 }
 
 // returns an int or float of the active trip cost
-async function get_active_trip_cost() {
+async function getActiveTripCost() {
 	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
@@ -59,7 +59,7 @@ async function get_active_trip_cost() {
 }
 
 // returns the activeTrip object
-async function get_active_trip() {
+async function getActiveTrip() {
 	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
@@ -73,7 +73,7 @@ async function get_active_trip() {
 }
 
 // returns success boolean
-async function rate_trip(tripCode, tripRating, tripComment) {
+async function rateTrip(tripCode, tripRating, tripComment) {
 	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
@@ -94,7 +94,7 @@ async function rate_trip(tripCode, tripRating, tripComment) {
 }
 
 // returns int? (0 for success)
-async function trip_pay_with_no_points(tripCode) {
+async function tripPayWithNoPoints(tripCode) {
 	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
@@ -108,7 +108,7 @@ async function trip_pay_with_no_points(tripCode) {
 }
 
 // returns int? (0 for success)
-async function trip_pay_with_points(tripCode) {
+async function tripPayWithPoints(tripCode) {
 	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
@@ -227,10 +227,10 @@ async function startBikeTrip(event, bikeSerialNumber) {
 		console.log("The bike will be reserved!");
 
 		// reserve the bike
-		if (typeof (await reserve_bike(bikeSerialNumber)) === "undefined") return;
+		if (typeof (await reserveBike(bikeSerialNumber)) === "undefined") return;
 
 		// start the trip
-		if (typeof (await start_trip()) === "undefined") return;
+		if (typeof (await startTrip()) === "undefined") return;
 
 		// hide the unlock card if it is showing
 		if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
@@ -288,7 +288,7 @@ function tripTimer(startTime) {
 		if (document.querySelector("#tripOverlay")) document.querySelector("#tripOverlay").remove();
 
 		// Cancel the bike reserve
-		cancel_bike_reserve();
+		cancelBikeReserve();
 	}
 }
 
@@ -369,7 +369,7 @@ async function rateTrip(tripCode, tripCost) {
 			async () => {
 				// Yes handler
 				let comment = document.getElementById("customTextPromptInput").value;
-				let success = await rate_trip(tripCode, tripRating, comment);
+				let success = await rateTrip(tripCode, tripRating, comment);
 				if (success) {
 					// store that this trip was already rated, to not prompt again
 					ratedTripsList.push(tripCode);
@@ -385,7 +385,7 @@ async function rateTrip(tripCode, tripCost) {
 			},
 			async () => {
 				// No handler
-				let success = await rate_trip(tripCode, tripRating, ""); // send empty comment if the user ignored
+				let success = await rateTrip(tripCode, tripRating, ""); // send empty comment if the user ignored
 				if (success) {
 					// store that this trip was already rated, to not prompt again
 					ratedTripsList.push(tripCode);
@@ -401,7 +401,7 @@ async function rateTrip(tripCode, tripCost) {
 			}
 		);
 	} else {
-		let success = await rate_trip(tripCode, tripRating, ""); // send empty comment if the user gave a good rating
+		let success = await rateTrip(tripCode, tripRating, ""); // send empty comment if the user gave a good rating
 		if (success) {
 			// store that this trip was already rated, to not prompt again
 			ratedTripsList.push(tripCode);
@@ -423,18 +423,18 @@ async function payTrip(tripCode, tripCost) {
 		createCustomYesNoPrompt(
 			`Deseja pagar a viagem com ${tripCost * 500} pontos?`,
 			async () => {
-				if ((await trip_pay_with_points(tripCode)) !== 0)
+				if ((await tripPayWithPoints(tripCode)) !== 0)
 					// the success response is a 0
 					alert("Não foi possível pagar a viagem.");
 			},
 			async () => {
-				if ((await trip_pay_with_no_points(tripCode)) !== 0)
+				if ((await tripPayWithNoPoints(tripCode)) !== 0)
 					// the success response is a 0
 					alert("Não foi possível pagar a viagem.");
 			}
 		);
 	} else {
 		// If the trip cost 0, then just pay with no points
-		if ((await trip_pay_with_no_points(tripCode)) !== 0) alert("Não foi possível pagar a viagem.");
+		if ((await tripPayWithNoPoints(tripCode)) !== 0) alert("Não foi possível pagar a viagem.");
 	}
 }

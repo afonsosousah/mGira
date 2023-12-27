@@ -119,10 +119,10 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	// Set the bbox
 	let coords1 = ol.proj.fromLonLat([routeSummaryBike.bbox[0], routeSummaryBike.bbox[1]]);
 	let coords2 = ol.proj.fromLonLat([routeSummaryBike.bbox[2], routeSummaryBike.bbox[3]]);
-	let converted_bbox = [coords1[0], coords1[1], coords2[0], coords2[1]];
-	viewable_box = [map.getSize()[0], map.getSize()[1] - document.getElementById("placeSearchMenu").clientHeight];
-	map.getView().fit(converted_bbox, {
-		size: viewable_box,
+	let convertedBbox = [coords1[0], coords1[1], coords2[0], coords2[1]];
+	let viewableBox = [map.getSize()[0], map.getSize()[1] - document.getElementById("placeSearchMenu").clientHeight];
+	map.getView().fit(convertedBbox, {
+		size: viewableBox,
 		padding: [50, 100, document.getElementById("placeSearchMenu").clientHeight + 50, 100],
 		maxZoom: 18,
 	});
@@ -235,20 +235,20 @@ function distance(point1, point2) {
 
 function getStationsByDistance(currentLocation) {
 	// Copy the stattions array
-	let temp_stationsArray = stationsArray;
+	let tempStationsArray = stationsArray;
 
 	// Remove all the empty stations
 	tempStationsArray = tempStationsArray.filter(obj => obj.bikes !== 0);
 
 	// Calculate the distance for all the stations
-	for (let station of temp_stationsArray) {
-		station.distance = distance(currentLocation[1], currentLocation[0], station.latitude, station.longitude);
+	for (let station of tempStationsArray) {
+		station.distance = distance(currentLocation, [station.longitude, station.latitude]);
 	}
 
 	// Sort by distance
 	tempStationsArray.sort((a, b) => a.distance - b.distance);
 
-	return temp_stationsArray;
+	return tempStationsArray;
 }
 
 function showSearchBar() {
@@ -364,10 +364,10 @@ async function searchPlace() {
 			// Fit all the places to the map
 			let coords1 = ol.proj.fromLonLat([response.bbox[0], response.bbox[1]]);
 			let coords2 = ol.proj.fromLonLat([response.bbox[2], response.bbox[3]]);
-			let converted_bbox = [coords1[0], coords1[1], coords2[0], coords2[1]];
-			let viewable_box = [map.getSize()[0], map.getSize()[1] - document.getElementById("placeSearchMenu").clientHeight];
+			let convertedBbox = [coords1[0], coords1[1], coords2[0], coords2[1]];
+			let viewableBox = [map.getSize()[0], map.getSize()[1] - document.getElementById("placeSearchMenu").clientHeight];
 			let padding = [50, 100, 50 + document.getElementById("placeSearchMenu").clientHeight, 100];
-			map.getView().fit(converted_bbox, { size: viewable_box, padding: padding, maxZoom: 16.5 });
+			map.getView().fit(convertedBbox, { size: viewableBox, padding: padding, maxZoom: 16.5 });
 
 			// get the results
 			for (let result of response.features) {
@@ -515,7 +515,7 @@ function hidePlaceSearchMenu() {
 		.forEach(layer => map.removeLayer(layer));
 
 	// Add back the stations layer
-	get_stations();
+	getStations();
 }
 
 function viewRoute(toCoordinates) {

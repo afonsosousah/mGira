@@ -120,10 +120,10 @@
 			}
 
 			// Check if the user is logged in, if not, prompt to login
-				//token_refresh();
 			const tempTokenRefresh = getCookie("refreshToken");
 			if (tempTokenRefresh) {
 				user.refreshToken = tempTokenRefresh;
+				//tokenRefresh();
 			} else {
 				openLoginMenu();
 			}

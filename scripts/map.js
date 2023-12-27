@@ -35,7 +35,7 @@ async function initMap() {
 	});
 
 	// Get the stations and load them to the map
-	await get_stations();
+	await getStations();
 
 	// Get the user location on app open
 	getLocation();

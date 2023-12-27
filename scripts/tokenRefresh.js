@@ -2,7 +2,7 @@ let numberOfTokenRefreshTries = 5;
 let currentTry = 0;
 
 // Refreshes current user accessToken, using refreshToken
-async function token_refresh() {
+async function tokenRefresh() {
 	tokenRefreshed = false;
 	currentTry += 1;
 	console.log("Token has not been refreshed...");
@@ -45,7 +45,7 @@ async function token_refresh() {
 		if (currentTry < numberOfTokenRefreshTries) {
 			// Wait before making next request (reduce error rate)
 			await delay(200);
-			return token_refresh();
+			return tokenRefresh();
 		} else openLoginMenu();
 	} else {
 		alert("Token refresh failed!");

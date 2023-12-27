@@ -27,7 +27,7 @@ async function login(event) {
 		user.expiration = response.data.expiration;
 
 		// Get all user details
-		get_user_information();
+		getUserInformation();
 
 		// Set the cookie expiry to 1 month after today.
 		const expiryDate = new Date();
@@ -44,7 +44,7 @@ async function login(event) {
 }
 
 // Gets all the user information
-async function get_user_information() {
+async function getUserInformation() {
 	// get the general information (without using the proxy)
 	let response = await makeGetRequest("https://api-auth.emel.pt/user", user.accessToken);
 	if (typeof response !== "undefined") user = { ...user, ...response.data };
