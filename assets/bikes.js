@@ -304,7 +304,7 @@ function openRateTripMenu(tripObj) {
                 <br><br>
                 Bicicleta: ${tripObj.bike}
                 <br><br>
-                +${tripObj.tripPoints} <i class="bi bi-arrow-right"></i> ${tripObj.clientPoints} pontos totais
+                +${tripObj.tripPoints ?? 0} <i class="bi bi-arrow-right"></i> ${tripObj.clientPoints} pontos totais
             </div>
             <img src="assets/images/mGira_station.png" alt="station">
             <div id="ratingLabel">Como foi a viagem?</div>
