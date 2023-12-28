@@ -148,7 +148,7 @@ async function openStationMenu(stationSerialNumber) {
     stationObj.bikeList = bikeList;
     numBikes = stationObj.bikeList.length;
     stationObj.dockList = dockList;
-    numDocks = stationObj.dockList.length - numBikes; // number of free docks
+    numDocks = stationObj.dockList.filter(d => d.lockStatus === "unlocked").length - numBikes; // number of free docks
 
     // set the inner HTML after the animation has started
     if(typeof bikeList != "undefined" && typeof dockList != "undefined") {
@@ -159,7 +159,7 @@ async function openStationMenu(stationSerialNumber) {
             <img id="docksImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
             <div id="docksButton">${(numDocks === 1) ? '1 doca' : `${numDocks} docas` }</div>
             <img id="bikesImage" src="assets/images/mGira_bike.png" alt="Gira bike" width="25%">
-            <div id="bikesButton" onclick="openBikeList('${stationSerialNumber}')">${(numBikes === 1) ? '1 bicicleta' : `${numBikes} bicicletas` }</div>
+            <div id="bikesButton${stationObj.docks === 0 ? "Disabled" : ""}" ${stationObj.docks !== 0 ? `onclick="openBikeList('${stationSerialNumber}')"` : ""}>${(numBikes === 1) ? '1 bicicleta' : `${numBikes} bicicletas` }</div>
         `.trim();
     } else {
         menu.innerHTML = 
