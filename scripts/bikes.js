@@ -143,11 +143,11 @@ function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, unregistered 
 	let bikeObj;
 
 	if (!unregistered) {
-		bikeObj = lastStationObj.bikeList.find(obj => obj.serialNumber === bikeSerialNumber);
+		bikeObj = stationObj.bikeList.find(obj => obj.serialNumber === bikeSerialNumber);
 	} else {
 		bikeObj = bikeSerialNumberMapping.find(obj => obj.serialNumber === bikeSerialNumber);
 		bikeObj.battery = "?";
-		lastStationObj = { name: "Bicicleta não registada" };
+		stationObj = { name: "Bicicleta não registada" };
 	}
 
 	// hide the bike list if it is showing
@@ -162,7 +162,7 @@ function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, unregistered 
             <div id="textContent">
                 ${bikeObj.name[0] === "E" ? `${bikeObj.name}<br>${bikeObj.battery}% de bateria` : `${bikeObj.name}`}
                 <br><br>
-                ${lastStationObj.name}
+                ${stationObj.name}
             </div>
             <img src="assets/images/mGira_bike.png" alt="bike">
             <input type="range" name="unlockSlider" id="unlockSlider" onchange="startBikeTrip(event, '${bikeSerialNumber}')" min="0" max="100" value="0">

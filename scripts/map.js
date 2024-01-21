@@ -56,7 +56,7 @@ async function loadStationMarkersFromArray(stationsArray) {
 
 	let featuresArray = [];
 
-	for (const [featureID, station] of stationsArray.entries()) {
+	for (let [featureID, station] of stationsArray.entries()) {
 		let position = [station.longitude, station.latitude];
 
 		const iconFeature = new ol.Feature({

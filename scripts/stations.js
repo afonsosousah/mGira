@@ -126,7 +126,7 @@ async function openStationMenu(stationSerialNumber) {
 	}
 
 	// get station object
-	lastStationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
+	stationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
 
 	// remove previous station card
 	if (document.getElementById("stationMenu")) document.getElementById("stationMenu").remove();
@@ -156,22 +156,22 @@ async function openStationMenu(stationSerialNumber) {
 
 	// get list of available bikes and docks
 	const bikeAndDocks = await getBikesAndDocks(stationSerialNumber);
-	lastStationObj.bikeList = bikeAndDocks.getBikes;
-	lastStationObj.dockList = bikeAndDocks.getDocks;
-	const numBikes = lastStationObj.bikeList.length;
-	const numDocks = lastStationObj.dockList.length - numBikes; // number of free docks
+	stationObj.bikeList = bikeAndDocks.getBikes;
+	stationObj.dockList = bikeAndDocks.getDocks;
+	const numBikes = stationObj.bikeList.length;
+	const numDocks = stationObj.dockList.length - numBikes; // number of free docks
 
 	// set the inner HTML after the animation has started
 	if (typeof bikeAndDocks.getBikes !== "undefined" && typeof bikeAndDocks.getDocks !== "undefined") {
 		menu.innerHTML = `
             <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
-            <div id="stationName">${lastStationObj.name}</div>
+            <div id="stationName">${stationObj.name}</div>
             <img id="docksImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
             <div id="docksButton">${numDocks === 1 ? "1 doca" : `${numDocks} docas`}</div>
             <img id="bikesImage" src="assets/images/mGira_bike.png" alt="Gira bike" width="25%">
-            <div id="bikesButton${
-							stationObj.docks === 0 ? 'Disabled"' : `" onclick="openBikeList('${stationSerialNumber}')`
-						}>${numBikes === 1 ? "1 bicicleta" : `${numBikes} bicicletas`}</div>`;
+            <div id="bikesButton${stationObj.docks === 0 ? 'Disabled"' : `" onclick="openBikeList('${stationSerialNumber}')"`} >
+				${numBikes === 1 ? "1 bicicleta" : `${numBikes} bicicletas`}
+			</div>`;
 	} else {
 		menu.innerHTML = `
             <div id="availableBikesNumber">Ocorreu um erro.</div>
@@ -227,11 +227,13 @@ async function openBikeList(stationSerialNumber) {
 
 		bikeListElement.innerHTML = `
             <div id="battery" style="width: ${bike.name[0] === "E" ? `${bike.battery}%` : `0`}"></div>
-            <div id="content">
-                ${bike.name} - Doca ${dockObj.name}
-                <div id="reserveBikeButton" onclick="openUnlockBikeCard('${stationSerialNumber}','${
-			bike.serialNumber
-		}')">Retirar</div>
+            <div id="content" onclick="openUnlockBikeCard('${stationSerialNumber}','${bike.serialNumber}')">
+				<img id="bikeIcon" src="assets/images/mGira_bike_black.png">
+				<div id="bikeInfo">
+					<div id="bikeName">${bike.name}</div>
+					<div id="bikeDock">Doca ${dockObj.name}</div>
+				</div>
+                <i id="reserveBikeIcon" class="bi bi-arrow-bar-right"></i></div>
             </div>
         `.trim();
 		document.getElementById("bikeList").appendChild(bikeListElement);

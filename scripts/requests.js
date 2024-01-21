@@ -1,14 +1,19 @@
 let ws;
 let proxyURL;
 
+let numberOfRequestTries = 5;
+let currentRequestTry = 0;
+
 async function makePostRequest(url, body, accessToken = null) {
+	currentRequestTry += 1;
+
 	const response = await fetch(proxyURL, {
 		method: "POST",
 		headers: {
 			"User-Agent": "Gira/3.2.8 (Android 34)",
 			"X-Proxy-URL": url,
 			"Content-Type": "application/json",
-			Priority: "high",
+			"Priority": "high",
 			"X-Authorization": `Bearer ${accessToken}`,
 		},
 		body: body,
@@ -55,6 +60,17 @@ async function makePostRequest(url, body, accessToken = null) {
 		} else if (responseObject.errors[0].message !== "Error executing document.") {
 			// Show general error message for unknown errors
 			alert(responseObject.errors[0].message);
+		} else if (responseObject.errors[0].message === "Error executing document.") {
+			// Common API processing error
+			// try for x times to do the request, otherwise just error out
+			if (currentRequestTry < numberOfRequestTries) {
+				// Wait before making next request (reduce error rate)
+				await delay(200);
+				return await makePostRequest(url, body, accessToken);
+			} else {
+				alert("Erro da API")
+				return;
+			}
 		}
 	}
 }

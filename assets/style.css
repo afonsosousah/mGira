@@ -730,10 +730,11 @@ input[type="search"]::-webkit-search-results-decoration {
 	background-color: var(--white);
 	border-radius: 999px;
 	position: relative;
+	height: 7vh;
 	margin-bottom: 10px;
-	border: 2px solid var(--green);
+	border: 1px solid var(--green);
 	box-shadow:
-		5px 5px 15px 0px var(--shadow-green),
+		0px 4px 6px 0px var(--shadow-green),
 		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .bike-list-element #battery {
@@ -749,24 +750,38 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 .bike-list-element #content {
 	height: 100%;
+	width: 100%;
 	position: absolute;
 	top: 0;
 	left: 0;
-	padding: 15px 25px;
 	position: relative;
+	display: flex;
+	align-items: center;
 }
-.bike-list-element #content #reserveBikeButton {
-	position: absolute;
-	top: 5px;
-	right: 5px;
-	background-color: rgba(0, 0, 0, 0.2);
-	outline: 2px solid var(--black);
-	border-radius: 999px;
+.bike-list-element #content #bikeIcon {
+	height: 4vh;
+	object-fit: contain;
+	margin-left: 15px;
+	margin-right: 10px;
+}
+.bike-list-element #content #bikeInfo #bikeName {
+	color: var(--black);
+	font-weight: bold;
+	font-size: 0.9rem;
+}
+.bike-list-element #content #bikeInfo #bikeDock {
+	color: var(--black);
+	font-weight: normal;
+	font-size: 0.7rem;
+}
+.bike-list-element #content #reserveBikeIcon {
+	margin-left: auto;
+	margin-right: 20px;
 	color: var(--black);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	padding: 10px 15px;
+	font-size: 3dvh;
 }
 /* #endregion */
 
@@ -1003,7 +1018,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	width: 100%;
 	text-align: center;
 	font-size: larger;
-	margin-top: 9vh;
+	margin-top: 8vh;
 }
 .user-settings #balanceAndBonusContainer {
 	width: 100vw;
@@ -1011,33 +1026,21 @@ input[type="search"]::-webkit-search-results-decoration {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 10px;
-	margin-top: 3vh;
+	gap: 2vh;
+	margin-top: 5vh;
 }
-.user-settings #balanceAndBonusContainer #balanceContainer {
-	width: 45%;
-	height: 100%;
-	color: var(--green);
-	border-radius: 20px;
-	display: flex;
-	justify-content: center;
-	position: relative;
-	outline: 2px solid var(--green);
-	box-shadow:
-		5px 5px 15px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
-}
+.user-settings #balanceAndBonusContainer #balanceContainer,
 .user-settings #balanceAndBonusContainer #bonusContainer {
-	width: 45%;
+	width: 42.5%;
 	height: 100%;
 	color: var(--green);
-	border-radius: 20px;
+	border-radius: 25px;
 	display: flex;
 	justify-content: center;
 	position: relative;
-	outline: 2px solid var(--green);
+	outline: 1px solid var(--green);
 	box-shadow:
-		5px 5px 15px 0px var(--shadow-green),
+		0px 4px 6px 0px var(--shadow-green),
 		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #balanceAndBonusContainer #balanceContainer #balanceLabel,
@@ -1047,7 +1050,7 @@ input[type="search"]::-webkit-search-results-decoration {
 .user-settings #statsContainer #co2SavedContainer #co2SavedLabel,
 .user-settings #statsContainer #numberOfTripsContainer #numberOfTripsLabel {
 	position: absolute;
-	top: 5%;
+	top: 8%;
 }
 .user-settings #balanceAndBonusContainer #balanceContainer #balance,
 .user-settings #balanceAndBonusContainer #bonusContainer #bonus,
@@ -1057,26 +1060,26 @@ input[type="search"]::-webkit-search-results-decoration {
 .user-settings #statsContainer #numberOfTripsContainer #numberOfTrips {
 	position: absolute;
 	bottom: 20%;
-	font-size: x-large;
+	font-size: 1.5rem;
 }
 .user-settings #subscriptionContainer {
 	width: 100vw;
 	height: 12vh;
-	margin-top: 5vh;
+	margin-top: 3vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 .user-settings #subscriptionContainer div:first-child {
-	width: calc(90% + 10px);
+	width: calc(85vw + 2vh);
 	height: 100%;
 	color: var(--green);
-	border-radius: 20px;
+	border-radius: 25px;
 	display: flex;
 	position: relative;
-	outline: 2px solid var(--green);
+	outline: 1px solid var(--green);
 	box-shadow:
-		5px 5px 15px 0px var(--shadow-green),
+		0px 4px 6px 0px var(--shadow-green),
 		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #subscriptionContainer div #cardSVG {
@@ -1101,72 +1104,35 @@ input[type="search"]::-webkit-search-results-decoration {
 	align-self: center;
 	text-align: center;
 	text-wrap: pretty;
+	font-size: 1.2rem;
 }
 .user-settings #statsContainer {
 	width: 100vw;
-	height: 24vh;
+	height: 27vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: row;
 	flex-wrap: wrap;
-	gap: 10px;
-	margin-top: 5vh;
+	row-gap: 3vh;
+	column-gap: 2vh;
+	margin-top: 3vh;
 }
-.user-settings #statsContainer #totalDistanceContainer {
-	width: 45%;
-	height: 50%;
-	color: var(--green);
-	border-radius: 20px;
-	display: flex;
-	justify-content: center;
-	flex-basis: 45%;
-	position: relative;
-	outline: 2px solid var(--green);
-	box-shadow:
-		5px 5px 15px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
-}
-.user-settings #statsContainer #totalTimeContainer {
-	width: 45%;
-	height: 50%;
-	color: var(--green);
-	border-radius: 20px;
-	display: flex;
-	justify-content: center;
-	flex-basis: 45%;
-	position: relative;
-	outline: 2px solid var(--green);
-	box-shadow:
-		5px 5px 15px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
-}
-.user-settings #statsContainer #co2SavedContainer {
-	width: 45%;
-	height: 50%;
-	color: var(--green);
-	border-radius: 20px;
-	display: flex;
-	justify-content: center;
-	flex-basis: 45%;
-	position: relative;
-	outline: 2px solid var(--green);
-	box-shadow:
-		5px 5px 15px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
-}
+.user-settings #statsContainer #totalDistanceContainer,
+.user-settings #statsContainer #totalTimeContainer,
+.user-settings #statsContainer #co2SavedContainer,
 .user-settings #statsContainer #numberOfTripsContainer {
-	width: 45%;
-	height: 50%;
+	width: 42.5%;
+	height: 44.4%;
 	color: var(--green);
-	border-radius: 20px;
+	border-radius: 25px;
 	display: flex;
 	justify-content: center;
-	flex-basis: 45%;
+	flex-basis: 42.5%;
 	position: relative;
-	outline: 2px solid var(--green);
+	outline: 1px solid var(--green);
 	box-shadow:
-		5px 5px 15px 0px var(--shadow-green),
+		0px 4px 6px 0px var(--shadow-green),
 		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #settingsContainer {
@@ -1175,19 +1141,19 @@ input[type="search"]::-webkit-search-results-decoration {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-top: 5vh;
+	margin-top: 3vh;
 }
 .user-settings #settingsContainer #proxy {
-	width: 90%;
+	width: calc(85vw + 2vh);
 	height: 100%;
 	color: var(--green);
-	border-radius: 20px;
+	border-radius: 25px;
 	display: flex;
 	justify-content: center;
 	position: relative;
-	outline: 2px solid var(--green);
+	outline: 1px solid var(--green);
 	box-shadow:
-		5px 5px 15px 0px var(--shadow-green),
+		0px 4px 6px 0px var(--shadow-green),
 		0px 0px 5px 0px var(--shadow-green) inset;
 }
 
@@ -1207,7 +1173,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	position: absolute;
 	left: 5%;
 	top: 35%;
-	outline: 2px solid var(--green);
+	outline: 1px solid var(--green);
 	border-radius: 999px;
 	display: flex;
 	align-items: center;
@@ -1643,9 +1609,8 @@ input[type="search"]::-webkit-search-results-decoration {
 
 /* #region Take unregistered bike */
 #openTakeUnregisteredBikeButton {
-	background-color: rgba(0, 0, 0, 0.2);
-	border: 2px solid var(--black);
-	color: var(--black);
+	background-color: var(--black);
+	color: var(--white);
 	border-radius: 999px;
 	padding: 15px 25px;
 	position: relative;

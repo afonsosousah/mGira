@@ -36,6 +36,9 @@ async function login(event) {
 		// Store refreshToken cookie (stay logged in)
 		document.cookie = "refreshToken=" + user.refreshToken + "; expires=" + expiryDate.toGMTString();
 
+		console.log("Login cookie set");
+		console.log("Cookie after login: " + document.cookie);
+
 		document.getElementById("loginMenu").remove();
 		tokenRefreshed = true;
 	} else {
@@ -76,8 +79,13 @@ async function getUserInformation() {
 
 // Open the login menu element and populate it
 function openLoginMenu() {
+	console.log("openLoginMenu called");
+	console.log("Cookies before openLoginMenu: " + document.cookie);
+
 	document.cookie = "version=0.0.0"; // Force show update notes after logout
 	document.cookie = 'refreshToken=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT'; // delete cookie
+
+	console.log("Cookie after openLoginMenu: " + document.cookie);
 
 	let menu = document.createElement("div");
 	menu.className = "login-menu";
