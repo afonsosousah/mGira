@@ -3,9 +3,9 @@ let currentRouteCoordinates;
 
 async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	// Loading animation over the map while the route is being calculated
-	let loadingElement = document.createElement("div");
-	loadingElement.className = "lds-ring";
-	loadingElement.innerHTML = "<div></div><div></div><div></div><div></div>";
+	let loadingElement = document.createElement("img");
+	loadingElement.id = "spinner";
+	loadingElement.src = "assets/images/mGira_bike.png"
 	loadingElement.style.top = "calc(35% - 40px)";
 	document.body.appendChild(loadingElement);
 
@@ -342,7 +342,7 @@ async function searchPlace() {
 			.forEach(layer => map.removeLayer(layer));
 
 		// show loading animation
-		menu.innerHTML = `<div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
+		menu.innerHTML = `<img src="assets/images/mGira_bike.png" id="spinner">`;
 
 		try {
 			let response = await Geocode.geocode({
@@ -501,7 +501,7 @@ function hidePlaceSearchMenu() {
 	document.getElementById("zoomControls").classList.add("smooth-slide-bottom-zoom-controls");
 
 	// Hide the loading animation if it is showing
-	if (document.querySelector(".lds-ring")) document.querySelector(".lds-ring").remove();
+	if (document.querySelector("#spinner")) document.querySelector("#spinner").remove();
 
 	// Remove the results layer
 	map

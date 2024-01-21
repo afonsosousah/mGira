@@ -5,6 +5,8 @@ let numberOfRequestTries = 5;
 let currentRequestTry = 0;
 
 async function makePostRequest(url, body, accessToken = null) {
+
+	// Increment current request try
 	currentRequestTry += 1;
 
 	const response = await fetch(proxyURL, {
@@ -36,10 +38,17 @@ async function makePostRequest(url, body, accessToken = null) {
 			return;
 		}
 
+		// Reset currentRequestTry
+		currentRequestTry = 0;
+
 		return responseObject;
 	} else if (response.status === 400) {
 		const responseObject = await response.json();
-		if (responseObject.errors[0].message === "trip_interval_limit") {
+		if (Object.hasOwn(responseObject, "statusDescription")) {
+			if (responseObject.statusDescription.includes("The Email field is required.") || responseObject.statusDescription.includes("The Password field is required."))
+				alert("Por favor preencha os campos de email e password!");
+		}
+		else if (responseObject.errors[0].message === "trip_interval_limit") {
 			alert("Tem de esperar 5 minutos entre viagens.");
 		} else if (responseObject.errors[0].message === "already_active_trip") {
 			alert("Já tem uma viagem a decorrer!");
@@ -58,8 +67,10 @@ async function makePostRequest(url, body, accessToken = null) {
 		} else if (responseObject.errors[0].message === "bike_on_repair") {
 			alert("Bicicleta a ser reparada.");
 		} else if (responseObject.errors[0].message !== "Error executing document.") {
+
 			// Show general error message for unknown errors
 			alert(responseObject.errors[0].message);
+			
 		} else if (responseObject.errors[0].message === "Error executing document.") {
 			// Common API processing error
 			// try for x times to do the request, otherwise just error out
@@ -68,7 +79,34 @@ async function makePostRequest(url, body, accessToken = null) {
 				await delay(200);
 				return await makePostRequest(url, body, accessToken);
 			} else {
-				alert("Erro da API")
+				// Warn user about the API error
+				alert("Erro da API");
+
+				// Hide user menu if it is showing
+				hideUserSettings();
+
+				// Hide search place menu if it is showing
+				hidePlaceSearchMenu();
+
+				// Hide bike list menu if it is showing
+				let bikeListMenu = document.getElementById("bikeMenu");
+				if (bikeListMenu) {
+					bikeListMenu.classList.add("smooth-slide-to-bottom");
+					setTimeout(() => bikeListMenu.remove(), 1000); // remove element after animation
+					return; // prevent station card from being hidden if there was a bike list menu
+				}
+
+				// Hide station card if it is showing
+				let menu = document.getElementById("stationMenu");
+				if (menu) {
+					menu.classList.add("smooth-slide-to-left");
+					setTimeout(() => menu.remove(), 1000); // remove element after animation
+					document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
+				}
+
+				// Reset currentRequestTry
+				currentRequestTry = 0;
+				
 				return;
 			}
 		}

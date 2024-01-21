@@ -36,9 +36,6 @@ async function login(event) {
 		// Store refreshToken cookie (stay logged in)
 		document.cookie = "refreshToken=" + user.refreshToken + "; expires=" + expiryDate.toGMTString();
 
-		console.log("Login cookie set");
-		console.log("Cookie after login: " + document.cookie);
-
 		document.getElementById("loginMenu").remove();
 		tokenRefreshed = true;
 	} else {
@@ -53,10 +50,7 @@ async function getUserInformation() {
 	if (typeof response !== "undefined") user = { ...user, ...response.data };
 
 	// Update user image based on user details
-	if (document.getElementById("userPicture"))
-		document.getElementById("userPicture").innerHTML = `<img src="https://ui-avatars.com/api/?name=${encodeURI(
-			user.name
-		)}&size=${document.documentElement.clientHeight * 0.14}&background=ffffff&color=79C000&rounded=true">`;
+	setUserImageInitials(user.name);
 
 	// Make batch query for Gira client information, activeUserSubscriptions and tripHistory to speed up request
 	response = await makePostRequest(
@@ -79,13 +73,9 @@ async function getUserInformation() {
 
 // Open the login menu element and populate it
 function openLoginMenu() {
-	console.log("openLoginMenu called");
-	console.log("Cookies before openLoginMenu: " + document.cookie);
 
 	document.cookie = "version=0.0.0"; // Force show update notes after logout
 	document.cookie = 'refreshToken=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT'; // delete cookie
-
-	console.log("Cookie after openLoginMenu: " + document.cookie);
 
 	let menu = document.createElement("div");
 	menu.className = "login-menu";
@@ -127,7 +117,7 @@ async function openUserSettings() {
 
 	// show loading animation
 	settingsElement.innerHTML = `
-    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+    <img src="assets/images/mGira_bike.png" id="spinner">
     <div id="backButton" onclick="hideUserSettings()"><i class="bi bi-arrow-90deg-left"></i></div>
     <div id="proxyNotWorking" onclick="openSetProxyPrompt()">Proxy não funciona?</div>
     `;
@@ -135,7 +125,12 @@ async function openUserSettings() {
 	// Get all the user information
 	const userObj = await getUserInformation();
 
+	// Get subscription expiration
 	const subscriptionExpiration = new Date(userObj.activeUserSubscriptions[0].expirationDate);
+
+	// Get user initials
+	let allNames = userObj.name.split(" ");  // separate all names
+	let initials = allNames[0][0] + allNames.at(-1)[0]; // first letter of first name + first letter of last name
 
 	// Calculate the total time of the tripHistory
 	let totalTime = 0;
@@ -166,9 +161,9 @@ async function openUserSettings() {
         <div id="topUserContainer">
             <div id="backButton" onclick="hideUserSettings()"><i class="bi bi-arrow-90deg-left"></i></div>
             <img id="footer" src="assets/images/gira_footer_white.svg" alt="backImage">
-            <img id="userImage" src="https://ui-avatars.com/api/?name=${encodeURI(
-							userObj.name
-						)}&size=175&background=231F20&color=fff&rounded=true">
+            <div id="userImage">
+				<div id="userInitialsSettings">${initials}</div>
+			</div>
         </div>
         <div id="userName">${userObj.name}</div>
         <div id="balanceAndBonusContainer">
@@ -268,4 +263,20 @@ function openSetProxyPrompt() {
 		"Definir",
 		"Padrão"
 	);
+}
+
+
+
+function setUserImageInitials(username) {
+
+	// Set the initials of the user name to act like picture
+	// (removes dependency on ui-avatars.com)
+
+	// Get the initials
+	let allNames = username.split(" ");  // separate all names
+	let initials = allNames[0][0] + allNames.at(-1)[0]; // first letter of first name + first letter of last name
+
+	// User picture (main screen)
+	let userInitialsElement = document.getElementById("userInitials");
+	userInitialsElement.innerHTML = initials;
 }

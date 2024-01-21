@@ -12,7 +12,16 @@
 /* #endregion */
 
 /* #region Loading animation */
-
+#spinner {
+	display: inline-block;
+	width: 80px;
+	height: 80px;
+	position: absolute;
+	top: calc(50% - 40px);
+	left: calc(50% - 40px);
+	object-fit: contain;
+	animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
 .lds-ring {
 	display: inline-block;
 	width: 80px;
@@ -245,6 +254,7 @@ body {
 	position: absolute;
 	left: 2vh;
 	bottom: 2vh;
+	filter: drop-shadow(0px 4px 6px 0px var(--shadow-green)),
 }
 /* #endregion */
 
@@ -270,6 +280,9 @@ body {
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 #zoomControls div i {
 	width: 32px;
@@ -294,7 +307,7 @@ body {
 	background-color: var(--white);
 	border-radius: 999px 0 0 999px;
 	color: var(--green);
-	outline: 2px solid var(--green);
+	outline: 1px solid var(--green);
 	position: absolute;
 	left: 2vh;
 	bottom: 2vh;
@@ -303,6 +316,10 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
+
 }
 #searchBar {
 	background-color: rgb(255, 255, 255);
@@ -311,7 +328,7 @@ body {
 	position: absolute;
 	left: calc(2vh + 7vh);
 	bottom: 2vh;
-	outline: 2px solid var(--green);
+	outline: 1px solid var(--green);
 	border-radius: 0 999px 999px 0;
 	display: flex;
 	align-items: center;
@@ -319,6 +336,9 @@ body {
 	color: var(--green);
 	border: none;
 	font-size: medium;
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 #searchBar::-webkit-input-placeholder {
 	color: var(--green);
@@ -335,7 +355,7 @@ input[type="search"]::-webkit-search-results-decoration {
 
 /* #region Navigation Button */
 #navigationButton {
-	background-color: var(--white);
+	background-color: transparent;
 	width: 7vh;
 	height: 7vh;
 	position: absolute;
@@ -343,10 +363,13 @@ input[type="search"]::-webkit-search-results-decoration {
 	right: calc(2vh + 7vh + 2vh);
 	bottom: 2vh;
 	border-radius: 999px;
-	outline: 2px solid var(--green);
+	outline: 1px solid var(--green);
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 #navigationButton img {
 	border-radius: 999px;
@@ -357,7 +380,7 @@ input[type="search"]::-webkit-search-results-decoration {
 
 /* #region User picture */
 #userPicture {
-	background-color: var(--white);
+	background-color: transparent;
 	width: 7vh;
 	height: 7vh;
 	position: absolute;
@@ -365,18 +388,25 @@ input[type="search"]::-webkit-search-results-decoration {
 	right: 2vh;
 	bottom: 2vh;
 	border-radius: 999px;
-	outline: 2px solid var(--green);
+	outline: 1px solid var(--green);
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
-#userPicture img {
+/*#userPicture img {
 	border-radius: 999px;
 	width: 7vh;
 	height: 7vh;
 }
 #userPicture i {
 	font-size: calc(0.2 * 25vh);
+}*/
+#userPicture #userInitials {
+	font-size: 3dvh;
+	color: var(--green);
 }
 /* #endregion */
 
@@ -1013,6 +1043,13 @@ input[type="search"]::-webkit-search-results-decoration {
 	position: absolute;
 	top: calc(80% - (20vh / 2));
 	left: calc(50% - (20vh / 2));
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.user-settings #topUserContainer #userImage #userInitialsSettings {
+	font-size: 8dvh;
+	color: var(--white);
 }
 .user-settings #userName {
 	width: 100%;

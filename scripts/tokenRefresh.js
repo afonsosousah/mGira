@@ -30,9 +30,7 @@ async function tokenRefresh() {
 
 			// Store refreshToken cookie (stay logged in)
 			document.cookie = "refreshToken=" + user.refreshToken + "; expires=" + expiryDate.toGMTString();
-
-			console.log("New token set");
-
+			
 			// Hide login menu if it is showing
 			if (document.querySelector(".login-menu")) document.querySelector(".login-menu").remove();
 
@@ -48,8 +46,12 @@ async function tokenRefresh() {
 			// Wait before making next request (reduce error rate)
 			await delay(200);
 			responseObject = await response.json();
-			if (!responseObject.statusDescription.includes("The Token field is required.")) return tokenRefresh();
-		} else openLoginMenu();
+			if (!Object.hasOwn(responseObject, "statusDescription")) {
+				if (!responseObject.statusDescription.includes("The Token field is required.")) 
+					return tokenRefresh();	
+			}
+		} else 
+			openLoginMenu();
 	} else {
 		alert("Token refresh failed!");
 	}
