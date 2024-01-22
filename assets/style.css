@@ -643,7 +643,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	padding: 5px 15px;
 	border-radius: 999px;
 	background-color: var(--glass-white);
-	background-image: url("https://icons.getbootstrap.com/assets/icons/envelope-at.svg");
+	background-image: url("images/envelope-at.svg");
 	background-repeat: no-repeat;
 	background-position-x: calc(100% - 10px);
 	background-position-y: calc(100% - 14px);
@@ -652,7 +652,7 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 #loginCard input[name="password"] {
 	top: calc(10% + 5.25dvh + 10px + 2dvh);
-	background-image: url("https://icons.getbootstrap.com/assets/icons/key.svg");
+	background-image: url("images/key.svg");
 }
 #registerButton,
 #loginButton {
