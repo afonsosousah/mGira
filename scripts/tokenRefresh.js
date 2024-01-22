@@ -46,10 +46,12 @@ async function tokenRefresh() {
 			// Wait before making next request (reduce error rate)
 			await delay(200);
 			responseObject = await response.json();
-			if (!Object.hasOwn(responseObject, "statusDescription")) {
+			if (Object.hasOwn(responseObject, "statusDescription")) {
 				if (!responseObject.statusDescription.includes("The Token field is required.")) 
 					return tokenRefresh();	
 			}
+			else
+				return tokenRefresh();
 		} else 
 			openLoginMenu();
 	} else {

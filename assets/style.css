@@ -627,7 +627,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	position: absolute;
 	bottom: 0;
 	left: 0;
-	border-radius: 20px 20px 0 0;
+	border-radius: 30px 30px 0 0;
 	animation: smooth-appear 1s ease forwards;
 }
 #loginCard input {
@@ -682,6 +682,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	width: 100%;
 	object-fit: cover;
 	z-index: 0;
+	opacity: 0.05;
 }
 /* #endregion */
 
@@ -832,15 +833,15 @@ input[type="search"]::-webkit-search-results-decoration {
 	position: absolute;
 	bottom: 0;
 	left: 0;
-	border-radius: 20px 20px 0 0;
+	border-radius: 30px 30px 0 0;
 }
 #bikeReserveCard #backButton {
 	position: absolute;
 	top: 2%;
 	left: 2%;
 	background-color: transparent;
-	width: 8vh;
-	height: 8vh;
+	width: 6vh;
+	height: 6vh;
 	font-size: calc(0.35 * 8vh);
 	margin-bottom: 1vh;
 	border-radius: 999px;
@@ -859,14 +860,35 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 #bikeReserveCard #textContent {
 	position: absolute;
-	top: 30px;
-	left: calc(8vh + 2% + 5px);
+	top: 20px;
+	left: calc(6vh + 10px);
 	width: calc(80% - 20px - 20px);
+	display: flex;
+	flex-direction: column;
 }
-#bikeReserveCard img {
+#bikeReserveCard #textContent #bikeName {
+	font-weight: bold;
+	font-size: 1.2rem;
+}
+#bikeReserveCard #textContent #bikeDock,
+#bikeReserveCard #textContent #bikeBattery {
+	font-size: 0.9rem;
+}
+#bikeReserveCard #stationName {
+	font-size: 0.9rem;
+	margin-top: auto;
+	margin-bottom: 0;
+	width: calc(100vw - 8dvh);
+	text-align: center;
+	padding: 0 4dvh;
 	position: absolute;
-	top: 10px;
-	right: 20px;
+	left: 0;
+	top: 15dvh;
+}
+#bikeReserveCard #bikeLogo {
+	position: absolute;
+	top: 3dvh;
+	right: 3dvh;
 	width: 20%;
 }
 #bikeReserveCard #unlockSlider {
@@ -906,11 +928,13 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 #bikeReserveCard #footer {
 	position: absolute;
-	right: unset;
-	top: unset;
 	bottom: 0;
 	left: 0;
+	height: 14dvh;
 	width: 100%;
+	object-fit: cover;
+	z-index: 0;
+	opacity: 0.05;
 }
 /* #endregion */
 

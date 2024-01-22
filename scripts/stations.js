@@ -126,7 +126,8 @@ async function openStationMenu(stationSerialNumber) {
 	}
 
 	// get station object
-	stationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
+	const stationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
+	lastStationObj = stationObj;
 
 	// remove previous station card
 	if (document.getElementById("stationMenu")) document.getElementById("stationMenu").remove();
@@ -227,7 +228,7 @@ async function openBikeList(stationSerialNumber) {
 
 		bikeListElement.innerHTML = `
             <div id="battery" style="width: ${bike.name[0] === "E" ? `${bike.battery}%` : `0`}"></div>
-            <div id="content" onclick="openUnlockBikeCard('${stationSerialNumber}','${bike.serialNumber}')">
+            <div id="content" onclick="openUnlockBikeCard('${stationSerialNumber}','${bike.serialNumber}','${dockObj.serialNumber}')">
 				<img id="bikeIcon" src="assets/images/mGira_bike_black.png">
 				<div id="bikeInfo">
 					<div id="bikeName">${bike.name}</div>

@@ -121,10 +121,15 @@ async function tripPayWithPoints(tripCode) {
 	return response.data.tripPayWithPoints;
 }
 
-function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, unregistered = false) {
+function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSerialNumber, unregistered = false) {
+
+	let stationObj;
+
 	if (stationSerialNumber !== null) {
 		// get station object
-		const stationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
+		stationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
+
+		console.log(stationSerialNumber);
 
 		// check if the app has access to the user location
 		if (!pos) {
@@ -150,8 +155,15 @@ function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, unregistered 
 		stationObj = { name: "Bicicleta não registada" };
 	}
 
-	// hide the bike list if it is showing
-	if (document.querySelector("#bikeMenu")) document.querySelector("#bikeMenu").remove();
+	// get dock object
+	let dockObj;
+
+	if (!unregistered) {
+		dockObj = stationObj.dockList.find(obj => obj.serialNumber === dockSerialNumber);
+	} else {
+		dockObj = { name: "?" };
+	}
+	
 
 	let card = document.createElement("div");
 	card.className = "bike-reserve";
@@ -160,11 +172,12 @@ function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, unregistered 
         <div id="bikeReserveCard">
             <div id="backButton" onclick="document.getElementById('unlockBikeCard').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
             <div id="textContent">
-                ${bikeObj.name[0] === "E" ? `${bikeObj.name}<br>${bikeObj.battery}% de bateria` : `${bikeObj.name}`}
-                <br><br>
-                ${stationObj.name}
+				<div id="bikeName">${bikeObj.name}</div>
+				<div id="bikeDock">Doca ${dockObj.name}</div>
+				<div id="bikeBattery">${bikeObj.name[0] === "E" ? `${bikeObj.battery}%` : ``}</div>
             </div>
-            <img src="assets/images/mGira_bike.png" alt="bike">
+			<div id="stationName">${stationObj.name}</div>
+            <img id="bikeLogo" src="assets/images/mGira_bike.png" alt="bike">
             <input type="range" name="unlockSlider" id="unlockSlider" onchange="startBikeTrip(event, '${bikeSerialNumber}')" min="0" max="100" value="0">
             <img src="assets/images/gira_footer.svg" id="footer" alt="footer">
         </div>
@@ -213,7 +226,7 @@ function takeUnregisteredBike() {
 	// Try to open the unlock bike card, to take bike
 	if (typeof bikeObj !== "undefined") {
 		let serialNumber = bikeObj.serialNumber;
-		openUnlockBikeCard(null, serialNumber, true);
+		openUnlockBikeCard(null, serialNumber, null, true);
 		if (document.getElementById("takeUnregisteredBike")) document.getElementById("takeUnregisteredBike").remove();
 	} else {
 		alert("A bicicleta não foi encontrada...");

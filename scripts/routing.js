@@ -1,4 +1,4 @@
-let orsApiKey = "REMOVED FOR GITHUB";
+let orsApiKey = "5b3ce3597851110001cf62482bb7bca6e13347a192fe3b623a2cd57d";
 let currentRouteCoordinates;
 
 async function calculateFullRoute(fromCoordinates, toCoordinates) {
