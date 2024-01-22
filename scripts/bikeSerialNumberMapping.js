@@ -6579,4 +6579,396 @@ const bikeSerialNumberMapping = [
 		name: "E1843",
 		serialNumber: "e12e1ffc2c",
 	},
+	{
+		"name": "E2172",
+		"serialNumber": "792dff872c"
+	},
+	{
+		"name": "E0920",
+		"serialNumber": "24597ae2e5"
+	},
+	{
+		"name": "E0880",
+		"serialNumber": "1f5998eb35"
+	},
+	{
+		"name": "E0915",
+		"serialNumber": "ed597908c5"
+	},
+	{
+		"name": "E0938",
+		"serialNumber": "c9a273a1b9"
+	},
+	{
+		"name": "E0936",
+		"serialNumber": "8c59935315"
+	},
+	{
+		"name": "E0981",
+		"serialNumber": "c3a2969e69"
+	},
+	{
+		"name": "E0886",
+		"serialNumber": "a2db9003ea"
+	},
+	{
+		"name": "E0892",
+		"serialNumber": "e8db98913a"
+	},
+	{
+		"name": "E0939",
+		"serialNumber": "efdb8cb20a"
+	},
+	{
+		"name": "E0933",
+		"serialNumber": "36dba1f6ba"
+	},
+	{
+		"name": "E0887",
+		"serialNumber": "1359832ce5"
+	},
+	{
+		"name": "E0912",
+		"serialNumber": "ae5991b3d5"
+	},
+	{
+		"name": "E0902",
+		"serialNumber": "d290f1992a"
+	},
+	{
+		"name": "E1981",
+		"serialNumber": "1d2e0c83bc"
+	},
+	{
+		"name": "E0888",
+		"serialNumber": "96598ad095"
+	},
+	{
+		"name": "E1088",
+		"serialNumber": "07d469e852"
+	},
+	{
+		"name": "E0940",
+		"serialNumber": "23db91234a"
+	},
+	{
+		"name": "E0935",
+		"serialNumber": "68597db9f5"
+	},
+	{
+		"name": "E0873",
+		"serialNumber": "682e1d376c"
+	},
+	{
+		"name": "E0773",
+		"serialNumber": "e9db95dd7a"
+	},
+	{
+		"name": "E0931",
+		"serialNumber": "03db9c9eda"
+	},
+	{
+		"name": "E0904",
+		"serialNumber": "5c59767605"
+	},
+	{
+		"name": "E0893",
+		"serialNumber": "c7db8fe97a"
+	},
+	{
+		"name": "E0962",
+		"serialNumber": "22597b2525"
+	},
+	{
+		"name": "E0921",
+		"serialNumber": "addb9bb75a"
+	},
+	{
+		"name": "E0885",
+		"serialNumber": "0cdb835e0a"
+	},
+	{
+		"name": "E1091",
+		"serialNumber": "12d4aa9ef2"
+	},
+	{
+		"name": "E1198",
+		"serialNumber": "1a2e07cffc"
+	},
+	{
+		"name": "E0977",
+		"serialNumber": "d1db84b43a"
+	},
+	{
+		"name": "E0954",
+		"serialNumber": "1e5978aa95"
+	},
+	{
+		"name": "E0926",
+		"serialNumber": "8259946a25"
+	},
+	{
+		"name": "E0945",
+		"serialNumber": "01db8f4f1a"
+	},
+	{
+		"name": "E0969",
+		"serialNumber": "1edb9f90ca"
+	},
+	{
+		"name": "E0899",
+		"serialNumber": "9d597667d5"
+	},
+	{
+		"name": "E0790",
+		"serialNumber": "c12e1003fc"
+	},
+	{
+		"name": "E2138",
+		"serialNumber": "512e1ffc9c"
+	},
+	{
+		"name": "E0924",
+		"serialNumber": "1e597a7845"
+	},
+	{
+		"name": "E0875",
+		"serialNumber": "2f2e06fbfc"
+	},
+	{
+		"name": "E1242",
+		"serialNumber": "7adb97fcca"
+	},
+	{
+		"name": "E0897",
+		"serialNumber": "0adba2691a"
+	},
+	{
+		"name": "E0978",
+		"serialNumber": "f5db8a2e8a"
+	},
+	{
+		"name": "E0869",
+		"serialNumber": "372e0f5a4c"
+	},
+	{
+		"name": "E0911",
+		"serialNumber": "7d598e3f95"
+	},
+	{
+		"name": "E1794",
+		"serialNumber": "df2e0954ac"
+	},
+	{
+		"name": "E0894",
+		"serialNumber": "b990eb589a"
+	},
+	{
+		"name": "E2216",
+		"serialNumber": "f22e1909cc"
+	},
+	{
+		"name": "E0917",
+		"serialNumber": "fa597c4a95"
+	},
+	{
+		"name": "E0857",
+		"serialNumber": "fcdb874aea"
+	},
+	{
+		"name": "E0965",
+		"serialNumber": "8f598192c5"
+	},
+	{
+		"name": "E0874",
+		"serialNumber": "202e05575c"
+	},
+	{
+		"name": "E0907",
+		"serialNumber": "ad59798805"
+	},
+	{
+		"name": "E0959",
+		"serialNumber": "e1597c31f5"
+	},
+	{
+		"name": "E0944",
+		"serialNumber": "f45985cde5"
+	},
+	{
+		"name": "E0882",
+		"serialNumber": "0fdb835d0a"
+	},
+	{
+		"name": "E0928",
+		"serialNumber": "be59994b35"
+	},
+	{
+		"name": "E0740",
+		"serialNumber": "8459933b75"
+	},
+	{
+		"name": "E0955",
+		"serialNumber": "b059952955"
+	},
+	{
+		"name": "E0889",
+		"serialNumber": "37db9adcaa"
+	},
+	{
+		"name": "E2206",
+		"serialNumber": "922e0cfc4c"
+	},
+	{
+		"name": "E0909",
+		"serialNumber": "3a59868065"
+	},
+	{
+		"name": "E0879",
+		"serialNumber": "b3dba2905a"
+	},
+	{
+		"name": "E0956",
+		"serialNumber": "fedb8f309a"
+	},
+	{
+		"name": "E0872",
+		"serialNumber": "7b2e043d6c"
+	},
+	{
+		"name": "E0972",
+		"serialNumber": "48db95fcfa"
+	},
+	{
+		"name": "E1407",
+		"serialNumber": "0ad4c14d52"
+	},
+	{
+		"name": "E0895",
+		"serialNumber": "b35998d7a5"
+	},
+	{
+		"name": "E0914",
+		"serialNumber": "cf2e0cb15c"
+	},
+	{
+		"name": "E0927",
+		"serialNumber": "a659777df5"
+	},
+	{
+		"name": "E0985",
+		"serialNumber": "bd59900175"
+	},
+	{
+		"name": "E0984",
+		"serialNumber": "5390f44d7a"
+	},
+	{
+		"name": "E0951",
+		"serialNumber": "d65976cc35"
+	},
+	{
+		"name": "E0903",
+		"serialNumber": "badb9b40ba"
+	},
+	{
+		"name": "E1719",
+		"serialNumber": "b8a2730069"
+	},
+	{
+		"name": "E1105",
+		"serialNumber": "882e006acc"
+	},
+	{
+		"name": "E0961",
+		"serialNumber": "3390ef662a"
+	},
+	{
+		"name": "E0876",
+		"serialNumber": "c72e1005fc"
+	},
+	{
+		"name": "E0948",
+		"serialNumber": "6fdb901e3a"
+	},
+	{
+		"name": "E0941",
+		"serialNumber": "fedb918e3a"
+	},
+	{
+		"name": "E0868",
+		"serialNumber": "322dfffc1c"
+	},
+	{
+		"name": "E0891",
+		"serialNumber": "a059946805"
+	},
+	{
+		"name": "E0943",
+		"serialNumber": "315985c825"
+	},
+	{
+		"name": "E0973",
+		"serialNumber": "5859991d85"
+	},
+	{
+		"name": "E0975",
+		"serialNumber": "bd597d4cd5"
+	},
+	{
+		"name": "E0916",
+		"serialNumber": "2a90dd0d6a"
+	},
+	{
+		"name": "E1525",
+		"serialNumber": "0a9d0b0599"
+	},
+	{
+		"name": "E0963",
+		"serialNumber": "c3db9042ca"
+	},
+	{
+		"name": "E0884",
+		"serialNumber": "91f379f6ed"
+	},
+	{
+		"name": "E1099",
+		"serialNumber": "f4d4520072"
+	},
+	{
+		"name": "E0932",
+		"serialNumber": "c25997b9b5"
+	},
+	{
+		"name": "E0976",
+		"serialNumber": "b4597f27b5"
+	},
+	{
+		"name": "E0971",
+		"serialNumber": "c6db97e06a"
+	},
+	{
+		"name": "E0979",
+		"serialNumber": "3c547f4c5b"
+	},
+	{
+		"name": "E0953",
+		"serialNumber": "d9db91198a"
+	},
+	{
+		"name": "E0966",
+		"serialNumber": "a9db835baa"
+	},
+	{
+		"name": "E0947",
+		"serialNumber": "ea597630f5"
+	},
+	{
+		"name": "E0846",
+		"serialNumber": "48db90b9ba"
+	},
+	{
+		"name": "E0952",
+		"serialNumber": "3cdb9a374a"
+	}
 ];

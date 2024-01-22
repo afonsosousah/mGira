@@ -208,9 +208,9 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 }
 
 const EARTH_RADIUS_KM = 6371;
+const degToRad = Math.PI/180;
 // Calculate the distance between two points in meters (given the latitude/longitude of those points).
 function distance(point1, point2) {
-	degToRad = 0.017453;
 
 	// Points are in [lon, lat] format
 	const [lon1, lat1] = point1;
