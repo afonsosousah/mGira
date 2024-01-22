@@ -2,6 +2,7 @@ let navigationActive = false;
 let navigationMode = null;
 let deviceOrientation = "portrait";
 let wakeLock = null;
+let lastRoutePointIndex = null;
 
 async function startNavigation(walkingOnly = false) {
 	navigationActive = true;
@@ -84,7 +85,7 @@ function finalOnFootNavigation() {
 	navigationMode = "foot";
 
 	// Remove all the on bike navigation elements
-	const navigationElements = Array.from(document.querySelectorAll("*")).filter(e => getComputedStyle(e).zIndex === 16);
+	const navigationElements = Array.from(document.querySelectorAll("*")).filter(e => getComputedStyle(e).zIndex === "16");
 	for (element of navigationElements) {
 		element.remove();
 	}
@@ -108,12 +109,16 @@ function finalOnFootNavigation() {
     `);
 }
 
-function stopNavigation() {
+async function stopNavigation() {
 	navigationActive = false;
 	navigationMode = null;
 
 	// Exit fullscreen
-	document.exitFullscreen();
+	try {
+		await document.exitFullscreen();
+	} catch (error) {
+		console.log(error);
+	}
 
 	// Don't force device to be awake anymore
 	if (wakeLock) {
@@ -122,7 +127,7 @@ function stopNavigation() {
 
 	// Remove all the navigation elements
 	const navigationElements = Array.from(document.querySelectorAll("*")).filter(
-		e => getComputedStyle(e).zIndex === 11 || getComputedStyle(e).zIndex === 16
+		e => getComputedStyle(e).zIndex === "11" || getComputedStyle(e).zIndex === "16"
 	);
 	for (element of navigationElements) {
 		element.remove();
@@ -158,6 +163,39 @@ function updatePositionAndRotationWhenNavigating() {
 				closestPointIndex = i;
 			}
 		}
+
+		console.log(closestPointIndex);
+		console.log(lastRoutePointIndex);
+
+		// If the closest point is less than 1 meter away, update lastRoutePointIndex
+		if (lastRoutePointIndex) {
+			let distanceToClosestPoint = distance(pos, currentRouteCoordinates[closestPointIndex]);
+			let distanceToLastPoint = distance(pos, currentRouteCoordinates[lastRoutePointIndex]);
+			let distanceBetweenClosestAndLastPoint = distance(currentRouteCoordinates[closestPointIndex], currentRouteCoordinates[lastRoutePointIndex]);
+
+			console.log(distanceToClosestPoint);
+			console.log(distanceToLastPoint);
+			console.log(distanceBetweenClosestAndLastPoint);
+
+			if(
+				(distanceToClosestPoint < 1 && distanceToClosestPoint < distanceToLastPoint)
+				||
+				(distanceToLastPoint > distanceBetweenClosestAndLastPoint)
+				||
+				(Math.abs(lastRoutePointIndex - closestPointIndex) > 1) // If the difference is more than 1 point
+			) {
+				lastRoutePointIndex = closestPointIndex;
+			}
+			else {
+				closestPointIndex = lastRoutePointIndex;
+			}
+		}
+		else {
+			lastRoutePointIndex = closestPointIndex;
+		}
+
+		console.log(closestPointIndex);
+		console.log(lastRoutePointIndex);
 
 		let closestRoutePoint = currentRouteCoordinates[closestPointIndex];
 		let nextRoutePoint = currentRouteCoordinates[Math.min(closestPointIndex + 1, currentRouteCoordinates.length - 1)]; // make sure the point doesn't go out of bounds

@@ -183,27 +183,16 @@ function getLocation(zoom = true) {
 					name: "Current location",
 				});
 
-				let iconStyle;
-
-				if (navigationMode === "bike") {
-					iconStyle = new ol.style.Style({
-						image: new ol.style.Icon({
-							anchor: [0.5, 0.5],
-							anchorXUnits: "fraction",
-							anchorYUnits: "fraction",
-							src: "assets/images/topDownBike.png",
-						}),
-					});
-				} else {
-					iconStyle = new ol.style.Style({
-						image: new ol.style.Icon({
-							anchor: [0.5, 0.5],
-							anchorXUnits: "fraction",
-							anchorYUnits: "fraction",
-							src: "assets/images/mapLocationDot.png",
-						}),
-					});
-				}
+				const iconStyle = new ol.style.Style({
+					image: new ol.style.Icon({
+						width: 40,
+						height: 40,
+						anchor: [0.5, 0.5],
+						anchorXUnits: "fraction",
+						anchorYUnits: "fraction",
+						src: "assets/images/gps_dot.png",
+					}),
+				});
 
 				iconFeature.setStyle(iconStyle);
 				const vectorSource = new ol.source.Vector({
@@ -256,10 +245,12 @@ function getLocation(zoom = true) {
 
 					let iconStyle = new ol.style.Style({
 						image: new ol.style.Icon({
+							width: 40,
+							height: 40,
 							anchor: [0.5, 0.5],
 							anchorXUnits: "fraction",
 							anchorYUnits: "fraction",
-							src: "assets/images/mapLocationDot.png",
+							src: "assets/images/gps_dot.png",
 						}),
 					});
 
@@ -315,6 +306,74 @@ function getLocation(zoom = true) {
 					}
 				}
 			};
+
+
+			// Rotate heading arrow using device sensors (Fulltilt library)
+			// Start the FULLTILT DeviceOrientation listeners 
+			var promise = FULLTILT.getDeviceOrientation({'type': 'world'});
+			promise.then(function(orientationControl) {
+		
+				orientationControl.listen(function() {
+					// Get the current *screen-adjusted* device orientation angles
+					var currentOrientation = orientationControl.getScreenAdjustedEuler();
+
+					// Calculate the current compass heading that the user is 'looking at' (in radians)
+					var compassHeading = (Math.PI / 180) * (360 - currentOrientation.alpha) + map.getView().getRotation();
+		
+					// Set rotation of map dot
+
+					const iconFeature = new ol.Feature({
+						geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
+						name: "Current location",
+					});
+
+					const iconStyle = new ol.style.Style({
+						image: new ol.style.Icon({
+							width: 40,
+							height: 40,
+							anchor: [0.5, 0.5],
+							anchorXUnits: "fraction",
+							anchorYUnits: "fraction",
+							src: "assets/images/gps_dot.png",
+							rotation: compassHeading
+						}),
+					});
+	
+					iconFeature.setStyle(iconStyle);
+					const vectorSource = new ol.source.Vector({
+						features: [iconFeature],
+					});
+	
+					const vectorLayer = new ol.layer.Vector({
+						name: "currentLocationLayer",
+						source: vectorSource,
+						zIndex: 99,
+					});
+	
+					if (
+						map
+							.getLayers()
+							.getArray()
+							.filter(layer => layer.get("name") === "currentLocationLayer").length === 0
+					) {
+						// Add the layer
+						map.addLayer(vectorLayer);
+					} else {
+						// Get the layer containing the previous current location
+						const currentLocationLayer = map
+							.getLayers()
+							.getArray()
+							.find(layer => layer.get("name") === "currentLocationLayer");
+	
+						// Refresh the feature
+						let feature = currentLocationLayer.getSource().getFeatures()[0];
+						feature.setStyle(iconStyle);
+						feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
+					}
+				});
+		
+			});
+
 
 			checkPos();
 		}

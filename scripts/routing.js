@@ -208,7 +208,6 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 }
 
 const EARTH_RADIUS_KM = 6371;
-const degToRad = Math.PI/180;
 // Calculate the distance between two points in meters (given the latitude/longitude of those points).
 function distance(point1, point2) {
 
@@ -396,10 +395,12 @@ async function searchPlace() {
 
 					const iconStyle = new ol.style.Style({
 						image: new ol.style.Icon({
-							anchor: [0.5, 50],
+							width: 40,
+							height: 50,
+							anchor: [0.5, 1],
 							anchorXUnits: "fraction",
-							anchorYUnits: "pixels",
-							src: "assets/images/mapDotPlace.png",
+							anchorYUnits: "fraction",
+							src: `assets/images/mapDotPlace.png`,
 						}),
 					});
 
@@ -417,10 +418,12 @@ async function searchPlace() {
 
 					const iconStyle = new ol.style.Style({
 						image: new ol.style.Icon({
-							anchor: [0.5, 50],
+							width: 40,
+							height: 50,
+							anchor: [0.5, 1],
 							anchorXUnits: "fraction",
-							anchorYUnits: "pixels",
-							src: "assets/images/mapDotPlace_black.png",
+							anchorYUnits: "fraction",
+							src: `assets/images/mapDotPlace_black.png`,
 						}),
 					});
 
@@ -440,10 +443,12 @@ async function searchPlace() {
 
 				const iconStyle = new ol.style.Style({
 					image: new ol.style.Icon({
-						anchor: [0.5, 50],
+						width: 40,
+						height: 50,
+						anchor: [0.5, 1],
 						anchorXUnits: "fraction",
-						anchorYUnits: "pixels",
-						src: "assets/images/mapDotPlace.png",
+						anchorYUnits: "fraction",
+						src: `assets/images/mapDotPlace.png`,
 					}),
 				});
 
@@ -544,49 +549,59 @@ function addStationPointToMap(station, start = true) {
 	let position = [station.longitude, station.latitude];
 
 	const iconFeature = new ol.Feature({
-		geometry: new ol.geom.Point(ol.proj.fromLonLat(position)),
-		name: station.serialNumber,
-	});
+			geometry: new ol.geom.Point(ol.proj.fromLonLat(position)),
+			name: station.serialNumber,
+		});
 
-	let width;
+		let iconStyle;
+		if (station.docks !== 0) {
+			const bikeRatio = station.bikes / station.docks;
+			const filled =
+				station.bikes === 0
+					? 0
+					: bikeRatio <= 0.15
+					? 15
+					: bikeRatio <= 0.3
+					? 30
+					: bikeRatio <= 0.5
+					? 50
+					: bikeRatio < 1
+					? 80
+					: 100;
 
-	if (start) {
-		if (station.bikes === 0) {
-			width = 10;
-		} else {
-			width = Math.min(12 + station.bikes * 0.2, 18);
-		}
-	} else {
-		if (station.docks - station.bikes === 0) {
-			width = 10;
-		} else {
-			width = Math.min(12 + (station.docks - station.bikes) * 0.2, 18);
-		}
-	}
+			iconStyle = new ol.style.Style({
+				image: new ol.style.Icon({
+					width: 40,
+					height: 50,
+					anchor: [0.5, 1],
+					anchorXUnits: "fraction",
+					anchorYUnits: "fraction",
+					src: `assets/images/mapDot_${filled}.png`,
+				}),
+				text: new ol.style.Text({
+					text: station.bikes.toString(),
+					font: "bold 15px sans-serif",
+					offsetX: 0,
+					offsetY: -30,
+					textAlign: "center",
+					fill: new ol.style.Fill({
+						color: "#FFFFFF",
+					}),
+				}),
+			});
+		} else
+			iconStyle = new ol.style.Style({
+				image: new ol.style.Icon({
+					width: 40,
+					height: 50,
+					anchor: [0.5, 1],
+					anchorXUnits: "fraction",
+					anchorYUnits: "fraction",
+					src: `assets/images/mapDot_Deactivated.png`,
+				}),
+			});
 
-	const iconStyle = new ol.style.Style({
-		image: new ol.style.Circle({
-			radius: width,
-			fill: new ol.style.Fill({
-				color: "#79C000",
-			}),
-			stroke: new ol.style.Stroke({
-				color: "#FFFFFF",
-				width: 1,
-			}),
-		}),
-		text: new ol.style.Text({
-			text: start ? station.bikes.toString() : (station.docks - station.bikes).toString(),
-			font: "bold 12px sans-serif",
-			offsetX: 0,
-			textAlign: "center",
-			fill: new ol.style.Fill({
-				color: "#FFFFFF",
-			}),
-		}),
-	});
-
-	iconFeature.setStyle(iconStyle);
+		iconFeature.setStyle(iconStyle);
 
 	const vectorSource = new ol.source.Vector({
 		features: [iconFeature],
