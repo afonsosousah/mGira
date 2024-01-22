@@ -211,6 +211,10 @@
 		border-radius: 999px;
 	}
 }
+
+.no-animation {
+	animation: none !important;
+}
 /* #endregion */
 
 /* #region Fill the window and set font */
@@ -750,7 +754,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	position: absolute;
 	width: 90%;
 	left: 5%;
-	top: 15%;
+	bottom: 0;
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
@@ -1195,6 +1199,21 @@ input[type="search"]::-webkit-search-results-decoration {
 	box-shadow:
 		0px 4px 6px 0px var(--shadow-green),
 		0px 0px 5px 0px var(--shadow-green) inset;
+}
+.user-settings #tripHistoryButtonContainer {
+	width: 100vw;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 3vh;
+}
+.user-settings #tripHistoryButton {
+	width: calc(85vw + 2vh - 5vh);
+	padding: 2.5vh;
+	background-color: var(--green);
+	border-radius: 999px;
+	color: var(--white);
+	text-align: center;
 }
 .user-settings #settingsContainer {
 	width: 100vw;
@@ -1834,5 +1853,130 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 #alertBox li {
 	margin-top: 10px;
+}
+/* #endregion */
+
+/* #region Trip history */
+#tripHistory {
+	background-color: var(--white);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: 4;
+	left: 0;
+	top: 0;
+	border-radius: 0;
+	/*animation: smooth-slide-from-bottom 1s ease forwards;*/
+}
+#tripHistory #graphics {
+	height: 25vw;
+	width: 100%;
+	object-fit: cover;
+	rotate: 180deg;
+	opacity: 5%;
+}
+#tripHistory #backButton {
+	position: absolute;
+	top: 2.5dvh;
+	left: 5%;
+	font-size: calc(0.35 * 7dvh);
+	margin-bottom: 1dvh;
+	border-radius: 999px;
+	color: var(--green);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#tripHistory #backButton i {
+	width: 32px;
+	height: 32px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#tripHistory #title {
+	position: absolute;
+	top: 2.5dvh;
+	right: 5%;
+	font-size: 1.3rem;
+	font-weight: bold;
+	color: var(--green);
+}
+#tripHistory #tripList {
+	position: absolute;
+	width: 90%;
+	left: 5%;
+	bottom: 0;
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	max-height: 90%;
+	overflow: scroll;
+}
+.trip-list-element {
+	background-color: var(--white);
+	border-radius: 30px;
+	position: relative;
+	margin-bottom: 10px;
+	border: 1px solid var(--green);
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	padding: 2.5dvh 2dvh;
+}
+.trip-list-element #tripInfo {
+	width: fit-content;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+.trip-list-element #tripInfo #bikeName,
+.trip-list-element #tripInfo #date,
+.trip-list-element #tripInfo #time,
+.trip-list-element #tripInfo #cost,
+.trip-list-element #tripInfo #points {
+	color: var(--black);
+	font-size: 0.9rem;
+	display: flex;
+	flex-direction: row;
+}
+.trip-list-element #tripInfo #bikeName #bikeIcon {
+	max-width: 1em;
+	object-fit: contain;
+}
+.trip-list-element #tripInfo #bikeName #bikeIcon,
+.trip-list-element #tripInfo i {
+	margin-right: 1dvh;
+	color: var(--green);
+}
+.trip-list-element #tripStations {
+	margin-left: auto;
+	position: relative;
+	align-self: stretch;
+	display: flex;
+	align-content: center;
+}
+.trip-list-element #tripStations img {
+	max-width: 50vw;
+	object-fit: contain;
+}
+.trip-list-element #tripStations #startStation {
+	position: absolute;
+	top: 0;
+	left: 0;
+	font-size: 0.7rem;
+	width: 85%;
+	text-align: left;
+}
+.trip-list-element #tripStations #endStation {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	font-size: 0.7rem;
+  	width: 80%;
+	text-align: right;
 }
 /* #endregion */

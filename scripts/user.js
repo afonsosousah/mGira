@@ -201,6 +201,9 @@ async function openUserSettings() {
                 <div id="numberOfTrips">${userObj.tripHistory.length}</div>
             </div>
         </div>
+		<div id="tripHistoryButtonContainer">
+			<div id="tripHistoryButton" onclick="openTripHistory();">Histórico de viagens</div>
+		</div>
         <div id="settingsContainer">
             <div id="proxy">
                 <div>Proxy definido pelo utilizador</div>
@@ -266,7 +269,6 @@ function openSetProxyPrompt() {
 }
 
 
-
 function setUserImageInitials(username) {
 
 	// Set the initials of the user name to act like picture
@@ -279,4 +281,105 @@ function setUserImageInitials(username) {
 	// User picture (main screen)
 	let userInitialsElement = document.getElementById("userInitials");
 	userInitialsElement.innerHTML = initials;
+}
+
+
+function openTripHistory() {
+
+	// Create element
+	let menu = document.createElement("div");
+	menu.id = "tripHistory";
+	menu.innerHTML = `
+        <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
+        <div id="backButton" onclick="hideTripHistory();"><i class="bi bi-arrow-90deg-left"></i></div>
+		<div id="title">Histórico de Viagens</div>
+        <ul id="tripList">
+            <!-- Populate with the list here -->
+        </ul>
+    `.trim();
+	document.body.appendChild(menu);
+
+	// Hide user settings behind trip history (without animations)
+	let userSettingsElem = document.getElementById("userSettings");
+	userSettingsElem.style.maxHeight = "100dvh";
+
+	// populate the trip list
+	for (let trip of user.tripHistory) {
+		// create the list element
+		const tripListElement = document.createElement("li");
+		tripListElement.className = "trip-list-element";
+
+		// Get formatted date
+		let tripDate = new Date(trip.startDate);
+		let monthNumberToShortForm = [
+			'jan.',
+			'fev.',
+			'mar.',
+			'abr.',
+			'mai.',
+			'jun.',
+			'jul.',
+			'ago.',
+			'set.',
+			'out.',
+			'nov.',
+			'dez.'
+		];
+		const formattedDate = `${tripDate.getDay()} ${monthNumberToShortForm[tripDate.getMonth()]} ${tripDate.getFullYear()}`;
+
+		// Get formatted time
+		let tripTime = new Date(new Date(trip.endDate) - new Date(trip.startDate));
+		tripTime.setTime(tripTime.getTime() + tripTime.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
+		const hours = tripTime.getHours();
+		const minutes = tripTime.getMinutes();
+		const formattedTime = hours + "h" + minutes.toString().padStart(2, "0") + "m";
+
+		// Get formatted cost
+		let formattedCost = parseFloat(trip.cost).toFixed(2);
+
+		// add the content to the list element
+		tripListElement.innerHTML = `
+            <div id="tripInfo">
+				<div id="bikeName">
+					<img id="bikeIcon" src="assets/images/mGira_bike.png">
+					${trip.bikeName}
+				</div>
+				<div id="date">
+					<i class="bi bi-calendar"></i>
+					${formattedDate}
+				</div>
+				<div id="time">
+					<i class="bi bi-clock-history"></i>
+					${formattedTime}
+				</div>
+				<div id="cost">
+					<i class="bi bi-currency-euro"></i>
+					${formattedCost}€
+				</div>
+				<div id="points">
+					<i class="bi bi-piggy-bank"></i>
+					${trip.bonus - trip.usedPoints} pontos
+				</div>
+            </div>
+			<div id="tripStations">
+				<img src="assets/images/tripStations.png">
+				<div id="startStation">${trip.startLocation}</div>
+				<div id="endStation">${trip.endLocation}</div>
+			</div>
+        `.trim();
+		document.getElementById("tripList").appendChild(tripListElement);
+	}
+
+	// if there are no bikes, put a message saying that
+	if (document.getElementById("tripList").childElementCount === 0)
+		document.getElementById("tripList").innerHTML = "Não realizou nenhuma viagem";
+}
+
+function hideTripHistory() {
+	// Remove element from DOM
+	document.getElementById('tripHistory').remove();
+
+	// Show user settings again
+	let userSettingsElem = document.getElementById("userSettings");
+	userSettingsElem.style.maxHeight = "";
 }

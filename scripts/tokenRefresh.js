@@ -5,6 +5,9 @@ let currentTry = 0;
 async function tokenRefresh() {
 	tokenRefreshed = false;
 	currentTry += 1;
+
+	console.log(currentTry);
+
 	console.log("Token has not been refreshed...");
 	const response = await fetch(proxyURL, {
 		method: "POST",
@@ -37,6 +40,8 @@ async function tokenRefresh() {
 			// Set that the token has been refreshed successfully
 			tokenRefreshed = true;
 			currentTry = 0; // reset the number of tries
+
+			console.log("Token has been refreshed")
 
 			return user.accessToken;
 		}
