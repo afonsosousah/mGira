@@ -261,7 +261,7 @@ function hideBikeList() {
 	}
 }
 
-async function getMissingBikesList() {
+async function updateBikeList() {
 	// Make a batch query to speed up the request
 	let queryString = "query {";
 	let i = 0;
@@ -291,9 +291,19 @@ async function getMissingBikesList() {
 		);
 
 		// compact the missing bikes list
-		missingBikes = missingBikes.map(bike => ({ name: bike.name, serialNumber: bike.serialNumber }));
+		const newList = bikeSerialNumberMapping
+			.concat(
+				...missingBikes.map(bike => ({
+					name: bike.name,
+					serialNumber: bike.serialNumber,
+				}))
+			)
+			// Account for classic bikes converted into electric, filters our the classic bikes that had an electric one added
+			.filter(({ name }, _, arr) => name.startsWith("E") || !arr.find(bike => bike.name === name.replace("C", "E")))
+			.sort((a, b) => Number(a.name.slice(1)) - Number(b.name.slice(1)));
 
-		console.log(missingBikes);
+		console.log(newList);
+		return newList;
 	} else {
 		console.log("The request failed.");
 	}
