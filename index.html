@@ -92,20 +92,6 @@
 			<div id="userInitials"></div>
 		</div>
 
-
-		<!-- Vercel Speed Insights -->
-		<script>
-			window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-		  </script>
-		  <script defer src="/_vercel/speed-insights/script.js"></script>
-
-
-		<!-- Vercel Insights -->
-		<script>
-			window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-		  </script>
-		<script defer src="/_vercel/insights/script.js"></script>
-
 		<!-- Scripts -->
 		<script>
 			// Register the web app service worker
@@ -131,7 +117,7 @@
 				proxyURL = decodeURI(tempCustomProxy);
 			} else {
 				console.log("Using default proxy");
-				proxyURL = "api/proxy.php";
+				proxyURL = "proxy.php";
 			}
 
 			// Check if the user is logged in, if not, prompt to login
