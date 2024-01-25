@@ -7,7 +7,7 @@ let gpsHeading;
 
 async function initMap() {
 	// Initialize the Map, centered on Lisbon
-	map = new ol.Map({
+	/*map = new ol.Map({
 		target: "map",
 		layers: [
 			new ol.layer.Tile({
@@ -19,7 +19,27 @@ async function initMap() {
 			zoom: 12,
 		}),
 		controls: [new ol.control.Rotate(), new ol.control.Attribution()],
-	});
+	});*/
+
+	// Styled map
+    const key = 'RgT5fNTLsVXnsXKz4kG6';
+    const styleJson = `https://api.maptiler.com/maps/dataviz/style.json?key=${key}`;
+    map = new ol.Map({
+        target: 'map',
+        layers: [
+            new ol.layer.Tile({
+            source: new ol.source.OSM(),
+            }),
+        ],
+        view: new ol.View({
+            center: ol.proj.fromLonLat([-9.142685, 38.736946]),
+            zoom: 12,
+        }),
+        controls: [
+            new ol.control.Rotate()
+        ],
+    });
+    olms.apply(map, styleJson);
 
 	// display popup on click
 	map.on("click", evt => {
