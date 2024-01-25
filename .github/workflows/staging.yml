@@ -1,22 +1,17 @@
-on: 
-  push:
-    branches:
-      - main
-name: Staging to alpha.mgira.pt on push
-
+on: push
+name: 🚀 Deploy website on push
 jobs:
   web-deploy:
-    name: Staging to alpha.mgira.pt
+    name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
-    # Checkout the repository
-    - name: Get latest code
-      uses: actions/checkout@v4
-    # sync files via FTP
-    - name: Sync files via FTP
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v3
+    
+    - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USER }}
+        server: s0.serv00.com
+        username: f8871_github
         password: ${{ secrets.FTP_PASSWORD }}
         server-dir: /domains/alpha.mgira.pt/public_html/
