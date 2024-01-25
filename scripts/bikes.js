@@ -121,7 +121,7 @@ async function tripPayWithPoints(tripCode) {
 	return response.data.tripPayWithPoints;
 }
 
-function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSerialNumber, unregistered = false) {
+async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSerialNumber, unregistered = false) {
 
 	let stationObj;
 
@@ -163,26 +163,77 @@ function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSerialNum
 	} else {
 		dockObj = { name: "?" };
 	}
-	
 
+	console.log("The bike will be reserved!");
+
+	// reserve the bike
+	if (typeof (await reserveBike(bikeSerialNumber)) === "undefined") {
+		alert("Ocorreu um erro ao reservar a bicicleta.");
+		return;
+	};	
+
+	// Create card element
 	let card = document.createElement("div");
 	card.className = "bike-reserve";
 	card.id = "unlockBikeCard";
 	card.innerHTML = `
-        <div id="bikeReserveCard">
-            <div id="backButton" onclick="document.getElementById('unlockBikeCard').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
-            <div id="textContent">
+        <div id="bikeReserveCard">			
+			<div id="backButton" onclick="document.getElementById('unlockBikeCard').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
+			<div id="textContent">
 				<div id="bikeName">${bikeObj.name}</div>
 				<div id="bikeDock">Doca ${dockObj.name}</div>
 				<div id="bikeBattery">${bikeObj.name[0] === "E" ? `${bikeObj.battery}%` : ``}</div>
-            </div>
-			<div id="stationName">${stationObj.name}</div>
-            <img id="bikeLogo" src="assets/images/mGira_bike.png" alt="bike">
-            <input type="range" name="unlockSlider" id="unlockSlider" onchange="startBikeTrip(event, '${bikeSerialNumber}')" min="0" max="100" value="0">
-            <img src="assets/images/gira_footer.svg" id="footer" alt="footer">
+			</div>
+			<div class="timer animatable">
+				<svg>
+					<circle cx="50%" cy="50%" r="7dvh"/>
+					<circle cx="50%" cy="50%" r="7dvh" pathLength="1" />
+					<text x="50%" y="50%" text-anchor="middle"><tspan id="timeLeft"></tspan></text>
+					<text x="50%" y="65%" text-anchor="middle">segundos</text>
+				</svg>
+			</div>
+			<input type="range" name="unlockSlider" id="unlockSlider" onchange="startBikeTrip(event, '${bikeSerialNumber}');" min="0" max="100" value="0">
+			<img src="assets/images/gira_footer.svg" id="footer" alt="footer">
         </div>
     `.trim();
 	document.body.appendChild(card);
+
+
+	// Run the timer (1 minute)
+	let timeLeft = 60;
+	let timerText = document.getElementById('timeLeft');
+	let timerElement = document.querySelector('.timer');
+	const timerCircle = timerElement.querySelector('svg > circle + circle');
+	timerElement.classList.add('animatable');
+	timerCircle.style.strokeDashoffset = 1;
+
+	let countdownHandler = async function(){
+		let isTimeLeft = timeLeft > -1;
+		if(isTimeLeft){
+			const timeRemaining = timeLeft--;
+				const normalizedTime = (timeRemaining - 60) / 60;
+			timerCircle.style.strokeDashoffset = normalizedTime;
+				timerText.innerHTML = timeRemaining;
+		} else {
+			clearInterval(countdownTimer);
+			timerElement.classList.remove('animatable');
+			// No time left, cancel the reservation if the user didn't start the trip
+			if (tripEnded) {
+				console.log("The reserve was cancelled.")
+				if (typeof (await cancelBikeReserve()) === "undefined") {
+					alert("Ocorreu um erro ao cancelar a reserva da bicicleta");
+					return;
+				};
+				
+				// hide the unlock card if it is showing
+				if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
+			}
+		}  
+	};
+
+	countdownHandler(); // call once to start the timer immediately
+	let countdownTimer = setInterval(countdownHandler, 1000);
+
 
 	// If there is navigation going, make the card still appear
 	if (navigationActive) card.style.zIndex = 99;
@@ -234,16 +285,16 @@ function takeUnregisteredBike() {
 	}
 }
 
-// Handles the range input value changed event, and starts the trip if the slider is all the way to the right
+
+// Handles the range input value changed event, and starts the bike trip if the slider is all the way to the right
 async function startBikeTrip(event, bikeSerialNumber) {
-	if (event.target.value === 100) {
-		console.log("The bike will be reserved!");
 
-		// reserve the bike
-		if (typeof (await reserveBike(bikeSerialNumber)) === "undefined") return;
-
+	if (event.target.value === "100") {
 		// start the trip
-		if (typeof (await startTrip()) === "undefined") return;
+		if (typeof (await startTrip()) === "undefined") {
+			alert("Ocorreu um erro ao iniciar a viagem.");
+			return;
+		};
 
 		// hide the unlock card if it is showing
 		if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
@@ -257,12 +308,12 @@ async function startBikeTrip(event, bikeSerialNumber) {
 			tripOverlay.className = "trip-overlay";
 			tripOverlay.id = "tripOverlay";
 			tripOverlay.innerHTML = `
-                <span id="onTripText">Em viagem</span>
-                <img src="assets/images/mGira_bike_black.png" alt="bike" id="bikeLogo">
-                <span id="tripCost">0.00€</span>
-                <span id="tripTime">00:00:00</span>
-                <img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
-            `.trim();
+				<span id="onTripText">Em viagem</span>
+				<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
+				<span id="tripCost">0.00€</span>
+				<span id="tripTime">00:00:00</span>
+				<img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
+			`.trim();
 			document.body.appendChild(tripOverlay);
 		}
 
@@ -272,7 +323,7 @@ async function startBikeTrip(event, bikeSerialNumber) {
 	}
 }
 
-function tripTimer(startTime) {
+async function tripTimer(startTime) {
 	if (tripEnded === false) {
 		// Update timer on trip overlay
 		if (document.querySelector("#tripTime")) {
@@ -301,7 +352,10 @@ function tripTimer(startTime) {
 		if (document.querySelector("#tripOverlay")) document.querySelector("#tripOverlay").remove();
 
 		// Cancel the bike reserve
-		cancelBikeReserve();
+		if (typeof (await cancelBikeReserve()) === "undefined") {
+			alert("Ocorreu um erro ao cancelar a reserva da bicicleta");
+			return;
+		};
 	}
 }
 

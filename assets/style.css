@@ -940,45 +940,93 @@ input[type="search"]::-webkit-search-results-decoration {
 	z-index: 0;
 	opacity: 0.05;
 }
+.timer {
+    position: absolute;
+	bottom: 13dvh;
+	left: calc(50vw - 8dvh);
+	z-index: 1;
+}
+.timer > svg {
+    width: 16dvh;
+    height: 16dvh;
+}
+.timer > svg > circle {
+    fill: none;
+    stroke-opacity: 0.3;
+    stroke: var(--green);
+    stroke-width: 10;
+    transform-origin: center center;
+    transform: rotate(-90deg);
+}
+.timer > svg > circle + circle {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    stroke-linecap: round;
+    stroke-opacity: 1;
+}
+.timer.animatable > svg > circle + circle {
+    transition: stroke-dashoffset 0.3s ease;
+}
+.timer > svg > text {
+    font-size: 1.5rem;
+}
+.timer > svg > text + text {
+    font-size: 0.8rem;
+}
+#bikeReserveCard #startTripButton {
+	width: calc(90% - 6dvh);
+	background-color: var(--green);
+	padding: 2dvh 3dvh;
+	left: 5%;
+	bottom: 2dvh;
+	position: absolute;
+	text-align: center;
+	border-radius: 999px;
+	z-index: 1;
+}
 /* #endregion */
 
 /* #region Trip overlay */
 .trip-overlay {
 	background-color: var(--green);
-	width: 100%;
-	height: 23%;
+	width: calc(100% - 4dvh);
+	height: 20dvh;
 	position: absolute;
-	top: 0;
-	left: 0;
-	border-radius: 20px;
+	top: 2dvh;
+	left: 2dvh;
+	border-radius: 30px;
 	z-index: 3;
 }
 .trip-overlay #onTripText {
 	position: absolute;
-	top: 20px;
-	left: 20px;
-	font-size: 38px;
+	top: 2.5dvh;
+	left: 2.5dvh;
+	font-size: 2rem;
 	color: var(--black);
+	z-index: 4;
 }
 .trip-overlay #bikeLogo {
 	position: absolute;
-	top: 10px;
-	right: 10px;
-	width: 25%;
+	top: 1dvh;
+	right: 1dvh;
+	width: 30%;
+	z-index: 4;
 }
 .trip-overlay #tripCost {
 	position: absolute;
-	bottom: 20px;
-	left: 20px;
-	font-size: 24px;
+	bottom: 3dvh;
+	left: 3dvh;
+	font-size: 1.2rem;
 	color: var(--black);
+	z-index: 4;
 }
 .trip-overlay #tripTime {
 	position: absolute;
-	bottom: 20px;
-	right: 20px;
-	font-size: 24px;
+	bottom: 3dvh;
+	right: 3dvh;
+	font-size: 1.2rem;
 	color: var(--black);
+	z-index: 4;
 }
 .trip-overlay #footer {
 	position: absolute;
@@ -987,6 +1035,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	transform: translateX(-50%);
 	width: 200%;
 	opacity: 10%;
+	z-index: 3;
 }
 /* #endregion */
 
