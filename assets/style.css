@@ -754,11 +754,11 @@ input[type="search"]::-webkit-search-results-decoration {
 	position: absolute;
 	width: 90%;
 	left: 5%;
-	bottom: 0;
+	top: 15%;
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	max-height: 84%;
+	max-height: 85%;
 	overflow: scroll;
 }
 .bike-list-element {
