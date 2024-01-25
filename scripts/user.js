@@ -106,6 +106,7 @@ function openLoginMenu() {
 	if (document.querySelectorAll(".login-menu").length === 0) document.body.appendChild(menu);
 }
 
+
 // Open user settings element and populate it
 async function openUserSettings() {
 	// show the container from the start so that the request delay is less noticeable
@@ -122,8 +123,11 @@ async function openUserSettings() {
     <div id="proxyNotWorking" onclick="openSetProxyPrompt()">Proxy não funciona?</div>
     `;
 
-	// Get all the user information
-	const userObj = await getUserInformation();
+	let userObj = user; // get from global variable
+
+	// Get all the user information, if it isn't available yet
+	if (!userObj.activeUserSubscriptions)
+		userObj = await getUserInformation();
 
 	// Get subscription expiration
 	const subscriptionExpiration = new Date(userObj.activeUserSubscriptions[0].expirationDate);
