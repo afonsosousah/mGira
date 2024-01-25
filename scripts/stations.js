@@ -75,41 +75,7 @@ async function getStations() {
 		getUserInformation();
 
 		// Check if update info should be shown
-		setTimeout(() => {
-			// Set the cookie expiry to 1 year after today.
-			const expiryDate = new Date();
-			expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-
-			// Check version to show update notes
-			const tempVersion = getCookie("version");
-			if (tempVersion) {
-				if (tempVersion !== "0.0.3") {
-					alert(`
-                    Nova versão 0.0.3!<br>
-                    <ul>
-                        <li>Mudança da UI</li>
-                        <li>Suporte para botão voltar atrás nativo (obrigado DanielAgostinho)</li>
-                        <li>Pedidos e error handling melhorados (obrigado rodrigoleitao)</li>
-                        <li>Proxy já não é utilizado no login na API da EMEL (obrigado j0dd)</li>
-                        <li>Melhorias no sistema de navegação (já não utiliza a bússola do dispositivo)</li>
-                    </ul>
-                    `);
-					document.cookie = "version=0.0.3" + "; expires=" + expiryDate.toGMTString();
-				}
-			} else {
-				alert(`
-                Nova versão 0.0.3!<br>
-                <ul>
-                    <li>Mudança da UI</li>
-                    <li>Suporte para botão voltar atrás nativo (obrigado DanielAgostinho)</li>
-                    <li>Pedidos e error handling melhorados (obrigado rodrigoleitao)</li>
-                    <li>Proxy já não é utilizado no login na API da EMEL (obrigado j0dd)</li>
-                    <li>Melhorias no sistema de navegação (já não utiliza a bússola do dispositivo)</li>
-                </ul>
-                `);
-				document.cookie = "version=0.0.3" + "; expires=" + expiryDate.toGMTString();
-			}
-		}, 2000);
+		showUpdateInfoIfNeeded();
 
 		return response.data.getStations;
 	} else {

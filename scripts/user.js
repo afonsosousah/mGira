@@ -217,7 +217,7 @@ async function openUserSettings() {
             </div>
         </div>
         <div id="bottom">
-            <div id="versionNumber">0.0.3</div>
+            <div id="versionNumber">${currentVersion}</div>
             <div id="logoutButton" onclick="openLoginMenu()">Sair</div>
         </div>
     `.trim();
