@@ -973,16 +973,13 @@ input[type="search"]::-webkit-search-results-decoration {
 .timer > svg > text + text {
     font-size: 0.8rem;
 }
-#bikeReserveCard #startTripButton {
-	width: calc(90% - 6dvh);
-	background-color: var(--green);
-	padding: 2dvh 3dvh;
-	left: 5%;
-	bottom: 2dvh;
+#bikeReserveCard #bikeLeavingDock {
+	width: 70%;
+	aspect-ratio: 1/1;
+	object-fit: contain;
 	position: absolute;
-	text-align: center;
-	border-radius: 999px;
-	z-index: 1;
+	left: 15%;
+	bottom: 0;
 }
 /* #endregion */
 

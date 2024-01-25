@@ -219,12 +219,14 @@ async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSer
 			timerElement.classList.remove('animatable');
 			// No time left, cancel the reservation if the user didn't start the trip
 			if (tripEnded) {
+
+				// Cancel the bike reserve after the countdown
 				console.log("The reserve was cancelled.")
 				if (typeof (await cancelBikeReserve()) === "undefined") {
 					alert("Ocorreu um erro ao cancelar a reserva da bicicleta");
 					return;
 				};
-				
+
 				// hide the unlock card if it is showing
 				if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
 			}
@@ -290,36 +292,59 @@ function takeUnregisteredBike() {
 async function startBikeTrip(event, bikeSerialNumber) {
 
 	if (event.target.value === "100") {
+
+		// Show the bike leaving dock animation in the card
+		let bikeReserveCardElem = document.getElementById("bikeReserveCard");
+		bikeReserveCardElem.innerHTML = `
+			<div id="backButton" onclick="document.getElementById('unlockBikeCard').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
+			<img src="assets/images/mGira_leaving_dock.gif" id="bikeLeavingDock" alt="bike leaving dock animation">
+			<img src="assets/images/gira_footer.svg" id="footer" alt="footer">
+		`;
+
 		// start the trip
 		if (typeof (await startTrip()) === "undefined") {
+
+			// Alert the user that an error occured
 			alert("Ocorreu um erro ao iniciar a viagem.");
+
+			// hide the unlock card if it is showing
+			if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
+
 			return;
 		};
 
-		// hide the unlock card if it is showing
-		if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
+		// Only hide card with animation after 2 seconds
+		setTimeout(() => {
 
-		// hide the station menu if it is showing
-		if (document.querySelector("#stationMenu")) document.querySelector("#stationMenu").remove();
+			// hide the unlock card if it is showing
+			if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
 
-		// show the trip overlay if user is not in navigation
-		if (!navigationActive) {
-			let tripOverlay = document.createElement("div");
-			tripOverlay.className = "trip-overlay";
-			tripOverlay.id = "tripOverlay";
-			tripOverlay.innerHTML = `
-				<span id="onTripText">Em viagem</span>
-				<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
-				<span id="tripCost">0.00€</span>
-				<span id="tripTime">00:00:00</span>
-				<img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
-			`.trim();
-			document.body.appendChild(tripOverlay);
-		}
+			// hide the station menu if it is showing
+			if (document.querySelector("#stationMenu")) document.querySelector("#stationMenu").remove();
 
-		// start the trip timer
-		tripEnded = false;
-		tripTimer(Date.now());
+			// hide bike list if it is showing
+			if (document.querySelector("#bikeMenu")) document.querySelector("#bikeMenu").remove();
+
+			// show the trip overlay if user is not in navigation
+			if (!navigationActive) {
+				let tripOverlay = document.createElement("div");
+				tripOverlay.className = "trip-overlay";
+				tripOverlay.id = "tripOverlay";
+				tripOverlay.innerHTML = `
+					<span id="onTripText">Em viagem</span>
+					<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
+					<span id="tripCost">0.00€</span>
+					<span id="tripTime">00:00:00</span>
+					<img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
+				`.trim();
+				document.body.appendChild(tripOverlay);
+			}
+
+			// start the trip timer
+			tripEnded = false;
+			tripTimer(Date.now());
+
+		}, 3000);
 	}
 }
 
