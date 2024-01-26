@@ -293,6 +293,7 @@ async function startBikeTrip(event, bikeSerialNumber) {
 
 	if (event.target.value === "100") {
 
+		/*
 		// Show the bike leaving dock animation in the card
 		let bikeReserveCardElem = document.getElementById("bikeReserveCard");
 		bikeReserveCardElem.innerHTML = `
@@ -312,6 +313,7 @@ async function startBikeTrip(event, bikeSerialNumber) {
 
 			return;
 		};
+		*/
 
 		// Only hide card with animation after 2 seconds
 		setTimeout(() => {
@@ -335,6 +337,7 @@ async function startBikeTrip(event, bikeSerialNumber) {
 					<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
 					<span id="tripCost">0.00€</span>
 					<span id="tripTime">00:00:00</span>
+					<a id="callAssistance" href="tel:211163125"><i class="bi bi-exclamation-triangle"></i></a>
 					<img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
 				`.trim();
 				document.body.appendChild(tripOverlay);

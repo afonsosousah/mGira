@@ -987,7 +987,7 @@ input[type="search"]::-webkit-search-results-decoration {
 .trip-overlay {
 	background-color: var(--green);
 	width: calc(100% - 4dvh);
-	height: 20dvh;
+	height: 24dvh;
 	position: absolute;
 	top: 2dvh;
 	left: 2dvh;
@@ -1004,14 +1004,14 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 .trip-overlay #bikeLogo {
 	position: absolute;
-	top: 1dvh;
+	top: -1dvh;
 	right: 1dvh;
 	width: 30%;
 	z-index: 4;
 }
 .trip-overlay #tripCost {
 	position: absolute;
-	bottom: 3dvh;
+	bottom: 2dvh;
 	left: 3dvh;
 	font-size: 1.2rem;
 	color: var(--black);
@@ -1019,11 +1019,25 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 .trip-overlay #tripTime {
 	position: absolute;
-	bottom: 3dvh;
-	right: 3dvh;
+	bottom: 6dvh;
+	left: 3dvh;
 	font-size: 1.2rem;
 	color: var(--black);
 	z-index: 4;
+}
+.trip-overlay #callAssistance {
+	position: absolute;
+	bottom: 2dvh;
+	right: 3dvh;
+	background-color: var(--black);
+	z-index: 4;
+	padding: 1.5dvh;
+	font-size: 1.5rem;
+	color: var(--green);
+	border-radius: 999px;
+	aspect-ratio: 1/1;
+	width: 1.5rem;
+	height: 1.5rem;
 }
 .trip-overlay #footer {
 	position: absolute;
