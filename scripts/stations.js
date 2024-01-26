@@ -151,12 +151,12 @@ async function openStationMenu(stationSerialNumber) {
 		menu,
 		() => {
 			menu.classList.add("smooth-slide-to-left");
-			setTimeout(() => menu.remove(), 1000); // remove element after animation
+			setTimeout(() => menu.remove(), 500); // remove element after animation
 			document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
 		},
 		() => {
 			menu.classList.add("smooth-slide-to-right");
-			setTimeout(() => menu.remove(), 1000); // remove element after animation
+			setTimeout(() => menu.remove(), 500); // remove element after animation
 			document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
 		}
 	);
@@ -223,7 +223,7 @@ function hideBikeList() {
 	let bikeListMenu = document.getElementById("bikeMenu");
 	if (bikeListMenu) {
 		bikeListMenu.classList.add("smooth-slide-to-bottom");
-		setTimeout(() => bikeListMenu.remove(), 1000); // remove element after animation
+		setTimeout(() => bikeListMenu.remove(), 500); // remove element after animation
 	}
 }
 

@@ -165,6 +165,7 @@ async function openUserSettings() {
         <div id="topUserContainer">
             <div id="backButton" onclick="hideUserSettings()"><i class="bi bi-arrow-90deg-left"></i></div>
             <img id="footer" src="assets/images/gira_footer_white.svg" alt="backImage">
+			<div id="bottomCard"></div>
             <div id="userImage">
 				<div id="userInitialsSettings">${initials}</div>
 			</div>
@@ -249,7 +250,7 @@ function hideUserSettings() {
 	let userSettings = document.getElementById("userSettings");
 	if (userSettings) {
 		userSettings.classList.add("smooth-slide-to-bottom");
-		setTimeout(() => userSettings.remove(), 1000); // remove element after animation end
+		setTimeout(() => userSettings.remove(), 300); // remove element after animation end
 	}
 }
 

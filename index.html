@@ -38,7 +38,7 @@
 		<meta property="og:type" content="website" />
 		<meta property="og:locale" content="pt_PT" />
 
-		
+
 		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 		<meta http-equiv="Pragma" content="no-cache" />
 		<meta http-equiv="Expires" content="0" />
@@ -185,7 +185,7 @@
 				let bikeListMenu = document.getElementById("bikeMenu");
 				if (bikeListMenu) {
 					bikeListMenu.classList.add("smooth-slide-to-bottom");
-					setTimeout(() => bikeListMenu.remove(), 1000); // remove element after animation
+					setTimeout(() => bikeListMenu.remove(), 500); // remove element after animation
 					return; // prevent station card from being hidden if there was a bike list menu
 				}
 
@@ -193,7 +193,7 @@
 				let menu = document.getElementById("stationMenu");
 				if (menu) {
 					menu.classList.add("smooth-slide-to-left");
-					setTimeout(() => menu.remove(), 1000); // remove element after animation
+					setTimeout(() => menu.remove(), 500); // remove element after animation
 					document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
 				}
 			});
@@ -205,7 +205,7 @@
 				let name = document.getElementById("stationName"); // use this to check if the card is loaded or we are opening a new one
 				if (menu && name) {
 					menu.classList.add("smooth-slide-to-left");
-					setTimeout(() => menu.remove(), 1000); // remove element after animation
+					setTimeout(() => menu.remove(), 500); // remove element after animation
 					document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
 				}
 			});

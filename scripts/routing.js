@@ -490,7 +490,7 @@ function hidePlaceSearchMenu() {
 	let searchBar = document.getElementById("searchBarDiv");
 	if (searchBar) {
 		searchBar.classList.add("slide-back-top");
-		setTimeout(() => searchBar.remove(), 1000); // remove element after animation end
+		setTimeout(() => searchBar.remove(), 500); // remove element after animation end
 	} else return;
 
 	// Hide the place search menu

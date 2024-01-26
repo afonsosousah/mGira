@@ -127,13 +127,13 @@
 	}
 }
 .smooth-slide-to-left {
-	animation: smooth-slide-to-left 1s ease forwards !important;
+	animation: smooth-slide-to-left 0.5s ease forwards !important;
 }
 .smooth-slide-to-right {
-	animation: smooth-slide-to-right 1s ease forwards !important;
+	animation: smooth-slide-to-right 0.5s ease forwards !important;
 }
 .smooth-slide-to-bottom {
-	animation: smooth-slide-to-bottom 1s ease forwards !important;
+	animation: smooth-slide-to-bottom 0.3s ease forwards !important;
 }
 
 /* Zoom controls animations */
@@ -151,10 +151,10 @@
 	}
 }
 .smooth-slide-up-zoom-controls {
-	animation: smooth-slide-up-zoom-controls 1s ease forwards !important;
+	animation: smooth-slide-up-zoom-controls 0.5s ease forwards !important;
 }
 .smooth-slide-down-zoom-controls {
-	animation: smooth-slide-down-zoom-controls 1s ease forwards !important;
+	animation: smooth-slide-down-zoom-controls 0.5s ease forwards !important;
 }
 @keyframes smooth-slide-top-zoom-controls {
 	to {
@@ -170,10 +170,10 @@
 	}
 }
 .smooth-slide-top-zoom-controls {
-	animation: smooth-slide-top-zoom-controls 1s ease forwards !important;
+	animation: smooth-slide-top-zoom-controls 0.5s ease forwards !important;
 }
 .smooth-slide-bottom-zoom-controls {
-	animation: smooth-slide-bottom-zoom-controls 1s ease forwards !important;
+	animation: smooth-slide-bottom-zoom-controls 0.5s ease forwards !important;
 }
 
 /* Search bar appear animations */
@@ -424,7 +424,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	left: 0;
 	bottom: -45%;
 	border-radius: 20px 20px 0 0;
-	animation: smooth-appear 1s ease forwards;
+	animation: smooth-appear 0.5s ease forwards;
 }
 .station-menu #stationName {
 	width: 55%;
@@ -497,7 +497,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	border-radius: 20px;
 	box-shadow: 5px 5px 15px 0px var(--shadow-black);
 	opacity: 95%;
-	animation: smooth-slide-from-left 1s ease forwards;
+	animation: smooth-slide-from-left 0.5s ease forwards;
 }
 .station-card #graphics {
 	height: 50%;
@@ -632,7 +632,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	bottom: 0;
 	left: 0;
 	border-radius: 30px 30px 0 0;
-	animation: smooth-appear 1s ease forwards;
+	animation: smooth-appear 0.5s ease forwards;
 }
 #loginCard input {
 	position: absolute;
@@ -700,7 +700,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	left: 0;
 	top: 0;
 	border-radius: 0;
-	animation: smooth-slide-from-bottom 1s ease forwards;
+	animation: smooth-slide-from-bottom 0.5s ease forwards;
 }
 .bike-list #graphics {
 	height: 25vw;
@@ -781,7 +781,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	left: 0;
 	width: 0;
 	height: 100%;
-	animation: filler 0.8s ease-in-out;
+	animation: filler 0.5s ease-in-out;
 }
 .bike-list-element #content {
 	height: 100%;
@@ -1062,7 +1062,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	border-radius: 0;
 	display: flex;
 	flex-direction: column;
-	animation: smooth-slide-from-bottom 1s ease forwards;
+	animation: smooth-slide-from-bottom 0.3s ease forwards;
 }
 .user-settings #backButton {
 	position: absolute;
@@ -1088,16 +1088,15 @@ input[type="search"]::-webkit-search-results-decoration {
 .user-settings #topUserContainer {
 	position: relative;
 	width: 100vw;
-	height: 20vh;
+	height: 24vh;
 	background-color: var(--green);
-	border-radius: 20px;
 }
 .user-settings #topUserContainer #footer {
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	height: 55%;
+	height: 12vh;
 	object-fit: cover;
 	opacity: 70%;
 }
@@ -1105,7 +1104,6 @@ input[type="search"]::-webkit-search-results-decoration {
 	position: absolute;
 	top: 10px;
 	left: 10px;
-	background-color: var(--green);
 	width: 6vh;
 	height: 6vh;
 	font-size: calc(0.35 * 6vh);
@@ -1126,24 +1124,33 @@ input[type="search"]::-webkit-search-results-decoration {
 .user-settings #topUserContainer #userImage {
 	background-color: var(--black);
 	border-radius: 999px;
-	width: 20vh;
-	height: 20vh;
+	width: 22vh;
+	height: 22vh;
 	position: absolute;
-	top: calc(80% - (20vh / 2));
-	left: calc(50% - (20vh / 2));
+	top: calc(65% - (22vh / 2));
+	left: calc(50% - (22vh / 2));
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 .user-settings #topUserContainer #userImage #userInitialsSettings {
-	font-size: 8dvh;
+	font-size: 8vh;
 	color: var(--white);
+}
+.user-settings #topUserContainer #bottomCard {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 3dvh;
+	background-color: var(--white);
+	border-radius: 3dvh 3dvh 0 0;
 }
 .user-settings #userName {
 	width: 100%;
 	text-align: center;
 	font-size: larger;
-	margin-top: 8vh;
+	margin-top: 5vh;
 }
 .user-settings #balanceAndBonusContainer {
 	width: 100vw;
@@ -1397,7 +1404,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	left: 0;
 	bottom: 0;
 	border-radius: 20px 20px 0 0;
-	animation: smooth-appear 1s ease forwards;
+	animation: smooth-appear 0.5s ease forwards;
 }
 .place-search-menu #placeList {
 	position: relative;
