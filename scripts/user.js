@@ -534,9 +534,9 @@ function updateStatisticsChart() {
 
 			// group all the data
 			for (const [day, dayData] of slicedTripsInPeriod) {
-				groupedTripsInPeriod[keyName]["number_of_trips"] += dayData.number_of_trips;
-				groupedTripsInPeriod[keyName]["time_ridden"] += dayData.time_ridden;
-				groupedTripsInPeriod[keyName]["distance"] += dayData.distance;
+				groupedTripsInPeriod[keyName].number_of_trips += dayData.number_of_trips;
+				groupedTripsInPeriod[keyName].time_ridden += dayData.time_ridden;
+				groupedTripsInPeriod[keyName].distance += dayData.distance;
 			}
 		}
 	} else if (groupBy === "months") {
