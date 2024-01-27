@@ -293,7 +293,6 @@ async function startBikeTrip(event, bikeSerialNumber) {
 
 	if (event.target.value === "100") {
 
-		/*
 		// Show the bike leaving dock animation in the card
 		let bikeReserveCardElem = document.getElementById("bikeReserveCard");
 		bikeReserveCardElem.innerHTML = `
@@ -313,7 +312,6 @@ async function startBikeTrip(event, bikeSerialNumber) {
 
 			return;
 		};
-		*/
 
 		// Only hide card with animation after 2 seconds
 		setTimeout(() => {
