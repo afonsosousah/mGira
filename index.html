@@ -174,18 +174,30 @@
 			// Prevent system back button exiting the app
 			window.addEventListener("load", () => window.history.pushState({}, ""));
 
+			// Handle system back button
 			window.addEventListener("popstate", () => {
 				// Back button was pressed
 				window.history.pushState({}, "");
 
-				// Hide user menu if it is showing
-				hideUserSettings();
+				// Get elements
+				let stationMenu = document.getElementById("stationMenu");
+				let bikeListMenu = document.getElementById("bikeMenu");
+				let tripHistoryMenu = document.getElementById("tripHistory");
+				let statisticsMenu = document.getElementById("statisticsMenu");
 
 				// Hide search place menu if it is showing
 				hidePlaceSearchMenu();
 
+				// Hide user menu
+				if (!tripHistoryMenu && !statisticsMenu) hideUserSettings();
+
+				// Hide trip history menu
+				if (tripHistoryMenu) hideTripHistory();
+
+				// Hide statistics menu
+				if (statisticsMenu) hideStatisticsMenu();
+
 				// Hide bike list menu if it is showing
-				let bikeListMenu = document.getElementById("bikeMenu");
 				if (bikeListMenu) {
 					bikeListMenu.classList.add("smooth-slide-to-bottom");
 					setTimeout(() => bikeListMenu.remove(), 500); // remove element after animation
@@ -193,10 +205,9 @@
 				}
 
 				// Hide station card if it is showing
-				let menu = document.getElementById("stationMenu");
-				if (menu) {
-					menu.classList.add("smooth-slide-to-left");
-					setTimeout(() => menu.remove(), 500); // remove element after animation
+				if (stationMenu) {
+					stationMenu.classList.add("smooth-slide-to-left");
+					setTimeout(() => stationMenu.remove(), 500); // remove element after animation
 					document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
 				}
 			});
