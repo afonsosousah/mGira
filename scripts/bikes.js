@@ -73,7 +73,7 @@ async function getActiveTrip() {
 }
 
 // returns success boolean
-async function rateTrip(tripCode, tripRating, tripComment) {
+async function rateTripAPI(tripCode, tripRating, tripComment) {
 	const response = await makePostRequest(
 		"https://apigira.emel.pt/graphql",
 		JSON.stringify({
@@ -199,8 +199,8 @@ async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSer
 	document.body.appendChild(card);
 
 
-	// Run the timer (1 minute)
-	let timeLeft = 60;
+	// Run the timer (30 seconds)
+	let timeLeft = 30;
 	let timerText = document.getElementById('timeLeft');
 	let timerElement = document.querySelector('.timer');
 	const timerCircle = timerElement.querySelector('svg > circle + circle');
@@ -211,7 +211,7 @@ async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSer
 		let isTimeLeft = timeLeft > -1;
 		if(isTimeLeft){
 			const timeRemaining = timeLeft--;
-				const normalizedTime = (timeRemaining - 60) / 60;
+			const normalizedTime = (timeRemaining - 60) / 60;
 			timerCircle.style.strokeDashoffset = normalizedTime;
 				timerText.innerHTML = timeRemaining;
 		} else {
@@ -464,7 +464,7 @@ async function rateTrip(tripCode, tripCost) {
 			async () => {
 				// Yes handler
 				let comment = document.getElementById("customTextPromptInput").value;
-				let success = await rateTrip(tripCode, tripRating, comment);
+				let success = await rateTripAPI(tripCode, tripRating, comment);
 				if (success) {
 					// store that this trip was already rated, to not prompt again
 					ratedTripsList.push(tripCode);
@@ -480,7 +480,7 @@ async function rateTrip(tripCode, tripCost) {
 			},
 			async () => {
 				// No handler
-				let success = await rateTrip(tripCode, tripRating, ""); // send empty comment if the user ignored
+				let success = await rateTripAPI(tripCode, tripRating, ""); // send empty comment if the user ignored
 				if (success) {
 					// store that this trip was already rated, to not prompt again
 					ratedTripsList.push(tripCode);
