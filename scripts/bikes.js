@@ -392,6 +392,9 @@ function openRateTripMenu(tripObj) {
 	// Only keeps the hours and minutes (first 2 elements)
 	const formattedTime = elapsedTime.toLocaleTimeString("pt").split(":", 2).join();
 
+	// Don't rate trips under 90 seconds
+	if (elapsedTime < 90 * 1000) return;
+
 	// Show the rate trip menu
 	appendElementToBodyFromHTML(`
     <div class="rate-trip-menu" id="rateTripMenu">
