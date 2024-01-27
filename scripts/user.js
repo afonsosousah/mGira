@@ -73,7 +73,6 @@ async function getUserInformation() {
 
 // Open the login menu element and populate it
 function openLoginMenu() {
-
 	document.cookie = "version=0.0.0"; // Force show update notes after logout
 	document.cookie = 'refreshToken=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT'; // delete cookie
 
@@ -106,7 +105,6 @@ function openLoginMenu() {
 	if (document.querySelectorAll(".login-menu").length === 0) document.body.appendChild(menu);
 }
 
-
 // Open user settings element and populate it
 async function openUserSettings() {
 	// show the container from the start so that the request delay is less noticeable
@@ -126,14 +124,13 @@ async function openUserSettings() {
 	let userObj = user; // get from global variable
 
 	// Get all the user information, if it isn't available yet
-	if (!userObj.activeUserSubscriptions)
-		userObj = await getUserInformation();
+	if (!userObj.activeUserSubscriptions) userObj = await getUserInformation();
 
 	// Get subscription expiration
 	const subscriptionExpiration = new Date(userObj.activeUserSubscriptions[0].expirationDate);
 
 	// Get user initials
-	let allNames = userObj.name.split(" ");  // separate all names
+	let allNames = userObj.name.split(" "); // separate all names
 	let initials = allNames[0][0] + allNames.at(-1)[0]; // first letter of first name + first letter of last name
 
 	// Populate the element
@@ -240,14 +237,12 @@ function openSetProxyPrompt() {
 	);
 }
 
-
 function setUserImageInitials(username) {
-
 	// Set the initials of the user name to act like picture
 	// (removes dependency on ui-avatars.com)
 
 	// Get the initials
-	let allNames = username.split(" ");  // separate all names
+	let allNames = username.split(" "); // separate all names
 	let initials = allNames[0][0] + allNames.at(-1)[0]; // first letter of first name + first letter of last name
 
 	// User picture (main screen)
@@ -255,9 +250,7 @@ function setUserImageInitials(username) {
 	userInitialsElement.innerHTML = initials;
 }
 
-
 function openTripHistory() {
-
 	// Create element
 	let menu = document.createElement("div");
 	menu.id = "tripHistory";
@@ -284,20 +277,22 @@ function openTripHistory() {
 		// Get formatted date
 		let tripDate = new Date(trip.startDate);
 		let monthNumberToShortForm = [
-			'jan.',
-			'fev.',
-			'mar.',
-			'abr.',
-			'mai.',
-			'jun.',
-			'jul.',
-			'ago.',
-			'set.',
-			'out.',
-			'nov.',
-			'dez.'
+			"jan.",
+			"fev.",
+			"mar.",
+			"abr.",
+			"mai.",
+			"jun.",
+			"jul.",
+			"ago.",
+			"set.",
+			"out.",
+			"nov.",
+			"dez.",
 		];
-		const formattedDate = `${tripDate.getDay()} ${monthNumberToShortForm[tripDate.getMonth()]} ${tripDate.getFullYear()}`;
+		const formattedDate = `${tripDate.getDay()} ${
+			monthNumberToShortForm[tripDate.getMonth()]
+		} ${tripDate.getFullYear()}`;
 
 		// Get formatted time
 		let tripTime = new Date(new Date(trip.endDate) - new Date(trip.startDate));
@@ -349,17 +344,15 @@ function openTripHistory() {
 
 function hideTripHistory() {
 	// Remove element from DOM
-	document.getElementById('tripHistory').remove();
+	document.getElementById("tripHistory").remove();
 
 	// Show user settings again
 	let userSettingsElem = document.getElementById("userSettings");
 	userSettingsElem.style.maxHeight = "";
 }
 
-
 // Statistics Menu
 function openStatisticsMenu() {
-	
 	// Create element
 	let menu = document.createElement("div");
 	menu.id = "statisticsMenu";
@@ -427,7 +420,7 @@ function openStatisticsMenu() {
 
 function hideStatisticsMenu() {
 	// Remove element from DOM
-	document.getElementById('statisticsMenu').remove();
+	document.getElementById("statisticsMenu").remove();
 
 	// Show user settings again
 	let userSettingsElem = document.getElementById("userSettings");
@@ -435,7 +428,6 @@ function hideStatisticsMenu() {
 }
 
 function updateStatisticsChart() {
-
 	// Get the selected options
 	let period = document.getElementById("periodControl").value;
 	let groupBy = document.getElementById("groupControl").value;
@@ -445,58 +437,50 @@ function updateStatisticsChart() {
 
 	if (period === "last7days") {
 		numberOfDays = 7;
-	}
-	else if (period === "last30days") {
+	} else if (period === "last30days") {
 		numberOfDays = 30;
-	}
-	else if (period === "lastYear") 
-		numberOfDays = 365;
+	} else if (period === "lastYear") numberOfDays = 365;
 	else if (period === "total") {
 		// Start from the day the user account was activated
-		let timeFromActivated = Date.now() - (new Date(user.dateActivate).getTime());
+		let timeFromActivated = Date.now() - new Date(user.dateActivate).getTime();
 
 		// Convert the milliseconds to days
-		var days = timeFromActivated / (24*1000*60*60);
+		var days = timeFromActivated / (24 * 1000 * 60 * 60);
 		var absoluteDays = Math.floor(days);
 
 		numberOfDays = absoluteDays;
 	}
 
-	console.log(numberOfDays);
-
-
 	let startDate = new Date(new Date().setDate(new Date().getDate() - (numberOfDays - 1)));
 
 	let tripsInPeriod = {
-		"total": {
-			"number_of_trips": 0,
-			"time_ridden": 0,
-			"distance": 0
-		}
+		total: {
+			number_of_trips: 0,
+			time_ridden: 0,
+			distance: 0,
+		},
 	};
 
 	// Create object linking each group with the trips
 	for (let days = 0; days < numberOfDays; days++) {
-
 		const start = startDate;
 
 		// Add days to start date
-		const dayDate = new Date(start.getFullYear(),start.getMonth(),start.getDate() + days);
+		const dayDate = new Date(start.getFullYear(), start.getMonth(), start.getDate() + days);
 
 		// If seeing total period, include also the year (to not repeat objects...)
-		const dayMonthString = 
-			period === "total" ? 
-			`${dayDate.getDate()}/${(dayDate.getMonth() + 1)}/${dayDate.getFullYear().toString().substring(2)}` : // only last 2 digits of year
-			`${dayDate.getDate()}/${(dayDate.getMonth() + 1)}`;
+		const dayMonthString =
+			period === "total"
+				? `${dayDate.getDate()}/${dayDate.getMonth() + 1}/${dayDate.getFullYear().toString().substring(2)}` // only last 2 digits of year
+				: `${dayDate.getDate()}/${dayDate.getMonth() + 1}`;
 
 		// Get the trips of the day
-		const dayTrips = user.tripHistory.filter((trip) => (
-			(new Date(trip.startDate)).getDate() === dayDate.getDate() // Same day
-			&&
-			(new Date(trip.startDate)).getMonth() === dayDate.getMonth() // Same month
-			&&
-			(new Date(trip.startDate)).getFullYear() === dayDate.getFullYear() // Same year
-		));
+		const dayTrips = user.tripHistory.filter(
+			trip =>
+				new Date(trip.startDate).getDate() === dayDate.getDate() && // Same day
+				new Date(trip.startDate).getMonth() === dayDate.getMonth() && // Same month
+				new Date(trip.startDate).getFullYear() === dayDate.getFullYear() // Same year
+		);
 
 		// Get the time (in ms) and distance (in km) ridden for each trip
 		for (trip of dayTrips) {
@@ -504,50 +488,48 @@ function updateStatisticsChart() {
 			trip.riddenTime = tripTime.getTime();
 			// Calculate an estimate for trip distance (assuming an avg speed of 15km/h)
 			const speed = 15 / (3600 * 1000); // convert km/h to km/ms
-			trip.distance = Math.round((tripTime.getTime() * speed) * 1000) / 1000; // milliseconds * km in 1 millisecond (and round to 3 decimal places)
+			trip.distance = Math.round(tripTime.getTime() * speed * 1000) / 1000; // milliseconds * km in 1 millisecond (and round to 3 decimal places)
 		}
 
 		// Create the new object
 		tripsInPeriod[dayMonthString] = {
-			"number_of_trips": dayTrips.length,
-			"time_ridden": dayTrips.length === 0 ? 0 : dayTrips.reduce((total_time, trip) => total_time + trip.riddenTime, 0),
-			"distance": dayTrips.length === 0 ? 0 : dayTrips.reduce((total_distance, trip) => total_distance + trip.distance, 0)
-		}
+			number_of_trips: dayTrips.length,
+			time_ridden: dayTrips.length === 0 ? 0 : dayTrips.reduce((total_time, trip) => total_time + trip.riddenTime, 0),
+			distance:
+				dayTrips.length === 0 ? 0 : dayTrips.reduce((total_distance, trip) => total_distance + trip.distance, 0),
+		};
 
 		// Add to the total object
 		tripsInPeriod.total.number_of_trips += dayTrips.length;
-		tripsInPeriod.total.time_ridden += dayTrips.length === 0 ? 0 : dayTrips.reduce((total_time, trip) => total_time + trip.riddenTime, 0);
-		tripsInPeriod.total.distance += dayTrips.length === 0 ? 0 : dayTrips.reduce((total_distance, trip) => total_distance + trip.distance, 0);
+		tripsInPeriod.total.time_ridden +=
+			dayTrips.length === 0 ? 0 : dayTrips.reduce((total_time, trip) => total_time + trip.riddenTime, 0);
+		tripsInPeriod.total.distance +=
+			dayTrips.length === 0 ? 0 : dayTrips.reduce((total_distance, trip) => total_distance + trip.distance, 0);
 	}
 
 	let groupedTripsInPeriod = {
-		"total": {
-			"number_of_trips": tripsInPeriod.total.number_of_trips,
-			"time_ridden": tripsInPeriod.total.time_ridden,
-			"distance": tripsInPeriod.total.distance
-		}
+		total: {
+			number_of_trips: tripsInPeriod.total.number_of_trips,
+			time_ridden: tripsInPeriod.total.time_ridden,
+			distance: tripsInPeriod.total.distance,
+		},
 	};
 
 	// Group the trips by period
 	if (groupBy === "days") {
-		
 		groupedTripsInPeriod = tripsInPeriod;
-
-	}
-	else if (groupBy === "weeks") {
-
+	} else if (groupBy === "weeks") {
 		const daysInWeek = 7;
 
 		const entries = Object.entries(tripsInPeriod);
 
-		for (let index = 1; index < (entries.length - 1); index += daysInWeek) {
-
-			let slicedTripsInPeriod = entries.slice(index, index + daysInWeek)
+		for (let index = 1; index < entries.length - 1; index += daysInWeek) {
+			let slicedTripsInPeriod = entries.slice(index, index + daysInWeek);
 			let keyName = `${slicedTripsInPeriod.at(0)[0]}-${slicedTripsInPeriod.at(-1)[0]}`;
 			groupedTripsInPeriod[keyName] = {
-				"number_of_trips": 0,
-				"time_ridden": 0,
-				"distance": 0
+				number_of_trips: 0,
+				time_ridden: 0,
+				distance: 0,
 			};
 
 			// group all the data
@@ -557,21 +539,17 @@ function updateStatisticsChart() {
 				groupedTripsInPeriod[keyName]["distance"] += dayData.distance;
 			}
 		}
-
-	}
-	else if (groupBy === "months") {
-
+	} else if (groupBy === "months") {
 		const daysInMonth = 30;
 		const entries = Object.entries(tripsInPeriod);
 
-		for (let index = 1; index < (entries.length - 1); index += daysInMonth) {
-
-			let slicedTripsInPeriod = entries.slice(index, index + daysInMonth)
+		for (let index = 1; index < entries.length - 1; index += daysInMonth) {
+			let slicedTripsInPeriod = entries.slice(index, index + daysInMonth);
 			let keyName = `${slicedTripsInPeriod.at(0)[0]}-${slicedTripsInPeriod.at(-1)[0]}`;
 			groupedTripsInPeriod[keyName] = {
-				"number_of_trips": 0,
-				"time_ridden": 0,
-				"distance": 0
+				number_of_trips: 0,
+				time_ridden: 0,
+				distance: 0,
 			};
 
 			// group all the data
@@ -581,10 +559,7 @@ function updateStatisticsChart() {
 				groupedTripsInPeriod[keyName]["distance"] += dayData.distance;
 			}
 		}
-
 	}
-
-	console.log(groupedTripsInPeriod);
 
 	// Get labels and data (use slice to ignore total)
 	let labels = Object.keys(groupedTripsInPeriod).slice(1);
@@ -592,23 +567,28 @@ function updateStatisticsChart() {
 	let data;
 	let yAxisLabel;
 	if (statistic === "timeRidden") {
-		data = Object.values(groupedTripsInPeriod).slice(1).map((period) => Math.floor(period.time_ridden / 60000)); // convert to minutes
-		dataLabel = 'Tempo em viagem (min)';
-		yAxisLabel = 'Minutos';
-	}
-	else if (statistic === "distance") {
-		data = Object.values(groupedTripsInPeriod).slice(1).map((period) => period.distance);
-		dataLabel = 'Distância (km)';
-		yAxisLabel = 'Quilómetros';
+		data = Object.values(groupedTripsInPeriod)
+			.slice(1)
+			.map(period => Math.floor(period.time_ridden / 60000)); // convert to minutes
+		dataLabel = "Tempo em viagem (min)";
+		yAxisLabel = "Minutos";
+	} else if (statistic === "distance") {
+		data = Object.values(groupedTripsInPeriod)
+			.slice(1)
+			.map(period => period.distance);
+		dataLabel = "Distância (km)";
+		yAxisLabel = "Quilómetros";
 	}
 
 	// Set totals in HTML
-	document.querySelector('#statsTotals #time').innerHTML = parseMillisecondsIntoReadableTime(groupedTripsInPeriod.total.time_ridden);
-	document.querySelector('#statsTotals #distance').innerHTML = Math.round(groupedTripsInPeriod.total.distance) + "km";
-	document.querySelector('#statsTotals #trips').innerHTML = groupedTripsInPeriod.total.number_of_trips;
+	document.querySelector("#statsTotals #time").innerHTML = parseMillisecondsIntoReadableTime(
+		groupedTripsInPeriod.total.time_ridden
+	);
+	document.querySelector("#statsTotals #distance").innerHTML = Math.round(groupedTripsInPeriod.total.distance) + "km";
+	document.querySelector("#statsTotals #trips").innerHTML = groupedTripsInPeriod.total.number_of_trips;
 
 	// Change chart font color
-	Chart.defaults.color = '#d9d9da';
+	Chart.defaults.color = "#d9d9da";
 
 	// Destroy previous chart if it exists
 	let oldChart = Chart.getChart("statsChart");
@@ -617,45 +597,47 @@ function updateStatisticsChart() {
 	}
 
 	// Create new chart
-	const chartElem = document.getElementById('statsChart');
+	const chartElem = document.getElementById("statsChart");
 	new Chart(chartElem, {
-	  type: 'bar',
-	  data: {
-		labels: labels,
-		datasets: [{
-		  label: dataLabel,
-		  data: data,  
-		  borderWidth: 1,
-		  borderRadius: 10,
-		  backgroundColor: '#79c00080',
-		  borderColor: '#79c000',
-		}]
-	  },
-	  options: {
-		scales: {
-			x: {
-				display: false,
+		type: "bar",
+		data: {
+			labels: labels,
+			datasets: [
+				{
+					label: dataLabel,
+					data: data,
+					borderWidth: 1,
+					borderRadius: 10,
+					backgroundColor: "#79c00080",
+					borderColor: "#79c000",
+				},
+			],
+		},
+		options: {
+			scales: {
+				x: {
+					display: false,
+				},
+				y: {
+					beginAtZero: true,
+					title: {
+						display: true,
+						text: yAxisLabel,
+					},
+				},
 			},
-			y: {
-				beginAtZero: true,
-				title: {
-					display: true,
-					text: yAxisLabel
-				}
-			}
+			layout: {
+				padding: {
+					left: 5,
+					right: 20,
+				},
+			},
+			plugins: {
+				legend: {
+					display: false,
+				},
+			},
+			maintainAspectRatio: false,
 		},
-		layout: {
-			padding: {
-				left: 5,
-				right: 20
-			}
-		},
-		plugins: {
-            legend: {
-                display: false
-            },
-        },
-		maintainAspectRatio: false,
-	  }
 	});
 }
