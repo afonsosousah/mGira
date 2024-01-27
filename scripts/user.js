@@ -136,30 +136,6 @@ async function openUserSettings() {
 	let allNames = userObj.name.split(" ");  // separate all names
 	let initials = allNames[0][0] + allNames.at(-1)[0]; // first letter of first name + first letter of last name
 
-	// Calculate the total time of the tripHistory
-	let totalTime = 0;
-	for (trip of userObj.tripHistory) {
-		let elapsedTime = new Date(new Date(trip.endDate) - new Date(trip.startDate));
-		totalTime += elapsedTime.getTime();
-	}
-	totalTime = new Date(totalTime);
-	totalTime.setTime(totalTime.getTime() + totalTime.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
-	const days = Math.round(Math.abs(totalTime.getTime() / (24 * 60 * 60 * 1000)));
-	const hours = totalTime.getHours();
-	const minutes = totalTime.getMinutes();
-	const formattedTotalTime = days + "d" + hours + "h" + minutes.toString().padStart(2, "0") + "m";
-
-	// Calculate an estimate for total distance (assuming an avg speed of 15km/h)
-	let hoursFloat = days * 60 + hours + minutes / 60;
-	let totalDistance = Math.floor(hoursFloat * 15); // hours * km in 1 hour
-
-	// Calculate the average time of a trip
-	let avgTime = new Date(totalTime.getTime() / userObj.tripHistory.length);
-	const formattedAvgTime = avgTime.getMinutes().toString().padStart(2, "0") + "m";
-
-	// Calculate an estimate for C02 saved using total time (assuming an avg speed of 15km/h)
-	let co2Saved = Math.floor(hoursFloat * 15 * 0.054); // hours * km in 1 hour * kg of co2 saved per km
-
 	// Populate the element
 	settingsElement.innerHTML = `
         <div id="topUserContainer">
@@ -188,26 +164,17 @@ async function openUserSettings() {
                 <div id="subscriptionValidity">Válido até ${subscriptionExpiration.toLocaleDateString("pt")}</div>
             </div>
         </div>
-        <div id="statsContainer">
-            <div id="totalDistanceContainer">
-                <div id="totalDistanceLabel">Distância (est.)</div>
-                <div id="totalDistance">${totalDistance}km</div>
-            </div>
-            <div id="totalTimeContainer">
-                <div id="totalTimeLabel">Tempo total</div>
-                <div id="totalTime">${formattedTotalTime}</div>
-            </div>
-            <div id="co2SavedContainer">
-                <div id="co2SavedLabel">CO2 poupado</div>
-                <div id="co2Saved">${co2Saved}kg</div>
-            </div>
-            <div id="numberOfTripsContainer">
-                <div id="numberOfTripsLabel">Nº de viagens</div>
-                <div id="numberOfTrips">${userObj.tripHistory.length}</div>
-            </div>
-        </div>
+		<div id="statisticsMenuButtonContainer">
+			<div id="statisticsMenuButton" onclick="openStatisticsMenu();">
+				<i class="bi bi-bar-chart"></i>
+				<span>Estatísticas de uso</span>
+			</div>
+		</div>
 		<div id="tripHistoryButtonContainer">
-			<div id="tripHistoryButton" onclick="openTripHistory();">Histórico de viagens</div>
+			<div id="tripHistoryButton" onclick="openTripHistory();">
+				<i class="bi bi-clock-history"></i>
+				<span>Histórico de viagens</span>
+			</div>
 		</div>
         <div id="settingsContainer">
             <div id="proxy">
@@ -375,7 +342,7 @@ function openTripHistory() {
 		document.getElementById("tripList").appendChild(tripListElement);
 	}
 
-	// if there are no bikes, put a message saying that
+	// if there are no trips, put a message saying that
 	if (document.getElementById("tripList").childElementCount === 0)
 		document.getElementById("tripList").innerHTML = "Não realizou nenhuma viagem";
 }
@@ -387,4 +354,308 @@ function hideTripHistory() {
 	// Show user settings again
 	let userSettingsElem = document.getElementById("userSettings");
 	userSettingsElem.style.maxHeight = "";
+}
+
+
+// Statistics Menu
+function openStatisticsMenu() {
+	
+	// Create element
+	let menu = document.createElement("div");
+	menu.id = "statisticsMenu";
+	menu.innerHTML = `
+        <img src="assets/images/gira_footer_white.svg" alt="footer" id="graphics">
+        <div id="backButton" onclick="hideStatisticsMenu();"><i class="bi bi-arrow-90deg-left"></i></div>
+		<div id="title">Estatísticas</div>
+		<div id="usableArea">
+			<div class="chart-container">
+				<canvas id="statsChart"></canvas>
+			</div>
+			<div id="statsTotals">
+				<div id="timeParent" class="stats-totals-element">
+					<div id="time">0</div>
+					<div id="timeLabel">Tempo</div>
+				</div>
+				<div id="distanceParent" class="stats-totals-element">
+					<div id="distance">0</div>
+					<div id="distanceLabel">Distância</div>
+				</div>
+				<div id="tripsParent" class="stats-totals-element">
+					<div id="trips">0</div>
+					<div id="tripsLabel">Viagens</div>
+				</div>
+			</div>
+			<div id="statsControls">
+				<div id="periodControlParent">
+					<div id="periodControlLabel" class="stats-control-label">Período</div>
+					<select id="periodControl" onchange="updateStatisticsChart();">
+						<option value="last7days">Últimos 7 dias</option>
+						<option value="last30days" selected="selected">Últimos 30 dias</option>
+						<option value="lastYear">Último ano</option>
+						<option value="total">Total</option>
+					</select>
+				</div>
+				<div id="groupControlParent">
+					<div id="groupControlLabel" class="stats-control-label">Agrupar por</div>
+					<select id="groupControl" onchange="updateStatisticsChart();">
+						<option value="days" selected="selected">Dias</option>
+						<option value="weeks">Semanas</option>
+						<option value="months">Meses</option>
+					</select>
+				</div>
+				<div id="statisticControlParent" onchange="updateStatisticsChart();">
+					<div id="statisticControlLabel" class="stats-control-label">Estatística</div>
+					<select id="statisticControl">
+						<option value="timeRidden" selected="selected">Tempo em viagem</option>
+						<option value="distance">Distância</option>
+					</select>
+				</div>
+			</div>
+		</div>
+    `.trim();
+	document.body.appendChild(menu);
+
+	// Hide user settings behind statistics menu (without animations)
+	if (document.getElementById("userSettings")) {
+		let userSettingsElem = document.getElementById("userSettings");
+		userSettingsElem.style.maxHeight = "100dvh";
+	}
+
+	// Populate chart
+	updateStatisticsChart();
+}
+
+function hideStatisticsMenu() {
+	// Remove element from DOM
+	document.getElementById('statisticsMenu').remove();
+
+	// Show user settings again
+	let userSettingsElem = document.getElementById("userSettings");
+	userSettingsElem.style.maxHeight = "";
+}
+
+function updateStatisticsChart() {
+
+	// Get the selected options
+	let period = document.getElementById("periodControl").value;
+	let groupBy = document.getElementById("groupControl").value;
+	let statistic = document.getElementById("statisticControl").value;
+
+	let numberOfDays;
+
+	if (period === "last7days") {
+		numberOfDays = 7;
+	}
+	else if (period === "last30days") {
+		numberOfDays = 30;
+	}
+	else if (period === "lastYear") 
+		numberOfDays = 365;
+	else if (period === "total") {
+		// Start from the day the user account was activated
+		let timeFromActivated = Date.now() - (new Date(user.dateActivate).getTime());
+
+		// Convert the milliseconds to days
+		var days = timeFromActivated / (24*1000*60*60);
+		var absoluteDays = Math.floor(days);
+
+		numberOfDays = absoluteDays;
+	}
+
+	console.log(numberOfDays);
+
+
+	let startDate = new Date(new Date().setDate(new Date().getDate() - (numberOfDays - 1)));
+
+	let tripsInPeriod = {
+		"total": {
+			"number_of_trips": 0,
+			"time_ridden": 0,
+			"distance": 0
+		}
+	};
+
+	// Create object linking each group with the trips
+	for (let days = 0; days < numberOfDays; days++) {
+
+		const start = startDate;
+
+		// Add days to start date
+		const dayDate = new Date(start.getFullYear(),start.getMonth(),start.getDate() + days);
+
+		// If seeing total period, include also the year (to not repeat objects...)
+		const dayMonthString = 
+			period === "total" ? 
+			`${dayDate.getDate()}/${(dayDate.getMonth() + 1)}/${dayDate.getFullYear().toString().substring(2)}` : // only last 2 digits of year
+			`${dayDate.getDate()}/${(dayDate.getMonth() + 1)}`;
+
+		// Get the trips of the day
+		const dayTrips = user.tripHistory.filter((trip) => (
+			(new Date(trip.startDate)).getDate() === dayDate.getDate() // Same day
+			&&
+			(new Date(trip.startDate)).getMonth() === dayDate.getMonth() // Same month
+			&&
+			(new Date(trip.startDate)).getFullYear() === dayDate.getFullYear() // Same year
+		));
+
+		// Get the time (in ms) and distance (in km) ridden for each trip
+		for (trip of dayTrips) {
+			let tripTime = new Date(new Date(trip.endDate) - new Date(trip.startDate));
+			trip.riddenTime = tripTime.getTime();
+			// Calculate an estimate for trip distance (assuming an avg speed of 15km/h)
+			const speed = 15 / (3600 * 1000); // convert km/h to km/ms
+			trip.distance = Math.round((tripTime.getTime() * speed) * 1000) / 1000; // milliseconds * km in 1 millisecond (and round to 3 decimal places)
+		}
+
+		// Create the new object
+		tripsInPeriod[dayMonthString] = {
+			"number_of_trips": dayTrips.length,
+			"time_ridden": dayTrips.length === 0 ? 0 : dayTrips.reduce((total_time, trip) => total_time + trip.riddenTime, 0),
+			"distance": dayTrips.length === 0 ? 0 : dayTrips.reduce((total_distance, trip) => total_distance + trip.distance, 0)
+		}
+
+		// Add to the total object
+		tripsInPeriod.total.number_of_trips += dayTrips.length;
+		tripsInPeriod.total.time_ridden += dayTrips.length === 0 ? 0 : dayTrips.reduce((total_time, trip) => total_time + trip.riddenTime, 0);
+		tripsInPeriod.total.distance += dayTrips.length === 0 ? 0 : dayTrips.reduce((total_distance, trip) => total_distance + trip.distance, 0);
+	}
+
+	let groupedTripsInPeriod = {
+		"total": {
+			"number_of_trips": tripsInPeriod.total.number_of_trips,
+			"time_ridden": tripsInPeriod.total.time_ridden,
+			"distance": tripsInPeriod.total.distance
+		}
+	};
+
+	// Group the trips by period
+	if (groupBy === "days") {
+		
+		groupedTripsInPeriod = tripsInPeriod;
+
+	}
+	else if (groupBy === "weeks") {
+
+		const daysInWeek = 7;
+
+		const entries = Object.entries(tripsInPeriod);
+
+		for (let index = 1; index < (entries.length - 1); index += daysInWeek) {
+
+			let slicedTripsInPeriod = entries.slice(index, index + daysInWeek)
+			let keyName = `${slicedTripsInPeriod.at(0)[0]}-${slicedTripsInPeriod.at(-1)[0]}`;
+			groupedTripsInPeriod[keyName] = {
+				"number_of_trips": 0,
+				"time_ridden": 0,
+				"distance": 0
+			};
+
+			// group all the data
+			for (const [day, dayData] of slicedTripsInPeriod) {
+				groupedTripsInPeriod[keyName]["number_of_trips"] += dayData.number_of_trips;
+				groupedTripsInPeriod[keyName]["time_ridden"] += dayData.time_ridden;
+				groupedTripsInPeriod[keyName]["distance"] += dayData.distance;
+			}
+		}
+
+	}
+	else if (groupBy === "months") {
+
+		const daysInMonth = 30;
+		const entries = Object.entries(tripsInPeriod);
+
+		for (let index = 1; index < (entries.length - 1); index += daysInMonth) {
+
+			let slicedTripsInPeriod = entries.slice(index, index + daysInMonth)
+			let keyName = `${slicedTripsInPeriod.at(0)[0]}-${slicedTripsInPeriod.at(-1)[0]}`;
+			groupedTripsInPeriod[keyName] = {
+				"number_of_trips": 0,
+				"time_ridden": 0,
+				"distance": 0
+			};
+
+			// group all the data
+			for (const [day, dayData] of slicedTripsInPeriod) {
+				groupedTripsInPeriod[keyName]["number_of_trips"] += dayData.number_of_trips;
+				groupedTripsInPeriod[keyName]["time_ridden"] += dayData.time_ridden;
+				groupedTripsInPeriod[keyName]["distance"] += dayData.distance;
+			}
+		}
+
+	}
+
+	console.log(groupedTripsInPeriod);
+
+	// Get labels and data (use slice to ignore total)
+	let labels = Object.keys(groupedTripsInPeriod).slice(1);
+	let dataLabel;
+	let data;
+	let yAxisLabel;
+	if (statistic === "timeRidden") {
+		data = Object.values(groupedTripsInPeriod).slice(1).map((period) => Math.floor(period.time_ridden / 60000)); // convert to minutes
+		dataLabel = 'Tempo em viagem (min)';
+		yAxisLabel = 'Minutos';
+	}
+	else if (statistic === "distance") {
+		data = Object.values(groupedTripsInPeriod).slice(1).map((period) => period.distance);
+		dataLabel = 'Distância (km)';
+		yAxisLabel = 'Quilómetros';
+	}
+
+	// Set totals in HTML
+	document.querySelector('#statsTotals #time').innerHTML = parseMillisecondsIntoReadableTime(groupedTripsInPeriod.total.time_ridden);
+	document.querySelector('#statsTotals #distance').innerHTML = Math.round(groupedTripsInPeriod.total.distance) + "km";
+	document.querySelector('#statsTotals #trips').innerHTML = groupedTripsInPeriod.total.number_of_trips;
+
+	// Change chart font color
+	Chart.defaults.color = '#d9d9da';
+
+	// Destroy previous chart if it exists
+	let oldChart = Chart.getChart("statsChart");
+	if (oldChart != undefined) {
+		oldChart.destroy();
+	}
+
+	// Create new chart
+	const chartElem = document.getElementById('statsChart');
+	new Chart(chartElem, {
+	  type: 'bar',
+	  data: {
+		labels: labels,
+		datasets: [{
+		  label: dataLabel,
+		  data: data,  
+		  borderWidth: 1,
+		  borderRadius: 10,
+		  backgroundColor: '#79c00080',
+		  borderColor: '#79c000',
+		}]
+	  },
+	  options: {
+		scales: {
+			x: {
+				display: false,
+			},
+			y: {
+				beginAtZero: true,
+				title: {
+					display: true,
+					text: yAxisLabel
+				}
+			}
+		},
+		layout: {
+			padding: {
+				left: 5,
+				right: 20
+			}
+		},
+		plugins: {
+            legend: {
+                display: false
+            },
+        },
+		maintainAspectRatio: false,
+	  }
+	});
 }
