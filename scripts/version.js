@@ -8,7 +8,7 @@ Nova versão 0.0.4!<br>
     <li>Novo menu de estatísticas</li>
     <li>Novo menu de histórico de viagens</li>
     <li>Navegação em 3D e bastante melhorada</li>
-    <li>Ciclovias mostradas no mapa (obrigado Francisco Zhuo)</li>
+    <li>Ciclovias mostradas no mapa (obrigado Francisco Zhuo e Tomás Rodrigues)</li>
     <li>Melhorias gerais no código (obrigado Rodrigo Leitão)</li>
 </ul>
 `;

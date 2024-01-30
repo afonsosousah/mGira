@@ -153,7 +153,7 @@
 
 			function isInputElement(ele) {
 				return (ele && ele.tagName === "INPUT") || ele.tagName === "TEXTAREA" || ele.getAttribute("contenteditable")
-					? ele.getAttribute("contenteditable").toString() === "true"
+					? ele.getAttribute("contenteditable")?.toString() === "true"
 					: false;
 			}
 
@@ -201,7 +201,7 @@
 				// Hide station card if it is showing
 				if (stationMenu) {
 					stationMenu.classList.add("smooth-slide-to-left");
-					setTimeout(() => stationMenu.remove(), 500); // remove element after animation
+					setTimeout(() => hideStationMenu(), 500); // remove element after animation
 					document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
 				}
 			});
@@ -212,9 +212,7 @@
 				let menu = document.getElementById("stationMenu");
 				let name = document.getElementById("stationName"); // use this to check if the card is loaded or we are opening a new one
 				if (menu && name) {
-					menu.classList.add("smooth-slide-to-left");
-					setTimeout(() => menu.remove(), 500); // remove element after animation
-					document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
+					hideStationMenu();
 				}
 			});
 		</script>

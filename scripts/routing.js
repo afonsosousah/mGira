@@ -23,6 +23,13 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 		)
 		.forEach(layer => map.removeLayer(layer));
 
+	// Hide cycleways layer
+	map
+		.getLayers()
+		.getArray()
+		.filter(layer => layer.get("name") === "cyclewaysLayer")
+		.forEach(layer => layer.setVisible(false));
+
 	// select the stations from which the user should grab the bike and leave the bike
 	// from the 3 stations nearer to the starting point and the 3 stations nearer to the ending point
 	// make a rough calculation on which of the combinations will result in the less distance (which should take less time)
@@ -128,10 +135,15 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	let coords1 = ol.proj.fromLonLat([routeSummaryBike.bbox[0], routeSummaryBike.bbox[1]]);
 	let coords2 = ol.proj.fromLonLat([routeSummaryBike.bbox[2], routeSummaryBike.bbox[3]]);
 	let convertedBbox = [coords1[0], coords1[1], coords2[0], coords2[1]];
-	let viewableBox = [map.getSize()[0], map.getSize()[1] - document.getElementById("placeSearchMenu").clientHeight];
+	let menuHeight;
+	if (document.getElementById("placeSearchMenu")) menuHeight = document.getElementById("placeSearchMenu").clientHeight;
+	else if (document.getElementById("stationMenu"))
+		menuHeight = document.getElementById("stationMenu").clientHeight + 30;
+	else menuHeight = 0;
+	let viewableBox = [map.getSize()[0], map.getSize()[1] - menuHeight];
 	map.getView().fit(convertedBbox, {
 		size: viewableBox,
-		padding: [50, 100, document.getElementById("placeSearchMenu").clientHeight + 50, 100],
+		padding: [50, 100, menuHeight + 50, 100],
 		maxZoom: 18,
 	});
 
@@ -155,6 +167,31 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 
 		placeSearchMenuElement.appendChild(startNavigationButtonElement);
 		placeSearchMenuElement.appendChild(routeDetailsElement);
+	} else if (document.querySelector("#stationMenu")) {
+		let stationMenu = document.querySelector("#stationMenu");
+
+		let startNavigationButtonElement = document.createElement("div");
+		startNavigationButtonElement.id = "startNavigationButton";
+		startNavigationButtonElement.innerHTML = '<i class="bi bi-sign-turn-slight-right"></i>';
+
+		startNavigationButtonElement.addEventListener("click", () => startNavigation(walkingOnly));
+
+		if (totalTime) {
+			let routeDetailsElement = document.createElement("div");
+			routeDetailsElement.id = "routeDetails";
+			routeDetailsElement.innerHTML = `
+				<i class="bi bi-clock"></i>
+				&nbsp;
+				${parseMillisecondsIntoTripTime(totalTime * 1000)}
+				&nbsp;&nbsp;&nbsp;
+				<i class="bi bi-signpost"></i>
+				&nbsp;${Math.round((totalDistance / 1000) * 10) / 10}km
+			`; // round distance to 1 decimal place
+
+			stationMenu.appendChild(routeDetailsElement);
+		}
+
+		stationMenu.appendChild(startNavigationButtonElement);
 	}
 }
 
