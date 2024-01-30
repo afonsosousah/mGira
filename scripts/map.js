@@ -4,7 +4,7 @@ let currentLocationMarker;
 let previousSelectedMarker;
 let pos;
 let speed;
-let gpsHeading;
+let compassHeading;
 
 async function initMap() {
 	// Initialize the Map, centered on Lisbon
@@ -342,10 +342,10 @@ function getLocation(zoom = true) {
 			promise.then(function (orientationControl) {
 				orientationControl.listen(function () {
 					// Get the current *screen-adjusted* device orientation angles
-					var currentOrientation = orientationControl.getScreenAdjustedEuler();
+					let currentOrientation = orientationControl.getScreenAdjustedEuler();
 
-					// Calculate the current compass heading that the user is 'looking at' (in radians)
-					var compassHeading = (Math.PI / 180) * (360 - currentOrientation.alpha) + map.getView().getRotation();
+					// Calculate the current compass heading that the user is 'looking at' (in radians) (global)
+					compassHeading = (Math.PI / 180) * (360 - currentOrientation.alpha) + map.getView().getRotation();
 
 					// Set rotation of map dot
 

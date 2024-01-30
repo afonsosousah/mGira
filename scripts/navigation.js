@@ -6,6 +6,9 @@ let lastRoutePointIndex = null;
 let previousLocationUpdate;
 let currentLocationUpdate;
 let currentLerpObject;
+let promptedDropoffStation;
+let promptedDestination;
+let rotationMode = "route";
 
 async function startNavigation(walkingOnly = false) {
 	navigationActive = true;
@@ -84,9 +87,10 @@ function onBikeNavigation() {
 	document.body.appendChild(navInfoPanelElement);
 
 	// Append the end navigation button
-	appendElementToBodyFromHTML(
-		`<div id="endNavigationButton" onclick="stopNavigation()"><i class="bi bi-sign-stop"></i></div>`
-	);
+	appendElementToBodyFromHTML(`
+		<div id="changeRotationModeButton" onclick="changeRotationMode()"><i class="bi bi-compass"></i></div>
+		<div id="endNavigationButton" onclick="stopNavigation()"><i class="bi bi-sign-stop"></i></div>
+	`);
 
 	// Update the map style to hide the on foot UI
 	const mapElement = document.getElementById("map");
@@ -165,72 +169,88 @@ async function stopNavigation() {
 	orientationChangeHandler(window.matchMedia("(orientation: portrait)"));
 }
 
+function changeRotationMode() {
+	let changeRotationModeButton = document.getElementById("changeRotationModeButton");
+
+	if (rotationMode === "route") {
+		rotationMode = "compass";
+		changeRotationModeButton.innerHTML = `<i class="bi bi-compass"></i>`;
+	} else if (rotationMode === "compass") {
+		rotationMode = "route";
+		changeRotationModeButton.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
+	}
+}
+
 function updatePositionAndRotationWhenNavigating() {
 	if (navigationActive) {
-		let closestDistance;
-		let closestPointIndex;
+		let angleRad;
 
-		// Apply linear interpolation to the position
-		if (!previousLocationUpdate) previousLocationUpdate = currentLocationUpdate;
-		else {
-			
-			let timespan = currentLocationUpdate.timestamp - previousLocationUpdate.timestamp;
+		if (rotationMode === "route") {
+			let closestDistance;
+			let closestPointIndex;
 
-			currentLerpObject = {
-				previousPercentage: 0,
-				percentageIncrement: 1/timespan,
-				timespan: timespan
+			// Apply linear interpolation to the position
+			if (!previousLocationUpdate) previousLocationUpdate = currentLocationUpdate;
+			else {
+				let timespan = currentLocationUpdate.timestamp - previousLocationUpdate.timestamp;
+
+				currentLerpObject = {
+					previousPercentage: 0,
+					percentageIncrement: 1 / timespan,
+					timespan: timespan,
+				};
 			}
 
-		}
-
-		// Get the closest route point to current location
-		for (const [i, routePoint] of currentRouteCoordinates.entries()) {
-			const computedDistance = distance(pos, routePoint);
-			if (!closestDistance) {
-				closestDistance = computedDistance;
-				closestPointIndex = i;
-			} else if (computedDistance < closestDistance) {
-				closestDistance = computedDistance;
-				closestPointIndex = i;
+			// Get the closest route point to current location
+			for (const [i, routePoint] of currentRouteCoordinates.entries()) {
+				const computedDistance = distance(pos, routePoint);
+				if (!closestDistance) {
+					closestDistance = computedDistance;
+					closestPointIndex = i;
+				} else if (computedDistance < closestDistance) {
+					closestDistance = computedDistance;
+					closestPointIndex = i;
+				}
 			}
-		}
 
-		// If the closest point is less than 1 meter away, update lastRoutePointIndex
-		if (lastRoutePointIndex) {
-			let distanceToClosestPoint = distance(pos, currentRouteCoordinates[closestPointIndex]);
-			let distanceToLastPoint = distance(pos, currentRouteCoordinates[lastRoutePointIndex]);
-			let distanceBetweenClosestAndLastPoint = distance(
-				currentRouteCoordinates[closestPointIndex],
-				currentRouteCoordinates[lastRoutePointIndex]
-			);
+			// If the closest point is less than 1 meter away, update lastRoutePointIndex
+			if (lastRoutePointIndex) {
+				let distanceToClosestPoint = distance(pos, currentRouteCoordinates[closestPointIndex]);
+				let distanceToLastPoint = distance(pos, currentRouteCoordinates[lastRoutePointIndex]);
+				let distanceBetweenClosestAndLastPoint = distance(
+					currentRouteCoordinates[closestPointIndex],
+					currentRouteCoordinates[lastRoutePointIndex]
+				);
 
-			console.log(distanceToClosestPoint);
-			console.log(distanceToLastPoint);
-			console.log(distanceBetweenClosestAndLastPoint);
+				console.log(distanceToClosestPoint);
+				console.log(distanceToLastPoint);
+				console.log(distanceBetweenClosestAndLastPoint);
 
-			if (
-				(distanceToClosestPoint < 1 && distanceToClosestPoint < distanceToLastPoint) ||
-				distanceToLastPoint > distanceBetweenClosestAndLastPoint ||
-				Math.abs(lastRoutePointIndex - closestPointIndex) > 1 // If the difference is more than 1 point
-			) {
-				lastRoutePointIndex = closestPointIndex;
+				if (
+					(distanceToClosestPoint < 1 && distanceToClosestPoint < distanceToLastPoint) ||
+					distanceToLastPoint > distanceBetweenClosestAndLastPoint ||
+					Math.abs(lastRoutePointIndex - closestPointIndex) > 1 // If the difference is more than 1 point
+				) {
+					lastRoutePointIndex = closestPointIndex;
+				} else {
+					closestPointIndex = lastRoutePointIndex;
+				}
 			} else {
-				closestPointIndex = lastRoutePointIndex;
+				lastRoutePointIndex = closestPointIndex;
 			}
-		} else {
-			lastRoutePointIndex = closestPointIndex;
+
+			let closestRoutePoint = currentRouteCoordinates[closestPointIndex];
+			let nextRoutePoint = currentRouteCoordinates[Math.min(closestPointIndex + 1, currentRouteCoordinates.length - 1)]; // make sure the point doesn't go out of bounds
+
+			// Get the differences between coordinates
+			let diffLat = nextRoutePoint[1] - closestRoutePoint[1];
+			let diffLon = nextRoutePoint[0] - closestRoutePoint[0];
+
+			// Get the angle between the current route point and the next route point (corrected from clockwise east to clockwise north)
+			angleRad = -90 * (Math.PI / 180) + Math.atan2(diffLat, diffLon);
+		} else if (rotationMode === "compass") {
+			angleRad = compassHeading;
 		}
-
-		let closestRoutePoint = currentRouteCoordinates[closestPointIndex];
-		let nextRoutePoint = currentRouteCoordinates[Math.min(closestPointIndex + 1, currentRouteCoordinates.length - 1)]; // make sure the point doesn't go out of bounds
-
-		// Get the differences between coordinates
-		let diffLat = nextRoutePoint[1] - closestRoutePoint[1];
-		let diffLon = nextRoutePoint[0] - closestRoutePoint[0];
-
-		// Get the angle between the current route point and the next route point (corrected from clockwise east to clockwise north)
-		const angleRad = -90 * (Math.PI / 180) + Math.atan2(diffLat, diffLon);
 
 		// Pan to location and update rotation (pos object is global and is updated getLocation() in map.js)
 		const view = map.getView();
@@ -242,18 +262,35 @@ function updatePositionAndRotationWhenNavigating() {
 
 		view.setRotation(angleRad);
 
-		// Check if user is near to destination station, and prompt them if they reached the destination station
-		if (distance(pos, [destinationStation.longitude, destinationStation.latitude]) < 30) {
+		// Check if user is near to dropoff station, and prompt them if they reached the dropoff station
+		let distanceToDropoffStation = distance(pos, [destinationStation.longitude, destinationStation.latitude]);
+		if (distanceToDropoffStation < 30 && !promptedDropoffStation) {
 			createCustomYesNoPrompt(
 				`Chegou à estação?`,
 				() => {
+					promptedDropoffStation = true;
 					finalOnFootNavigation();
 				},
 				() => {
 					// Do nothing
 				}
 			);
-		}
+		} else if (distanceToDropoffStation >= 30) promptedDropoffStation = false;
+
+		// Check if user is near to destination, and prompt them if they reached the destination
+		let distanceToDestination = distance(pos, finalDestination);
+		if (distanceToDestination < 30 && !promptedDestination) {
+			createCustomYesNoPrompt(
+				`Chegou ao destino?`,
+				() => {
+					promptedDestination = true;
+					stopNavigation();
+				},
+				() => {
+					// Do nothing
+				}
+			);
+		} else if (distanceToDestination >= 30) promptedDestination = false;
 	}
 }
 

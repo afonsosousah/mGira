@@ -1,6 +1,7 @@
 let orsApiKey = "5b3ce3597851110001cf62482bb7bca6e13347a192fe3b623a2cd57d";
 let currentRouteCoordinates;
-let destinationStation;
+let dropoffStation;
+let finalDestination;
 
 async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	// Loading animation over the map while the route is being calculated
@@ -30,7 +31,7 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 
 	let bestDistance;
 	let grabStation;
-	let dropoffStation;
+	let dropoffStationInternal;
 
 	for (stationStart of nearestStationsStart) {
 		for (stationEnd of nearestStationsEnd) {
@@ -47,17 +48,20 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 			if (bestDistance && totalTripDistance < bestDistance) {
 				bestDistance = totalTripDistance;
 				grabStation = stationStart;
-				dropoffStation = stationEnd;
+				dropoffStationInternal = stationEnd;
 			} else if (!bestDistance) {
 				bestDistance = totalTripDistance;
 				grabStation = stationStart;
-				dropoffStation = stationEnd;
+				dropoffStationInternal = stationEnd;
 			}
 		}
 	}
 
-	// Store dropoff station as global
-	destinationStation = dropoffStation;
+	// Store dropoff station as global (to be accesssed in navigation)
+	dropoffStation = dropoffStationInternal;
+
+	// Store final destination as global (to be accesssed in navigation)
+	finalDestination = toCoordinates;
 
 	let totalDistance = 0; // will be in meters and exact
 	let totalTime = 0; // will be in seconds
