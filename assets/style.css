@@ -1534,6 +1534,22 @@ input[type="search"]::-webkit-search-results-decoration {
 	font-size: 0.75rem;
  	margin-top: -0.5rem;
 }
+#changeRotationModeButton {
+	height: 4rem;
+	width: 4rem;
+	background-color: var(--green);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	z-index: 16;
+	position: absolute;
+	bottom: calc(2dvh + 1dvh + 4rem);
+	right: 2dvh;
+	font-size: 2.5rem;
+	line-height: 2rem;
+	color: var(--black);
+}
 #endNavigationButton {
 	height: 4rem;
 	width: 4rem;

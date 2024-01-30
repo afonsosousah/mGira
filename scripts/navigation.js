@@ -88,7 +88,7 @@ function onBikeNavigation() {
 
 	// Append the end navigation button
 	appendElementToBodyFromHTML(`
-		<div id="changeRotationModeButton" onclick="changeRotationMode()"><i class="bi bi-compass"></i></div>
+		<div id="changeRotationModeButton" onclick="changeRotationMode()"><i class="bi bi-sign-turn-right"></i></div>
 		<div id="endNavigationButton" onclick="stopNavigation()"><i class="bi bi-sign-stop"></i></div>
 	`);
 

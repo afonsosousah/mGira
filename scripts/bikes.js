@@ -288,11 +288,13 @@ async function startBikeTrip(event, bikeSerialNumber) {
 	if (event.target.value === "100") {
 		// Show the bike leaving dock animation in the card
 		let bikeReserveCardElem = document.getElementById("bikeReserveCard");
-		bikeReserveCardElem.innerHTML = `
-			<div id="backButton" onclick="document.getElementById('unlockBikeCard').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
-			<img src="assets/images/mGira_leaving_dock.gif" id="bikeLeavingDock" alt="bike leaving dock animation">
-			<img src="assets/images/gira_footer.svg" id="footer" alt="footer">
-		`;
+		if (bikeReserveCardElem) {
+			bikeReserveCardElem.innerHTML = `
+				<div id="backButton" onclick="document.getElementById('unlockBikeCard').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
+				<img src="assets/images/mGira_leaving_dock.gif" id="bikeLeavingDock" alt="bike leaving dock animation">
+				<img src="assets/images/gira_footer.svg" id="footer" alt="footer">
+			`;
+		}
 
 		// start the trip
 		if (typeof (await startTrip()) === "undefined") {
@@ -345,12 +347,11 @@ async function tripTimer(startTime) {
 		if (document.querySelector("#tripTime")) {
 			// Calculate elapsed time
 			const elapsedTime = new Date(Date.now() - startTime);
-			elapsedTime.setTime(elapsedTime.getTime() + elapsedTime.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
 			for (let element of document.querySelectorAll("#tripTime")) {
 				element.innerHTML = parseMillisecondsIntoTripTime(elapsedTime);
 			}
 		}
-		if (document.querySelector("#tripCost") && activeTripObj) {
+		if (document.querySelector("#tripCost") && typeof activeTripObj !== "undefined") {
 			let cost = activeTripObj.cost;
 			if (cost) {
 				for (let element of document.querySelectorAll("#tripCost")) {
