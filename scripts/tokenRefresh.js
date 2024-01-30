@@ -6,8 +6,6 @@ async function tokenRefresh() {
 	tokenRefreshed = false;
 	currentTry += 1;
 
-	console.log(currentTry);
-
 	console.log("Token has not been refreshed...");
 	const response = await fetch(proxyURL, {
 		method: "POST",
@@ -33,7 +31,7 @@ async function tokenRefresh() {
 
 			// Store refreshToken cookie (stay logged in)
 			document.cookie = "refreshToken=" + user.refreshToken + "; expires=" + expiryDate.toGMTString();
-			
+
 			// Hide login menu if it is showing
 			if (document.querySelector(".login-menu")) document.querySelector(".login-menu").remove();
 
@@ -41,7 +39,7 @@ async function tokenRefresh() {
 			tokenRefreshed = true;
 			currentTry = 0; // reset the number of tries
 
-			console.log("Token has been refreshed")
+			console.log("Token has been refreshed");
 
 			return user.accessToken;
 		}
@@ -52,13 +50,9 @@ async function tokenRefresh() {
 			await delay(200);
 			responseObject = await response.json();
 			if (Object.hasOwn(responseObject, "statusDescription")) {
-				if (!responseObject.statusDescription.includes("The Token field is required.")) 
-					return tokenRefresh();	
-			}
-			else
-				return tokenRefresh();
-		} else 
-			openLoginMenu();
+				if (!responseObject.statusDescription.includes("The Token field is required.")) return tokenRefresh();
+			} else return tokenRefresh();
+		} else openLoginMenu();
 	} else {
 		alert("Token refresh failed!");
 	}

@@ -209,7 +209,7 @@ async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSer
 		let isTimeLeft = timeLeft > -1;
 		if (isTimeLeft) {
 			const timeRemaining = timeLeft--;
-			const normalizedTime = (timeRemaining - 60) / 60;
+			const normalizedTime = (timeRemaining - 30) / 30;
 			timerCircle.style.strokeDashoffset = normalizedTime;
 			timerText.innerHTML = timeRemaining;
 		} else {
@@ -347,7 +347,7 @@ async function tripTimer(startTime) {
 			const elapsedTime = new Date(Date.now() - startTime);
 			elapsedTime.setTime(elapsedTime.getTime() + elapsedTime.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
 			for (let element of document.querySelectorAll("#tripTime")) {
-				element.innerHTML = elapsedTime.toLocaleTimeString("pt");
+				element.innerHTML = parseMillisecondsIntoTripTime(elapsedTime);
 			}
 		}
 		if (document.querySelector("#tripCost") && activeTripObj) {

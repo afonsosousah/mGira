@@ -222,10 +222,6 @@ function updatePositionAndRotationWhenNavigating() {
 					currentRouteCoordinates[lastRoutePointIndex]
 				);
 
-				console.log(distanceToClosestPoint);
-				console.log(distanceToLastPoint);
-				console.log(distanceBetweenClosestAndLastPoint);
-
 				if (
 					(distanceToClosestPoint < 1 && distanceToClosestPoint < distanceToLastPoint) ||
 					distanceToLastPoint > distanceBetweenClosestAndLastPoint ||
@@ -263,7 +259,7 @@ function updatePositionAndRotationWhenNavigating() {
 		view.setRotation(angleRad);
 
 		// Check if user is near to dropoff station, and prompt them if they reached the dropoff station
-		let distanceToDropoffStation = distance(pos, [destinationStation.longitude, destinationStation.latitude]);
+		let distanceToDropoffStation = distance(pos, [dropoffStation.longitude, dropoffStation.latitude]);
 		if (distanceToDropoffStation < 30 && !promptedDropoffStation) {
 			createCustomYesNoPrompt(
 				`Chegou à estação?`,

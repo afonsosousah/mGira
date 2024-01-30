@@ -54,22 +54,42 @@ function getCookie(cname) {
 
 function parseMillisecondsIntoReadableTime(milliseconds) {
 	// Get days from milliseconds
-	var days = milliseconds / (24 * 1000 * 60 * 60);
-	var absoluteDays = Math.floor(days);
-	var d = absoluteDays;
+	let days = milliseconds / (24 * 1000 * 60 * 60);
+	let absoluteDays = Math.floor(days);
+	let d = absoluteDays;
 
 	// Get remainder from days and convert to hours
-	var hours = (days - absoluteDays) * 24;
-	var absoluteHours = Math.floor(hours);
-	var h = absoluteHours > 9 ? absoluteHours : "0" + absoluteHours;
+	let hours = (days - absoluteDays) * 24;
+	let absoluteHours = Math.floor(hours);
+	let h = absoluteHours > 9 ? absoluteHours : "0" + absoluteHours;
 
 	//Get remainder from hours and convert to minutes
-	var minutes = (hours - absoluteHours) * 60;
-	var absoluteMinutes = Math.floor(minutes);
-	var m = absoluteMinutes > 9 ? absoluteMinutes : "0" + absoluteMinutes;
+	let minutes = (hours - absoluteHours) * 60;
+	let absoluteMinutes = Math.floor(minutes);
+	let m = absoluteMinutes > 9 ? absoluteMinutes : "0" + absoluteMinutes;
 
 	// Return in 0d00h00m format
 	if (d > 0) return d + "d" + h + "h" + m + "m";
 	else if (h > 0) return h + "h" + m + "m";
 	else return m + "m";
+}
+
+function parseMillisecondsIntoTripTime(milliseconds) {
+	// Get hours from milliseconds
+	let hours = milliseconds / (60 * 60 * 1000);
+	let absoluteHours = Math.floor(hours);
+	let h = absoluteHours > 9 ? absoluteHours : "0" + absoluteHours;
+
+	// Get remainder from hours and convert to minutes
+	let minutes = (hours - absoluteHours) * 60;
+	let absoluteMinutes = Math.floor(minutes);
+	let m = absoluteMinutes > 9 ? absoluteMinutes : "0" + absoluteMinutes;
+
+	// Get remainder from minutes and convert to seconds
+	let seconds = (minutes - absoluteMinutes) * 60;
+	let absoluteSeconds = Math.floor(seconds);
+	let s = absoluteSeconds > 9 ? absoluteSeconds : "0" + absoluteSeconds;
+
+	// Return in 00h00m00s format
+	return h + "h" + m + "m" + s + "s";
 }
