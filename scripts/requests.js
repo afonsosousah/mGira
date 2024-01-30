@@ -212,11 +212,12 @@ function startWSConnection(force = false) {
 								tripOverlay.className = "trip-overlay";
 								tripOverlay.id = "tripOverlay";
 								tripOverlay.innerHTML = `
-                                    <span id="onTripText">Em viagem</span>
-                                    <img src="assets/images/mGira_bike_white.png" alt="bike" id="bikeLogo">
-                                    <span id="tripCost">0.00€</span>
-                                    <span id="tripTime">00:00:00</span>
-                                    <img src="assets/images/gira_footer.svg" alt="footer" id="footer">
+									<span id="onTripText">Em viagem</span>
+									<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
+									<span id="tripCost">0.00€</span>
+									<span id="tripTime">00:00:00</span>
+									<a id="callAssistance" href="tel:211163125"><i class="bi bi-exclamation-triangle"></i></a>
+									<img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
                                 `.trim();
 								document.body.appendChild(tripOverlay);
 
@@ -224,7 +225,7 @@ function startWSConnection(force = false) {
 								tripEnded = false;
 								tripTimer(Date.parse(activeTripObj.startDate));
 							}
-							// If there is navigation happening and ther is no trip timer already running, start the trip timer
+							// If there is navigation happening and there is no trip timer already running, start the trip timer
 							else if (navigationActive && !tripTimerRunning) {
 								// start the trip timer
 								tripEnded = false;

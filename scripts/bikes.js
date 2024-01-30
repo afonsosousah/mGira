@@ -122,7 +122,6 @@ async function tripPayWithPoints(tripCode) {
 }
 
 async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSerialNumber, unregistered = false) {
-
 	let stationObj;
 
 	if (stationSerialNumber !== null) {
@@ -170,7 +169,7 @@ async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSer
 	if (typeof (await reserveBike(bikeSerialNumber)) === "undefined") {
 		alert("Ocorreu um erro ao reservar a bicicleta.");
 		return;
-	};	
+	}
 
 	// Create card element
 	let card = document.createElement("div");
@@ -198,44 +197,41 @@ async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSer
     `.trim();
 	document.body.appendChild(card);
 
-
 	// Run the timer (30 seconds)
 	let timeLeft = 30;
-	let timerText = document.getElementById('timeLeft');
-	let timerElement = document.querySelector('.timer');
-	const timerCircle = timerElement.querySelector('svg > circle + circle');
-	timerElement.classList.add('animatable');
+	let timerText = document.getElementById("timeLeft");
+	let timerElement = document.querySelector(".timer");
+	const timerCircle = timerElement.querySelector("svg > circle + circle");
+	timerElement.classList.add("animatable");
 	timerCircle.style.strokeDashoffset = 1;
 
-	let countdownHandler = async function(){
+	let countdownHandler = async function () {
 		let isTimeLeft = timeLeft > -1;
-		if(isTimeLeft){
+		if (isTimeLeft) {
 			const timeRemaining = timeLeft--;
 			const normalizedTime = (timeRemaining - 60) / 60;
 			timerCircle.style.strokeDashoffset = normalizedTime;
-				timerText.innerHTML = timeRemaining;
+			timerText.innerHTML = timeRemaining;
 		} else {
 			clearInterval(countdownTimer);
-			timerElement.classList.remove('animatable');
+			timerElement.classList.remove("animatable");
 			// No time left, cancel the reservation if the user didn't start the trip
 			if (tripEnded) {
-
 				// Cancel the bike reserve after the countdown
-				console.log("The reserve was cancelled.")
+				console.log("The reserve was cancelled.");
 				if (typeof (await cancelBikeReserve()) === "undefined") {
 					alert("Ocorreu um erro ao cancelar a reserva da bicicleta");
 					return;
-				};
+				}
 
 				// hide the unlock card if it is showing
 				if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
 			}
-		}  
+		}
 	};
 
 	countdownHandler(); // call once to start the timer immediately
 	let countdownTimer = setInterval(countdownHandler, 1000);
-
 
 	// If there is navigation going, make the card still appear
 	if (navigationActive) card.style.zIndex = 99;
@@ -287,12 +283,9 @@ function takeUnregisteredBike() {
 	}
 }
 
-
 // Handles the range input value changed event, and starts the bike trip if the slider is all the way to the right
 async function startBikeTrip(event, bikeSerialNumber) {
-
 	if (event.target.value === "100") {
-
 		// Show the bike leaving dock animation in the card
 		let bikeReserveCardElem = document.getElementById("bikeReserveCard");
 		bikeReserveCardElem.innerHTML = `
@@ -303,7 +296,6 @@ async function startBikeTrip(event, bikeSerialNumber) {
 
 		// start the trip
 		if (typeof (await startTrip()) === "undefined") {
-
 			// Alert the user that an error occured
 			alert("Ocorreu um erro ao iniciar a viagem.");
 
@@ -311,11 +303,10 @@ async function startBikeTrip(event, bikeSerialNumber) {
 			if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
 
 			return;
-		};
+		}
 
 		// Only hide card with animation after 2 seconds
 		setTimeout(() => {
-
 			// hide the unlock card if it is showing
 			if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
 
@@ -344,7 +335,6 @@ async function startBikeTrip(event, bikeSerialNumber) {
 			// start the trip timer
 			tripEnded = false;
 			tripTimer(Date.now());
-
 		}, 3000);
 	}
 }
@@ -381,7 +371,7 @@ async function tripTimer(startTime) {
 		if (typeof (await cancelBikeReserve()) === "undefined") {
 			alert("Ocorreu um erro ao cancelar a reserva da bicicleta");
 			return;
-		};
+		}
 	}
 }
 
