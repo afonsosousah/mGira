@@ -1,11 +1,12 @@
 let orsApiKey = "5b3ce3597851110001cf62482bb7bca6e13347a192fe3b623a2cd57d";
 let currentRouteCoordinates;
+let destinationStation;
 
 async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	// Loading animation over the map while the route is being calculated
 	let loadingElement = document.createElement("img");
 	loadingElement.id = "spinner";
-	loadingElement.src = "assets/images/mGira_bike.png"
+	loadingElement.src = "assets/images/mGira_bike.png";
 	loadingElement.style.top = "calc(35% - 40px)";
 	document.body.appendChild(loadingElement);
 
@@ -54,6 +55,9 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 			}
 		}
 	}
+
+	// Store dropoff station as global
+	destinationStation = dropoffStation;
 
 	let totalDistance = 0; // will be in meters and exact
 	let totalTime = 0; // will be in seconds
@@ -210,7 +214,6 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 const EARTH_RADIUS_KM = 6371;
 // Calculate the distance between two points in meters (given the latitude/longitude of those points).
 function distance(point1, point2) {
-
 	// Points are in [lon, lat] format
 	const [lon1, lat1] = point1;
 	const [lon2, lat2] = point2;
@@ -549,59 +552,59 @@ function addStationPointToMap(station, start = true) {
 	let position = [station.longitude, station.latitude];
 
 	const iconFeature = new ol.Feature({
-			geometry: new ol.geom.Point(ol.proj.fromLonLat(position)),
-			name: station.serialNumber,
+		geometry: new ol.geom.Point(ol.proj.fromLonLat(position)),
+		name: station.serialNumber,
+	});
+
+	let iconStyle;
+	if (station.docks !== 0) {
+		const bikeRatio = station.bikes / station.docks;
+		const filled =
+			station.bikes === 0
+				? 0
+				: bikeRatio <= 0.15
+				? 15
+				: bikeRatio <= 0.3
+				? 30
+				: bikeRatio <= 0.5
+				? 50
+				: bikeRatio < 1
+				? 80
+				: 100;
+
+		iconStyle = new ol.style.Style({
+			image: new ol.style.Icon({
+				width: 40,
+				height: 50,
+				anchor: [0.5, 1],
+				anchorXUnits: "fraction",
+				anchorYUnits: "fraction",
+				src: `assets/images/mapDot_${filled}.png`,
+			}),
+			text: new ol.style.Text({
+				text: station.bikes.toString(),
+				font: "bold 15px sans-serif",
+				offsetX: 0,
+				offsetY: -30,
+				textAlign: "center",
+				fill: new ol.style.Fill({
+					color: "#FFFFFF",
+				}),
+			}),
+		});
+	} else
+		iconStyle = new ol.style.Style({
+			image: new ol.style.Icon({
+				width: 40,
+				height: 50,
+				anchor: [0.5, 1],
+				anchorXUnits: "fraction",
+				anchorYUnits: "fraction",
+				src: `assets/images/mapDot_Deactivated.png`,
+			}),
 		});
 
-		let iconStyle;
-		if (station.docks !== 0) {
-			const bikeRatio = station.bikes / station.docks;
-			const filled =
-				station.bikes === 0
-					? 0
-					: bikeRatio <= 0.15
-					? 15
-					: bikeRatio <= 0.3
-					? 30
-					: bikeRatio <= 0.5
-					? 50
-					: bikeRatio < 1
-					? 80
-					: 100;
-
-			iconStyle = new ol.style.Style({
-				image: new ol.style.Icon({
-					width: 40,
-					height: 50,
-					anchor: [0.5, 1],
-					anchorXUnits: "fraction",
-					anchorYUnits: "fraction",
-					src: `assets/images/mapDot_${filled}.png`,
-				}),
-				text: new ol.style.Text({
-					text: station.bikes.toString(),
-					font: "bold 15px sans-serif",
-					offsetX: 0,
-					offsetY: -30,
-					textAlign: "center",
-					fill: new ol.style.Fill({
-						color: "#FFFFFF",
-					}),
-				}),
-			});
-		} else
-			iconStyle = new ol.style.Style({
-				image: new ol.style.Icon({
-					width: 40,
-					height: 50,
-					anchor: [0.5, 1],
-					anchorXUnits: "fraction",
-					anchorYUnits: "fraction",
-					src: `assets/images/mapDot_Deactivated.png`,
-				}),
-			});
-
-		iconFeature.setStyle(iconStyle);
+	iconFeature.setStyle(iconStyle);
 
 	const vectorSource = new ol.source.Vector({
 		features: [iconFeature],

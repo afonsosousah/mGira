@@ -3,6 +3,9 @@ let navigationMode = null;
 let deviceOrientation = "portrait";
 let wakeLock = null;
 let lastRoutePointIndex = null;
+let previousLocationUpdate;
+let currentLocationUpdate;
+let currentLerpObject;
 
 async function startNavigation(walkingOnly = false) {
 	navigationActive = true;
@@ -18,28 +21,24 @@ async function startNavigation(walkingOnly = false) {
 	// Navigation on-foot from user location to nearest station
 	navigationMode === "foot";
 
-	// Request fullscreen
-	document.body.requestFullscreen();
-
 	// Zoom in to an approppriate level
 	map.getView().setZoom(17);
 
-	// Add the Navigation Information Panel
-	let navInfoPanelElement = document.createElement("div");
-	navInfoPanelElement.id = "navigationInfoPanelPortrait";
-	navInfoPanelElement.innerHTML = `
-    <img src="assets/images/mGira_big_white.png" alt="big logo">
-    <div id="endNavigationButton" onclick="stopNavigation()">Terminar viagem</div>
-    `.trim();
-	document.body.appendChild(navInfoPanelElement);
-
 	// Append the buttons
-	if (!walkingOnly)
-		appendElementToBodyFromHTML(`<div id="onBikeButton" onclick="onBikeNavigation()">Estou na bicicleta</div>`);
+	if (!walkingOnly) {
+		appendElementToBodyFromHTML(`
+			<div id="endNavigationButtonPortrait" onclick="stopNavigation()"><i class="bi bi-sign-stop"></i></div>
+			<div id="onBikeButton" onclick="onBikeNavigation()">Estou na bicicleta</div>
+		`);
+	}
 
 	// Update the map style to hide the standard UI
 	const mapElement = document.getElementById("map");
 	mapElement.style.zIndex = "10";
+
+	// Set the map to 3D effect
+	mapElement.style.transform = "perspective(100dvh) rotateX(30deg) translateZ(25dvh) translateY(-3.5dvh)";
+	mapElement.style.transition = "transform 1s";
 
 	// Pan to user location and set the correct rotation based on the route
 	updatePositionAndRotationWhenNavigating();
@@ -48,6 +47,9 @@ async function startNavigation(walkingOnly = false) {
 
 function onBikeNavigation() {
 	navigationMode = "bike";
+
+	// Request fullscreen
+	document.body.requestFullscreen();
 
 	// Tell the user that there is navigation going, so he needs to rotate the screen
 	appendElementToBodyFromHTML(`
@@ -64,16 +66,26 @@ function onBikeNavigation() {
 	let navInfoPanelElement = document.createElement("div");
 	navInfoPanelElement.id = "navigationInfoPanel";
 	navInfoPanelElement.innerHTML = `
-    <img src="assets/images/mGira_big_white.png" alt="big logo">
-    <span id="tripCost">0.00€</span>
-    <span id="tripTime">00:00:00</span>
-    <div id="endNavigationButton" onclick="stopNavigation()">Terminar viagem</div>
+	<div id="costAndTimeContainer">
+		<div>
+			<i class="bi bi-currency-euro"></i>
+			<span id="tripCost">0.00€</span>
+		</div>
+		<div>
+			<i class="bi bi-clock"></i>
+			<span id="tripTime">00:00:00</span>
+		</div>
+	</div>
+	<div id="speedContainer">
+		<div id="speed">00</div>
+		<div id="speedLabel">km/h</div>
+	</div>
     `.trim();
 	document.body.appendChild(navInfoPanelElement);
 
-	// Append the button
+	// Append the end navigation button
 	appendElementToBodyFromHTML(
-		`<div id="reachedFinalStation" onclick="finalOnFootNavigation()">Cheguei à estação!</div>`
+		`<div id="endNavigationButton" onclick="stopNavigation()"><i class="bi bi-sign-stop"></i></div>`
 	);
 
 	// Update the map style to hide the on foot UI
@@ -81,11 +93,20 @@ function onBikeNavigation() {
 	mapElement.style.zIndex = "15";
 }
 
-function finalOnFootNavigation() {
+async function finalOnFootNavigation() {
 	navigationMode = "foot";
 
+	// Exit fullscreen
+	try {
+		await document.exitFullscreen();
+	} catch (error) {
+		console.log(error);
+	}
+
 	// Remove all the on bike navigation elements
-	const navigationElements = Array.from(document.querySelectorAll("*")).filter(e => getComputedStyle(e).zIndex === "16");
+	const navigationElements = Array.from(document.querySelectorAll("*")).filter(
+		e => getComputedStyle(e).zIndex === "16"
+	);
 	for (element of navigationElements) {
 		element.remove();
 	}
@@ -113,13 +134,6 @@ async function stopNavigation() {
 	navigationActive = false;
 	navigationMode = null;
 
-	// Exit fullscreen
-	try {
-		await document.exitFullscreen();
-	} catch (error) {
-		console.log(error);
-	}
-
 	// Don't force device to be awake anymore
 	if (wakeLock) {
 		wakeLock.release().then(() => (wakeLock = null));
@@ -137,6 +151,10 @@ async function stopNavigation() {
 	const mapElement = document.getElementById("map");
 	mapElement.style.zIndex = "0";
 
+	// Remove 3D effect
+	mapElement.style.transform = "unset";
+	mapElement.style.transition = "unset";
+
 	// Align the map to north and pan to user location on the center
 	const view = map.getView();
 	const userPosition = ol.proj.fromLonLat(pos);
@@ -152,6 +170,20 @@ function updatePositionAndRotationWhenNavigating() {
 		let closestDistance;
 		let closestPointIndex;
 
+		// Apply linear interpolation to the position
+		if (!previousLocationUpdate) previousLocationUpdate = currentLocationUpdate;
+		else {
+			
+			let timespan = currentLocationUpdate.timestamp - previousLocationUpdate.timestamp;
+
+			currentLerpObject = {
+				previousPercentage: 0,
+				percentageIncrement: 1/timespan,
+				timespan: timespan
+			}
+
+		}
+
 		// Get the closest route point to current location
 		for (const [i, routePoint] of currentRouteCoordinates.entries()) {
 			const computedDistance = distance(pos, routePoint);
@@ -164,38 +196,31 @@ function updatePositionAndRotationWhenNavigating() {
 			}
 		}
 
-		console.log(closestPointIndex);
-		console.log(lastRoutePointIndex);
-
 		// If the closest point is less than 1 meter away, update lastRoutePointIndex
 		if (lastRoutePointIndex) {
 			let distanceToClosestPoint = distance(pos, currentRouteCoordinates[closestPointIndex]);
 			let distanceToLastPoint = distance(pos, currentRouteCoordinates[lastRoutePointIndex]);
-			let distanceBetweenClosestAndLastPoint = distance(currentRouteCoordinates[closestPointIndex], currentRouteCoordinates[lastRoutePointIndex]);
+			let distanceBetweenClosestAndLastPoint = distance(
+				currentRouteCoordinates[closestPointIndex],
+				currentRouteCoordinates[lastRoutePointIndex]
+			);
 
 			console.log(distanceToClosestPoint);
 			console.log(distanceToLastPoint);
 			console.log(distanceBetweenClosestAndLastPoint);
 
-			if(
-				(distanceToClosestPoint < 1 && distanceToClosestPoint < distanceToLastPoint)
-				||
-				(distanceToLastPoint > distanceBetweenClosestAndLastPoint)
-				||
-				(Math.abs(lastRoutePointIndex - closestPointIndex) > 1) // If the difference is more than 1 point
+			if (
+				(distanceToClosestPoint < 1 && distanceToClosestPoint < distanceToLastPoint) ||
+				distanceToLastPoint > distanceBetweenClosestAndLastPoint ||
+				Math.abs(lastRoutePointIndex - closestPointIndex) > 1 // If the difference is more than 1 point
 			) {
 				lastRoutePointIndex = closestPointIndex;
-			}
-			else {
+			} else {
 				closestPointIndex = lastRoutePointIndex;
 			}
-		}
-		else {
+		} else {
 			lastRoutePointIndex = closestPointIndex;
 		}
-
-		console.log(closestPointIndex);
-		console.log(lastRoutePointIndex);
 
 		let closestRoutePoint = currentRouteCoordinates[closestPointIndex];
 		let nextRoutePoint = currentRouteCoordinates[Math.min(closestPointIndex + 1, currentRouteCoordinates.length - 1)]; // make sure the point doesn't go out of bounds
@@ -212,8 +237,23 @@ function updatePositionAndRotationWhenNavigating() {
 		const mapSize = map.getSize();
 		const userPosition = ol.proj.fromLonLat(pos);
 
-		view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * (3 / 4)]);
+		if (navigationMode === "bike") view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.9]);
+		else view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.85]);
+
 		view.setRotation(angleRad);
+
+		// Check if user is near to destination station, and prompt them if they reached the destination station
+		if (distance(pos, [destinationStation.longitude, destinationStation.latitude]) < 30) {
+			createCustomYesNoPrompt(
+				`Chegou à estação?`,
+				() => {
+					finalOnFootNavigation();
+				},
+				() => {
+					// Do nothing
+				}
+			);
+		}
 	}
 }
 

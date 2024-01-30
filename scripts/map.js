@@ -3,6 +3,7 @@ let infoWindow;
 let currentLocationMarker;
 let previousSelectedMarker;
 let pos;
+let speed;
 let gpsHeading;
 
 async function initMap() {
@@ -22,24 +23,22 @@ async function initMap() {
 	});*/
 
 	// Styled map
-    const key = 'RgT5fNTLsVXnsXKz4kG6';
-    const styleJson = `https://api.maptiler.com/maps/dataviz/style.json?key=${key}`;
-    map = new ol.Map({
-        target: 'map',
-        layers: [
-            new ol.layer.Tile({
-            source: new ol.source.OSM(),
-            }),
-        ],
-        view: new ol.View({
-            center: ol.proj.fromLonLat([-9.142685, 38.736946]),
-            zoom: 12,
-        }),
-        controls: [
-            new ol.control.Rotate()
-        ],
-    });
-    olms.apply(map, styleJson);
+	const key = "RgT5fNTLsVXnsXKz4kG6";
+	const styleJson = `https://api.maptiler.com/maps/dataviz/style.json?key=${key}`;
+	map = new ol.Map({
+		target: "map",
+		layers: [
+			new ol.layer.Tile({
+				source: new ol.source.OSM(),
+			}),
+		],
+		view: new ol.View({
+			center: ol.proj.fromLonLat([-9.142685, 38.736946]),
+			zoom: 12,
+		}),
+		controls: [new ol.control.Rotate()],
+	});
+	olms.apply(map, styleJson);
 
 	// display popup on click
 	map.on("click", evt => {
@@ -195,8 +194,18 @@ function getLocation(zoom = true) {
 			async position => {
 				// Convert to the OpenLayers format
 				pos = [position.coords.longitude, position.coords.latitude];
+				speed = position.coords.speed ?? 0;
 
 				updatePositionAndRotationWhenNavigating();
+
+				// Update object to be used in navigation position smoothing
+				currentLocationUpdate = {
+					position: pos,
+					timestamp: position.timestamp,
+				};
+
+				let speedKMH = (speed * 60 * 60) / 1000 ?? 0;
+				if (document.getElementById("speed")) document.getElementById("speed").innerHTML = speedKMH.toFixed(0); // convert m/s to km/h
 
 				const iconFeature = new ol.Feature({
 					geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
@@ -327,19 +336,17 @@ function getLocation(zoom = true) {
 				}
 			};
 
-
 			// Rotate heading arrow using device sensors (Fulltilt library)
-			// Start the FULLTILT DeviceOrientation listeners 
-			var promise = FULLTILT.getDeviceOrientation({'type': 'world'});
-			promise.then(function(orientationControl) {
-		
-				orientationControl.listen(function() {
+			// Start the FULLTILT DeviceOrientation listeners
+			var promise = FULLTILT.getDeviceOrientation({ type: "world" });
+			promise.then(function (orientationControl) {
+				orientationControl.listen(function () {
 					// Get the current *screen-adjusted* device orientation angles
 					var currentOrientation = orientationControl.getScreenAdjustedEuler();
 
 					// Calculate the current compass heading that the user is 'looking at' (in radians)
 					var compassHeading = (Math.PI / 180) * (360 - currentOrientation.alpha) + map.getView().getRotation();
-		
+
 					// Set rotation of map dot
 
 					const iconFeature = new ol.Feature({
@@ -355,21 +362,21 @@ function getLocation(zoom = true) {
 							anchorXUnits: "fraction",
 							anchorYUnits: "fraction",
 							src: "assets/images/gps_dot.png",
-							rotation: compassHeading
+							rotation: compassHeading,
 						}),
 					});
-	
+
 					iconFeature.setStyle(iconStyle);
 					const vectorSource = new ol.source.Vector({
 						features: [iconFeature],
 					});
-	
+
 					const vectorLayer = new ol.layer.Vector({
 						name: "currentLocationLayer",
 						source: vectorSource,
 						zIndex: 99,
 					});
-	
+
 					if (
 						map
 							.getLayers()
@@ -384,16 +391,14 @@ function getLocation(zoom = true) {
 							.getLayers()
 							.getArray()
 							.find(layer => layer.get("name") === "currentLocationLayer");
-	
+
 						// Refresh the feature
 						let feature = currentLocationLayer.getSource().getFeatures()[0];
 						feature.setStyle(iconStyle);
 						feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
 					}
 				});
-		
 			});
-
 
 			checkPos();
 		}

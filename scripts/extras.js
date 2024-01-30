@@ -13,8 +13,10 @@ function appendElementToBodyFromHTML(htmlString) {
 	// Access the parsed element
 	const element = doc.body.firstChild;
 
-	// Now you can manipulate or append the element to the document
-	document.body.appendChild(element);
+	// Append the elements to the document
+	for (const element of doc.body.childNodes) {
+		document.body.appendChild(element);
+	}
 }
 
 function appendElementToElementFromHTML(htmlString, parentElement) {
@@ -35,44 +37,39 @@ function appendElementToElementFromHTML(htmlString, parentElement) {
 }
 
 function getCookie(cname) {
-    let name = cname + "=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for(let i = 0; i <ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return "";
+	let name = cname + "=";
+	let decodedCookie = decodeURIComponent(document.cookie);
+	let ca = decodedCookie.split(";");
+	for (let i = 0; i < ca.length; i++) {
+		let c = ca[i];
+		while (c.charAt(0) == " ") {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
 }
 
-
-function parseMillisecondsIntoReadableTime(milliseconds){
-
+function parseMillisecondsIntoReadableTime(milliseconds) {
 	// Get days from milliseconds
-	var days = milliseconds / (24*1000*60*60);
+	var days = milliseconds / (24 * 1000 * 60 * 60);
 	var absoluteDays = Math.floor(days);
 	var d = absoluteDays;
 
-	// Get remainder from days and convert to hours 
+	// Get remainder from days and convert to hours
 	var hours = (days - absoluteDays) * 24;
 	var absoluteHours = Math.floor(hours);
-	var h = absoluteHours > 9 ? absoluteHours : '0' + absoluteHours;
-  
+	var h = absoluteHours > 9 ? absoluteHours : "0" + absoluteHours;
+
 	//Get remainder from hours and convert to minutes
 	var minutes = (hours - absoluteHours) * 60;
 	var absoluteMinutes = Math.floor(minutes);
-	var m = absoluteMinutes > 9 ? absoluteMinutes : '0' +  absoluteMinutes;  
-  
+	var m = absoluteMinutes > 9 ? absoluteMinutes : "0" + absoluteMinutes;
+
 	// Return in 0d00h00m format
-	if (d > 0)
-		return d + 'd' + h + 'h' + m + 'm';
-	else if (h > 0)
-		return h + 'h' + m + 'm'
-	else 
-		return m + 'm'
-  }
+	if (d > 0) return d + "d" + h + "h" + m + "m";
+	else if (h > 0) return h + "h" + m + "m";
+	else return m + "m";
+}

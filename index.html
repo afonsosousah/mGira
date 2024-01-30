@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<!-- Google tag (gtag.js) -->
@@ -38,7 +38,6 @@
 		<meta property="og:type" content="website" />
 		<meta property="og:locale" content="pt_PT" />
 
-
 		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 		<meta http-equiv="Pragma" content="no-cache" />
 		<meta http-equiv="Expires" content="0" />
@@ -69,7 +68,6 @@
 		<script src="https://unpkg.com/ol-mapbox-style@9.4.0/dist/olms.js"></script>
 		<script type="module" src="https://unpkg.com/openrouteservice-js@0.3.2/dist/ors-js-client.js"></script>
 		<script src=" https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js "></script>
-
 	</head>
 	<body onload="initMap();">
 		<!-- Map -->
@@ -156,11 +154,9 @@
 			});
 
 			function isInputElement(ele) {
-				return (
-					(ele && ele.tagName === "INPUT") ||
-					ele.tagName === "TEXTAREA" ||
-					ele.getAttribute("contenteditable") ? ele.getAttribute("contenteditable").toString() === "true": false
-				);
+				return (ele && ele.tagName === "INPUT") || ele.tagName === "TEXTAREA" || ele.getAttribute("contenteditable")
+					? ele.getAttribute("contenteditable").toString() === "true"
+					: false;
 			}
 
 			// define a custom alert box
