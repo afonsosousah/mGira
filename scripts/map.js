@@ -201,12 +201,6 @@ function getLocation(zoom = true) {
 
 				updatePositionAndRotationWhenNavigating();
 
-				// Update object to be used in navigation position smoothing
-				currentLocationUpdate = {
-					position: pos,
-					timestamp: position.timestamp,
-				};
-
 				let speedKMH = (speed * 60 * 60) / 1000 ?? 0;
 				if (document.getElementById("speed")) document.getElementById("speed").innerHTML = speedKMH.toFixed(0); // convert m/s to km/h
 

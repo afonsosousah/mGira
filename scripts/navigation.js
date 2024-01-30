@@ -3,9 +3,6 @@ let navigationMode = null;
 let deviceOrientation = "portrait";
 let wakeLock = null;
 let lastRoutePointIndex = null;
-let previousLocationUpdate;
-let currentLocationUpdate;
-let currentLerpObject;
 let promptedDropoffStation;
 let promptedDestination;
 let rotationMode = "route";
@@ -188,18 +185,6 @@ function updatePositionAndRotationWhenNavigating() {
 		if (rotationMode === "route") {
 			let closestDistance;
 			let closestPointIndex;
-
-			// Apply linear interpolation to the position
-			if (!previousLocationUpdate) previousLocationUpdate = currentLocationUpdate;
-			else {
-				let timespan = currentLocationUpdate.timestamp - previousLocationUpdate.timestamp;
-
-				currentLerpObject = {
-					previousPercentage: 0,
-					percentageIncrement: 1 / timespan,
-					timespan: timespan,
-				};
-			}
 
 			// Get the closest route point to current location
 			for (const [i, routePoint] of currentRouteCoordinates.entries()) {
