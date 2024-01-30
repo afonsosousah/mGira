@@ -198,7 +198,6 @@ function startWSConnection(force = false) {
 						if (activeTripObj.finished === true && !ratedTripsList.includes(activeTripObj.code)) {
 							// End trip
 							tripEnded = true;
-							cancelBikeReserve();
 
 							// Show the rate trip menu
 							if (!document.getElementById("rateTripMenu"))

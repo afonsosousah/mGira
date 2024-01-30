@@ -58,6 +58,9 @@ async function initMap() {
 
 	// Get the user location on app open
 	getLocation();
+
+	// Start rotation of location dot
+	startLocationDotRotation();
 }
 
 async function loadStationMarkersFromArray(stationsArray) {
@@ -336,70 +339,6 @@ function getLocation(zoom = true) {
 				}
 			};
 
-			// Rotate heading arrow using device sensors (Fulltilt library)
-			// Start the FULLTILT DeviceOrientation listeners
-			var promise = FULLTILT.getDeviceOrientation({ type: "world" });
-			promise.then(function (orientationControl) {
-				orientationControl.listen(function () {
-					// Get the current *screen-adjusted* device orientation angles
-					let currentOrientation = orientationControl.getScreenAdjustedEuler();
-
-					// Calculate the current compass heading that the user is 'looking at' (in radians) (global)
-					compassHeading = (Math.PI / 180) * (360 - currentOrientation.alpha) + map.getView().getRotation();
-
-					// Set rotation of map dot
-
-					const iconFeature = new ol.Feature({
-						geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
-						name: "Current location",
-					});
-
-					const iconStyle = new ol.style.Style({
-						image: new ol.style.Icon({
-							width: 40,
-							height: 40,
-							anchor: [0.5, 0.5],
-							anchorXUnits: "fraction",
-							anchorYUnits: "fraction",
-							src: "assets/images/gps_dot.png",
-							rotation: compassHeading,
-						}),
-					});
-
-					iconFeature.setStyle(iconStyle);
-					const vectorSource = new ol.source.Vector({
-						features: [iconFeature],
-					});
-
-					const vectorLayer = new ol.layer.Vector({
-						name: "currentLocationLayer",
-						source: vectorSource,
-						zIndex: 99,
-					});
-
-					if (
-						map
-							.getLayers()
-							.getArray()
-							.filter(layer => layer.get("name") === "currentLocationLayer").length === 0
-					) {
-						// Add the layer
-						map.addLayer(vectorLayer);
-					} else {
-						// Get the layer containing the previous current location
-						const currentLocationLayer = map
-							.getLayers()
-							.getArray()
-							.find(layer => layer.get("name") === "currentLocationLayer");
-
-						// Refresh the feature
-						let feature = currentLocationLayer.getSource().getFeatures()[0];
-						feature.setStyle(iconStyle);
-						feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
-					}
-				});
-			});
-
 			checkPos();
 		}
 	} else {
@@ -407,3 +346,149 @@ function getLocation(zoom = true) {
 		console.log(false ? error.message : "Error: Your browser doesn't support geolocation.");
 	}
 }
+
+function startLocationDotRotation() {
+	let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+	let handler = function (e) {
+		// Get current compass heading in degrees
+		let currentOrientation;
+		if (typeof e.webkitCompassHeading === "undefined") {
+			currentOrientation = -(e.alpha + (e.beta * e.gamma) / 90);
+			currentOrientation -= Math.floor(currentOrientation / 360) * 360; // Wrap into range [0,360].
+		} else currentOrientation = e.webkitCompassHeading;
+
+		// Calculate the current compass heading that the user is 'looking at' (in radians) (global)
+		compassHeading = -(Math.PI / 180) * (360 - currentOrientation);
+
+		// Set rotation of map dot
+		const iconFeature = new ol.Feature({
+			geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
+			name: "Current location",
+		});
+
+		const iconStyle = new ol.style.Style({
+			image: new ol.style.Icon({
+				width: 40,
+				height: 40,
+				anchor: [0.5, 0.5],
+				anchorXUnits: "fraction",
+				anchorYUnits: "fraction",
+				src: "assets/images/gps_dot.png",
+				rotation: compassHeading,
+			}),
+		});
+
+		iconFeature.setStyle(iconStyle);
+		const vectorSource = new ol.source.Vector({
+			features: [iconFeature],
+		});
+
+		const vectorLayer = new ol.layer.Vector({
+			name: "currentLocationLayer",
+			source: vectorSource,
+			zIndex: 99,
+		});
+
+		if (
+			map
+				.getLayers()
+				.getArray()
+				.filter(layer => layer.get("name") === "currentLocationLayer").length === 0
+		) {
+			// Add the layer
+			map.addLayer(vectorLayer);
+		} else {
+			// Get the layer containing the previous current location
+			const currentLocationLayer = map
+				.getLayers()
+				.getArray()
+				.find(layer => layer.get("name") === "currentLocationLayer");
+
+			// Refresh the feature
+			let feature = currentLocationLayer.getSource().getFeatures()[0];
+			feature.setStyle(iconStyle);
+			feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
+		}
+	};
+
+	if (isIOS) {
+		DeviceOrientationEvent.requestPermission()
+			.then(response => {
+				if (response === "granted") {
+					window.addEventListener("deviceorientation", handler, true);
+				} else {
+					alert("A orientação não irá funcionar corretamente!");
+				}
+			})
+			.catch(() => alert("Bússola não suportada"));
+	} else {
+		window.addEventListener("deviceorientationabsolute", handler, true);
+	}
+}
+
+/*async function startLocationDotRotation() {
+	// Rotate heading arrow using device sensors (Fulltilt library)
+	// Start the FULLTILT DeviceOrientation listeners
+	orientationControl = await FULLTILT.getDeviceOrientation();
+	if (orientationControl.isAbsolute() === true) {
+		orientationControl.listen(function () {
+			// Get the current *screen-adjusted* device orientation angles
+			let currentOrientation = orientationControl.getScreenAdjustedEuler();
+
+			// Calculate the current compass heading that the user is 'looking at' (in radians) (global)
+			compassHeading = -(Math.PI / 180) * (360 - currentOrientation.alpha);
+
+			// Set rotation of map dot
+			const iconFeature = new ol.Feature({
+				geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
+				name: "Current location",
+			});
+
+			const iconStyle = new ol.style.Style({
+				image: new ol.style.Icon({
+					width: 40,
+					height: 40,
+					anchor: [0.5, 0.5],
+					anchorXUnits: "fraction",
+					anchorYUnits: "fraction",
+					src: "assets/images/gps_dot.png",
+					rotation: compassHeading,
+				}),
+			});
+
+			iconFeature.setStyle(iconStyle);
+			const vectorSource = new ol.source.Vector({
+				features: [iconFeature],
+			});
+
+			const vectorLayer = new ol.layer.Vector({
+				name: "currentLocationLayer",
+				source: vectorSource,
+				zIndex: 99,
+			});
+
+			if (
+				map
+					.getLayers()
+					.getArray()
+					.filter(layer => layer.get("name") === "currentLocationLayer").length === 0
+			) {
+				// Add the layer
+				map.addLayer(vectorLayer);
+			} else {
+				// Get the layer containing the previous current location
+				const currentLocationLayer = map
+					.getLayers()
+					.getArray()
+					.find(layer => layer.get("name") === "currentLocationLayer");
+
+				// Refresh the feature
+				let feature = currentLocationLayer.getSource().getFeatures()[0];
+				feature.setStyle(iconStyle);
+				feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
+			}
+		});
+	} else alert("Não foi possível obter orientação absoluta.");
+}
+*/
