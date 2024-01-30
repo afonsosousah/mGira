@@ -74,7 +74,7 @@ function parseMillisecondsIntoReadableTime(milliseconds) {
 	else return m + "m";
 }
 
-function parseMillisecondsIntoTripTime(milliseconds) {
+function parseMillisecondsIntoTripTime(milliseconds, showSeconds = true) {
 	// Get hours from milliseconds
 	let hours = milliseconds / (60 * 60 * 1000);
 	let absoluteHours = Math.floor(hours);

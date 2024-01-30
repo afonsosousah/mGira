@@ -199,9 +199,7 @@ function startWSConnection(force = false) {
 							tripEnded = true;
 
 							// Show the rate trip menu
-							if (!document.getElementById("rateTripMenu"))
-								// check if there is a menu already open
-								openRateTripMenu(activeTripObj);
+							if (!document.getElementById("rateTripMenu")) openRateTripMenu(activeTripObj);
 						} else if (activeTripObj.finished === false) {
 							// Show the trip overlay if it is not shown already and the user is not on navigation
 							if (!document.querySelector("#tripOverlay") && !navigationActive) {

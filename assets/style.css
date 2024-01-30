@@ -1643,60 +1643,61 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 #rateTripMenuCard {
 	background-color: white;
-	width: 100%;
-	height: 40%;
+	width: calc(100% - 14dvh);
+	height: fit-content;
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	border-radius: 20px 20px 0 0;
+	padding: 2dvh 7dvh 10dvh 7dvh;
 }
 #rateTripMenuCard #backButton {
 	position: absolute;
-	top: 2%;
-	left: 2%;
-	background-color: transparent;
-	width: 8vh;
-	height: 8vh;
-	font-size: calc(0.35 * 8vh);
-	margin-bottom: 1vh;
-	border-radius: 999px;
-	color: white;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	top: 2dvh;
+	left: 2dvh;
+	font-size: calc(2dvh);
+	color: var(--green)
 }
-#rateTripMenuCard #backButton i {
-	width: 32px;
-	height: 32px;
+#rateTripMenuCard #tripInfo {
 	display: flex;
-	justify-content: center;
-	align-items: center;
+	flex-direction: column;
+	gap: 5px;
+}
+#rateTripMenuCard #tripInfo #bikeName,
+#rateTripMenuCard #tripInfo #date,
+#rateTripMenuCard #tripInfo #time,
+#rateTripMenuCard #tripInfo #cost,
+#rateTripMenuCard #tripInfo #points {
+	color: var(--black);
+	font-size: 1rem;
+	display: flex;
+	flex-direction: row;
+}
+#rateTripMenuCard #tripInfo #bikeName #bikeIcon {
+	max-width: 1em;
+	object-fit: contain;
+}
+#rateTripMenuCard #tripInfo #bikeName #bikeIcon,
+#rateTripMenuCard #tripInfo i {
+	margin-right: 1dvh;
 	color: var(--green);
 }
-#rateTripMenuCard #textContent {
+#rateTripMenuCard #stationImg {
 	position: absolute;
-	top: 30px;
-	left: calc(8vh + 2% + 5px);
-	width: calc(80% - 20px - 20px);
-}
-#rateTripMenuCard img {
-	position: absolute;
-	top: 2%;
-	right: 2%;
+	top: 3dvh;
+	right: 3dvh;
 	width: 25%;
 }
 #rateTripMenuCard #ratingLabel {
-	position: absolute;
-	bottom: 45%;
+	margin-top: 3dvh;
 	width: 100%;
 	text-align: center;
 }
 #rateTripMenuCard #ratingFormContainer {
-	position: absolute;
-	bottom: 25%;
-	left: 0;
+	margin-top: 3dvh;
+	margin-bottom: 3dvh;
 	width: 100%;
-	height: 7vh;
+	height: 1.5rem;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -1755,12 +1756,12 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 #rateTripMenuCard #sendButton {
 	background-color: var(--green);
-	width: 30%;
-	height: 15%;
+	width: 30vw;
+	height: 6dvh;
 	position: absolute;
 	z-index: 2;
-	right: 5%;
-	bottom: 5%;
+	right: 3dvh;
+	bottom: 3dvh;
 	border-radius: 999px;
 	display: flex;
 	justify-content: center;
