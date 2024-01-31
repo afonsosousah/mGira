@@ -27,6 +27,7 @@ async function startNavigation(walkingOnly = false) {
 	// Append the buttons
 	if (!walkingOnly) {
 		appendElementToBodyFromHTML(`
+			<div id="changeRotationModeButtonPortrait" onclick="changeRotationMode()"><i class="bi bi-sign-turn-right"></i></div>
 			<div id="endNavigationButtonPortrait" onclick="stopNavigation()"><i class="bi bi-sign-stop"></i></div>
 			<div id="onBikeButton" onclick="onBikeNavigation()">Estou na bicicleta</div>
 		`);
@@ -39,6 +40,9 @@ async function startNavigation(walkingOnly = false) {
 	// Set the map to 3D effect
 	mapElement.style.transform = "perspective(100dvh) rotateX(30deg) translateZ(25dvh) translateY(-3.5dvh)";
 	mapElement.style.transition = "transform 1s";
+
+	// Set map pixel ratio (fix mobile map not loading at some points)
+	map.pixelRatio_ = 2;
 
 	// Pan to user location and set the correct rotation based on the route
 	updatePositionAndRotationWhenNavigating();
@@ -89,6 +93,9 @@ function onBikeNavigation() {
 		<div id="endNavigationButton" onclick="stopNavigation()"><i class="bi bi-sign-stop"></i></div>
 	`);
 
+	// Set map pixel ratio (fix mobile map not loading at some points)
+	map.pixelRatio_ = 1.5;
+
 	// Update the map style to hide the on foot UI
 	const mapElement = document.getElementById("map");
 	mapElement.style.zIndex = "15";
@@ -129,6 +136,9 @@ async function finalOnFootNavigation() {
         </div>
     </div>
     `);
+
+	// Set map pixel ratio (fix mobile map not loading at some points)
+	map.pixelRatio_ = 2;
 }
 
 async function stopNavigation() {
@@ -138,6 +148,13 @@ async function stopNavigation() {
 	// Don't force device to be awake anymore
 	if (wakeLock) {
 		wakeLock.release().then(() => (wakeLock = null));
+	}
+
+	// Exit fullscreen
+	try {
+		await document.exitFullscreen();
+	} catch (error) {
+		console.log(error);
 	}
 
 	// Remove all the navigation elements
@@ -162,19 +179,26 @@ async function stopNavigation() {
 	view.setCenter(userPosition);
 	view.setRotation(0); // 0 degrees is north
 
+	// Reset map pixel ratio to default
+	map.pixelRatio_ = window.devicePixelRatio;
+
 	// If the screen is not portrait, tell the user to rotate it
 	orientationChangeHandler(window.matchMedia("(orientation: portrait)"));
 }
 
 function changeRotationMode() {
 	let changeRotationModeButton = document.getElementById("changeRotationModeButton");
+	let changeRotationModeButtonPortrait = document.getElementById("changeRotationModeButtonPortrait");
 
 	if (rotationMode === "route") {
 		rotationMode = "compass";
-		changeRotationModeButton.innerHTML = `<i class="bi bi-compass"></i>`;
+		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-compass"></i>`;
+		if (changeRotationModeButtonPortrait) changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-compass"></i>`;
 	} else if (rotationMode === "compass") {
 		rotationMode = "route";
-		changeRotationModeButton.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
+		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
+		if (changeRotationModeButtonPortrait)
+			changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
 	}
 }
 
@@ -230,7 +254,7 @@ function updatePositionAndRotationWhenNavigating() {
 			// Get the angle between the current route point and the next route point (corrected from clockwise east to clockwise north)
 			angleRad = -90 * (Math.PI / 180) + Math.atan2(diffLat, diffLon);
 		} else if (rotationMode === "compass") {
-			angleRad = compassHeading;
+			angleRad = -compassHeading;
 		}
 
 		// Pan to location and update rotation (pos object is global and is updated getLocation() in map.js)

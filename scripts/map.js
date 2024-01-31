@@ -24,12 +24,18 @@ async function initMap() {
 
 	// Styled map
 	const key = "RgT5fNTLsVXnsXKz4kG6";
-	const styleJson = `https://api.maptiler.com/maps/dataviz/style.json?key=${key}`;
+
+	const source = new ol.source.XYZ({
+		url: "https://api.maptiler.com/maps/dataviz/{z}/{x}/{y}.png?key=" + key,
+		tileSize: 512,
+	});
+
 	map = new ol.Map({
 		target: "map",
 		layers: [
 			new ol.layer.Tile({
-				source: new ol.source.OSM(),
+				source: source,
+				preload: Infinity,
 			}),
 		],
 		view: new ol.View({
@@ -38,7 +44,6 @@ async function initMap() {
 		}),
 		controls: [new ol.control.Rotate()],
 	});
-	olms.apply(map, styleJson);
 
 	// display popup on click
 	map.on("click", evt => {
@@ -217,6 +222,7 @@ function getLocation(zoom = true) {
 						anchorXUnits: "fraction",
 						anchorYUnits: "fraction",
 						src: "assets/images/gps_dot.png",
+						rotation: compassHeading + map.getView().getRotation(), // have map rotation into account
 					}),
 				});
 
@@ -277,6 +283,7 @@ function getLocation(zoom = true) {
 							anchorXUnits: "fraction",
 							anchorYUnits: "fraction",
 							src: "assets/images/gps_dot.png",
+							rotation: compassHeading + map.getView().getRotation(), // have map rotation into account
 						}),
 					});
 
@@ -355,6 +362,11 @@ function startLocationDotRotation() {
 		// Calculate the current compass heading that the user is 'looking at' (in radians) (global)
 		compassHeading = -(Math.PI / 180) * (360 - currentOrientation);
 
+		// Adjust heading if device is on landscape
+		if (window.matchMedia("(orientation: landscape)").matches) compassHeading += (Math.PI / 180) * 90;
+
+		if (!pos) return;
+
 		// Set rotation of map dot
 		const iconFeature = new ol.Feature({
 			geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
@@ -369,7 +381,7 @@ function startLocationDotRotation() {
 				anchorXUnits: "fraction",
 				anchorYUnits: "fraction",
 				src: "assets/images/gps_dot.png",
-				rotation: compassHeading,
+				rotation: compassHeading + map.getView().getRotation(), // have map rotation into account
 			}),
 		});
 
