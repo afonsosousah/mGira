@@ -182,6 +182,8 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 				stroke: new ol.style.Stroke({
 					color: cycling ? "#79C000" : "#231F20",
 					width: 8,
+					lineDash: cycling ? null : [3, 9],
+					width: 4,
 				}),
 			}),
 		};

@@ -22,6 +22,15 @@ async function initMap() {
 		controls: [new ol.control.Rotate(), new ol.control.Attribution()],
 	});*/
 
+	// Set cycleways style
+	const cyclewaysStyle = new ol.style.Style({
+		stroke: new ol.style.Stroke({
+			color: "#79c000",
+			width: 2,
+			lineDash: [3, 6],
+		}),
+	});
+
 	// Styled map
 	const key = "RgT5fNTLsVXnsXKz4kG6";
 
@@ -30,12 +39,23 @@ async function initMap() {
 		tileSize: 512,
 	});
 
+	const cyclewaysSource = new ol.source.XYZ({
+		url: "https://services.arcgis.com/1dSrzEWVQn5kHHyK/arcgis/rest/services/Ciclovias/FeatureServer/0",
+		tileSize: 512,
+	});
+
 	map = new ol.Map({
 		target: "map",
 		layers: [
 			new ol.layer.Tile({
 				source: source,
-				preload: Infinity,
+			}),
+			new ol.layer.Vector({
+				source: new ol.source.Vector({
+					url: "https://opendata.arcgis.com/api/v3/datasets/440b7424a6284e0b9bf11179b95bf8d1_0/downloads/data?format=geojson&spatialRefId=4326",
+					format: new ol.format.GeoJSON(),
+				}),
+				style: cyclewaysStyle,
 			}),
 		],
 		view: new ol.View({
