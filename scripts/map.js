@@ -445,7 +445,20 @@ function startLocationDotRotation() {
 			"OK",
 			"Ignorar"
 		);
+		window.addEventListener(
+			"deviceorientation",
+			e => {
+				requestAnimationFrame(() => handler(e));
+			},
+			true
+		);
 	} else {
-		window.addEventListener("deviceorientationabsolute", handler, true);
+		window.addEventListener(
+			"deviceorientationabsolute",
+			e => {
+				requestAnimationFrame(() => handler(e));
+			},
+			true
+		);
 	}
 }

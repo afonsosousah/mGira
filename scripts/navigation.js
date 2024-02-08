@@ -296,6 +296,8 @@ function updatePositionAndRotationWhenNavigating() {
 				}
 			);
 		} else if (distanceToDestination >= 30) promptedDestination = false;
+
+		requestAnimationFrame(updatePositionAndRotationWhenNavigating);
 	}
 }
 
