@@ -91,5 +91,5 @@ function parseMillisecondsIntoTripTime(milliseconds) {
 	let s = absoluteSeconds > 9 ? absoluteSeconds : "0" + absoluteSeconds;
 
 	// Return in 00h00m00s format
-	return h + "h" + m + "m" + s + "s";
+	return (absoluteHours > 0 ? h + "h" : "") + m + "m" + (showSeconds ? s + "s" : "");
 }

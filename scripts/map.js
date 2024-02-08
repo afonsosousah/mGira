@@ -201,7 +201,7 @@ function getLocation(zoom = true) {
 
 				updatePositionAndRotationWhenNavigating();
 
-				let speedKMH = (speed * 60 * 60) / 1000 ?? 0;
+				let speedKMH = (speed * 60 * 60) / 1000;
 				if (document.getElementById("speed")) document.getElementById("speed").innerHTML = speedKMH.toFixed(0); // convert m/s to km/h
 
 				const iconFeature = new ol.Feature({
@@ -337,7 +337,7 @@ function getLocation(zoom = true) {
 		}
 	} else {
 		// Browser doesn't support Geolocation
-		console.log(false ? error.message : "Error: Your browser doesn't support geolocation.");
+		console.log("Error: Your browser doesn't support geolocation.");
 	}
 }
 
