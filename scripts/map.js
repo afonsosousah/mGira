@@ -344,7 +344,7 @@ function getLocation(zoom = true) {
 function startLocationDotRotation() {
 	let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-	let handler = function (e) {
+	let handler = e => {
 		// Get current compass heading in degrees
 		let currentOrientation;
 		if (typeof e.webkitCompassHeading === "undefined") {
