@@ -1,5 +1,5 @@
 on: pull_request
-name: Staging pull request to alpha.mgira.pt/PR_NUMBER
+name: Staging pull request to alpha.mgira.pt/pr/number
 
 jobs:
   web-deploy:
@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: 
       name: Staging
-      url: https://alpha.mgira.pt/${{ github.event.pull_request.number }}
+      url: https://alpha.mgira.pt/pr/${{ github.event.pull_request.number }}
     steps:
     # Checkout the repository
     - name: Get latest code
@@ -19,4 +19,4 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USER }}
         password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: /domains/alpha.mgira.pt/public_html/${{ github.event.pull_request.number }}/
+        server-dir: /domains/alpha.mgira.pt/public_html/pr/${{ github.event.pull_request.number }}/
