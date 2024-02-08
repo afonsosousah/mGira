@@ -6,7 +6,13 @@ async function tokenRefresh() {
 	tokenRefreshed = false;
 	currentTry += 1;
 
+	if (!user.refreshToken) {
+		openLoginMenu();
+		return;
+	}
+
 	console.log("Token has not been refreshed...");
+
 	const response = await fetch(proxyURL, {
 		method: "POST",
 		headers: {
@@ -48,10 +54,7 @@ async function tokenRefresh() {
 		if (currentTry < numberOfTokenRefreshTries) {
 			// Wait before making next request (reduce error rate)
 			await delay(200);
-			responseObject = await response.json();
-			if (Object.hasOwn(responseObject, "statusDescription")) {
-				if (!responseObject.statusDescription.includes("The Token field is required.")) return tokenRefresh();
-			} else return tokenRefresh();
+			tokenRefresh();
 		} else openLoginMenu();
 	} else {
 		alert("Token refresh failed!");
