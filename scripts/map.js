@@ -431,7 +431,13 @@ function startLocationDotRotation() {
 				DeviceOrientationEvent.requestPermission()
 					.then(response => {
 						if (response === "granted") {
-							window.addEventListener("deviceorientation", handler, true);
+							window.addEventListener(
+								"deviceorientation",
+								e => {
+									requestAnimationFrame(() => handler(e));
+								},
+								true
+							);
 						} else {
 							alert("A orientação não irá funcionar corretamente!");
 						}
@@ -444,13 +450,6 @@ function startLocationDotRotation() {
 			},
 			"OK",
 			"Ignorar"
-		);
-		window.addEventListener(
-			"deviceorientation",
-			e => {
-				requestAnimationFrame(() => handler(e));
-			},
-			true
 		);
 	} else {
 		window.addEventListener(
