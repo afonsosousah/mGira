@@ -4,24 +4,9 @@ let currentLocationMarker;
 let previousSelectedMarker;
 let pos;
 let speed;
-let compassHeading;
+let compassHeading = null; // null by default so that any math will assume 0
 
 async function initMap() {
-	// Initialize the Map, centered on Lisbon
-	/*map = new ol.Map({
-		target: "map",
-		layers: [
-			new ol.layer.Tile({
-				source: new ol.source.OSM(),
-			}),
-		],
-		view: new ol.View({
-			center: ol.proj.fromLonLat([-9.142685, 38.736946]),
-			zoom: 12,
-		}),
-		controls: [new ol.control.Rotate(), new ol.control.Attribution()],
-	});*/
-
 	// Set cycleways style
 	const cyclewaysStyle = new ol.style.Style({
 		stroke: new ol.style.Stroke({
@@ -59,7 +44,7 @@ async function initMap() {
 			}),
 		],
 		view: new ol.View({
-			center: ol.proj.fromLonLat([-9.142685, 38.736946]),
+			center: ol.proj.fromLonLat([-9.142685, 38.736946]), // center in Lisbon
 			zoom: 12,
 		}),
 		controls: [new ol.control.Rotate()],
