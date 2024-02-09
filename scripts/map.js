@@ -407,15 +407,27 @@ function startLocationDotRotation() {
 	};
 
 	if (isIOS) {
-		DeviceOrientationEvent.requestPermission()
-			.then(response => {
-				if (response === "granted") {
-					window.addEventListener("deviceorientation", handler, true);
-				} else {
-					alert("A orientação não irá funcionar corretamente!");
-				}
-			})
-			.catch(() => alert("Bússola não suportada"));
+		createCustomYesNoPrompt(
+			"Nos dispositivos Apple, é necessária permissão do utilizador para aceder à bússola do dispositivo.",
+			() => {
+				// User clicked OK
+				DeviceOrientationEvent.requestPermission()
+					.then(response => {
+						if (response === "granted") {
+							window.addEventListener("deviceorientation", handler, true);
+						} else {
+							alert("A orientação não irá funcionar corretamente!");
+						}
+					})
+					.catch(() => alert("Bússola não suportada"));
+			},
+			() => {
+				// User clicked Ignore
+				alert("A orientação não irá funcionar corretamente!");
+			},
+			"OK",
+			"Ignorar"
+		);
 	} else {
 		window.addEventListener("deviceorientationabsolute", handler, true);
 	}
