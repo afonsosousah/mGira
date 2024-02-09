@@ -424,33 +424,58 @@ function startLocationDotRotation() {
 	};
 
 	if (isIOS) {
-		createCustomYesNoPrompt(
-			"Nos dispositivos Apple, é necessária permissão do utilizador para aceder à bússola do dispositivo.",
-			() => {
-				// User clicked OK
-				DeviceOrientationEvent.requestPermission()
-					.then(response => {
-						if (response === "granted") {
-							window.addEventListener(
-								"deviceorientation",
-								e => {
-									requestAnimationFrame(() => handler(e));
-								},
-								true
-							);
-						} else {
-							alert("A orientação não irá funcionar corretamente!");
-						}
-					})
-					.catch(() => alert("Bússola não suportada"));
-			},
-			() => {
-				// User clicked Ignore
-				alert("A orientação não irá funcionar corretamente!");
-			},
-			"OK",
-			"Ignorar"
-		);
+		// create function for prompting user
+		const promptUserForPermission = () => {
+			createCustomYesNoPrompt(
+				"Nos dispositivos Apple, é necessária permissão do utilizador para aceder à bússola do dispositivo.",
+				() => {
+					// User clicked OK
+					DeviceOrientationEvent.requestPermission()
+						.then(response => {
+							if (response === "granted") {
+								window.addEventListener(
+									"deviceorientation",
+									e => {
+										requestAnimationFrame(() => handler(e));
+									},
+									true
+								);
+							} else {
+								alert("A orientação não irá funcionar corretamente!");
+							}
+						})
+						.catch(() => alert("Bússola não suportada"));
+				},
+				() => {
+					// User clicked Ignore
+					alert("A orientação não irá funcionar corretamente!");
+				},
+				"OK",
+				"Ignorar"
+			);
+		};
+
+		// If the in initial requestPermission fails, it means the user hasn't given permission previously
+		// and we should prompt the user to do so (UI interaction is needed)
+		DeviceOrientationEvent.requestPermission()
+			.then(response => {
+				if (response === "granted") {
+					window.addEventListener(
+						"deviceorientation",
+						e => {
+							requestAnimationFrame(() => handler(e));
+						},
+						true
+					);
+				} else {
+					// Let the user give permission if he has previously rejected it
+					promptUserForPermission();
+				}
+			})
+			.catch(() => {
+				// Permission had not been given before
+				promptUserForPermission();
+			});
 	} else {
 		window.addEventListener(
 			"deviceorientationabsolute",
