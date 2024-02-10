@@ -435,9 +435,7 @@ function startLocationDotRotation() {
 							if (response === "granted") {
 								window.addEventListener(
 									"deviceorientation",
-									e => {
-										requestAnimationFrame(() => handler(e));
-									},
+									e => requestAnimationFrame(() => handler(e)),
 									true
 								);
 							} else {
@@ -446,11 +444,9 @@ function startLocationDotRotation() {
 						})
 						.catch(() => alert("Bússola não suportada"));
 				},
-				() => {
-					// User clicked Ignore
-					alert("A orientação não irá funcionar corretamente!");
-				},
-				"OK",
+				// User clicked Ignore
+				() => alert("A orientação não irá funcionar corretamente!"),
+				"Ok",
 				"Ignorar"
 			);
 		};
@@ -462,9 +458,7 @@ function startLocationDotRotation() {
 				if (response === "granted") {
 					window.addEventListener(
 						"deviceorientation",
-						e => {
-							requestAnimationFrame(() => handler(e));
-						},
+						e => requestAnimationFrame(() => handler(e)),
 						true
 					);
 				} else {
@@ -472,16 +466,12 @@ function startLocationDotRotation() {
 					promptUserForPermission();
 				}
 			})
-			.catch(() => {
-				// Permission had not been given before
-				promptUserForPermission();
-			});
+			// Permission had not been given before
+			.catch(() => promptUserForPermission());
 	} else {
 		window.addEventListener(
 			"deviceorientationabsolute",
-			e => {
-				requestAnimationFrame(() => handler(e));
-			},
+			e => requestAnimationFrame(() => handler(e)),
 			true
 		);
 	}

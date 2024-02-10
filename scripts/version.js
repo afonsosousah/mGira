@@ -21,12 +21,7 @@ function showUpdateInfoIfNeeded() {
 
 		// Check version to show update notes
 		const userVersion = getCookie("version");
-		if (userVersion) {
-			if (userVersion !== currentVersion) {
-				alert(changelogHTML);
-				document.cookie = "version=" + currentVersion + "; expires=" + expiryDate.toGMTString();
-			}
-		} else {
+		if (userVersion !== currentVersion) {
 			alert(changelogHTML);
 			document.cookie = "version=" + currentVersion + "; expires=" + expiryDate.toGMTString();
 		}
