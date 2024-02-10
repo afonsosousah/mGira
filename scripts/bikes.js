@@ -351,7 +351,7 @@ async function tripTimer(startTime) {
 				element.innerHTML = parseMillisecondsIntoTripTime(elapsedTime);
 			}
 		}
-		if (document.querySelector("#tripCost") && typeof activeTripObj !== "undefined") {
+		if (document.querySelector("#tripCost") && activeTripObj) {
 			let cost = activeTripObj.cost;
 			if (cost) {
 				for (let element of document.querySelectorAll("#tripCost")) {

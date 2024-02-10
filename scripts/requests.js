@@ -1,11 +1,10 @@
 let ws;
 let proxyURL;
-
+let activeTripObj;
 let numberOfRequestTries = 5;
 let currentRequestTry = 0;
 
 async function makePostRequest(url, body, accessToken = null) {
-
 	// Increment current request try
 	currentRequestTry += 1;
 
@@ -15,7 +14,7 @@ async function makePostRequest(url, body, accessToken = null) {
 			"User-Agent": "Gira/3.2.8 (Android 34)",
 			"X-Proxy-URL": url,
 			"Content-Type": "application/json",
-			"Priority": "high",
+			Priority: "high",
 			"X-Authorization": `Bearer ${accessToken}`,
 		},
 		body: body,
@@ -45,10 +44,12 @@ async function makePostRequest(url, body, accessToken = null) {
 	} else if (response.status === 400) {
 		const responseObject = await response.json();
 		if (Object.hasOwn(responseObject, "statusDescription")) {
-			if (responseObject.statusDescription.includes("The Email field is required.") || responseObject.statusDescription.includes("The Password field is required."))
+			if (
+				responseObject.statusDescription.includes("The Email field is required.") ||
+				responseObject.statusDescription.includes("The Password field is required.")
+			)
 				alert("Por favor preencha os campos de email e password!");
-		}
-		else if (responseObject.errors[0].message === "trip_interval_limit") {
+		} else if (responseObject.errors[0].message === "trip_interval_limit") {
 			alert("Tem de esperar 5 minutos entre viagens.");
 		} else if (responseObject.errors[0].message === "already_active_trip") {
 			alert("Já tem uma viagem a decorrer!");
@@ -67,10 +68,8 @@ async function makePostRequest(url, body, accessToken = null) {
 		} else if (responseObject.errors[0].message === "bike_on_repair") {
 			alert("Bicicleta a ser reparada.");
 		} else if (responseObject.errors[0].message !== "Error executing document.") {
-
 			// Show general error message for unknown errors
 			alert(responseObject.errors[0].message);
-			
 		} else if (responseObject.errors[0].message === "Error executing document.") {
 			// Common API processing error
 			// try for x times to do the request, otherwise just error out
@@ -106,7 +105,7 @@ async function makePostRequest(url, body, accessToken = null) {
 
 				// Reset currentRequestTry
 				currentRequestTry = 0;
-				
+
 				return;
 			}
 		}
@@ -191,7 +190,7 @@ function startWSConnection(force = false) {
 					msgObj.payload.data &&
 					Object.hasOwn(msgObj.payload.data, "activeTripSubscription")
 				) {
-					const activeTripObj = msgObj.payload.data.activeTripSubscription;
+					activeTripObj = msgObj.payload.data.activeTripSubscription;
 					//console.log(activeTripObj);
 					if (activeTripObj.code !== "no_trip" && activeTripObj.code !== "unauthorized") {
 						// Real trip info
