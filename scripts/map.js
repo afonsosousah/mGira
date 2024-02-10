@@ -433,11 +433,7 @@ function startLocationDotRotation() {
 					DeviceOrientationEvent.requestPermission()
 						.then(response => {
 							if (response === "granted") {
-								window.addEventListener(
-									"deviceorientation",
-									e => requestAnimationFrame(() => handler(e)),
-									true
-								);
+								window.addEventListener("deviceorientation", e => requestAnimationFrame(() => handler(e)), true);
 							} else {
 								alert("A orientação não irá funcionar corretamente!");
 							}
@@ -456,11 +452,7 @@ function startLocationDotRotation() {
 		DeviceOrientationEvent.requestPermission()
 			.then(response => {
 				if (response === "granted") {
-					window.addEventListener(
-						"deviceorientation",
-						e => requestAnimationFrame(() => handler(e)),
-						true
-					);
+					window.addEventListener("deviceorientation", e => requestAnimationFrame(() => handler(e)), true);
 				} else {
 					// Let the user give permission if he has previously rejected it
 					promptUserForPermission();
@@ -469,10 +461,6 @@ function startLocationDotRotation() {
 			// Permission had not been given before
 			.catch(() => promptUserForPermission());
 	} else {
-		window.addEventListener(
-			"deviceorientationabsolute",
-			e => requestAnimationFrame(() => handler(e)),
-			true
-		);
+		window.addEventListener("deviceorientationabsolute", e => requestAnimationFrame(() => handler(e)), true);
 	}
 }
