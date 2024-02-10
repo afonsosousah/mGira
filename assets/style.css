@@ -228,7 +228,8 @@ body {
 	font-family: Roboto, Arial, sans-serif;
 	font-weight: normal;
 	user-select: none;
-	overflow: scroll;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
 /* #endregion */
 
@@ -1494,33 +1495,76 @@ input[type="search"]::-webkit-search-results-decoration {
 /* #region Navigation information panel landscape */
 #navigationInfoPanel {
 	position: absolute;
-	top: 5%;
-	left: 5%;
-	width: calc(90% - 2vw);
-	height: calc(15% - 2vw);
-	padding: 1vw;
-	background-color: var(--green);
+	bottom: 2dvh;
+	left: 2vw;
+	width: fit-content;
+	height: fit-content;
 	color: white;
-	border-radius: 999px;
 	z-index: 16;
 	display: flex;
 	align-items: center;
 	justify-content: right;
-	flex-direction: row;
-	gap: 2vw;
+	flex-direction: column;
 }
-#navigationInfoPanel img {
-	height: 100%;
-	margin-right: auto;
+#navigationInfoPanel #costAndTimeContainer {
+	background-color: var(--green);
+	border-radius: 30px;
+	padding: 2vw;
+	padding-bottom: 15dvh;
+	margin-bottom: -12dvh;
+	font-size: 0.9rem;
 }
-#navigationInfoPanel #endNavigationButton {
-	height: 100%;
+#navigationInfoPanel #speedContainer {
+	background-color: var(--white);
+	color: var(--black);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	aspect-ratio: 1/1;
+	width: 70%;
+	margin: auto;
+	border: 1px solid var(--green);
+}
+#navigationInfoPanel #speedContainer #speed {
+	font-size: 2rem;
+}
+#navigationInfoPanel #speedContainer #speedLabel {
+	font-size: 0.75rem;
+ 	margin-top: -0.5rem;
+}
+#changeRotationModeButton {
+	height: 4rem;
+	width: 4rem;
+	background-color: var(--green);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	z-index: 16;
+	position: absolute;
+	bottom: calc(2dvh + 1dvh + 4rem);
+	right: 2dvh;
+	font-size: 2.5rem;
+	line-height: 2rem;
+	color: var(--black);
+}
+#endNavigationButton {
+	height: 4rem;
+	width: 4rem;
 	background-color: var(--black);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	border-radius: 999px;
-	padding: 0 15px;
+	z-index: 16;
+	position: absolute;
+	bottom: 2dvh;
+	right: 2dvh;
+	font-size: 2.5rem;
+	line-height: 2rem;
+	color: var(--green);
 }
 #reachedFinalStation {
 	height: 8%;
@@ -1539,39 +1583,43 @@ input[type="search"]::-webkit-search-results-decoration {
 /* #endregion */
 
 /* #region Navigation information panel portrait */
-#navigationInfoPanelPortrait {
-	position: absolute;
-	top: 2%;
-	left: 2.5%;
-	width: calc(95% - 2vh);
-	height: calc(8% - 2vh);
+#changeRotationModeButtonPortrait {
+	height: 4rem;
+	width: 4rem;
 	background-color: var(--green);
-	padding: 1vh;
-	color: white;
-	border-radius: 999px;
-	z-index: 11;
 	display: flex;
 	align-items: center;
-	justify-content: left;
+	justify-content: center;
+	border-radius: 999px;
+	z-index: 11;
+	position: absolute;
+	bottom: calc(2dvh + 1dvh + 4rem);
+	left: 2dvh;
+	font-size: 2.5rem;
+	line-height: 2rem;
+	color: var(--black);
 }
-#navigationInfoPanelPortrait img {
-	height: 100%;
-}
-#navigationInfoPanelPortrait #endNavigationButton {
-	height: 100%;
+#endNavigationButtonPortrait {
+	height: 4rem;
+	width: 4rem;
 	background-color: var(--black);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	border-radius: 999px;
-	padding: 0 15px;
-	margin-left: auto;
+	z-index: 11;
+	position: absolute;
+	bottom: 2dvh;
+	left: 2dvh;
+	font-size: 2.5rem;
+	line-height: 2rem;
+	color: var(--green);
 }
 #onBikeButton {
 	height: 8%;
 	position: absolute;
-	bottom: 2%;
-	right: 2.5%;
+	bottom: 2dvh;
+	right: 2dvh;
 	background-color: var(--green);
 	display: flex;
 	align-items: center;
@@ -1892,6 +1940,15 @@ input[type="search"]::-webkit-search-results-decoration {
 #alertBox li {
 	margin-top: 10px;
 }
+/* For landscape (useful for prompt in navigation) */
+@media screen and (orientation: landscape) {
+	#alertBox {
+		width: 40%;
+		min-height: 10%;
+		border-radius: 20px;
+		background-color: #fff;
+	}
+  }
 /* #endregion */
 
 /* #region Trip history */

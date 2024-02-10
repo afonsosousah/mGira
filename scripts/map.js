@@ -3,43 +3,52 @@ let infoWindow;
 let currentLocationMarker;
 let previousSelectedMarker;
 let pos;
-let gpsHeading;
+let speed;
+let compassHeading = null; // null by default so that any math will assume 0
 
 async function initMap() {
-	// Initialize the Map, centered on Lisbon
-	/*map = new ol.Map({
+	// Set cycleways style
+	const cyclewaysStyle = new ol.style.Style({
+		stroke: new ol.style.Stroke({
+			color: "#79c000",
+			width: 2,
+			lineDash: [3, 6],
+		}),
+	});
+
+	// Styled map
+	const key = "RgT5fNTLsVXnsXKz4kG6";
+
+	const source = new ol.source.XYZ({
+		url: "https://api.maptiler.com/maps/dataviz/{z}/{x}/{y}.png?key=" + key,
+		tileSize: 512,
+	});
+
+	const cyclewaysSource = new ol.source.XYZ({
+		url: "https://services.arcgis.com/1dSrzEWVQn5kHHyK/arcgis/rest/services/Ciclovias/FeatureServer/0",
+		tileSize: 512,
+	});
+
+	map = new ol.Map({
 		target: "map",
 		layers: [
 			new ol.layer.Tile({
-				source: new ol.source.OSM(),
+				source: source,
+			}),
+			new ol.layer.Vector({
+				source: new ol.source.Vector({
+					url: "https://opendata.arcgis.com/api/v3/datasets/440b7424a6284e0b9bf11179b95bf8d1_0/downloads/data?format=geojson&spatialRefId=4326",
+					format: new ol.format.GeoJSON(),
+				}),
+				style: cyclewaysStyle,
 			}),
 		],
 		view: new ol.View({
-			center: ol.proj.fromLonLat([-9.142685, 38.736946]),
+			center: ol.proj.fromLonLat([-9.142685, 38.736946]), // center in Lisbon
 			zoom: 12,
 		}),
-		controls: [new ol.control.Rotate(), new ol.control.Attribution()],
-	});*/
-
-	// Styled map
-    const key = 'RgT5fNTLsVXnsXKz4kG6';
-    const styleJson = `https://api.maptiler.com/maps/dataviz/style.json?key=${key}`;
-    map = new ol.Map({
-        target: 'map',
-        layers: [
-            new ol.layer.Tile({
-            source: new ol.source.OSM(),
-            }),
-        ],
-        view: new ol.View({
-            center: ol.proj.fromLonLat([-9.142685, 38.736946]),
-            zoom: 12,
-        }),
-        controls: [
-            new ol.control.Rotate()
-        ],
-    });
-    olms.apply(map, styleJson);
+		controls: [new ol.control.Rotate()],
+	});
 
 	// display popup on click
 	map.on("click", evt => {
@@ -59,6 +68,9 @@ async function initMap() {
 
 	// Get the user location on app open
 	getLocation();
+
+	// Start rotation of location dot
+	startLocationDotRotation();
 }
 
 async function loadStationMarkersFromArray(stationsArray) {
@@ -195,8 +207,12 @@ function getLocation(zoom = true) {
 			async position => {
 				// Convert to the OpenLayers format
 				pos = [position.coords.longitude, position.coords.latitude];
+				speed = position.coords.speed ?? 0;
 
 				updatePositionAndRotationWhenNavigating();
+
+				let speedKMH = (speed * 60 * 60) / 1000;
+				if (document.getElementById("speed")) document.getElementById("speed").innerHTML = speedKMH.toFixed(0); // convert m/s to km/h
 
 				const iconFeature = new ol.Feature({
 					geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
@@ -211,6 +227,7 @@ function getLocation(zoom = true) {
 						anchorXUnits: "fraction",
 						anchorYUnits: "fraction",
 						src: "assets/images/gps_dot.png",
+						rotation: compassHeading + map.getView().getRotation(), // have map rotation into account
 					}),
 				});
 
@@ -271,6 +288,7 @@ function getLocation(zoom = true) {
 							anchorXUnits: "fraction",
 							anchorYUnits: "fraction",
 							src: "assets/images/gps_dot.png",
+							rotation: compassHeading + map.getView().getRotation(), // have map rotation into account
 						}),
 					});
 
@@ -327,78 +345,122 @@ function getLocation(zoom = true) {
 				}
 			};
 
-
-			// Rotate heading arrow using device sensors (Fulltilt library)
-			// Start the FULLTILT DeviceOrientation listeners 
-			var promise = FULLTILT.getDeviceOrientation({'type': 'world'});
-			promise.then(function(orientationControl) {
-		
-				orientationControl.listen(function() {
-					// Get the current *screen-adjusted* device orientation angles
-					var currentOrientation = orientationControl.getScreenAdjustedEuler();
-
-					// Calculate the current compass heading that the user is 'looking at' (in radians)
-					var compassHeading = (Math.PI / 180) * (360 - currentOrientation.alpha) + map.getView().getRotation();
-		
-					// Set rotation of map dot
-
-					const iconFeature = new ol.Feature({
-						geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
-						name: "Current location",
-					});
-
-					const iconStyle = new ol.style.Style({
-						image: new ol.style.Icon({
-							width: 40,
-							height: 40,
-							anchor: [0.5, 0.5],
-							anchorXUnits: "fraction",
-							anchorYUnits: "fraction",
-							src: "assets/images/gps_dot.png",
-							rotation: compassHeading
-						}),
-					});
-	
-					iconFeature.setStyle(iconStyle);
-					const vectorSource = new ol.source.Vector({
-						features: [iconFeature],
-					});
-	
-					const vectorLayer = new ol.layer.Vector({
-						name: "currentLocationLayer",
-						source: vectorSource,
-						zIndex: 99,
-					});
-	
-					if (
-						map
-							.getLayers()
-							.getArray()
-							.filter(layer => layer.get("name") === "currentLocationLayer").length === 0
-					) {
-						// Add the layer
-						map.addLayer(vectorLayer);
-					} else {
-						// Get the layer containing the previous current location
-						const currentLocationLayer = map
-							.getLayers()
-							.getArray()
-							.find(layer => layer.get("name") === "currentLocationLayer");
-	
-						// Refresh the feature
-						let feature = currentLocationLayer.getSource().getFeatures()[0];
-						feature.setStyle(iconStyle);
-						feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
-					}
-				});
-		
-			});
-
-
 			checkPos();
 		}
 	} else {
 		// Browser doesn't support Geolocation
-		console.log(false ? error.message : "Error: Your browser doesn't support geolocation.");
+		console.log("Error: Your browser doesn't support geolocation.");
+	}
+}
+
+function startLocationDotRotation() {
+	let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+	let handler = e => {
+		// Get current compass heading in degrees
+		let currentOrientation;
+		if (typeof e.webkitCompassHeading === "undefined") {
+			currentOrientation = -(e.alpha + (e.beta * e.gamma) / 90);
+			currentOrientation -= Math.floor(currentOrientation / 360) * 360; // Wrap into range [0,360].
+		} else currentOrientation = e.webkitCompassHeading;
+
+		// Calculate the current compass heading that the user is 'looking at' (in radians) (global)
+		compassHeading = -(Math.PI / 180) * (360 - currentOrientation);
+
+		// Adjust heading if device is on landscape
+		if (window.matchMedia("(orientation: landscape)").matches) compassHeading += (Math.PI / 180) * 90;
+
+		if (!pos) return;
+
+		// Set rotation of map dot
+		const iconFeature = new ol.Feature({
+			geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
+			name: "Current location",
+		});
+
+		const iconStyle = new ol.style.Style({
+			image: new ol.style.Icon({
+				width: 40,
+				height: 40,
+				anchor: [0.5, 0.5],
+				anchorXUnits: "fraction",
+				anchorYUnits: "fraction",
+				src: "assets/images/gps_dot.png",
+				rotation: compassHeading + map.getView().getRotation(), // have map rotation into account
+			}),
+		});
+
+		iconFeature.setStyle(iconStyle);
+		const vectorSource = new ol.source.Vector({
+			features: [iconFeature],
+		});
+
+		const vectorLayer = new ol.layer.Vector({
+			name: "currentLocationLayer",
+			source: vectorSource,
+			zIndex: 99,
+		});
+
+		if (
+			map
+				.getLayers()
+				.getArray()
+				.filter(layer => layer.get("name") === "currentLocationLayer").length === 0
+		) {
+			// Add the layer
+			map.addLayer(vectorLayer);
+		} else {
+			// Get the layer containing the previous current location
+			const currentLocationLayer = map
+				.getLayers()
+				.getArray()
+				.find(layer => layer.get("name") === "currentLocationLayer");
+
+			// Refresh the feature
+			let feature = currentLocationLayer.getSource().getFeatures()[0];
+			feature.setStyle(iconStyle);
+			feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
+		}
+	};
+
+	if (isIOS) {
+		// create function for prompting user
+		const promptUserForPermission = () => {
+			createCustomYesNoPrompt(
+				"Nos dispositivos Apple, é necessária permissão do utilizador para aceder à bússola do dispositivo.",
+				() => {
+					// User clicked OK
+					DeviceOrientationEvent.requestPermission()
+						.then(response => {
+							if (response === "granted") {
+								window.addEventListener("deviceorientation", e => requestAnimationFrame(() => handler(e)), true);
+							} else {
+								alert("A orientação não irá funcionar corretamente!");
+							}
+						})
+						.catch(() => alert("Bússola não suportada"));
+				},
+				// User clicked Ignore
+				() => alert("A orientação não irá funcionar corretamente!"),
+				"Ok",
+				"Ignorar"
+			);
+		};
+
+		// If the in initial requestPermission fails, it means the user hasn't given permission previously
+		// and we should prompt the user to do so (UI interaction is needed)
+		DeviceOrientationEvent.requestPermission()
+			.then(response => {
+				if (response === "granted") {
+					window.addEventListener("deviceorientation", e => requestAnimationFrame(() => handler(e)), true);
+				} else {
+					// Let the user give permission if he has previously rejected it
+					promptUserForPermission();
+				}
+			})
+			// Permission had not been given before
+			.catch(() => promptUserForPermission());
+	} else {
+		window.addEventListener("deviceorientationabsolute", e => requestAnimationFrame(() => handler(e)), true);
 	}
 }
