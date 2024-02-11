@@ -455,9 +455,7 @@ async function rateTrip(tripCode, tripCost) {
 	const tripRating = Number(starsInput?.value);
 	if (starsInput) {
 		// hide the rate trip menu
-		setTimeout(() => {
-			if (document.getElementById("rateTripMenu")) document.getElementById("rateTripMenu").remove();
-		}, 1000);
+		if (document.getElementById("rateTripMenu")) document.getElementById("rateTripMenu").remove();
 	} else {
 		alert("Não foi possível obter a classificação.");
 		return;
