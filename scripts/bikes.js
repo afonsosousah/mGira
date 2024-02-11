@@ -379,9 +379,7 @@ async function tripTimer(startTime) {
 function openRateTripMenu(tripObj) {
 	// Calculate the trip time
 	const elapsedTime = new Date(Date.parse(tripObj.endDate) - Date.parse(tripObj.startDate));
-	elapsedTime.setTime(elapsedTime.getTime() + elapsedTime.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
-	// Only keeps the hours and minutes (first 2 elements)
-	const formattedTime = elapsedTime.toLocaleTimeString("pt").split(":", 2).join();
+	const formattedTime = parseMillisecondsIntoTripTime(elapsedTime, false);
 
 	// Don't rate trips under 90 seconds
 	if (elapsedTime < 90 * 1000) return;
@@ -391,16 +389,25 @@ function openRateTripMenu(tripObj) {
     <div class="rate-trip-menu" id="rateTripMenu">
         <div id="rateTripMenuCard">
             <div id="backButton" onclick="document.getElementById('rateTripMenu').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
-            <div id="textContent">
-                <i class="bi bi-clock"></i>&nbsp;${formattedTime} &nbsp;&nbsp;&nbsp;&nbsp; <i class="bi bi-cash-coin"></i>&nbsp;${parseFloat(
-		tripObj.cost
-	).toFixed(2)}€
-                <br><br>
-                Bicicleta: ${tripObj.bike}
-                <br><br>
-                +${tripObj.tripPoints ?? 0} <i class="bi bi-arrow-right"></i> ${tripObj.clientPoints} pontos totais
+			<div id="tripInfo">
+				<div id="bikeName">
+					<img id="bikeIcon" src="assets/images/mGira_bike.png">
+					${tripObj.bike}
+				</div>
+				<div id="time">
+					<i class="bi bi-clock"></i>
+					${formattedTime}
+				</div>
+				<div id="cost">
+					<i class="bi bi-cash-coin"></i>
+					${parseFloat(tripObj.cost).toFixed(2)}€
+				</div>
+				<div id="points">
+					<i class="bi bi-piggy-bank"></i>
+					${tripObj.tripPoints ?? 0} pontos
+				</div>
             </div>
-            <img src="assets/images/mGira_station.png" alt="station">
+            <img src="assets/images/mGira_station.png" alt="station" id="stationImg">
             <div id="ratingLabel">Como foi a viagem?</div>
             <div id="ratingFormContainer">
                 <form class="rating">
@@ -444,10 +451,15 @@ function openRateTripMenu(tripObj) {
 
 async function rateTrip(tripCode, tripCost) {
 	// Get the selected input for the stars
-	const tripRating = Number(document.querySelector(`input[type="radio"]:checked`).value);
-
-	// hide the rate trip menu
-	if (document.getElementById("rateTripMenu")) document.getElementById("rateTripMenu").remove();
+	let starsInput = document.querySelector(`input[type="radio"]:checked`);
+	const tripRating = Number(starsInput?.value);
+	if (starsInput) {
+		// hide the rate trip menu
+		if (document.getElementById("rateTripMenu")) document.getElementById("rateTripMenu").remove();
+	} else {
+		alert("Não foi possível obter a classificação.");
+		return;
+	}
 
 	// if the rating is 3 stars or less, prompt the user to comment on the trip
 	if (tripRating <= 3) {
@@ -488,7 +500,7 @@ async function rateTrip(tripCode, tripCost) {
 			}
 		);
 	} else {
-		let success = await rateTrip(tripCode, tripRating, ""); // send empty comment if the user gave a good rating
+		let success = await rateTripAPI(tripCode, tripRating, ""); // send empty comment if the user gave a good rating
 		if (success) {
 			// store that this trip was already rated, to not prompt again
 			ratedTripsList.push(tripCode);
