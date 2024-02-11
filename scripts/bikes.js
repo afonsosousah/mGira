@@ -452,10 +452,8 @@ function openRateTripMenu(tripObj) {
 async function rateTrip(tripCode, tripCost) {
 	// Get the selected input for the stars
 	let starsInput = document.querySelector(`input[type="radio"]:checked`);
-	let tripRating;
+	const tripRating = Number(starsInput?.value);
 	if (starsInput) {
-		tripRating = Number(starsInput.value);
-
 		// hide the rate trip menu
 		setTimeout(() => {
 			if (document.getElementById("rateTripMenu")) document.getElementById("rateTripMenu").remove();
