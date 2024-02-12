@@ -93,3 +93,8 @@ function parseMillisecondsIntoTripTime(milliseconds, showSeconds = true) {
 	// Return in 00h00m00s format
 	return (absoluteHours > 0 ? h + "h" : "") + m + "m" + (showSeconds ? s + "s" : "");
 }
+
+function changeThemeColor(color) {
+	var metaThemeColor = document.querySelector("meta[name=theme-color]");
+	metaThemeColor.setAttribute("content", color);
+}
