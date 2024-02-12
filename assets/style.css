@@ -1998,6 +1998,25 @@ input[type="search"]::-webkit-search-results-decoration {
 	font-weight: bold;
 	color: var(--green);
 }
+#tripHistory #downloadTripHistoryButton {
+	position: absolute;
+	bottom: 2.5vh;
+	right: 2.5vh;
+	width: 8vh;
+	height: 8vh;
+	background-color: var(--green);
+	font-size: 1.75rem;
+	border-radius: 999px;
+	color: var(--white);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#tripHistory #downloadTripHistoryButton i {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
 #tripHistory #tripList {
 	position: absolute;
 	width: 90%;
