@@ -148,51 +148,29 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	});
 
 	// Show the start navigation button and route details panel
-	if (document.querySelector("#placeSearchMenu")) {
-		let placeSearchMenuElement = document.querySelector("#placeSearchMenu");
+	let targetElement = null; // either placeSearchMenu or stationMenu
 
-		let startNavigationButtonElement = document.createElement("div");
-		startNavigationButtonElement.id = "startNavigationButton";
-		startNavigationButtonElement.innerHTML = '<i class="bi bi-sign-turn-slight-right"></i>';
+	// check which element we need to append to
+	if (document.querySelector("#placeSearchMenu")) targetElement = document.querySelector("#placeSearchMenu");
+	else if (document.querySelector("#stationMenu")) targetElement = document.querySelector("#stationMenu");
 
-		startNavigationButtonElement.addEventListener("click", () => startNavigation(walkingOnly));
+	// create start Navigation button
+	let startNavigationButtonElement = document.createElement("div");
+	startNavigationButtonElement.id = "startNavigationButton";
+	startNavigationButtonElement.innerHTML = '<i class="bi bi-sign-turn-slight-right"></i>';
+	startNavigationButtonElement.addEventListener("click", () => startNavigation(walkingOnly));
 
-		let routeDetailsElement = document.createElement("div");
-		routeDetailsElement.id = "routeDetails";
-		routeDetailsElement.innerHTML = `<i class="bi bi-clock"></i>&nbsp;${new Date(totalTime * 1000)
-			.toISOString()
-			.slice(11, 19)}&nbsp;&nbsp;&nbsp;<i class="bi bi-signpost"></i>&nbsp;${
-			Math.round((totalDistance / 1000) * 10) / 10
-		}km`; // round distance to 1 decimal place
+	// create route Details panel
+	let routeDetailsElement = document.createElement("div");
+	routeDetailsElement.id = "routeDetails";
+	routeDetailsElement.innerHTML = `
+		<i class="bi bi-clock"></i>&nbsp;${parseMillisecondsIntoTripTime(totalTime * 1000)}
+		&nbsp;&nbsp;&nbsp;
+		<i class="bi bi-signpost"></i>&nbsp;${Math.round((totalDistance / 1000) * 10) / 10}km
+	`; // round distance to 1 decimal place
 
-		placeSearchMenuElement.appendChild(startNavigationButtonElement);
-		placeSearchMenuElement.appendChild(routeDetailsElement);
-	} else if (document.querySelector("#stationMenu")) {
-		let stationMenu = document.querySelector("#stationMenu");
-
-		let startNavigationButtonElement = document.createElement("div");
-		startNavigationButtonElement.id = "startNavigationButton";
-		startNavigationButtonElement.innerHTML = '<i class="bi bi-sign-turn-slight-right"></i>';
-
-		startNavigationButtonElement.addEventListener("click", () => startNavigation(walkingOnly));
-
-		if (totalTime) {
-			let routeDetailsElement = document.createElement("div");
-			routeDetailsElement.id = "routeDetails";
-			routeDetailsElement.innerHTML = `
-				<i class="bi bi-clock"></i>
-				&nbsp;
-				${parseMillisecondsIntoTripTime(totalTime * 1000)}
-				&nbsp;&nbsp;&nbsp;
-				<i class="bi bi-signpost"></i>
-				&nbsp;${Math.round((totalDistance / 1000) * 10) / 10}km
-			`; // round distance to 1 decimal place
-
-			stationMenu.appendChild(routeDetailsElement);
-		}
-
-		stationMenu.appendChild(startNavigationButtonElement);
-	}
+	targetElement.appendChild(startNavigationButtonElement);
+	targetElement.appendChild(routeDetailsElement);
 }
 
 async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
@@ -242,8 +220,8 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 
 		let summary = response.features[0].properties.summary;
 		return {
-			distance: summary.distance,
-			duration: summary.duration,
+			distance: summary.distance ?? 0,
+			duration: summary.duration ?? 0,
 			bbox: response.bbox,
 			coordinates: response.features[0].geometry.coordinates,
 		};

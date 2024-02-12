@@ -616,16 +616,16 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 .station-card #startNavigationButton {
 	position: absolute;
-	top: -10dvh;
-	right: 8dvh;
+	top: -8vh;
+	right: 8vh;
 	background-color: var(--black);
 	border-radius: 999px;
 	color: white;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 8dvh;
-	width: 8dvh;
+	height: 6vh;
+	width: 6vh;
 }
 .station-card #startNavigationButton:hover {
 	cursor: pointer;
@@ -640,7 +640,7 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 .station-card #routeDetails {
 	position: absolute;
-	top: -10dvh;
+	top: -8vh;
 	left: 0;
 	background-color: var(--black);
 	border-radius: 999px;
@@ -648,7 +648,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 8dvh;
+	height: 6vh;
 	padding: 0 2dvh;
 	font-size: 0.8rem;
 }
@@ -689,7 +689,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	line-height: 15%;
 	text-decoration: none;
 	border: none;
-	outline: 2px solid var(--green);
+	outline: 1px solid var(--green);
 	padding: 5px 15px;
 	border-radius: 999px;
 	background-color: var(--glass-white);
