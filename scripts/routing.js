@@ -148,20 +148,16 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	});
 
 	// Show the start navigation button and route details panel
-	let targetElement = null; // either placeSearchMenu or stationMenu
-
-	// check which element we need to append to
-	if (document.querySelector("#placeSearchMenu")) targetElement = document.querySelector("#placeSearchMenu");
-	else if (document.querySelector("#stationMenu")) targetElement = document.querySelector("#stationMenu");
+	const targetElement = document.querySelector("#placeSearchMenu") ?? document.querySelector("#stationMenu");
 
 	// create start Navigation button
-	let startNavigationButtonElement = document.createElement("div");
+	const startNavigationButtonElement = document.createElement("div");
 	startNavigationButtonElement.id = "startNavigationButton";
 	startNavigationButtonElement.innerHTML = '<i class="bi bi-sign-turn-slight-right"></i>';
 	startNavigationButtonElement.addEventListener("click", () => startNavigation(walkingOnly));
 
 	// create route Details panel
-	let routeDetailsElement = document.createElement("div");
+	const routeDetailsElement = document.createElement("div");
 	routeDetailsElement.id = "routeDetails";
 	routeDetailsElement.innerHTML = `
 		<i class="bi bi-clock"></i>&nbsp;${parseMillisecondsIntoTripTime(totalTime * 1000)}

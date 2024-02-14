@@ -95,6 +95,5 @@ function parseMillisecondsIntoTripTime(milliseconds, showSeconds = true) {
 }
 
 function changeThemeColor(color) {
-	var metaThemeColor = document.querySelector("meta[name=theme-color]");
-	metaThemeColor.setAttribute("content", color);
+	metaThemeColor = document.querySelector("meta[name=theme-color]").setAttribute("content", color);
 }

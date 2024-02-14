@@ -343,7 +343,7 @@ async function startBikeTrip(event, bikeSerialNumber) {
 
 async function tripTimer(startTime) {
 	// Update only is trip has not ended, and websocket is connected
-	if (tripEnded === false && typeof ws !== "undefined" && ws.readyState === WebSocket.OPEN) {
+	if (!tripEnded && ws?.readyState === WebSocket.OPEN) {
 		// Update timer on trip overlay
 		if (document.querySelector("#tripTime")) {
 			// Calculate elapsed time
@@ -352,7 +352,7 @@ async function tripTimer(startTime) {
 				element.innerHTML = parseMillisecondsIntoTripTime(elapsedTime);
 			}
 		}
-		if (document.querySelector("#tripCost") && typeof activeTripObj !== "undefined") {
+		if (document.querySelector("#tripCost") && activeTripObj) {
 			let cost = activeTripObj.cost;
 			if (cost) {
 				for (let element of document.querySelectorAll("#tripCost")) {

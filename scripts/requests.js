@@ -193,7 +193,7 @@ function startWSConnection(force = false) {
 					activeTripObj = msgObj.payload.data.activeTripSubscription;
 					if (activeTripObj.code !== "no_trip" && activeTripObj.code !== "unauthorized") {
 						// Real trip info
-						if (activeTripObj.finished === true) {
+						if (activeTripObj.finished) {
 							// End trip
 							tripEnded = true;
 
@@ -203,7 +203,7 @@ function startWSConnection(force = false) {
 							// Show the rate trip menu (if trip has not been rated)
 							if (!ratedTripsList.includes(activeTripObj.code) && !document.getElementById("rateTripMenu"))
 								openRateTripMenu(activeTripObj);
-						} else if (!activeTripObj.finished && !finishedTripsList.includes(activeTripObj.code)) {
+						} else if (!finishedTripsList.includes(activeTripObj.code)) {
 							// Show the trip overlay if it is not shown already and the user is not on navigation
 							if (!document.querySelector("#tripOverlay") && !navigationActive) {
 								// show the trip overlay if user is not in navigation

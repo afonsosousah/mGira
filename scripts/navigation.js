@@ -194,12 +194,7 @@ async function stopNavigation() {
 		map
 			.getLayers()
 			.getArray()
-			.filter(
-				layer =>
-					layer.get("name") === "placesLayer" ||
-					layer.get("name") === "stationsLayer" ||
-					layer.get("name") === "routeLayer"
-			)
+			.filter(layer => ["placesLayer", "stationsLayer", "routeLayer"].includes(layer.get("name")))
 			.forEach(layer => map.removeLayer(layer));
 
 		// Add back the stations layer (only if user has clicked navigate to stations)

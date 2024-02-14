@@ -41,7 +41,7 @@ async function initMap() {
 			}),
 		],
 		view: new ol.View({
-			center: ol.proj.fromLonLat([-9.142685, 38.736946]),
+			center: ol.proj.fromLonLat([-9.142685, 38.736946]), // center in Lisbon
 			zoom: 12,
 		}),
 		controls: [new ol.control.Rotate(), new ol.control.Attribution()],

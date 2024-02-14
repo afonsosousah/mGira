@@ -174,9 +174,13 @@ function hideStationMenu(exitToRight = false) {
 		else menu.classList.add("smooth-slide-to-left");
 
 		// remove element after animation
-		setTimeout(() => {
-			menu.remove(); // hide html element
-		}, 500);
+		menu.addEventListener('transitionend', function(event) {
+    		// Check if the transition property that ended is the one you are interested in
+    		if (event.propertyName === 'transform') {
+     		   // Remove the menu element after the sliding animation finishes
+    		    menu.remove();
+		    }
+		});
 
 		// move zoom controls back down
 		document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls");
@@ -187,12 +191,7 @@ function hideStationMenu(exitToRight = false) {
 		map
 			.getLayers()
 			.getArray()
-			.filter(
-				layer =>
-					layer.get("name") === "placesLayer" ||
-					layer.get("name") === "stationsLayer" ||
-					layer.get("name") === "routeLayer"
-			)
+			.filter(layer => ["placesLayer", "stationsLayer", "routeLayer"].includes(layer.get("name")))
 			.forEach(layer => map.removeLayer(layer));
 
 		// Show cycleways layer
