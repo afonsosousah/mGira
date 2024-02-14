@@ -292,7 +292,7 @@ async function startBikeTrip(event, bikeSerialNumber) {
 		if (bikeReserveCardElem) {
 			bikeReserveCardElem.innerHTML = `
 				<div id="backButton" onclick="document.getElementById('unlockBikeCard').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
-				<img src="assets/images/mGira_leaving_dock_new.gif" id="bikeLeavingDock" alt="bike leaving dock animation">
+				<img src="assets/images/mGira_leaving_dock.gif" id="bikeLeavingDock" alt="bike leaving dock animation">
 				<img src="assets/images/gira_footer.svg" id="footer" alt="footer">`;
 		}
 
