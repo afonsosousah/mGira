@@ -27,8 +27,7 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	map
 		.getLayers()
 		.getArray()
-		.filter(layer => layer.get("name") === "cyclewaysLayer")
-		.forEach(layer => layer.setVisible(false));
+		.find(layer => layer.get("name") === "cyclewaysLayer").setVisible(true);
 
 	// select the stations from which the user should grab the bike and leave the bike
 	// from the 3 stations nearer to the starting point and the 3 stations nearer to the ending point
@@ -140,7 +139,7 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	else if (document.getElementById("stationMenu"))
 		menuHeight = document.getElementById("stationMenu").clientHeight + 30;
 	else menuHeight = 0;
-	let viewableBox = [map.getSize()[0], map.getSize()[1] - menuHeight];
+	const viewableBox = [map.getSize()[0], map.getSize()[1] - menuHeight];
 	map.getView().fit(convertedBbox, {
 		size: viewableBox,
 		padding: [50, 100, menuHeight + 50, 100],

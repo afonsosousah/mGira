@@ -210,6 +210,7 @@ async function openUserSettings() {
 	});
 
 	// Set status bar color in PWA
+	// Set notification bar color in Progressive Web App (installable website)
 	changeThemeColor("#79c000");
 }
 

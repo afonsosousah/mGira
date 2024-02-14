@@ -198,8 +198,7 @@ function hideStationMenu(exitToRight = false) {
 		map
 			.getLayers()
 			.getArray()
-			.filter(layer => layer.get("name") === "cyclewaysLayer")
-			.forEach(layer => layer.setVisible(true));
+			.find(layer => layer.get("name") === "cyclewaysLayer").setVisible(true);
 
 		// Add back the stations layer (only if user has clicked navigate to stations)
 		getStations();

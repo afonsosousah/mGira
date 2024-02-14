@@ -205,8 +205,7 @@ async function stopNavigation() {
 	map
 		.getLayers()
 		.getArray()
-		.filter(layer => layer.get("name") === "cyclewaysLayer")
-		.forEach(layer => layer.setVisible(true));
+		.find(layer => layer.get("name") === "cyclewaysLayer").setVisible(true);
 
 	// If the screen is not portrait, tell the user to rotate it
 	orientationChangeHandler(window.matchMedia("(orientation: portrait)"));
