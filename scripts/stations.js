@@ -174,9 +174,9 @@ function hideStationMenu(exitToRight = false) {
 		else menu.classList.add("smooth-slide-to-left");
 
 		// remove element after animation
-		menu.addEventListener("transitionend", function (event) {
-			// Check if the transition property that ended is the one you are interested in
-			if (event.propertyName === "transform") {
+		menu.addEventListener("animationend", event => {
+			// Check if the animation that ended is the one you are interested in
+			if (event.animationName === `smooth-slide-to-${exitToRight ? "right" : "left"}`) {
 				// Remove the menu element after the sliding animation finishes
 				menu.remove();
 			}
