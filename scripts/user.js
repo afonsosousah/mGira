@@ -266,6 +266,9 @@ function openTripHistory() {
         <ul id="tripList">
             <!-- Populate with the list here -->
         </ul>
+		<div id="downloadTripHistoryButton" onclick="downloadObjectAsJson(user.tripHistory, 'tripHistory');">
+			<i class="bi bi-cloud-download"></i>
+		</div>
     `.trim();
 	document.body.appendChild(menu);
 
