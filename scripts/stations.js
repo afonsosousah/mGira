@@ -174,12 +174,12 @@ function hideStationMenu(exitToRight = false) {
 		else menu.classList.add("smooth-slide-to-left");
 
 		// remove element after animation
-		menu.addEventListener('transitionend', function(event) {
-    		// Check if the transition property that ended is the one you are interested in
-    		if (event.propertyName === 'transform') {
-     		   // Remove the menu element after the sliding animation finishes
-    		    menu.remove();
-		    }
+		menu.addEventListener("transitionend", function (event) {
+			// Check if the transition property that ended is the one you are interested in
+			if (event.propertyName === "transform") {
+				// Remove the menu element after the sliding animation finishes
+				menu.remove();
+			}
 		});
 
 		// move zoom controls back down
@@ -198,7 +198,8 @@ function hideStationMenu(exitToRight = false) {
 		map
 			.getLayers()
 			.getArray()
-			.find(layer => layer.get("name") === "cyclewaysLayer").setVisible(true);
+			.find(layer => layer.get("name") === "cyclewaysLayer")
+			.setVisible(true);
 
 		// Add back the stations layer (only if user has clicked navigate to stations)
 		getStations();

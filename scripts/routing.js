@@ -27,7 +27,8 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	map
 		.getLayers()
 		.getArray()
-		.find(layer => layer.get("name") === "cyclewaysLayer").setVisible(true);
+		.find(layer => layer.get("name") === "cyclewaysLayer")
+		.setVisible(false);
 
 	// select the stations from which the user should grab the bike and leave the bike
 	// from the 3 stations nearer to the starting point and the 3 stations nearer to the ending point
