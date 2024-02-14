@@ -22,11 +22,18 @@ async function initMap() {
 	const source = new ol.source.XYZ({
 		url: "https://api.maptiler.com/maps/dataviz/{z}/{x}/{y}.png?key=" + key,
 		tileSize: 512,
+		attributions: [
+			'<a href="https://maptiler.com/"><em>© MapTiler</em></a>  <a href="https://openstreetmap.org/"><em>© OpenStreetMap contributors</em></a>',
+		],
 	});
 
-	const cyclewaysSource = new ol.source.XYZ({
-		url: "https://services.arcgis.com/1dSrzEWVQn5kHHyK/arcgis/rest/services/Ciclovias/FeatureServer/0",
-		tileSize: 512,
+	const cyclewaysSource = new ol.source.Vector({
+		url: "https://opendata.arcgis.com/api/v3/datasets/440b7424a6284e0b9bf11179b95bf8d1_0/downloads/data?format=geojson&spatialRefId=4326",
+		format: new ol.format.GeoJSON(),
+	});
+
+	const attribution = new ol.control.Attribution({
+		collapsible: true,
 	});
 
 	map = new ol.Map({
@@ -36,10 +43,7 @@ async function initMap() {
 				source: source,
 			}),
 			new ol.layer.Vector({
-				source: new ol.source.Vector({
-					url: "https://opendata.arcgis.com/api/v3/datasets/440b7424a6284e0b9bf11179b95bf8d1_0/downloads/data?format=geojson&spatialRefId=4326",
-					format: new ol.format.GeoJSON(),
-				}),
+				source: cyclewaysSource,
 				style: cyclewaysStyle,
 			}),
 		],
@@ -47,7 +51,7 @@ async function initMap() {
 			center: ol.proj.fromLonLat([-9.142685, 38.736946]), // center in Lisbon
 			zoom: 12,
 		}),
-		controls: [new ol.control.Rotate()],
+		controls: [new ol.control.Rotate(), attribution],
 	});
 
 	// display popup on click

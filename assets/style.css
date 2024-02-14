@@ -251,6 +251,12 @@ body {
 	pointer-events: none;
 	touch-action: none;
 }
+.ol-attribution {
+	top: .5em;
+	left: .5em;
+	bottom: unset !important;
+	right: unset !important;
+}
 /* #endregion */
 
 /* #region Logo */
