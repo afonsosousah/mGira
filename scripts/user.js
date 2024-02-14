@@ -208,6 +208,10 @@ async function openUserSettings() {
 
 		alert("O proxy foi redefinido.");
 	});
+
+	// Set status bar color in PWA
+	// Set notification bar color in Progressive Web App (installable website)
+	changeThemeColor("#79c000");
 }
 
 function hideUserSettings() {
@@ -216,6 +220,7 @@ function hideUserSettings() {
 		userSettings.classList.add("smooth-slide-to-bottom");
 		setTimeout(() => userSettings.remove(), 300); // remove element after animation end
 	}
+	changeThemeColor("#ffffff"); // Set status bar color in PWA
 }
 
 function openSetProxyPrompt() {
@@ -343,6 +348,9 @@ function openTripHistory() {
 	// if there are no trips, put a message saying that
 	if (document.getElementById("tripList").childElementCount === 0)
 		document.getElementById("tripList").innerHTML = "Não realizou nenhuma viagem";
+
+	// Set status bar color in PWA
+	changeThemeColor("#ffffff");
 }
 
 function hideTripHistory() {
@@ -352,6 +360,9 @@ function hideTripHistory() {
 	// Show user settings again
 	let userSettingsElem = document.getElementById("userSettings");
 	userSettingsElem.style.maxHeight = "";
+
+	// Set status bar color in PWA
+	changeThemeColor("#79c000");
 }
 
 // Statistics Menu
@@ -419,6 +430,9 @@ function openStatisticsMenu() {
 
 	// Populate chart
 	updateStatisticsChart();
+
+	// Set status bar color in PWA
+	changeThemeColor("#231f20");
 }
 
 function hideStatisticsMenu() {
@@ -428,6 +442,9 @@ function hideStatisticsMenu() {
 	// Show user settings again
 	let userSettingsElem = document.getElementById("userSettings");
 	userSettingsElem.style.maxHeight = "";
+
+	// Set status bar color in PWA
+	changeThemeColor("#79c000");
 }
 
 function updateStatisticsChart() {

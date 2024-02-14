@@ -63,9 +63,10 @@ function createCustomTextPrompt(message, yesHandler, noHandler, yesText = "Envia
 	const alertObj = mObj.appendChild(document.createElement("div"));
 	alertObj.id = "alertBox";
 
-	const input = alertObj.appendChild(document.createElement("input"));
+	const input = alertObj.appendChild(document.createElement("textarea"));
 	input.id = "customTextPromptInput";
 	input.placeholder = message;
+	input.spellcheck = false;
 
 	const yesBtn = alertObj.appendChild(document.createElement("div"));
 	yesBtn.id = "yesBtn";

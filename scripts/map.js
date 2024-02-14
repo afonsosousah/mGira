@@ -12,7 +12,6 @@ async function initMap() {
 		stroke: new ol.style.Stroke({
 			color: "#79c000",
 			width: 2,
-			lineDash: [3, 6],
 		}),
 	});
 
@@ -24,9 +23,9 @@ async function initMap() {
 		tileSize: 512,
 	});
 
-	const cyclewaysSource = new ol.source.XYZ({
-		url: "https://services.arcgis.com/1dSrzEWVQn5kHHyK/arcgis/rest/services/Ciclovias/FeatureServer/0",
-		tileSize: 512,
+	const cyclewaysSource = new ol.source.Vector({
+		url: "https://opendata.arcgis.com/api/v3/datasets/440b7424a6284e0b9bf11179b95bf8d1_0/downloads/data?format=geojson&spatialRefId=4326",
+		format: new ol.format.GeoJSON(),
 	});
 
 	map = new ol.Map({
@@ -36,18 +35,16 @@ async function initMap() {
 				source: source,
 			}),
 			new ol.layer.Vector({
-				source: new ol.source.Vector({
-					url: "https://opendata.arcgis.com/api/v3/datasets/440b7424a6284e0b9bf11179b95bf8d1_0/downloads/data?format=geojson&spatialRefId=4326",
-					format: new ol.format.GeoJSON(),
-				}),
+				source: cyclewaysSource,
 				style: cyclewaysStyle,
+				name: "cyclewaysLayer",
 			}),
 		],
 		view: new ol.View({
 			center: ol.proj.fromLonLat([-9.142685, 38.736946]), // center in Lisbon
 			zoom: 12,
 		}),
-		controls: [new ol.control.Rotate()],
+		controls: [new ol.control.Rotate(), new ol.control.Attribution()],
 	});
 
 	// display popup on click
@@ -208,8 +205,6 @@ function getLocation(zoom = true) {
 				// Convert to the OpenLayers format
 				pos = [position.coords.longitude, position.coords.latitude];
 				speed = position.coords.speed ?? 0;
-
-				updatePositionAndRotationWhenNavigating();
 
 				let speedKMH = (speed * 60 * 60) / 1000;
 				if (document.getElementById("speed")) document.getElementById("speed").innerHTML = speedKMH.toFixed(0); // convert m/s to km/h

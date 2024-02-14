@@ -1,6 +1,7 @@
 let tripEnded = true;
 let tripTimerRunning = false;
 let ratedTripsList = [];
+let finishedTripsList = [];
 
 // reserves the bike and returns a success boolean
 async function reserveBike(serialNumber) {
@@ -292,8 +293,7 @@ async function startBikeTrip(event, bikeSerialNumber) {
 			bikeReserveCardElem.innerHTML = `
 				<div id="backButton" onclick="document.getElementById('unlockBikeCard').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
 				<img src="assets/images/mGira_leaving_dock.gif" id="bikeLeavingDock" alt="bike leaving dock animation">
-				<img src="assets/images/gira_footer.svg" id="footer" alt="footer">
-			`;
+				<img src="assets/images/gira_footer.svg" id="footer" alt="footer">`;
 		}
 
 		// start the trip
@@ -342,7 +342,8 @@ async function startBikeTrip(event, bikeSerialNumber) {
 }
 
 async function tripTimer(startTime) {
-	if (tripEnded === false) {
+	// Update only is trip has not ended, and websocket is connected
+	if (!tripEnded && ws?.readyState === WebSocket.OPEN) {
 		// Update timer on trip overlay
 		if (document.querySelector("#tripTime")) {
 			// Calculate elapsed time

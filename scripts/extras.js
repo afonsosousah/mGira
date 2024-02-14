@@ -94,6 +94,11 @@ function parseMillisecondsIntoTripTime(milliseconds, showSeconds = true) {
 	return (absoluteHours > 0 ? h + "h" : "") + m + "m" + (showSeconds ? s + "s" : "");
 }
 
+
+function changeThemeColor(color) {
+	metaThemeColor = document.querySelector("meta[name=theme-color]").setAttribute("content", color);
+}
+
 function downloadObjectAsJson(exportObj, exportName) {
 	const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, "\t"));
 	const downloadAnchorNode = document.createElement("a");
