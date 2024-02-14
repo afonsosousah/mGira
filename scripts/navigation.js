@@ -25,10 +25,12 @@ async function startNavigation(walkingOnly = false) {
 	map.getView().setZoom(17);
 
 	// Append the buttons
+	appendElementToBodyFromHTML(`
+		<div id="changeRotationModeButtonPortrait" onclick="changeRotationMode()"><i class="bi bi-sign-turn-right"></i></div>
+		<div id="endNavigationButtonPortrait" onclick="stopNavigation()"><i class="bi bi-sign-stop"></i></div>
+	`);
 	if (!walkingOnly) {
 		appendElementToBodyFromHTML(`
-			<div id="changeRotationModeButtonPortrait" onclick="changeRotationMode()"><i class="bi bi-sign-turn-right"></i></div>
-			<div id="endNavigationButtonPortrait" onclick="stopNavigation()"><i class="bi bi-sign-stop"></i></div>
 			<div id="onBikeButton" onclick="onBikeNavigation()">Estou na bicicleta</div>
 		`);
 	}
@@ -43,6 +45,10 @@ async function startNavigation(walkingOnly = false) {
 
 	// Set map pixel ratio (fix mobile map not loading at some points)
 	map.pixelRatio_ = 2;
+
+	// hide station menu
+	if (document.getElementById("stationMenu")) document.getElementById("stationMenu").remove();
+	document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
 
 	// Pan to user location and set the correct rotation based on the route
 	updatePositionAndRotationWhenNavigating();
@@ -182,6 +188,25 @@ async function stopNavigation() {
 	// Reset map pixel ratio to default
 	map.pixelRatio_ = window.devicePixelRatio;
 
+	// Show the stations back, if user was navigating to station
+	if (userClickedNavigateToStation) {
+		// Remove the results layer
+		map
+			.getLayers()
+			.getArray()
+			.filter(layer => ["placesLayer", "stationsLayer", "routeLayer"].includes(layer.get("name")))
+			.forEach(layer => map.removeLayer(layer));
+
+		// Add back the stations layer (only if user has clicked navigate to stations)
+		getStations();
+	}
+
+	// Show cycleways layer
+	map
+		.getLayers()
+		.getArray()
+		.find(layer => layer.get("name") === "cyclewaysLayer").setVisible(true);
+
 	// If the screen is not portrait, tell the user to rotate it
 	orientationChangeHandler(window.matchMedia("(orientation: portrait)"));
 }
@@ -262,10 +287,10 @@ function updatePositionAndRotationWhenNavigating() {
 		const mapSize = map.getSize();
 		const userPosition = ol.proj.fromLonLat(pos);
 
+		view.setRotation(angleRad);
+
 		if (navigationMode === "bike") view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.9]);
 		else view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.85]);
-
-		view.setRotation(angleRad);
 
 		// Check if user is near to dropoff station, and prompt them if they reached the dropoff station
 		let distanceToDropoffStation = distance(pos, [dropoffStation.longitude, dropoffStation.latitude]);

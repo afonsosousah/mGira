@@ -12,7 +12,6 @@ async function initMap() {
 		stroke: new ol.style.Stroke({
 			color: "#79c000",
 			width: 2,
-			lineDash: [3, 6],
 		}),
 	});
 
@@ -32,8 +31,8 @@ async function initMap() {
 		format: new ol.format.GeoJSON(),
 	});
 
-	const attribution = new ol.control.Attribution({
-		collapsible: true,
+  const attribution = new ol.control.Attribution({
+    collapsible: true,
 	});
 
 	map = new ol.Map({
@@ -45,6 +44,7 @@ async function initMap() {
 			new ol.layer.Vector({
 				source: cyclewaysSource,
 				style: cyclewaysStyle,
+				name: "cyclewaysLayer",
 			}),
 		],
 		view: new ol.View({
@@ -212,8 +212,6 @@ function getLocation(zoom = true) {
 				// Convert to the OpenLayers format
 				pos = [position.coords.longitude, position.coords.latitude];
 				speed = position.coords.speed ?? 0;
-
-				updatePositionAndRotationWhenNavigating();
 
 				let speedKMH = (speed * 60 * 60) / 1000;
 				if (document.getElementById("speed")) document.getElementById("speed").innerHTML = speedKMH.toFixed(0); // convert m/s to km/h

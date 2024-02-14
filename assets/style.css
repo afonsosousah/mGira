@@ -514,14 +514,15 @@ input[type="search"]::-webkit-search-results-decoration {
 	opacity: 5%;
 }
 .station-card #stationName {
-	width: calc(100% - 10vw);
+	width: calc(100% - 25vw);
 	position: absolute;
-	left: 5vw;
+	left: 12.5vw;
 	top: 5vw;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	text-align: center;
+	font-size: 0.9rem;
 }
 .station-card #docksImage {
 	width: 42.5%;
@@ -613,6 +614,50 @@ input[type="search"]::-webkit-search-results-decoration {
 	color: white;
 	font-weight: bold;
 }
+.station-card #navigateToButton {
+	position: absolute;
+	right: 5vw;
+	top: 5vw;
+	font-size: 1.2rem;
+}
+.station-card #startNavigationButton {
+	position: absolute;
+	top: -8vh;
+	right: 8vh;
+	background-color: var(--black);
+	border-radius: 999px;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 6vh;
+	width: 6vh;
+}
+.station-card #startNavigationButton:hover {
+	cursor: pointer;
+}
+.station-card #startNavigationButton i {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 180%;
+}
+.station-card #routeDetails {
+	position: absolute;
+	top: -8vh;
+	left: 0;
+	background-color: var(--black);
+	border-radius: 999px;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 6vh;
+	padding: 0 2dvh;
+	font-size: 0.8rem;
+}
 /* #endregion */
 
 /* #region Login menu */
@@ -650,7 +695,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	line-height: 15%;
 	text-decoration: none;
 	border: none;
-	outline: 2px solid var(--green);
+	outline: 1px solid var(--green);
 	padding: 5px 15px;
 	border-radius: 999px;
 	background-color: var(--glass-white);
@@ -1883,19 +1928,19 @@ input[type="search"]::-webkit-search-results-decoration {
 	padding: 8%;
 }
 
-#alertBox input {
-	background-color: rgb(255, 255, 255);
-	width: calc(100% - 5% - 20px - 6px);
-	height: 40px;
-	outline: 3px solid var(--green);
+#alertBox #customTextPromptInput {
+	width: calc(100% - 4dvh - 20px - 6px);
+	height: 10dvh;
+	outline: 1px solid var(--green);
 	border: none;
-	border-radius: 999px;
+	border-radius: 15px;
 	display: block;
-	padding-left: 5%;
+	padding: 1dvh 2dvh;
 	color: var(--green);
 	font-size: medium;
 	margin: 10px;
 	margin-left: 13px;
+	resize: none;
 }
 
 #alertBox #closeBtn {
@@ -2003,6 +2048,25 @@ input[type="search"]::-webkit-search-results-decoration {
 	font-size: 1.3rem;
 	font-weight: bold;
 	color: var(--green);
+}
+#tripHistory #downloadTripHistoryButton {
+	position: absolute;
+	bottom: 2.5vh;
+	right: 2.5vh;
+	width: 8vh;
+	height: 8vh;
+	background-color: var(--green);
+	font-size: 1.75rem;
+	border-radius: 999px;
+	color: var(--white);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#tripHistory #downloadTripHistoryButton i {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 #tripHistory #tripList {
 	position: absolute;

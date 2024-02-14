@@ -1,5 +1,6 @@
 let stationsArray;
 let lastStationObj;
+let userClickedNavigateToStation = false;
 
 // returns an array with all the bikes in a station
 async function getBikes(stationID) {
@@ -133,33 +134,87 @@ async function openStationMenu(stationSerialNumber) {
 		menu.innerHTML = `
             <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
             <div id="stationName">${stationObj.name}</div>
+			<div id="navigateToButton" onclick="routeToStation('${stationSerialNumber}')"><i class="bi bi-sign-turn-right"></i></div>
             <img id="docksImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
             <div id="docksButton">${numDocks === 1 ? "1 doca" : `${numDocks} docas`}</div>
             <img id="bikesImage" src="assets/images/mGira_bike.png" alt="Gira bike" width="25%">
-            <div id="bikesButton${stationObj.docks === 0 ? 'Disabled"' : `" onclick="openBikeList('${stationSerialNumber}')"`} >
+            <div id="bikesButton${
+							stationObj.docks === 0 ? 'Disabled"' : `" onclick="openBikeList('${stationSerialNumber}')"`
+						} >
 				${numBikes === 1 ? "1 bicicleta" : `${numBikes} bicicletas`}
 			</div>`;
 	} else {
 		menu.innerHTML = `
             <div id="availableBikesNumber">Ocorreu um erro.</div>
-            <div id="cancelButton" onclick="document.getElementById('stationMenu').remove()">Voltar</div>
+            <div id="cancelButton" onclick="hideStationMenu()">Voltar</div>
         `.trim();
 	}
+
+	// Set that the user has not clicked navigate to station button
+	userClickedNavigateToStation = false;
 
 	// Add swipe event for hiding the station card
 	addSwipeEvent(
 		menu,
 		() => {
-			menu.classList.add("smooth-slide-to-left");
-			setTimeout(() => menu.remove(), 500); // remove element after animation
-			document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
+			hideStationMenu();
 		},
 		() => {
-			menu.classList.add("smooth-slide-to-right");
-			setTimeout(() => menu.remove(), 500); // remove element after animation
-			document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
+			hideStationMenu(true);
 		}
 	);
+}
+
+function hideStationMenu(exitToRight = false) {
+	const menu = document.getElementById("stationMenu");
+
+	if (menu) {
+		// animate menu exiting
+		if (exitToRight) menu.classList.add("smooth-slide-to-right");
+		else menu.classList.add("smooth-slide-to-left");
+
+		// remove element after animation
+		menu.addEventListener("animationend", event => {
+			// Check if the animation that ended is the one you are interested in
+			if (event.animationName === `smooth-slide-to-${exitToRight ? "right" : "left"}`) {
+				// Remove the menu element after the sliding animation finishes
+				menu.remove();
+			}
+		});
+
+		// move zoom controls back down
+		document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls");
+	}
+
+	if (userClickedNavigateToStation) {
+		// Remove the results layer
+		map
+			.getLayers()
+			.getArray()
+			.filter(layer => ["placesLayer", "stationsLayer", "routeLayer"].includes(layer.get("name")))
+			.forEach(layer => map.removeLayer(layer));
+
+		// Show cycleways layer
+		map
+			.getLayers()
+			.getArray()
+			.find(layer => layer.get("name") === "cyclewaysLayer")
+			.setVisible(true);
+
+		// Add back the stations layer (only if user has clicked navigate to stations)
+		getStations();
+	}
+}
+
+function routeToStation(stationSerialNumber) {
+	// get station object
+	const stationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
+
+	// Calculate and display the route on the map when we have the user position
+	calculateFullRoute(pos, [stationObj.longitude, stationObj.latitude]);
+
+	// Set that the user has clicked navigate to station button
+	userClickedNavigateToStation = true;
 }
 
 // Open the bike list element and populate it
@@ -194,7 +249,9 @@ async function openBikeList(stationSerialNumber) {
 
 		bikeListElement.innerHTML = `
             <div id="battery" style="width: ${bike.name[0] === "E" ? `${bike.battery}%` : `0`}"></div>
-            <div id="content" onclick="openUnlockBikeCard('${stationSerialNumber}','${bike.serialNumber}','${dockObj.serialNumber}')">
+            <div id="content" onclick="openUnlockBikeCard('${stationSerialNumber}','${bike.serialNumber}','${
+			dockObj.serialNumber
+		}')">
 				<img id="bikeIcon" src="assets/images/${bike.name[0] === "E" ? `ebike.png` : `classic.png`}">
 				<div id="bikeInfo">
 					<div id="bikeName">${bike.name}</div>

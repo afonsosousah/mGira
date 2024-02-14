@@ -23,6 +23,13 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 		)
 		.forEach(layer => map.removeLayer(layer));
 
+	// Hide cycleways layer
+	map
+		.getLayers()
+		.getArray()
+		.find(layer => layer.get("name") === "cyclewaysLayer")
+		.setVisible(false);
+
 	// select the stations from which the user should grab the bike and leave the bike
 	// from the 3 stations nearer to the starting point and the 3 stations nearer to the ending point
 	// make a rough calculation on which of the combinations will result in the less distance (which should take less time)
@@ -128,34 +135,38 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	let coords1 = ol.proj.fromLonLat([routeSummaryBike.bbox[0], routeSummaryBike.bbox[1]]);
 	let coords2 = ol.proj.fromLonLat([routeSummaryBike.bbox[2], routeSummaryBike.bbox[3]]);
 	let convertedBbox = [coords1[0], coords1[1], coords2[0], coords2[1]];
-	let viewableBox = [map.getSize()[0], map.getSize()[1] - document.getElementById("placeSearchMenu").clientHeight];
+	let menuHeight;
+	if (document.getElementById("placeSearchMenu")) menuHeight = document.getElementById("placeSearchMenu").clientHeight;
+	else if (document.getElementById("stationMenu"))
+		menuHeight = document.getElementById("stationMenu").clientHeight + 30;
+	else menuHeight = 0;
+	const viewableBox = [map.getSize()[0], map.getSize()[1] - menuHeight];
 	map.getView().fit(convertedBbox, {
 		size: viewableBox,
-		padding: [50, 100, document.getElementById("placeSearchMenu").clientHeight + 50, 100],
+		padding: [50, 100, menuHeight + 50, 100],
 		maxZoom: 18,
 	});
 
 	// Show the start navigation button and route details panel
-	if (document.querySelector("#placeSearchMenu")) {
-		let placeSearchMenuElement = document.querySelector("#placeSearchMenu");
+	const targetElement = document.querySelector("#placeSearchMenu") ?? document.querySelector("#stationMenu");
 
-		let startNavigationButtonElement = document.createElement("div");
-		startNavigationButtonElement.id = "startNavigationButton";
-		startNavigationButtonElement.innerHTML = '<i class="bi bi-sign-turn-slight-right"></i>';
+	// create start Navigation button
+	const startNavigationButtonElement = document.createElement("div");
+	startNavigationButtonElement.id = "startNavigationButton";
+	startNavigationButtonElement.innerHTML = '<i class="bi bi-sign-turn-slight-right"></i>';
+	startNavigationButtonElement.addEventListener("click", () => startNavigation(walkingOnly));
 
-		startNavigationButtonElement.addEventListener("click", () => startNavigation(walkingOnly));
+	// create route Details panel
+	const routeDetailsElement = document.createElement("div");
+	routeDetailsElement.id = "routeDetails";
+	routeDetailsElement.innerHTML = `
+		<i class="bi bi-clock"></i>&nbsp;${parseMillisecondsIntoTripTime(totalTime * 1000)}
+		&nbsp;&nbsp;&nbsp;
+		<i class="bi bi-signpost"></i>&nbsp;${Math.round((totalDistance / 1000) * 10) / 10}km
+	`; // round distance to 1 decimal place
 
-		let routeDetailsElement = document.createElement("div");
-		routeDetailsElement.id = "routeDetails";
-		routeDetailsElement.innerHTML = `<i class="bi bi-clock"></i>&nbsp;${new Date(totalTime * 1000)
-			.toISOString()
-			.slice(11, 19)}&nbsp;&nbsp;&nbsp;<i class="bi bi-signpost"></i>&nbsp;${
-			Math.round((totalDistance / 1000) * 10) / 10
-		}km`; // round distance to 1 decimal place
-
-		placeSearchMenuElement.appendChild(startNavigationButtonElement);
-		placeSearchMenuElement.appendChild(routeDetailsElement);
-	}
+	targetElement.appendChild(startNavigationButtonElement);
+	targetElement.appendChild(routeDetailsElement);
 }
 
 async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
@@ -205,8 +216,8 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 
 		let summary = response.features[0].properties.summary;
 		return {
-			distance: summary.distance,
-			duration: summary.duration,
+			distance: summary.distance ?? 0,
+			duration: summary.duration ?? 0,
 			bbox: response.bbox,
 			coordinates: response.features[0].geometry.coordinates,
 		};
