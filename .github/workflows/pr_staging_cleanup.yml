@@ -1,0 +1,27 @@
+on:
+  pull_request:
+    types:
+      - closed
+name: Staging pull request to alpha.mgira.pt/pr/number
+
+jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    environment:
+      name: Staging
+    steps:
+      # Checkout the repository
+      - name: Get latest code
+        uses: actions/checkout@v4
+      # Delete files of merged PR
+      - name: Delete the remote files of the merged pull-request
+        uses: StephanThierry/ftp-delete-action@v2.1
+        with:
+          host: ${{ secrets.FTP_SERVER }}
+          user: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          remoteFiles: "*"
+          remoteDirectories: /domains/alpha.mgira.pt/public_html/pr/${{ github.event.pull_request.number }}/
+          workingDir: "."
+          ignoreSSL: "1"
