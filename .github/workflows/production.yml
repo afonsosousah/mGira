@@ -1,0 +1,24 @@
+on:
+  release:
+    types: [published]
+name: Deploy to Production
+
+jobs:
+  web-deploy:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    environment:
+      name: Production
+      url: https://app.mgira.pt
+    steps:
+      # Checkout the repository
+      - name: Get latest code
+        uses: actions/checkout@v4
+      # sync files via FTP
+      - name: Sync files via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /domains/app.mgira.pt/public_html/
