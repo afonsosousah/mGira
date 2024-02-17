@@ -31,8 +31,12 @@ async function initMap() {
 		format: new ol.format.GeoJSON(),
 	});
 
-  const attribution = new ol.control.Attribution({
-    collapsible: true,
+	const infoLabel = document.createElement("i");
+	infoLabel.classList.add("bi", "bi-info");
+
+	const attribution = new ol.control.Attribution({
+		collapsible: true,
+		label: infoLabel,
 	});
 
 	map = new ol.Map({

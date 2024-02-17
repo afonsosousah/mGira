@@ -256,6 +256,24 @@ body {
 	left: .5em;
 	bottom: unset !important;
 	right: unset !important;
+	border-radius: 999px !important;
+}
+.ol-attribution button {
+	all: unset;
+	height: 1.375em;
+	width: 1.375em;
+	line-height: .4em;
+	border-radius: 999px;
+	background-color: var(--glass-white);
+	color: var(--green);
+	text-align: center;
+	font-family: Roboto, Arial, sans-serif;
+	font-weight: bold;
+}
+.ol-attribution button:focus, .ol-attribution button:hover {
+	outline: 1px solid var(--green);
+	color: var(--green);
+	line-height: .4em;
 }
 /* #endregion */
 
@@ -623,7 +641,7 @@ input[type="search"]::-webkit-search-results-decoration {
 .station-card #startNavigationButton {
 	position: absolute;
 	top: -8vh;
-	right: 8vh;
+	right: 7vh;
 	background-color: var(--black);
 	border-radius: 999px;
 	color: white;
@@ -632,6 +650,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	align-items: center;
 	height: 6vh;
 	width: 6vh;
+	box-shadow: 0px 4px 6px 0px var(--shadow-black), 0px 0px 5px 0px var(--shadow-black) inset;
 }
 .station-card #startNavigationButton:hover {
 	cursor: pointer;
@@ -657,6 +676,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	height: 6vh;
 	padding: 0 2dvh;
 	font-size: 0.8rem;
+	box-shadow: 0px 4px 6px 0px var(--shadow-black), 0px 0px 5px 0px var(--shadow-black) inset;
 }
 /* #endregion */
 
