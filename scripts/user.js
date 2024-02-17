@@ -6,19 +6,29 @@ let user = {};
 // Login to the emel API and get the tokens
 async function login(event) {
 	event.preventDefault();
+
+	// Get values from form
 	const loginForm = document.getElementById("loginForm");
 
+	// Show loading animation
+	const loginCard = document.getElementById("loginCard");
+	loginCard.innerHTML = `<img src="assets/images/mGira_bike.png" id="spinner">`;
+
 	// Do the login request
-	const response = await makePostRequest(
-		"https://api-auth.emel.pt/auth",
-		JSON.stringify({
+	const responseReq = await fetch("https://api-auth.emel.pt/auth", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
 			Provider: "EmailPassword",
 			CredentialsEmailPassword: {
 				email: loginForm.email.value,
 				password: loginForm.password.value,
 			},
-		})
-	);
+		}),
+	});
+	const response = await responseReq.json();
 
 	if (response.data) {
 		// Store the received tokens
@@ -26,17 +36,43 @@ async function login(event) {
 		user.refreshToken = response.data.refreshToken;
 		user.expiration = response.data.expiration;
 
+		/* Run the startup functions */
+
+		// Start WebSocket connection
+		startWSConnection();
+
 		// Get all user details
 		getUserInformation();
 
+		// Check if update info should be shown
+		showUpdateInfoIfNeeded();
+
+		// Get the stations and load them to the map
+		await getStations();
+
+		// Get the user location on app open
+		getLocation();
+
+		// Start rotation of location dot
+		startLocationDotRotation();
+
 		// Set the cookie expiry to 1 month after today.
-		const expiryDate = new Date();
-		expiryDate.setMonth(expiryDate.getMonth() + 1);
+		const refreshTokenExpiryDate = new Date();
+		refreshTokenExpiryDate.setMonth(refreshTokenExpiryDate.getMonth() + 1);
 
 		// Store refreshToken cookie (stay logged in)
-		document.cookie = "refreshToken=" + user.refreshToken + "; expires=" + expiryDate.toGMTString();
+		document.cookie =
+			"refreshToken=" + user.refreshToken + "; expires=" + refreshTokenExpiryDate.toGMTString() + "; SameSite=strict";
 
-		document.getElementById("loginMenu").remove();
+		// Set the cookie expiry to 2 minutes after now.
+		const accessTokenExpiryDate = new Date();
+		accessTokenExpiryDate.setMinutes(accessTokenExpiryDate.getMinutes() + 2);
+
+		// Store accessToken cookie (for quick refreshes)
+		document.cookie =
+			"accessToken=" + user.accessToken + "; expires=" + accessTokenExpiryDate.toGMTString() + "; SameSite=strict";
+
+		document.getElementById("loginMenu")?.remove();
 		tokenRefreshed = true;
 	} else {
 		alert("Login failed!");
@@ -73,8 +109,9 @@ async function getUserInformation() {
 
 // Open the login menu element and populate it
 function openLoginMenu() {
-	document.cookie = "version=0.0.0"; // Force show update notes after logout
+	//document.cookie = "version=0.0.0"; // Force show update notes after logout
 	document.cookie = 'refreshToken=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT'; // delete cookie
+	document.cookie = 'accessToken=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT'; // delete cookie
 
 	let menu = document.createElement("div");
 	menu.className = "login-menu";

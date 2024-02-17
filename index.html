@@ -117,6 +117,11 @@
 				}
 			});
 
+			// Request persistent storage for site
+			if (navigator.storage && navigator.storage.persist) {
+				navigator.storage.persist().then(isPersisted => console.log(`Persisted storage granted: ${isPersisted}`));
+			}
+
 			// Check if the user has set customProxy. if not, use default proxy
 			const tempCustomProxy = getCookie("customProxy");
 			if (tempCustomProxy) {
@@ -124,15 +129,7 @@
 				proxyURL = decodeURI(tempCustomProxy);
 			} else {
 				console.log("Using default proxy");
-			}
-
-			// Check if the user is logged in, if not, prompt to login
-			const tempTokenRefresh = getCookie("refreshToken");
-			if (tempTokenRefresh) {
-				user.refreshToken = tempTokenRefresh;
-				//tokenRefresh();
-			} else {
-				openLoginMenu();
+				proxyURL = "https://corsproxy.afonsosousah.workers.dev/";
 			}
 
 			// Prevent resize on keyboard open

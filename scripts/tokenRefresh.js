@@ -1,62 +1,91 @@
-let numberOfTokenRefreshTries = 5;
-let currentTry = 0;
+// to give back to the calls that were made when another one was already being processed
+// (promise caching)
+let tokenPromise = null;
 
 // Refreshes current user accessToken, using refreshToken
 async function tokenRefresh() {
 	tokenRefreshed = false;
-	currentTry += 1;
 
 	if (!user.refreshToken) {
 		openLoginMenu();
 		return;
 	}
 
-	console.log("Token has not been refreshed...");
+	// Make sure to only refresh the token one at a time
+	if (tokenPromise !== null) return tokenPromise;
 
-	const response = await fetch(proxyURL ?? DEFAULT_PROXY, {
-		method: "POST",
-		headers: {
-			"X-Proxy-URL": "https://api-auth.emel.pt/token/refresh",
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			token: user.refreshToken,
-		}),
-	});
-	if (response.status === 200) {
-		const responseObject = await response.json();
-		if (Object.hasOwn(responseObject, "data")) {
-			// Store the received tokens
-			user.accessToken = responseObject.data.accessToken;
-			user.refreshToken = responseObject.data.refreshToken;
-			user.expiration = responseObject.data.expiration;
+	// If there are no other calls being processed, create a new promise
+	tokenPromise = new Promise(async (resolve, reject) => {
+		// Try to refresh token with retries...
+		const numberOfTries = 3;
+		let currentTry = 0;
 
-			// Set the cookie expiry to 1 month after today.
-			const expiryDate = new Date();
-			expiryDate.setMonth(expiryDate.getMonth() + 1);
+		while (currentTry < numberOfTries) {
+			const response = await fetch(proxyURL, {
+				method: "POST",
+				headers: {
+					"X-Proxy-URL": "https://api-auth.emel.pt/token/refresh",
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					token: user.refreshToken,
+				}),
+			});
 
-			// Store refreshToken cookie (stay logged in)
-			document.cookie = "refreshToken=" + user.refreshToken + "; expires=" + expiryDate.toGMTString();
+			if (response.status === 200) {
+				const responseObject = await response.json();
 
-			// Hide login menu if it is showing
-			if (document.querySelector(".login-menu")) document.querySelector(".login-menu").remove();
+				if (Object.hasOwn(responseObject, "data")) {
+					// Store the received tokens
+					user.accessToken = responseObject.data.accessToken;
+					user.refreshToken = responseObject.data.refreshToken;
+					user.expiration = responseObject.data.expiration;
 
-			// Set that the token has been refreshed successfully
-			tokenRefreshed = true;
-			currentTry = 0; // reset the number of tries
+					// Set the cookie expiry to 1 month after today.
+					const refreshTokenExpiryDate = new Date();
+					refreshTokenExpiryDate.setMonth(refreshTokenExpiryDate.getMonth() + 1);
 
-			console.log("Token has been refreshed");
+					// Store refreshToken cookie (stay logged in)
+					document.cookie =
+						"refreshToken=" +
+						user.refreshToken +
+						"; expires=" +
+						refreshTokenExpiryDate.toGMTString() +
+						"; SameSite=strict";
 
-			return user.accessToken;
+					// Set the cookie expiry to 2 minutes after now.
+					const accessTokenExpiryDate = new Date();
+					accessTokenExpiryDate.setMinutes(accessTokenExpiryDate.getMinutes() + 2);
+
+					// Store accessToken cookie (for quick refreshes)
+					document.cookie =
+						"accessToken=" +
+						user.accessToken +
+						"; expires=" +
+						accessTokenExpiryDate.toGMTString() +
+						"; SameSite=strict";
+
+					// Hide login menu if it is showing
+					if (document.querySelector(".login-menu")) document.querySelector(".login-menu").remove();
+
+					// Set that the token has been refreshed successfully
+					tokenRefreshed = true;
+
+					resolve(user.accessToken); // return the promised result
+					return;
+				}
+			} else {
+				currentTry += 1;
+			}
 		}
-	} else if (response.status === 400) {
-		// try for x times to refresh the token, otherwise prompt for new login
-		if (currentTry < numberOfTokenRefreshTries) {
-			// Wait before making next request (reduce error rate)
-			await delay(200);
-			tokenRefresh();
-		} else openLoginMenu();
-	} else {
-		alert("Token refresh failed!");
-	}
+
+		// Retried for x times to refresh the token, prompt for new login
+		openLoginMenu();
+		reject();
+		return;
+	}).finally(() => {
+		tokenPromise = null;
+	});
+
+	return tokenPromise;
 }

@@ -67,6 +67,32 @@ async function initMap() {
 			viewRoute(ol.proj.transform(feature.getGeometry().getCoordinates(), "EPSG:3857", "EPSG:4326"));
 	});
 
+	/* Run the startup functions */
+
+	// Check if the user is logged in, if not, prompt to login
+	const refreshTokenCookie = getCookie("refreshToken");
+	if (refreshTokenCookie) {
+		user.refreshToken = refreshTokenCookie;
+	} else {
+		openLoginMenu();
+		return;
+	}
+
+	// Check if the user is logged in, if not, prompt to login
+	const accessTokenCookie = getCookie("accessToken");
+	if (accessTokenCookie) {
+		user.accessToken = accessTokenCookie;
+	}
+
+	// Start WebSocket connection
+	startWSConnection();
+
+	// Get all user details
+	getUserInformation();
+
+	// Check if update info should be shown
+	showUpdateInfoIfNeeded();
+
 	// Get the stations and load them to the map
 	await getStations();
 

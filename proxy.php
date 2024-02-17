@@ -45,9 +45,9 @@ define('CSAJAX_DEBUG', true);
  * A set of valid cross domain requests
  */
 $valid_requests = array(
-  'api-auth.emel.pt',
-  'apigira.emel.pt',
-  'opendata.emel.pt'
+    'api-auth.emel.pt',
+    'apigira.emel.pt',
+    'opendata.emel.pt'
 );
 
 /**
@@ -64,17 +64,19 @@ $curl_options = array(
 /* * * STOP EDITING HERE UNLESS YOU KNOW WHAT YOU ARE DOING * * */
 
 // identify request headers
-$request_headers = array( );
+$request_headers = array();
 foreach ($_SERVER as $key => $value) {
     if (strpos($key, 'HTTP_') === 0  ||  strpos($key, 'CONTENT_') === 0) {
         $headername = str_replace('_', ' ', str_replace('HTTP_', '', $key));
         $headername = str_replace(' ', '-', ucwords(strtolower($headername)));
-        if (!in_array($headername, array( 'Host', 'X-Proxy-Url', 'X-Authorization' ))) {
-          $request_headers[] = "$headername: $value";
-        }
-        else if($headername == 'X-Authorization') {
-          $request_headers[] = "Authorization: $value";
-          //csajax_debug_message("Authorization header modified correctly!");
+        if (
+            !in_array($headername, array('Host', 'X-Proxy-Url', 'X-Authorization'))
+            && in_array($headername, array('Content-Type', 'Content-Length'))
+        ) {
+            $request_headers[] = "$headername: $value";
+        } else if ($headername == 'X-Authorization') {
+            $request_headers[] = "Authorization: $value";
+            //csajax_debug_message("Authorization header modified correctly!");
         }
     }
 }
@@ -153,7 +155,7 @@ $ch = curl_init($request_url);
 
 // Suppress Expect header
 if (CSAJAX_SUPPRESS_EXPECT) {
-    array_push($request_headers, 'Expect:'); 
+    array_push($request_headers, 'Expect:');
 }
 
 curl_setopt($ch, CURLOPT_HTTPHEADER, $request_headers);   // (re-)send headers

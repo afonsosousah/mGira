@@ -13,10 +13,8 @@ async function makePostRequest(url, body, accessToken = null) {
 	const response = await fetch(proxyURL ?? DEFAULT_PROXY, {
 		method: "POST",
 		headers: {
-			"User-Agent": "Gira/3.2.8 (Android 34)",
 			"X-Proxy-URL": url,
 			"Content-Type": "application/json",
-			Priority: "high",
 			"X-Authorization": `Bearer ${accessToken}`,
 		},
 		body: body,
@@ -111,6 +109,44 @@ async function makePostRequest(url, body, accessToken = null) {
 				return;
 			}
 		}
+	} else if (response.status === 403) {
+		// Common API processing error
+		// try for x times to do the request, otherwise just error out
+		if (currentRequestTry < numberOfRequestTries) {
+			// Wait before making next request (reduce error rate)
+			await delay(200);
+			return await makePostRequest(url, body, accessToken);
+		} else {
+			// Warn user about the API error
+			alert("Erro da API (403)");
+
+			// Hide user menu if it is showing
+			hideUserSettings();
+
+			// Hide search place menu if it is showing
+			hidePlaceSearchMenu();
+
+			// Hide bike list menu if it is showing
+			let bikeListMenu = document.getElementById("bikeMenu");
+			if (bikeListMenu) {
+				bikeListMenu.classList.add("smooth-slide-to-bottom");
+				setTimeout(() => bikeListMenu.remove(), 500); // remove element after animation
+				return; // prevent station card from being hidden if there was a bike list menu
+			}
+
+			// Hide station card if it is showing
+			let menu = document.getElementById("stationMenu");
+			if (menu) {
+				menu.classList.add("smooth-slide-to-left");
+				setTimeout(() => menu.remove(), 500); // remove element after animation
+				document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
+			}
+
+			// Reset currentRequestTry
+			currentRequestTry = 0;
+
+			return;
+		}
 	}
 }
 
@@ -124,7 +160,13 @@ async function makeGetRequest(url, accessToken = null) {
 	});
 	if (response.status === 401) {
 		// refresh token
-		tokenRefresh();
+		accessToken = await tokenRefresh();
+
+		// check if token refresh was successful
+		if (typeof accessToken !== "undefined") {
+			// try to make request again
+			return await makeGetRequest(url, accessToken); // be sure to use latest available token
+		}
 	} else if (response.ok) {
 		const responseObject = await response.json();
 		return responseObject;
@@ -137,11 +179,8 @@ async function makeGetRequest(url, accessToken = null) {
 }
 
 function startWSConnection(force = false) {
-	console.log("startWSConnection was called");
 	// if connection already exists, close the old one first
 	if (typeof ws !== "undefined" && ws.readyState === WebSocket.OPEN) {
-		console.log("An open connection already existed");
-
 		if (force === true) {
 			ws.send(JSON.stringify({ type: "stop" }));
 			ws.onopen = ws.onmessage = ws.onerror = ws.onclose = undefined;
@@ -183,7 +222,6 @@ function startWSConnection(force = false) {
 	};
 
 	ws.onmessage = msg => {
-		//console.log(msg);
 		if (typeof msg.data !== "undefined") {
 			let msgObj = JSON.parse(msg.data);
 			if (Object.hasOwn(msgObj, "payload") && msgObj.payload) {
@@ -203,8 +241,7 @@ function startWSConnection(force = false) {
 							if (!finishedTripsList.includes(activeTripObj.code)) finishedTripsList.push(activeTripObj.code);
 
 							// Show the rate trip menu (if trip has not been rated)
-							if (!ratedTripsList.includes(activeTripObj.code) && !document.getElementById("rateTripMenu"))
-								openRateTripMenu(activeTripObj);
+							if (!ratedTripsList.includes(activeTripObj.code) && !tripBeingRated) openRateTripMenu(activeTripObj);
 						} else if (!finishedTripsList.includes(activeTripObj.code)) {
 							// Show the trip overlay if it is not shown already and the user is not on navigation
 							if (!document.querySelector("#tripOverlay") && !navigationActive) {
@@ -256,25 +293,6 @@ function startWSConnection(force = false) {
 
 	ws.onerror = ev => console.log(ev);
 	ws.onclose = ev => {
-		console.log(ev);
 		startWSConnection(); // reconnect automatically if the connection gets closed
 	};
-}
-
-function checkToken(callback) {
-	if (tokenRefreshed === false)
-		return setTimeout(() => checkToken(callback, arguments[1], arguments[2], user.accessToken), 0);
-	else {
-		tokenRefreshSuccessHandler();
-
-		// always use the latest access token
-		return callback(arguments[1], arguments[2], user.accessToken);
-	}
-}
-
-function tokenRefreshSuccessHandler() {
-	console.log("Token has been refreshed!");
-
-	// Hide login menu if it is showing
-	if (document.querySelector(".login-menu")) document.querySelector(".login-menu").remove();
 }

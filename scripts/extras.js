@@ -94,7 +94,6 @@ function parseMillisecondsIntoTripTime(milliseconds, showSeconds = true) {
 	return (absoluteHours > 0 ? h + "h" : "") + m + "m" + (showSeconds ? s + "s" : "");
 }
 
-
 function changeThemeColor(color) {
 	metaThemeColor = document.querySelector("meta[name=theme-color]").setAttribute("content", color);
 }
