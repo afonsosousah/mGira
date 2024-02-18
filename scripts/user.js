@@ -283,31 +283,12 @@ function openTripHistory() {
 		tripListElement.className = "trip-list-element";
 
 		// Get formatted date
-		let tripDate = new Date(trip.startDate);
-		let monthNumberToShortForm = [
-			"jan.",
-			"fev.",
-			"mar.",
-			"abr.",
-			"mai.",
-			"jun.",
-			"jul.",
-			"ago.",
-			"set.",
-			"out.",
-			"nov.",
-			"dez.",
-		];
-		const formattedDate = `${tripDate.getDate()} ${
-			monthNumberToShortForm[tripDate.getMonth()]
-		} ${tripDate.getFullYear()}`;
+		const formattedDate = tripTime.toLocaleDateString("pt", { dateStyle: "medium" });
 
 		// Get formatted time
-		let tripTime = new Date(new Date(trip.endDate) - new Date(trip.startDate));
+		let tripTime = new Date(Date.parse(trip.endDate) - Date.parse(trip.startDate));
 		tripTime.setTime(tripTime.getTime() + tripTime.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
-		const hours = tripTime.getHours();
-		const minutes = tripTime.getMinutes();
-		const formattedTime = hours + "h" + minutes.toString().padStart(2, "0") + "m";
+		const formattedTime = tripTime.getHours() + "h" + tripTime.getMinutes().toString().padStart(2, "0") + "m";
 
 		// Get formatted cost
 		let formattedCost = parseFloat(trip.cost).toFixed(2);
