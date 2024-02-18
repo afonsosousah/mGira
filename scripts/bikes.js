@@ -347,7 +347,7 @@ async function tripTimer(startTime) {
 		// Update timer on trip overlay
 		if (document.querySelector("#tripTime")) {
 			// Calculate elapsed time
-			const elapsedTime = new Date(Date.now() - startTime);
+			const elapsedTime = Date.now() - startTime;
 			for (let element of document.querySelectorAll("#tripTime")) {
 				element.innerHTML = parseMillisecondsIntoTripTime(elapsedTime);
 			}
@@ -379,7 +379,7 @@ async function tripTimer(startTime) {
 
 function openRateTripMenu(tripObj) {
 	// Calculate the trip time
-	const elapsedTime = new Date(Date.parse(tripObj.endDate) - Date.parse(tripObj.startDate));
+	const elapsedTime = Date.parse(tripObj.endDate) - Date.parse(tripObj.startDate);
 	const formattedTime = parseMillisecondsIntoTripTime(elapsedTime, false);
 
 	// Don't rate trips under 90 seconds
