@@ -298,7 +298,7 @@ function openTripHistory() {
 			"nov.",
 			"dez.",
 		];
-		const formattedDate = `${tripDate.getDay()} ${
+		const formattedDate = `${tripDate.getDate()} ${
 			monthNumberToShortForm[tripDate.getMonth()]
 		} ${tripDate.getFullYear()}`;
 
