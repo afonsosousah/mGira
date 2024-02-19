@@ -283,7 +283,8 @@ function openTripHistory() {
 		tripListElement.className = "trip-list-element";
 
 		// Get formatted date. Format: "1 de jan. de 2024"
-		const formattedDate = tripTime.toLocaleDateString("pt", { dateStyle: "medium" });
+		const tripDate = new Date(trip.startDate);
+		const formattedDate = tripDate.toLocaleDateString("pt", { dateStyle: "medium" }).replaceAll(" de ", " ");
 
 		// Get formatted time
 		let tripTime = new Date(Date.parse(trip.endDate) - Date.parse(trip.startDate));
