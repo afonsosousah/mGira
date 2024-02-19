@@ -282,32 +282,14 @@ function openTripHistory() {
 		const tripListElement = document.createElement("li");
 		tripListElement.className = "trip-list-element";
 
-		// Get formatted date
-		let tripDate = new Date(trip.startDate);
-		let monthNumberToShortForm = [
-			"jan.",
-			"fev.",
-			"mar.",
-			"abr.",
-			"mai.",
-			"jun.",
-			"jul.",
-			"ago.",
-			"set.",
-			"out.",
-			"nov.",
-			"dez.",
-		];
-		const formattedDate = `${tripDate.getDate()} ${
-			monthNumberToShortForm[tripDate.getMonth()]
-		} ${tripDate.getFullYear()}`;
+		// Get formatted date. Format: "1 de jan. de 2024"
+		const tripDate = new Date(trip.startDate);
+		const formattedDate = tripDate.toLocaleDateString("pt", { dateStyle: "medium" }).replaceAll(" de ", " ");
 
 		// Get formatted time
-		let tripTime = new Date(new Date(trip.endDate) - new Date(trip.startDate));
+		let tripTime = new Date(Date.parse(trip.endDate) - Date.parse(trip.startDate));
 		tripTime.setTime(tripTime.getTime() + tripTime.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
-		const hours = tripTime.getHours();
-		const minutes = tripTime.getMinutes();
-		const formattedTime = hours + "h" + minutes.toString().padStart(2, "0") + "m";
+		const formattedTime = tripTime.getHours() + "h" + tripTime.getMinutes().toString().padStart(2, "0") + "m";
 
 		// Get formatted cost
 		let formattedCost = parseFloat(trip.cost).toFixed(2);
@@ -462,11 +444,11 @@ function updateStatisticsChart() {
 	} else if (period === "lastYear") numberOfDays = 365;
 	else if (period === "total") {
 		// Start from the day the user account was activated
-		let timeFromActivated = Date.now() - new Date(user.dateActivate).getTime();
+		let timeFromActivated = Date.now() - Date.parse(user.dateActivate);
 
 		// Convert the milliseconds to days
-		var days = timeFromActivated / (24 * 1000 * 60 * 60);
-		var absoluteDays = Math.floor(days);
+		const days = timeFromActivated / (24 * 1000 * 60 * 60);
+		const absoluteDays = Math.floor(days);
 
 		numberOfDays = absoluteDays;
 	}
@@ -495,20 +477,22 @@ function updateStatisticsChart() {
 				: `${dayDate.getDate()}/${dayDate.getMonth() + 1}`;
 
 		// Get the trips of the day
-		const dayTrips = user.tripHistory.filter(
-			trip =>
-				new Date(trip.startDate).getDate() === dayDate.getDate() && // Same day
-				new Date(trip.startDate).getMonth() === dayDate.getMonth() && // Same month
-				new Date(trip.startDate).getFullYear() === dayDate.getFullYear() // Same year
-		);
+		const dayTrips = user.tripHistory.filter(trip => {
+			const startDate = new Date(trip.startDate);
+			return (
+				startDate.getDate() === dayDate.getDate() && // Same day
+				startDate.getMonth() === dayDate.getMonth() && // Same month
+				startDate.getFullYear() === dayDate.getFullYear() // Same year
+			);
+		});
 
 		// Get the time (in ms) and distance (in km) ridden for each trip
 		for (trip of dayTrips) {
-			let tripTime = new Date(new Date(trip.endDate) - new Date(trip.startDate));
-			trip.riddenTime = tripTime.getTime();
+			let tripTime = Date.parse(trip.endDate) - Date.parse(trip.startDate);
+			trip.riddenTime = tripTime;
 			// Calculate an estimate for trip distance (assuming an avg speed of 15km/h)
 			const speed = 15 / (3600 * 1000); // convert km/h to km/ms
-			trip.distance = Math.round(tripTime.getTime() * speed * 1000) / 1000; // milliseconds * km in 1 millisecond (and round to 3 decimal places)
+			trip.distance = Math.round(tripTime * speed * 1000) / 1000; // milliseconds * km in 1 millisecond (and round to 3 decimal places)
 		}
 
 		// Create the new object
