@@ -313,7 +313,7 @@ async function startBikeTrip(event, bikeSerialNumber) {
 			if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
 
 			// hide the station menu if it is showing
-			if (document.querySelector("#stationMenu")) document.querySelector("#stationMenu").remove();
+			if (document.querySelector("#stationMenu")) hideStationMenu();
 
 			// hide bike list if it is showing
 			if (document.querySelector("#bikeMenu")) document.querySelector("#bikeMenu").remove();

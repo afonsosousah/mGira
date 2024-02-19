@@ -890,6 +890,10 @@ input[type="search"]::-webkit-search-results-decoration {
 	align-items: center;
 	font-size: 3dvh;
 }
+.bike-list #noBike {
+	margin-bottom: 5vh;
+	text-align: center;
+}
 /* #endregion */
 
 /* #region Bike reserve */
@@ -1849,22 +1853,45 @@ input[type="search"]::-webkit-search-results-decoration {
 #openTakeUnregisteredBikeButton {
 	background-color: var(--black);
 	color: var(--white);
-	border-radius: 999px;
-	padding: 15px 25px;
+	border-radius: 30px;
+	padding: 2vh;
 	position: relative;
 	margin-bottom: 10px;
 	cursor: pointer;
 	text-align: center;
+	height: 15vh;
+	margin: 2vh 0;
+}
+#openTakeUnregisteredBikeButton #upperText {
+	position: absolute;
+	top: 2vh;
+	left: 3vh;
+	text-align: left;
+}
+#openTakeUnregisteredBikeButton #lowerText {
+	position: absolute;
+	bottom: 2vh;
+	left: 3vh;
+	text-align: left;
+	font-weight: bold;
+}
+#openTakeUnregisteredBikeButton img {
+	position: absolute;
+	bottom: 2vh;
+	right: 2vh;
+	height: 13vh;
+	object-fit: contain;
 }
 #takeUnregisteredBike {
 	z-index: 5;
 	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: 100%;
+	bottom: 2vh;
+	left: 5%;
+	width: 90%;
 	height: 20%;
 	background-color: var(--white);
-	border-radius: 20px 20px 0 0;
+	border-radius: 20px;
+	box-shadow: 5px 5px 15px 0px var(--shadow-black);
 }
 #takeUnregisteredBike #unregisteredBikeNameInput {
 	background-color: rgb(255, 255, 255);
@@ -1874,17 +1901,17 @@ input[type="search"]::-webkit-search-results-decoration {
 	z-index: 2;
 	left: 5%;
 	top: 15%;
-	outline: 3px solid var(--green);
+	outline: 1px solid var(--green);
 	border-radius: 999px;
 	display: flex;
 	align-items: center;
 	padding-left: 5%;
 	color: var(--green);
 	border: none;
-	font-size: medium;
+	font-size: 0.9rem;
 }
 #takeUnregisteredBike #cancelButton {
-	background-color: var(--green);
+	background-color: var(--black);
 	width: 30%;
 	height: 28%;
 	position: absolute;
@@ -1896,11 +1923,11 @@ input[type="search"]::-webkit-search-results-decoration {
 	justify-content: center;
 	align-items: center;
 	color: white;
-	font-weight: bold;
+	font-size: 0.9rem;
 }
 #takeUnregisteredBike #takeUnregisteredBikeButton {
 	background-color: var(--green);
-	width: 58%;
+	width: 55%;
 	height: 30%;
 	position: absolute;
 	z-index: 2;
@@ -1911,7 +1938,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	justify-content: center;
 	align-items: center;
 	color: white;
-	font-weight: bold;
+	font-size: 0.9rem;
 }
 /* #endregion */
 

@@ -265,12 +265,21 @@ async function openBikeList(stationSerialNumber) {
 
 	// if there are no bikes, put a message saying that
 	if (document.getElementById("bikeList").childElementCount === 0)
-		document.getElementById("bikeList").innerHTML = "Não há bicicletas na estação.";
+		document.getElementById("bikeList").innerHTML = `<div id="noBike">Não há bicicletas na estação.</div>`;
 
 	// allow user to try to take bike not appearing in app
 	appendElementToElementFromHTML(
 		`
-        <div id="openTakeUnregisteredBikeButton" onclick="openTakeUnregisteredBikeMenu('${stationSerialNumber}')">Tentar retirar bicicleta que não aparece no sistema</div>
+        <div id="openTakeUnregisteredBikeButton" onclick="openTakeUnregisteredBikeMenu('${stationSerialNumber}')">
+			<div id="upperText">
+				Bicicleta com luz vermelha?<br>
+				Não aparece na lista?
+			</div>
+			<div id="lowerText">
+				Tenta retirar!
+			</div>
+			<img src="assets/images/mGira_station_forbidden.png" alt="forbidden">
+		</div>
     `,
 		document.getElementById("bikeList")
 	);
