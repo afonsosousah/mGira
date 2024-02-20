@@ -336,7 +336,7 @@ function getLocation(zoom = true) {
 						const view = map.getView();
 						view.animate({
 							center: ol.proj.fromLonLat(pos),
-							zoom: 17,
+							zoom: 16,
 							duration: 100,
 						});
 					} else {

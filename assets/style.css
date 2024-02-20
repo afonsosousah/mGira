@@ -1874,6 +1874,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	left: 3vh;
 	text-align: left;
 	font-weight: bold;
+	font-size: 1.15rem;
 }
 #openTakeUnregisteredBikeButton img {
 	position: absolute;

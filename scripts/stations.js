@@ -272,8 +272,8 @@ async function openBikeList(stationSerialNumber) {
 		`
         <div id="openTakeUnregisteredBikeButton" onclick="openTakeUnregisteredBikeMenu('${stationSerialNumber}')">
 			<div id="upperText">
-				Bicicleta com luz vermelha?<br>
-				Não aparece na lista?
+				Bicicleta com luz verde,<br>
+				mas não aparece?
 			</div>
 			<div id="lowerText">
 				Tenta retirar!
