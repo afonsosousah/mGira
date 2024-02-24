@@ -1,14 +1,16 @@
 let ws;
-let proxyURL;
+let proxyURL = null;
 let activeTripObj;
 let numberOfRequestTries = 5;
 let currentRequestTry = 0;
+
+const DEFAULT_PROXY = "https://corsproxy.afonsosousah.workers.dev/";
 
 async function makePostRequest(url, body, accessToken = null) {
 	// Increment current request try
 	currentRequestTry += 1;
 
-	const response = await fetch(proxyURL, {
+	const response = await fetch(proxyURL ?? DEFAULT_PROXY, {
 		method: "POST",
 		headers: {
 			"User-Agent": "Gira/3.2.8 (Android 34)",

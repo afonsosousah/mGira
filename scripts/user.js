@@ -176,7 +176,7 @@ async function openUserSettings() {
         <div id="settingsContainer">
             <div id="proxy">
                 <div>Proxy definido pelo utilizador</div>
-                <input id="proxyUrlInput" value="${proxyURL}" placeholder="Insere aqui o URL para o proxy"/>
+                <input id="proxyUrlInput" value="${proxyURL ?? "Padrão"}" placeholder="Insere aqui o URL para o proxy"/>
                 <div id="resetProxyButton"><i class="bi bi-arrow-counterclockwise"></i></div>
                 <div id="setProxyButton"><i class="bi bi-check-lg"></i></div>
             </div>
@@ -201,7 +201,7 @@ async function openUserSettings() {
 
 	document.getElementById("resetProxyButton").addEventListener("click", () => {
 		// Delete customProxy cookie
-		proxyURL = "proxy.php";
+		proxyURL = null;
 		document.cookie = 'customProxy=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT';
 		// Update input
 		document.getElementById("proxyUrlInput").value = proxyURL;
@@ -233,7 +233,7 @@ function openSetProxyPrompt() {
 		},
 		() => {
 			// Delete customProxy cookie
-			proxyURL = "proxy.php";
+			proxyURL = null;
 			document.cookie = 'customProxy=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT';
 			openLoginMenu();
 		},
