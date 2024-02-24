@@ -13,7 +13,7 @@ async function tokenRefresh() {
 
 	console.log("Token has not been refreshed...");
 
-	const response = await fetch(proxyURL, {
+	const response = await fetch(proxyURL ?? DEFAULT_PROXY, {
 		method: "POST",
 		headers: {
 			"X-Proxy-URL": "https://api-auth.emel.pt/token/refresh",
