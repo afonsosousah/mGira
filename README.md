@@ -11,8 +11,6 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 	<img src="https://app.mgira.pt/assets/images/screenshot_stations.png?t=0.0.4" width="200"/>
 	<img src="https://app.mgira.pt/assets/images/screenshot_routing.png?t=0.0.4" width="200"/>
 	<img src="https://app.mgira.pt/assets/images/screenshot_navigation.png?v=0.0.4" width="200"/>
-	<img src="https://app.mgira.pt/assets/images/screenshot_usermenu.png?v=0.0.4" width="200"/>
-	<img src="https://app.mgira.pt/assets/images/screenshot_statistics.png?v=0.0.4" width="200"/>
 </p>
 
 <br>
