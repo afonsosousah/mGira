@@ -51,11 +51,14 @@ Há também uma aplicação nativa para Android que não necessita de proxy, fei
 - v0.0.1 - Versão beta inicial - 01/12/2023
 - v0.0.2 - 10/12/2023
 - v0.0.3 - 21/12/2023
-  - Mudança da UI
-  - Suporte para botão voltar atrás nativo (obrigado DanielAgostinho)
-  - Pedidos e error handling melhorados (obrigado rodrigoleitao)
-  - Proxy já não é utilizado no login na API da EMEL (obrigado j0dd)
-  - Melhorias no sistema de navegação (já não utiliza a bússola do dispositivo)
+- v0.0.4 - 24/02/2024
+	<ul>
+	    <li>Novo menu de estatísticas</li>
+	    <li>Novo menu de histórico de viagens</li>
+	    <li>Navegação em 3D e bastante melhorada</li>
+	    <li>Ciclovias mostradas no mapa (obrigado Francisco Zhuo e Tomás Rodrigues)</li>
+	    <li>Melhorias gerais no código (obrigado Rodrigo Leitão)</li>
+	</ul> 
 
 <br>
 
