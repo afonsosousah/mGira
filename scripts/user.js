@@ -129,7 +129,6 @@ async function getUserInformation() {
 
 // Open the login menu element and populate it
 function openLoginMenu() {
-	//document.cookie = "version=0.0.0"; // Force show update notes after logout
 	document.cookie = 'refreshToken=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT'; // delete cookie
 	document.cookie = 'accessToken=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT'; // delete cookie
 

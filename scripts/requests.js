@@ -157,7 +157,7 @@ async function makeGetRequest(url, accessToken = null) {
 		accessToken = await tokenRefresh();
 
 		// check if token refresh was successful
-		if (typeof accessToken !== "undefined") {
+		if (accessToken) {
 			// try to make request again
 			return await makeGetRequest(url, accessToken); // be sure to use latest available token
 		}

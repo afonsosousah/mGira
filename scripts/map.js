@@ -78,7 +78,7 @@ async function initMap() {
 		return;
 	}
 
-	// Check if the user is logged in, if not, prompt to login
+	// Check if the user has a stored access token
 	const accessTokenCookie = getCookie("accessToken");
 	if (accessTokenCookie) {
 		user.accessToken = accessTokenCookie;

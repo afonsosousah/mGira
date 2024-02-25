@@ -12,7 +12,7 @@ async function tokenRefresh() {
 	}
 
 	// Make sure to only refresh the token one at a time
-	if (tokenPromise !== null) return tokenPromise;
+	if (tokenPromise) return tokenPromise;
 
 	// If there are no other calls being processed, create a new promise
 	tokenPromise = new Promise(async (resolve, reject) => {
@@ -21,10 +21,9 @@ async function tokenRefresh() {
 		let currentTry = 0;
 
 		while (currentTry < numberOfTries) {
-			const response = await fetch(proxyURL, {
+			const response = await fetch("https://api-auth.emel.pt/token/refresh", {
 				method: "POST",
 				headers: {
-					"X-Proxy-URL": "https://api-auth.emel.pt/token/refresh",
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
