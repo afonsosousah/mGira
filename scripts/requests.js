@@ -43,13 +43,7 @@ async function makePostRequest(url, body, accessToken = null) {
 		return responseObject;
 	} else if (response.status === 400) {
 		const responseObject = await response.json();
-		if (Object.hasOwn(responseObject, "statusDescription")) {
-			if (
-				responseObject.statusDescription.includes("The Email field is required.") ||
-				responseObject.statusDescription.includes("The Password field is required.")
-			)
-				alert("Por favor preencha os campos de email e password!");
-		} else if (responseObject.errors[0].message === "trip_interval_limit") {
+		if (responseObject.errors[0].message === "trip_interval_limit") {
 			alert("Tem de esperar 5 minutos entre viagens.");
 		} else if (responseObject.errors[0].message === "already_active_trip") {
 			alert("Já tem uma viagem a decorrer!");
@@ -186,6 +180,8 @@ function startWSConnection(force = false) {
 			ws.onopen = ws.onmessage = ws.onerror = ws.onclose = undefined;
 		} else return;
 	}
+
+	if (!user.accessToken) return;
 
 	ws = new WebSocket("wss://apigira.emel.pt/graphql", "graphql-ws");
 

@@ -28,7 +28,27 @@ async function login(event) {
 			},
 		}),
 	});
+
 	const response = await responseReq.json();
+
+	// Handle login errors
+	if (responseReq.status === 400) {
+		if (Object.hasOwn(response, "statusDescription")) {
+			if (
+				response.statusDescription.includes("The Email field is required.") ||
+				response.statusDescription.includes("The Password field is required.")
+			) {
+				alert("Por favor preencha os campos de email e password!");
+				document.getElementById("loginMenu")?.remove();
+				openLoginMenu();
+				return;
+			}
+		}
+	}
+
+	if (response.error) {
+		if (response.error.message === "Invalid credentials.") alert("Credenciais inválidas.");
+	}
 
 	if (response.data) {
 		// Store the received tokens
