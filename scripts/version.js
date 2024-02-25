@@ -1,15 +1,11 @@
 // Current version number
-const currentVersion = "0.0.4";
+const currentVersion = "0.0.5-alpha";
 
 // Changelog HTML
 const changelogHTML = `
-Nova versão 0.0.4!<br>
+Nova versão 0.0.5!<br>
 <ul>
-    <li>Novo menu de estatísticas</li>
-    <li>Novo menu de histórico de viagens</li>
-    <li>Navegação em 3D e bastante melhorada</li>
-    <li>Ciclovias mostradas no mapa (obrigado Francisco Zhuo e Tomás Rodrigues)</li>
-    <li>Melhorias gerais no código (obrigado Rodrigo Leitão)</li>
+    <li>Ainda não há um changelog.</li>
 </ul>
 `;
 
