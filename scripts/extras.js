@@ -107,3 +107,45 @@ function downloadObjectAsJson(exportObj, exportName) {
 	downloadAnchorNode.click();
 	downloadAnchorNode.remove();
 }
+
+function getTLD() {
+	let hostname;
+	let url = window.location.href;
+
+	//find & remove protocol (http, ftp, etc.) and get hostname
+	if (url.indexOf("://") > -1) {
+		hostname = url.split("/")[2];
+	} else {
+		hostname = url.split("/")[0];
+	}
+
+	//find & remove port number
+	hostname = hostname.split(":")[0];
+
+	//find & remove "?"
+	hostname = hostname.split("?")[0];
+
+	// Get TLD
+	let hostnames = hostname.split(".");
+	hostname =
+		hostnames.length === 1 ? hostname : hostnames[hostnames.length - 2] + "." + hostnames[hostnames.length - 1];
+
+	return hostname;
+}
+
+function createCookie(name, value, expiryDate) {
+	document.cookie =
+		name +
+		"=" +
+		value +
+		"; expires=" +
+		expiryDate.toGMTString() +
+		"; SameSite=strict" +
+		"; Domain=" +
+		getTLD() +
+		"; Path=/;";
+}
+
+function deleteCookie(name) {
+	document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT; Path=/; SameSite=strict";
+}

@@ -81,16 +81,14 @@ async function login(event) {
 		refreshTokenExpiryDate.setMonth(refreshTokenExpiryDate.getMonth() + 1);
 
 		// Store refreshToken cookie (stay logged in)
-		document.cookie =
-			"refreshToken=" + user.refreshToken + "; expires=" + refreshTokenExpiryDate.toGMTString() + "; SameSite=strict";
+		createCookie("refreshToken", user.refreshToken, refreshTokenExpiryDate);
 
 		// Set the cookie expiry to 2 minutes after now.
 		const accessTokenExpiryDate = new Date();
 		accessTokenExpiryDate.setMinutes(accessTokenExpiryDate.getMinutes() + 2);
 
 		// Store accessToken cookie (for quick refreshes)
-		document.cookie =
-			"accessToken=" + user.accessToken + "; expires=" + accessTokenExpiryDate.toGMTString() + "; SameSite=strict";
+		createCookie("accessToken", user.accessToken, accessTokenExpiryDate);
 
 		document.getElementById("loginMenu")?.remove();
 		tokenRefreshed = true;
@@ -129,8 +127,11 @@ async function getUserInformation() {
 
 // Open the login menu element and populate it
 function openLoginMenu() {
-	document.cookie = 'refreshToken=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT'; // delete cookie
-	document.cookie = 'accessToken=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT'; // delete cookie
+	console.log("login menu was opened");
+
+	// delete cookies
+	deleteCookie("refreshToken");
+	deleteCookie("accessToken");
 
 	let menu = document.createElement("div");
 	menu.className = "login-menu";
@@ -250,7 +251,7 @@ async function openUserSettings() {
 
 		// Store customProxy cookie
 		proxyURL = document.getElementById("proxyUrlInput").value;
-		document.cookie = "customProxy=" + encodeURI(proxyURL) + "; expires=" + expiryDate.toGMTString();
+		createCookie("customProxy", encodeURI(proxyURL), expiryDate);
 
 		alert("O proxy foi definido.");
 	});
@@ -258,7 +259,8 @@ async function openUserSettings() {
 	document.getElementById("resetProxyButton").addEventListener("click", () => {
 		// Delete customProxy cookie
 		proxyURL = null;
-		document.cookie = 'customProxy=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT';
+		deleteCookie("customProxy");
+
 		// Update input
 		document.getElementById("proxyUrlInput").value = proxyURL;
 
@@ -283,14 +285,18 @@ function openSetProxyPrompt() {
 	createCustomTextPrompt(
 		"Por favor defina um novo proxy.",
 		() => {
+			// Set the cookie expiry to 1 year after today.
+			const expiryDate = new Date();
+			expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+
 			// Store customProxy cookie
-			proxyURL = document.getElementById("customTextPromptInput").value;
-			document.cookie = "customProxy=" + encodeURI(proxyURL);
+			proxyURL = document.getElementById("proxyUrlInput").value;
+			createCookie("customProxy", encodeURI(proxyURL), expiryDate);
 		},
 		() => {
 			// Delete customProxy cookie
 			proxyURL = null;
-			document.cookie = 'customProxy=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT';
+			deleteCookie("customProxy");
 			openLoginMenu();
 		},
 		"Definir",

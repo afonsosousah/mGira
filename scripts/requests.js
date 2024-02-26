@@ -220,6 +220,7 @@ function startWSConnection(force = false) {
 	ws.onmessage = msg => {
 		if (typeof msg.data !== "undefined") {
 			let msgObj = JSON.parse(msg.data);
+			console.log(msgObj);
 			if (Object.hasOwn(msgObj, "payload") && msgObj.payload) {
 				if (
 					Object.hasOwn(msgObj.payload, "data") &&

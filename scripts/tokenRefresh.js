@@ -45,24 +45,14 @@ async function tokenRefresh() {
 					refreshTokenExpiryDate.setMonth(refreshTokenExpiryDate.getMonth() + 1);
 
 					// Store refreshToken cookie (stay logged in)
-					document.cookie =
-						"refreshToken=" +
-						user.refreshToken +
-						"; expires=" +
-						refreshTokenExpiryDate.toGMTString() +
-						"; SameSite=strict";
+					createCookie("refreshToken", user.refreshToken, refreshTokenExpiryDate);
 
 					// Set the cookie expiry to 2 minutes after now.
 					const accessTokenExpiryDate = new Date();
 					accessTokenExpiryDate.setMinutes(accessTokenExpiryDate.getMinutes() + 2);
 
 					// Store accessToken cookie (for quick refreshes)
-					document.cookie =
-						"accessToken=" +
-						user.accessToken +
-						"; expires=" +
-						accessTokenExpiryDate.toGMTString() +
-						"; SameSite=strict";
+					createCookie("accessToken", user.accessToken, accessTokenExpiryDate);
 
 					// Hide login menu if it is showing
 					if (document.querySelector(".login-menu")) document.querySelector(".login-menu").remove();
