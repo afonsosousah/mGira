@@ -16,14 +16,10 @@ async function initMap() {
 	});
 
 	// Styled map
-	const key = "RgT5fNTLsVXnsXKz4kG6";
-
 	const source = new ol.source.XYZ({
-		url: "https://api.maptiler.com/maps/dataviz/{z}/{x}/{y}.png?key=" + key,
-		tileSize: 512,
-		attributions: [
-			'<a href="https://maptiler.com/"><em>© MapTiler</em></a>  <a href="https://openstreetmap.org/"><em>© OpenStreetMap contributors</em></a>',
-		],
+		url: "https://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+		maxZoom: 20,
+		attributions: ['<a href="https://openstreetmap.org/"><em>© OpenStreetMap contributors</em></a>'],
 	});
 
 	const cyclewaysSource = new ol.source.Vector({
