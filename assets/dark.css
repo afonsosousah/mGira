@@ -233,6 +233,7 @@ body {
 	user-select: none;
 	overflow-y: scroll;
 	overflow-x: hidden;
+	background-color: var(--black);
 }
 /* #endregion */
 
