@@ -15,6 +15,9 @@ let inStraightLine = false;
 let isRotationEnabled;
 
 async function initMap() {
+	// Detect the theme
+	detectTheme();
+
 	// Set cycleways style
 	const cyclewaysStyle = new ol.style.Style({
 		stroke: new ol.style.Stroke({
@@ -25,7 +28,7 @@ async function initMap() {
 
 	// Styled map
 	const source = new ol.source.XYZ({
-		url: "https://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+		url: `https://{a-c}.basemaps.cartocdn.com/${theme}_all/{z}/{x}/{y}.png`,
 		maxZoom: 20,
 		attributions: ['<a href="https://openstreetmap.org/"><em>© OpenStreetMap contributors</em></a>'],
 	});
@@ -48,6 +51,7 @@ async function initMap() {
 		layers: [
 			new ol.layer.Tile({
 				source: source,
+				name: "baseLayer",
 			}),
 			new ol.layer.Vector({
 				source: cyclewaysSource,
@@ -143,19 +147,21 @@ function mapDotSVG(ratio, docks = false) {
 			</defs>
 		<path
 			style="display:inline;fill:#e0e0e0;fill-opacity:1;stroke:${
-				docks ? "#959595" : "#79c000"
+				docks ? theme === "dark" ? "#231f20" : "#959595" : "#79c000"
 			};stroke-width:18.7654;stroke-dasharray:none;stroke-opacity:1"
 			d="m 150.64877,9.8461145 c 57.16501,-4.258271 111.80887,20.7649535 143.44461,69.5189515 12.7641,19.67082 22.23978,42.693894 25.06946,65.999984 1.34592,11.08539 1.94787,21.74182 1.0531,33 -1.7515,22.03766 -9.10877,42.82477 -18.33856,63 -14.32541,31.31363 -32.31354,60.48767 -51.56003,89 -18.047,26.73535 -37.56418,52.55286 -57.38361,77.99997 -6.85646,8.80334 -27.29104,35.89627 -27.29104,35.89627 0,0 -21.06879,-25.43823 -27.71569,-33.89642 -21.15264,-26.91672 -41.528643,-54.50803 -60.495103,-82.99982 -26.462,-39.75177 -58.07102,-85.91321 -66.12871,-134 -1.3324596,-7.95187 -1.8654696,-15.94962 -1.9170296,-24 -0.0518,-8.09448 0.484,-15.95865 1.2292996,-24 C 17.147547,74.88771 81.088477,15.027725 150.64877,9.8461145"
 			id="path1"
 		/>
 		<path
-			style="display:inline;fill:${docks ? "#959595" : "#79c000"};fill-opacity:1;stroke:${
-		docks ? "#959595" : "#79c000"
+			style="display:inline;fill:${docks ? theme === "dark" ? "#231f20" : "#959595" : "#79c000"};fill-opacity:1;stroke:${
+		docks ? theme === "dark" ? "#231f20" : "#959595" : "#79c000"
 	};stroke-width:18.7654;stroke-dasharray:none;stroke-opacity:1"
 			d="m 150.64877,9.8461145 c 57.16501,-4.258271 111.80887,20.7649535 143.44461,69.5189515 12.7641,19.67082 22.23978,42.693894 25.06946,65.999984 1.34592,11.08539 1.94787,21.74182 1.0531,33 -1.7515,22.03766 -9.10877,42.82477 -18.33856,63 -14.32541,31.31363 -32.31354,60.48767 -51.56003,89 -18.047,26.73535 -37.56418,52.55286 -57.38361,77.99997 -6.85646,8.80334 -27.29104,35.89627 -27.29104,35.89627 0,0 -21.06879,-25.43823 -27.71569,-33.89642 -21.15264,-26.91672 -41.528643,-54.50803 -60.495103,-82.99982 -26.462,-39.75177 -58.07102,-85.91321 -66.12871,-134 -1.3324596,-7.95187 -1.8654696,-15.94962 -1.9170296,-24 -0.0518,-8.09448 0.484,-15.95865 1.2292996,-24 C 17.147547,74.88771 81.088477,15.027725 150.64877,9.8461145"
 			id="path2"  clip-path="url(#clipPath2)"
 		/>
 	</svg>`;
+
+	// ${theme === "dark" ? "_dark" : ""}
 
 	// Create a data URI from the SVG string
 	const svgDataURI = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgString);
@@ -192,7 +198,7 @@ async function loadStationMarkersFromArray(stationsArray, showDocks = false) {
 					anchor: [0.5, 1],
 					anchorXUnits: "fraction",
 					anchorYUnits: "fraction",
-					src: `assets/images/mapDot_Deactivated.png`,
+					src: `assets/images/mapDot_Deactivated${theme === "dark" ? "_dark" : ""}.png`,
 				}),
 				zIndex: featureID,
 			});
