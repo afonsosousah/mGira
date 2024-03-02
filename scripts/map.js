@@ -7,6 +7,9 @@ let speed;
 let compassHeading = null; // null by default so that any math will assume 0
 
 async function initMap() {
+	// Detect the theme
+	detectTheme();
+
 	// Set cycleways style
 	const cyclewaysStyle = new ol.style.Style({
 		stroke: new ol.style.Stroke({
@@ -17,7 +20,7 @@ async function initMap() {
 
 	// Styled map
 	const source = new ol.source.XYZ({
-		url: "https://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+		url: `https://{a-c}.basemaps.cartocdn.com/${theme}_all/{z}/{x}/{y}.png`,
 		maxZoom: 20,
 		attributions: ['<a href="https://openstreetmap.org/"><em>© OpenStreetMap contributors</em></a>'],
 	});
@@ -40,6 +43,7 @@ async function initMap() {
 		layers: [
 			new ol.layer.Tile({
 				source: source,
+				name: "baseLayer",
 			}),
 			new ol.layer.Vector({
 				source: cyclewaysSource,
@@ -149,7 +153,7 @@ async function loadStationMarkersFromArray(stationsArray) {
 					anchor: [0.5, 1],
 					anchorXUnits: "fraction",
 					anchorYUnits: "fraction",
-					src: `assets/images/mapDot_${filled}.png`,
+					src: `assets/images/mapDot_${filled}${theme === "dark" ? "_dark" : ""}.png`,
 				}),
 				text: new ol.style.Text({
 					text: station.bikes.toString(),
@@ -171,7 +175,7 @@ async function loadStationMarkersFromArray(stationsArray) {
 					anchor: [0.5, 1],
 					anchorXUnits: "fraction",
 					anchorYUnits: "fraction",
-					src: `assets/images/mapDot_Deactivated.png`,
+					src: `assets/images/mapDot_Deactivated${theme === "dark" ? "_dark" : ""}.png`,
 				}),
 				zIndex: featureID,
 			});
