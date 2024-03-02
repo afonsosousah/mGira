@@ -2,7 +2,6 @@ let theme = "light";
 
 function detectTheme() {
 	if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-		alert("dark mode");
 		setTheme("dark");
 	}
 }
