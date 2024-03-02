@@ -217,10 +217,9 @@ function startWSConnection(force = false) {
 		);
 	};
 
-	ws.onmessage = msg => {
+	ws.onmessage = async msg => {
 		if (typeof msg.data !== "undefined") {
 			let msgObj = JSON.parse(msg.data);
-			console.log(msgObj);
 			if (Object.hasOwn(msgObj, "payload") && msgObj.payload) {
 				if (
 					Object.hasOwn(msgObj.payload, "data") &&
@@ -271,18 +270,17 @@ function startWSConnection(force = false) {
 						// End trip
 						tripEnded = true;
 					} else if (activeTripObj.code === "unauthorized") {
+						// refresh token
+						await tokenRefresh();
+
 						// close current connection
 						ws.send(JSON.stringify({ type: "stop" }));
 						ws = undefined;
-
-						// refresh token
-						tokenRefresh();
 					}
 				} else if (Object.hasOwn(msgObj.payload, "errors") && msgObj.payload.errors) {
-					//alert(msgObj.payload.errors[0].message);
-
+					console.log(msgObj.payload.errors[0].message);
 					// The subscription errored out, restart connection
-					startWSConnection(true);
+					//startWSConnection(true);
 				}
 			}
 		}

@@ -133,6 +133,10 @@ function openLoginMenu() {
 	deleteCookie("refreshToken");
 	deleteCookie("accessToken");
 
+	// delete user object
+	user = {};
+	if (ws) ws.close();
+
 	let menu = document.createElement("div");
 	menu.className = "login-menu";
 	menu.id = "loginMenu";

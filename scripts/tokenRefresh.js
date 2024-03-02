@@ -57,6 +57,9 @@ async function tokenRefresh() {
 					// Hide login menu if it is showing
 					if (document.querySelector(".login-menu")) document.querySelector(".login-menu").remove();
 
+					// Make sure the ws connection is open
+					startWSConnection();
+
 					// Set that the token has been refreshed successfully
 					tokenRefreshed = true;
 

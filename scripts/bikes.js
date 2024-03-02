@@ -363,6 +363,9 @@ async function tripTimer(startTime) {
 		}
 		tripTimerRunning = true;
 		setTimeout(() => tripTimer(startTime), 1000);
+	} else if (ws?.readyState !== WebSocket.OPEN) {
+		console.log("WebSocket has disconnected...");
+		setTimeout(() => tripTimer(startTime), 1000);
 	} else {
 		console.log("Trip has ended...");
 		tripTimerRunning = false;
