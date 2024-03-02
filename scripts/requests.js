@@ -244,6 +244,13 @@ function startWSConnection(force = false) {
 						// refresh token
 						tokenRefresh();
 					}
+				} else if (
+					Object.hasOwn(msgObj.payload, "data") &&
+					msgObj.payload.data &&
+					Object.hasOwn(msgObj.payload.data, "operationalStationsSubscription")
+				) {
+					const operationalStations = msgObj.payload.data.operationalStationsSubscription;
+					loadStationMarkersFromArray(operationalStations); // Load the stations to the map
 				} else if (Object.hasOwn(msgObj.payload, "errors") && msgObj.payload.errors) {
 					//alert(msgObj.payload.errors[0].message);
 
