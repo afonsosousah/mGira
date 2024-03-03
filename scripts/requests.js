@@ -13,6 +13,7 @@ async function makePostRequest(url, body, accessToken = null) {
 	const response = await fetch(proxyURL ?? DEFAULT_PROXY, {
 		method: "POST",
 		headers: {
+			"User-Agent": "Gira/3.3.5 (Android 34)",
 			"X-Proxy-URL": url,
 			"Content-Type": "application/json",
 			"X-Authorization": `Bearer ${accessToken}`,
