@@ -109,21 +109,14 @@ function downloadObjectAsJson(exportObj, exportName) {
 }
 
 function getTLD() {
-	let hostname;
-	let url = window.location.href;
+	let hostname = window.location.hostname;
 
-	//find & remove protocol (http, ftp, etc.) and get hostname
-	if (url.indexOf("://") > -1) {
-		hostname = url.split("/")[2];
-	} else {
-		hostname = url.split("/")[0];
+	// Check if it is an IP address (for development)
+	const ipv4Pattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+	const ipv6Pattern = /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/;
+	if (ipv4Pattern.test(hostname) || ipv6Pattern.test(hostname)) {
+		return hostname;
 	}
-
-	//find & remove port number
-	hostname = hostname.split(":")[0];
-
-	//find & remove "?"
-	hostname = hostname.split("?")[0];
 
 	// Get TLD
 	let hostnames = hostname.split(".");

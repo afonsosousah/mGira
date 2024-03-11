@@ -1246,9 +1246,9 @@ input[type="search"]::-webkit-search-results-decoration {
 	display: flex;
 	justify-content: center;
 	position: relative;
-	outline: 1px solid var(--green);
+	/*outline: 1px solid var(--green);*/
 	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
+		0px 1px 6px 0px var(--green),
 		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #balanceAndBonusContainer #balanceContainer #balanceLabel,
@@ -1277,9 +1277,9 @@ input[type="search"]::-webkit-search-results-decoration {
 	border-radius: 25px;
 	display: flex;
 	position: relative;
-	outline: 1px solid var(--green);
+	/*outline: 1px solid var(--green);*/
 	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
+		0px 1px 6px 0px var(--green),
 		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #subscriptionContainer div #cardSVG {
@@ -1323,7 +1323,8 @@ input[type="search"]::-webkit-search-results-decoration {
 	color: var(--white);
 	display: flex;
 	align-items: center;
-	gap: 1dvh
+	gap: 1dvh;
+	box-shadow: 0px 1px 6px 0px var(--green),
 }
 .user-settings #statisticsMenuButton i,
 .user-settings #tripHistoryButton i {
@@ -1345,9 +1346,9 @@ input[type="search"]::-webkit-search-results-decoration {
 	display: flex;
 	justify-content: center;
 	position: relative;
-	outline: 1px solid var(--green);
+	/*outline: 1px solid var(--green);*/
 	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
+		0px 1px 6px 0px var(--green),
 		0px 0px 5px 0px var(--shadow-green) inset;
 }
 
