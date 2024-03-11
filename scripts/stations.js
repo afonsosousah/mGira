@@ -66,22 +66,7 @@ async function getStations() {
 		stationsArray = response.data.getStations;
 		loadStationMarkersFromArray(stationsArray);
 
-		// Hide login menu if it is showing
-		if (document.querySelector(".login-menu")) document.querySelector(".login-menu").remove();
-
-		// Start WebSocket connection
-		startWSConnection();
-
-		// Get all user details
-		getUserInformation();
-
-		// Check if update info should be shown
-		showUpdateInfoIfNeeded();
-
 		return response.data.getStations;
-	} else {
-		// Wait for token refresh
-		checkToken(getStations);
 	}
 }
 

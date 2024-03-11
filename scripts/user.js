@@ -6,19 +6,49 @@ let user = {};
 // Login to the emel API and get the tokens
 async function login(event) {
 	event.preventDefault();
+
+	// Get values from form
 	const loginForm = document.getElementById("loginForm");
 
+	// Show loading animation
+	const loginCard = document.getElementById("loginCard");
+	loginCard.innerHTML = `<img src="assets/images/mGira_bike.png" id="spinner">`;
+
 	// Do the login request
-	const response = await makePostRequest(
-		"https://api-auth.emel.pt/auth",
-		JSON.stringify({
+	const responseReq = await fetch("https://api-auth.emel.pt/auth", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({
 			Provider: "EmailPassword",
 			CredentialsEmailPassword: {
 				email: loginForm.email.value,
 				password: loginForm.password.value,
 			},
-		})
-	);
+		}),
+	});
+
+	const response = await responseReq.json();
+
+	// Handle login errors
+	if (responseReq.status === 400) {
+		if (Object.hasOwn(response, "statusDescription")) {
+			if (
+				response.statusDescription.includes("The Email field is required.") ||
+				response.statusDescription.includes("The Password field is required.")
+			) {
+				alert("Por favor preencha os campos de email e password!");
+				document.getElementById("loginMenu")?.remove();
+				openLoginMenu();
+				return;
+			}
+		}
+	}
+
+	if (response.error) {
+		if (response.error.message === "Invalid credentials.") alert("Credenciais inválidas.");
+	}
 
 	if (response.data) {
 		// Store the received tokens
@@ -26,17 +56,41 @@ async function login(event) {
 		user.refreshToken = response.data.refreshToken;
 		user.expiration = response.data.expiration;
 
+		/* Run the startup functions */
+
+		// Start WebSocket connection
+		startWSConnection();
+
 		// Get all user details
 		getUserInformation();
 
+		// Check if update info should be shown
+		showUpdateInfoIfNeeded();
+
+		// Get the stations and load them to the map
+		await getStations();
+
+		// Get the user location on app open
+		getLocation();
+
+		// Start rotation of location dot
+		startLocationDotRotation();
+
 		// Set the cookie expiry to 1 month after today.
-		const expiryDate = new Date();
-		expiryDate.setMonth(expiryDate.getMonth() + 1);
+		const refreshTokenExpiryDate = new Date();
+		refreshTokenExpiryDate.setMonth(refreshTokenExpiryDate.getMonth() + 1);
 
 		// Store refreshToken cookie (stay logged in)
-		document.cookie = "refreshToken=" + user.refreshToken + "; expires=" + expiryDate.toGMTString();
+		createCookie("refreshToken", user.refreshToken, refreshTokenExpiryDate);
 
-		document.getElementById("loginMenu").remove();
+		// Set the cookie expiry to 2 minutes after now.
+		const accessTokenExpiryDate = new Date();
+		accessTokenExpiryDate.setMinutes(accessTokenExpiryDate.getMinutes() + 2);
+
+		// Store accessToken cookie (for quick refreshes)
+		createCookie("accessToken", user.accessToken, accessTokenExpiryDate);
+
+		document.getElementById("loginMenu")?.remove();
 		tokenRefreshed = true;
 	} else {
 		alert("Login failed!");
@@ -73,8 +127,15 @@ async function getUserInformation() {
 
 // Open the login menu element and populate it
 function openLoginMenu() {
-	document.cookie = "version=0.0.0"; // Force show update notes after logout
-	document.cookie = 'refreshToken=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT'; // delete cookie
+	console.log("login menu was opened");
+
+	// delete cookies
+	deleteCookie("refreshToken");
+	deleteCookie("accessToken");
+
+	// delete user object
+	user = {};
+	if (ws) ws.close();
 
 	let menu = document.createElement("div");
 	menu.className = "login-menu";
@@ -194,7 +255,7 @@ async function openUserSettings() {
 
 		// Store customProxy cookie
 		proxyURL = document.getElementById("proxyUrlInput").value;
-		document.cookie = "customProxy=" + encodeURI(proxyURL) + "; expires=" + expiryDate.toGMTString();
+		createCookie("customProxy", encodeURI(proxyURL), expiryDate);
 
 		alert("O proxy foi definido.");
 	});
@@ -202,7 +263,8 @@ async function openUserSettings() {
 	document.getElementById("resetProxyButton").addEventListener("click", () => {
 		// Delete customProxy cookie
 		proxyURL = null;
-		document.cookie = 'customProxy=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT';
+		deleteCookie("customProxy");
+
 		// Update input
 		document.getElementById("proxyUrlInput").value = proxyURL;
 
@@ -227,14 +289,18 @@ function openSetProxyPrompt() {
 	createCustomTextPrompt(
 		"Por favor defina um novo proxy.",
 		() => {
+			// Set the cookie expiry to 1 year after today.
+			const expiryDate = new Date();
+			expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+
 			// Store customProxy cookie
-			proxyURL = document.getElementById("customTextPromptInput").value;
-			document.cookie = "customProxy=" + encodeURI(proxyURL);
+			proxyURL = document.getElementById("proxyUrlInput").value;
+			createCookie("customProxy", encodeURI(proxyURL), expiryDate);
 		},
 		() => {
 			// Delete customProxy cookie
 			proxyURL = null;
-			document.cookie = 'customProxy=None;path="/";expires=Thu, 01 Jan 1970 00:00:01 GMT';
+			deleteCookie("customProxy");
 			openLoginMenu();
 		},
 		"Definir",

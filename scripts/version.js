@@ -19,7 +19,7 @@ function showUpdateInfoIfNeeded() {
 		const userVersion = getCookie("version");
 		if (userVersion !== currentVersion) {
 			alert(changelogHTML);
-			document.cookie = "version=" + currentVersion + "; expires=" + expiryDate.toGMTString();
+			createCookie("version", currentVersion, expiryDate);
 		}
 	}, 1500);
 }

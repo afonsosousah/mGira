@@ -2,6 +2,7 @@ let tripEnded = true;
 let tripTimerRunning = false;
 let ratedTripsList = [];
 let finishedTripsList = [];
+let tripBeingRated = false;
 
 // reserves the bike and returns a success boolean
 async function reserveBike(serialNumber) {
@@ -362,6 +363,9 @@ async function tripTimer(startTime) {
 		}
 		tripTimerRunning = true;
 		setTimeout(() => tripTimer(startTime), 1000);
+	} else if (ws?.readyState !== WebSocket.OPEN) {
+		console.log("WebSocket has disconnected...");
+		setTimeout(() => tripTimer(startTime), 1000);
 	} else {
 		console.log("Trip has ended...");
 		tripTimerRunning = false;
@@ -384,6 +388,9 @@ function openRateTripMenu(tripObj) {
 
 	// Don't rate trips under 90 seconds
 	if (elapsedTime < 90 * 1000) return;
+
+	// Set that there is a trip being rated (don't show any new ratings while this is true)
+	tripBeingRated = true;
 
 	// Show the rate trip menu
 	appendElementToBodyFromHTML(`
@@ -459,6 +466,7 @@ async function rateTrip(tripCode, tripCost) {
 		if (document.getElementById("rateTripMenu")) document.getElementById("rateTripMenu").remove();
 	} else {
 		alert("Não foi possível obter a classificação.");
+		tripBeingRated = false;
 		return;
 	}
 
@@ -482,6 +490,7 @@ async function rateTrip(tripCode, tripCost) {
 				} else {
 					alert("Não foi possível avaliar a viagem.");
 				}
+				tripBeingRated = false;
 			},
 			async () => {
 				// No handler
@@ -498,6 +507,7 @@ async function rateTrip(tripCode, tripCost) {
 				} else {
 					alert("Não foi possível avaliar a viagem.");
 				}
+				tripBeingRated = false;
 			}
 		);
 	} else {
@@ -514,6 +524,7 @@ async function rateTrip(tripCode, tripCost) {
 		} else {
 			alert("Não foi possível avaliar a viagem.");
 		}
+		tripBeingRated = false;
 	}
 }
 
