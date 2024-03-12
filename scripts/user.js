@@ -47,7 +47,12 @@ async function login(event) {
 	}
 
 	if (response.error) {
-		if (response.error.message === "Invalid credentials.") alert("Credenciais inválidas.");
+		if (response.error.message === "Invalid credentials.") {
+			alert("Credenciais inválidas.");
+			document.getElementById("loginMenu")?.remove();
+			openLoginMenu();
+			return;
+		}
 	}
 
 	if (response.data) {
