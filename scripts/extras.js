@@ -94,8 +94,10 @@ function parseMillisecondsIntoTripTime(milliseconds, showSeconds = true) {
 	return (absoluteHours > 0 ? h + "h" : "") + m + "m" + (showSeconds ? s + "s" : "");
 }
 
-function changeThemeColor(color) {
-	metaThemeColor = document.querySelector("meta[name=theme-color]").setAttribute("content", color);
+function changeThemeColor(color, darkModeColor = null) {
+	isDarkMode() && darkModeColor
+		? document.querySelector("meta[name=theme-color]").setAttribute("content", darkModeColor)
+		: document.querySelector("meta[name=theme-color]").setAttribute("content", color);
 }
 
 function downloadObjectAsJson(exportObj, exportName) {
@@ -106,6 +108,10 @@ function downloadObjectAsJson(exportObj, exportName) {
 	document.body.appendChild(downloadAnchorNode); // required for firefox
 	downloadAnchorNode.click();
 	downloadAnchorNode.remove();
+}
+
+function isDarkMode() {
+	return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
 }
 
 function getTLD() {

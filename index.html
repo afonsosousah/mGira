@@ -108,6 +108,9 @@
 				navigator.serviceWorker.register("scripts/serviceworker.js");
 			}
 
+			// Check theme to set status bar color
+			changeThemeColor("#ffffff", "#000000");
+
 			// Check if location permission is given
 			navigator.permissions.query({ name: "geolocation" }).then(result => {
 				if (result.state === "granted") {
