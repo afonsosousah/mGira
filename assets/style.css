@@ -1372,6 +1372,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	border-radius: 999px;
 	display: flex;
 	align-items: center;
+	padding: 0;
 	padding-left: 5%;
 	color: var(--green);
 	border: none;
@@ -1382,8 +1383,8 @@ input[type="search"]::-webkit-search-results-decoration {
 	background-color: var(--black);
 	position: absolute;
 	right: 13%;
-	top: calc(35% - 2px);
-	height: calc(40% + 6px);
+	top: 35%;
+	height: 40%;
 	width: 20%;
 	padding-left: 5%;
 	text-align: center;
@@ -1398,9 +1399,9 @@ input[type="search"]::-webkit-search-results-decoration {
 .user-settings #settingsContainer #proxy #setProxyButton {
 	background-color: var(--green);
 	position: absolute;
-	right: calc(5% - 2px);
-	top: calc(35% - 2px);
-	height: calc(40% + 6px);
+	right: 5%;
+	top: 35%;
+	height: 40%;
 	aspect-ratio: 1/1;
 	text-align: center;
 	border-radius: 999px;
