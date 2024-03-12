@@ -243,7 +243,7 @@ body {
 	user-select: none;
 	overflow-y: scroll;
 	overflow-x: hidden;
-	background-color: var(--black);
+	background-color: rgb(8,8,8);
 }
 /* #endregion */
 
@@ -261,10 +261,9 @@ body {
 	position: absolute;
 	top: 0;
 	left: 0;
-	background: linear-gradient(0deg, var(--black) 5%, transparent 40%);
+	background: linear-gradient(0deg, #080808 5%, transparent 40%);
 	pointer-events: none;
 	touch-action: none;
-	display: none;
 }
 .ol-attribution {
 	top: .5em;
@@ -272,6 +271,7 @@ body {
 	bottom: unset !important;
 	right: unset !important;
 	border-radius: 999px !important;
+	background-color: rgba(8, 8, 8, 0.7) !important;
 }
 .ol-attribution button {
 	all: unset;
@@ -279,7 +279,7 @@ body {
 	width: 1.375em;
 	line-height: .4em;
 	border-radius: 999px;
-	background-color: var(--glass-black);
+	background-color: rgba(8, 8, 8, 0.7);
 	color: var(--green);
 	text-align: center;
 	font-family: Roboto, Arial, sans-serif;
@@ -289,6 +289,9 @@ body {
 	outline: 1px solid var(--green);
 	color: var(--green);
 	line-height: .4em;
+}
+.ol-attribution ul {
+	text-shadow: none !important;
 }
 /* #endregion */
 
@@ -527,7 +530,7 @@ input[type="search"]::-webkit-search-results-decoration {
 
 /* #region Station card */
 .station-card {
-	background-color: var(--black);
+	background-color: #181818;
 	width: 90vw;
 	height: 55vw;
 	position: absolute;
@@ -567,7 +570,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	bottom: calc(5vw + 20% + 2vw);
 }
 .station-card #docksButton {
-	background-color: var(--black);
+	background-color: transparent;
 	outline: 2px solid var(--white);
 	width: 42.5%;
 	height: 20%;
@@ -580,7 +583,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	align-items: center;
 	color: var(--gray);
 	box-shadow:
-		5px 5px 15px 0px var(--shadow-white),
+		5px 5px 8px 0px var(--shadow-white),
 		0px 0px 5px 0px var(--shadow-white) inset;
 }
 .station-card #bikesImage {
@@ -592,7 +595,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	bottom: calc(5vw + 20% + 2vw);
 }
 .station-card #bikesButton {
-	background-color: var(--black);
+	background-color: transparent;
 	outline: 2px solid var(--green);
 	width: 42.5%;
 	height: 20%;
@@ -605,7 +608,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	align-items: center;
 	color: var(--green);
 	box-shadow:
-		5px 5px 15px 0px var(--shadow-green),
+		5px 5px 8px 0px var(--shadow-green),
 		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .station-card #bikesButtonDisabled {
@@ -1216,9 +1219,6 @@ input[type="search"]::-webkit-search-results-decoration {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #topUserContainer #userImage #userInitialsSettings {
 	font-size: 8vh;
@@ -1260,9 +1260,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	justify-content: center;
 	position: relative;
 	outline: none;
-	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 .user-settings #balanceAndBonusContainer #balanceContainer #balanceLabel,
 .user-settings #balanceAndBonusContainer #bonusContainer #bonusLabel {
@@ -1291,9 +1289,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	display: flex;
 	position: relative;
 	outline: none;
-	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 .user-settings #subscriptionContainer div #cardSVG {
 	position: absolute;
@@ -1337,9 +1333,6 @@ input[type="search"]::-webkit-search-results-decoration {
 	display: flex;
 	align-items: center;
 	gap: 1dvh;
-	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #statisticsMenuButton i,
 .user-settings #tripHistoryButton i {
@@ -1362,9 +1355,7 @@ input[type="search"]::-webkit-search-results-decoration {
 	justify-content: center;
 	position: relative;
 	outline: none;
-	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 
 .user-settings #settingsContainer #proxy > div:first-child {
@@ -1387,21 +1378,20 @@ input[type="search"]::-webkit-search-results-decoration {
 	border-radius: 999px;
 	display: flex;
 	align-items: center;
+	padding: 0;
 	padding-left: 5%;
 	color: var(--green);
 	border: none;
 	font-size: medium;
-	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 
 .user-settings #settingsContainer #proxy #resetProxyButton {
 	background-color: var(--pure-black);
 	position: absolute;
 	right: 13%;
-	top: calc(35%);
-	height: calc(40%);
+	top: 35%;
+	height: 40%;
 	width: 20%;
 	padding-left: 5%;
 	text-align: center;
@@ -1416,9 +1406,9 @@ input[type="search"]::-webkit-search-results-decoration {
 .user-settings #settingsContainer #proxy #setProxyButton {
 	background-color: var(--green);
 	position: absolute;
-	right: calc(5%);
-	top: calc(35%);
-	height: calc(40%);
+	right: 5%;
+	top: 35%;
+	height: 40%;
 	aspect-ratio: 1/1;
 	text-align: center;
 	border-radius: 999px;
@@ -1448,9 +1438,6 @@ input[type="search"]::-webkit-search-results-decoration {
 	font-size: large;
 	margin-left: auto;
 	margin-right: 5vw;
-	box-shadow:
-	0px 4px 6px 0px var(--shadow-green),
-	0px 0px 5px 0px var(--shadow-green) inset;
 }
 
 .user-settings #proxyNotWorking {
