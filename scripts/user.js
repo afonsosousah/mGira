@@ -12,7 +12,7 @@ async function login(event) {
 
 	// Show loading animation
 	const loginCard = document.getElementById("loginCard");
-	loginCard.innerHTML = `<img src="assets/images/mGira_bike.png" id="spinner">`;
+	loginCard.innerHTML = `<img src="assets/images/mGira_spinning.gif" id="spinner">`;
 
 	// Do the login request
 	const responseReq = await fetch("https://api-auth.emel.pt/auth", {
@@ -177,7 +177,7 @@ async function openUserSettings() {
 
 	// show loading animation
 	settingsElement.innerHTML = `
-    <img src="assets/images/mGira_bike.png" id="spinner">
+    <img src="assets/images/mGira_spinning.gif" id="spinner">
     <div id="backButton" onclick="hideUserSettings()"><i class="bi bi-arrow-90deg-left"></i></div>
     <div id="proxyNotWorking" onclick="openSetProxyPrompt()">Proxy não funciona?</div>
     `;

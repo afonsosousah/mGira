@@ -7,7 +7,7 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	// Loading animation over the map while the route is being calculated
 	let loadingElement = document.createElement("img");
 	loadingElement.id = "spinner";
-	loadingElement.src = "assets/images/mGira_bike.png";
+	loadingElement.src = "assets/images/mGira_spinning.gif";
 	loadingElement.style.top = "calc(35% - 40px)";
 	document.body.appendChild(loadingElement);
 
@@ -362,7 +362,7 @@ async function searchPlace() {
 			.forEach(layer => map.removeLayer(layer));
 
 		// show loading animation
-		menu.innerHTML = `<img src="assets/images/mGira_bike.png" id="spinner">`;
+		menu.innerHTML = `<img src="assets/images/mGira_spinning.gif" id="spinner">`;
 
 		try {
 			let response = await Geocode.geocode({

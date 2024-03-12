@@ -105,7 +105,7 @@ async function openStationMenu(stationSerialNumber) {
 	if (navigationActive) menu.style.zIndex = 99;
 
 	// show loading animation
-	menu.innerHTML = `<img src="assets/images/mGira_bike.png" id="spinner">`;
+	menu.innerHTML = `<img src="assets/images/mGira_spinning.gif" id="spinner">`;
 
 	// get list of available bikes and docks
 	const bikeAndDocks = await getBikesAndDocks(stationSerialNumber);
