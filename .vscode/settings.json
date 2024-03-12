@@ -1,0 +1,8 @@
+{
+    "liveServer.settings.https": {
+    "enable": true, //set it true to enable the feature.
+    "cert": "C:\\Users\\Asus\\server.crt", //full path of the certificate
+    "key": "C:\\Users\\Asus\\server.key", //full path of the private key
+    "passphrase": "afonso"
+    }
+}

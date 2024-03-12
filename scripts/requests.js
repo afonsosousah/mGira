@@ -278,6 +278,14 @@ function startWSConnection(force = false) {
 						ws.send(JSON.stringify({ type: "stop" }));
 						ws = undefined;
 					}
+				} else if (
+					Object.hasOwn(msgObj.payload, "data") &&
+					msgObj.payload.data &&
+					Object.hasOwn(msgObj.payload.data, "operationalStationsSubscription")
+				) {
+					console.log("operationalStationsSubscription update");
+					const operationalStations = msgObj.payload.data.operationalStationsSubscription;
+					loadStationMarkersFromArray(operationalStations); // Load the stations to the map
 				} else if (Object.hasOwn(msgObj.payload, "errors") && msgObj.payload.errors) {
 					console.log(msgObj.payload.errors[0].message);
 					// The subscription errored out, restart connection
