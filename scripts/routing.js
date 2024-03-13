@@ -280,7 +280,7 @@ function showSearchBar() {
 	// add search bar to document
 	appendElementToBodyFromHTML(`
         <div id="searchBarDiv">
-            <div id="searchBarCancelButton" onclick="hidePlaceSearchMenu()"><i class="bi bi-arrow-90deg-left"></i></div>
+            <div id="searchBarCancelButton" onclick="hidePlaceSearchMenu()"><i class="bi bi-x"></i></div>
             <input type="search" id="searchBar" placeholder="Para onde vais a seguir?"></input>
         </div>
     `);

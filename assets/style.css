@@ -324,7 +324,6 @@ body {
 
 /* #region Search bar */
 #searchBarDiv {
-	border-radius: 999px;
 	width: 100%;
 	position: absolute;
 	bottom: 0;
@@ -336,38 +335,41 @@ body {
 	background-color: var(--white);
 	border-radius: 999px 0 0 999px;
 	color: var(--green);
-	outline: 1px solid var(--green);
+	border: 2px solid var(--green);
+	border-right: none;
 	position: absolute;
 	left: 2vh;
 	bottom: 2vh;
-	width: 7vh;
+	width: 6vh;
 	height: 7vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
-
+}
+#searchBarCancelButton i {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 1.4rem;
 }
 #searchBar {
 	background-color: rgb(255, 255, 255);
-	width: calc(100vw - 4vh - 7vh);
+	width: calc(100vw - 4vh - 6vh);
 	height: 7vh;
 	position: absolute;
-	left: calc(2vh + 7vh);
+	left: calc(2vh + 6vh);
 	bottom: 2vh;
-	outline: 1px solid var(--green);
+	outline: none;
+	border: none;
+	border: 2px solid var(--green);
+	border-left: none;
 	border-radius: 0 999px 999px 0;
 	display: flex;
 	align-items: center;
-	padding-left: 5%;
+	padding: 0;
 	color: var(--green);
-	border: none;
 	font-size: medium;
-	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-sizing: content-box;
 }
 #searchBar::-webkit-input-placeholder {
 	color: var(--green);
