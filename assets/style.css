@@ -6,7 +6,7 @@
 	--gray: #d9d9da;
 	--shadow-black: rgba(35, 31, 32, 0.2);
 	--shadow-green: rgba(121, 192, 0, 0.2);
-	--glass-white: rgba(255, 255, 255, 0.9);
+	--glass-white: rgba(255, 255, 255, 0.7);
 	--glass-green: rgba(121, 192, 0, 0.9);
 }
 /* #endregion */
@@ -250,6 +250,7 @@ body {
 	background: linear-gradient(0deg, rgba(255, 255, 255, 1) 5%, rgba(255, 255, 255, 0) 40%);
 	pointer-events: none;
 	touch-action: none;
+	display: none;
 }
 .ol-attribution {
 	top: .5em;
@@ -283,7 +284,6 @@ body {
 	position: absolute;
 	left: 2vh;
 	bottom: 2vh;
-	filter: drop-shadow(0px 4px 6px 0px var(--shadow-green)),
 }
 /* #endregion */
 
@@ -309,7 +309,6 @@ body {
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow: 0px 1px 6px 0px var(--green);
 }
 #zoomControls div i {
 	width: 32px;
@@ -403,7 +402,7 @@ input:-webkit-autofill:active{
 
 /* #region Navigation Button */
 #navigationButton {
-	background-color: transparent;
+	background-color: var(--glass-white);
 	width: 7vh;
 	height: 7vh;
 	position: absolute;
@@ -426,7 +425,7 @@ input:-webkit-autofill:active{
 
 /* #region User picture */
 #userPicture {
-	background-color: transparent;
+	background-color: var(--glass-white);
 	width: 7vh;
 	height: 7vh;
 	position: absolute;
