@@ -1,4 +1,5 @@
 let tokenRefreshed = false;
+let minimumDistanceToStation = 50;
 
 // Define the global user, where the variables will be stored
 let user = {};
@@ -246,6 +247,14 @@ async function openUserSettings() {
                 <div id="resetProxyButton"><i class="bi bi-arrow-counterclockwise"></i></div>
                 <div id="setProxyButton"><i class="bi bi-check-lg"></i></div>
             </div>
+			<div id="distanceToStation">
+				<div>Distância mínima até estação</div>
+				<select id="distanceToStationSelector">
+					<option value="50" ${minimumDistanceToStation === 50 ? `selected="selected"` : ""}>50m</option>
+					<option value="75" ${minimumDistanceToStation === 75 ? `selected="selected"` : ""}>75m</option>
+					<option value="100" ${minimumDistanceToStation === 100 ? `selected="selected"` : ""}>100m</option>
+				</select>
+			</div>
         </div>
         <div id="bottom">
             <div id="versionNumber">${currentVersion}</div>
@@ -274,6 +283,22 @@ async function openUserSettings() {
 		document.getElementById("proxyUrlInput").value = proxyURL;
 
 		alert("O proxy foi redefinido.");
+	});
+
+	// Handle value change on distance to station selector
+	const distanceToStationSelector = document.getElementById("distanceToStationSelector");
+	distanceToStationSelector.addEventListener("change", () => {
+		const newDistance = Number(distanceToStationSelector.value); // convert to int
+		minimumDistanceToStation = newDistance; // Set the value
+
+		// Set the cookie expiry to 1 year after today.
+		const expiryDate = new Date();
+		expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+
+		// Store minimum distance to station cookie
+		createCookie("minimumDistanceToStation", minimumDistanceToStation, expiryDate);
+
+		console.log(`Minimum distance to station was set to ${minimumDistanceToStation}m`);
 	});
 
 	// Set status bar color in PWA

@@ -132,6 +132,16 @@
 				proxyURL = null;
 			}
 
+			// Check if user has custom minimum distance to station
+			const minimumDistanceToStationCookie = getCookie("minimumDistanceToStation");
+			if (minimumDistanceToStationCookie) {
+				console.log("Using user defined minimum distance to station");
+				minimumDistanceToStation = Number(minimumDistanceToStationCookie); // convert to int
+			} else {
+				console.log("Using default minimum distance to station");
+				minimumDistanceToStation = 50;
+			}
+
 			// Prevent resize on keyboard open
 			let initialWindowHeight = window.innerHeight;
 
