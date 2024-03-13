@@ -2120,28 +2120,34 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 #tripHistory #tripList {
 	position: absolute;
-	width: 90%;
-	left: 5%;
+	width: 100%;
+	left: 0;
 	bottom: 0;
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
 	max-height: 90%;
 	overflow: scroll;
+	padding-top: 2vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
 }
 .trip-list-element {
 	background-color: var(--white);
 	border-radius: 30px;
 	position: relative;
-	margin-bottom: 10px;
-	border: 1px solid var(--green);
+	margin-bottom: 2vh;
+	/*border: 1px solid var(--green);*/
 	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
+		0px 1px 6px 0px var(--green),
 		0px 0px 5px 0px var(--shadow-green) inset;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	padding: 2.5dvh 2dvh;
+	width: calc(90% - 4dvh);
 }
 .trip-list-element #tripInfo {
 	width: fit-content;
