@@ -1,26 +1,29 @@
 /* #region CSS Variables */
 :root {
 	--green: #79c000;
-	--black: #231f20;
+	--black: #1a1517;
 	--white: #ffffff;
 	--gray: #d9d9da;
+	--pure-black: #231f20;
 	--shadow-black: rgba(35, 31, 32, 0.2);
 	--shadow-green: rgba(121, 192, 0, 0.2);
-	--glass-white: rgba(255, 255, 255, 0.7);
+	--shadow-white: rgba(255, 255, 255, 0.2);
+	--glass-white: rgba(255, 255, 255, 0.9);
 	--glass-green: rgba(121, 192, 0, 0.9);
+	--glass-black: rgba(26, 21, 23, 0.9);
 }
 /* #endregion */
 
 /* #region Loading animation */
 #spinner {
 	display: inline-block;
-	width: 100px;
-	height: 100px;
+	width: 80px;
+	height: 80px;
 	position: absolute;
 	top: calc(50% - 40px);
 	left: calc(50% - 40px);
 	object-fit: contain;
-	/*animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;*/
+	animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 }
 .lds-ring {
 	display: inline-block;
@@ -218,6 +221,16 @@
 /* #endregion */
 
 /* #region Fill the window and set font */
+
+@font-face {
+	font-family: 'Inter';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url(https://fonts.gstatic.com/s/inter/v13/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2) format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 html,
 body {
 	height: 100dvh;
@@ -225,11 +238,12 @@ body {
 	margin: 0;
 	padding: 0;
 	position: relative;
-	font-family: Roboto, Arial, sans-serif;
+	font-family: 'Inter', 'Roboto', Arial, sans-serif;
 	font-weight: normal;
 	user-select: none;
 	overflow-y: scroll;
 	overflow-x: hidden;
+	background-color: rgb(8,8,8);
 }
 /* #endregion */
 
@@ -247,7 +261,7 @@ body {
 	position: absolute;
 	top: 0;
 	left: 0;
-	background: linear-gradient(0deg, var(--white) 5%, transparent 40%);
+	background: linear-gradient(0deg, #080808 5%, transparent 40%);
 	pointer-events: none;
 	touch-action: none;
 }
@@ -257,6 +271,7 @@ body {
 	bottom: unset !important;
 	right: unset !important;
 	border-radius: 999px !important;
+	background-color: rgba(8, 8, 8, 0.7) !important;
 }
 .ol-attribution button {
 	all: unset;
@@ -264,7 +279,7 @@ body {
 	width: 1.375em;
 	line-height: .4em;
 	border-radius: 999px;
-	background-color: var(--glass-white);
+	background-color: rgba(8, 8, 8, 0.7);
 	color: var(--green);
 	text-align: center;
 	font-family: Roboto, Arial, sans-serif;
@@ -275,6 +290,9 @@ body {
 	color: var(--green);
 	line-height: .4em;
 }
+.ol-attribution ul {
+	text-shadow: none !important;
+}
 /* #endregion */
 
 /* #region Logo */
@@ -283,6 +301,7 @@ body {
 	position: absolute;
 	left: 2vh;
 	bottom: 2vh;
+	filter: drop-shadow(0px 4px 6px 0px var(--shadow-green)),
 }
 /* #endregion */
 
@@ -304,10 +323,13 @@ body {
 	height: 6vh;
 	font-size: calc(0.2 * 20vh);
 	border-radius: 999px;
-	color: white;
+	color: var(--black);
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 #zoomControls div i {
 	width: 32px;
@@ -320,6 +342,7 @@ body {
 
 /* #region Search bar */
 #searchBarDiv {
+	border-radius: 999px;
 	width: 100%;
 	position: absolute;
 	bottom: 0;
@@ -328,48 +351,41 @@ body {
 	animation: slide-fwd-top 0.5s cubic-bezier(0.39, 0.575, 0.565, 1) both;
 }
 #searchBarCancelButton {
-	background-color: var(--white);
+	background-color: var(--black);
 	border-radius: 999px 0 0 999px;
 	color: var(--green);
-	/*border: 1px solid var(--green);*/
-	border-right: none;
+	outline: 1px solid var(--green);
 	position: absolute;
 	left: 2vh;
 	bottom: 2vh;
-	width: 6vh;
+	width: 7vh;
 	height: 7vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow: 0px 1px 6px 0px var(--green);
-	clip-path: inset(-6px -6px -6px -6px);
-}
-#searchBarCancelButton i {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 1.4rem;
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
+
 }
 #searchBar {
-	background-color: rgb(255, 255, 255);
-	width: calc(100vw - 4vh - 6vh);
+	background-color: var(--black);
+	width: calc(100vw - 4vh - 7vh);
 	height: 7vh;
 	position: absolute;
-	left: calc(2vh + 6vh);
+	left: calc(2vh + 7vh);
 	bottom: 2vh;
-	outline: none;
-	border: none;
-	/*border: 1px solid var(--green);*/
-	border-left: none;
+	outline: 1px solid var(--green);
 	border-radius: 0 999px 999px 0;
 	display: flex;
 	align-items: center;
-	padding: 0;
+	padding-left: 5%;
 	color: var(--green);
+	border: none;
 	font-size: medium;
-	box-sizing: content-box;
-	box-shadow: 0px 1px 6px 0px var(--green);
-	clip-path: inset(-6px -6px -6px 0px);
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 #searchBar::-webkit-input-placeholder {
 	color: var(--green);
@@ -382,26 +398,11 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
 	-webkit-appearance: none;
 }
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active{
-    -webkit-box-shadow: 0 0 0 30px white inset !important;
-}
-#searchBar:-webkit-autofill,
-#searchBar:-webkit-autofill:hover, 
-#searchBar:-webkit-autofill:focus, 
-#searchBar:-webkit-autofill:active{
-    -webkit-box-shadow: 
-		0px 1px 6px 0px var(--green),
-		0 0 0 30px white inset !important;
-}
-
 /* #endregion */
 
 /* #region Navigation Button */
 #navigationButton {
-	background-color: var(--glass-white);
+	background-color: rgba(8, 8, 8, 0.7);
 	width: 7vh;
 	height: 7vh;
 	position: absolute;
@@ -409,11 +410,13 @@ input:-webkit-autofill:active{
 	right: calc(2vh + 7vh + 2vh);
 	bottom: 2vh;
 	border-radius: 999px;
-	/*outline: 1px solid var(--green);*/
+	outline: 1px solid var(--green);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow: 0px 1px 6px 0px var(--green);
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 #navigationButton img {
 	border-radius: 999px;
@@ -424,7 +427,7 @@ input:-webkit-autofill:active{
 
 /* #region User picture */
 #userPicture {
-	background-color: var(--glass-white);
+	background-color: rgba(8, 8, 8, 0.7);
 	width: 7vh;
 	height: 7vh;
 	position: absolute;
@@ -432,11 +435,13 @@ input:-webkit-autofill:active{
 	right: 2vh;
 	bottom: 2vh;
 	border-radius: 999px;
-	/*outline: 1px solid var(--green);*/
+	outline: 1px solid var(--green);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow: 0px 1px 6px 0px var(--green);
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 /*#userPicture img {
 	border-radius: 999px;
@@ -454,7 +459,7 @@ input:-webkit-autofill:active{
 
 /* #region Station menu */
 .station-menu {
-	background-color: var(--white);
+	background-color: var(--black);
 	width: 100%;
 	height: 45%;
 	position: absolute;
@@ -525,7 +530,7 @@ input:-webkit-autofill:active{
 
 /* #region Station card */
 .station-card {
-	background-color: var(--white);
+	background-color: #181818;
 	width: 90vw;
 	height: 55vw;
 	position: absolute;
@@ -536,6 +541,7 @@ input:-webkit-autofill:active{
 	box-shadow: 5px 5px 15px 0px var(--shadow-black);
 	opacity: 95%;
 	animation: smooth-slide-from-left 0.5s ease forwards;
+	color: var(--gray);
 }
 .station-card #graphics {
 	height: 50%;
@@ -564,8 +570,8 @@ input:-webkit-autofill:active{
 	bottom: calc(5vw + 20% + 2vw);
 }
 .station-card #docksButton {
-	background-color: var(--white);
-	outline: 2px solid var(--black);
+	background-color: transparent;
+	outline: 2px solid var(--white);
 	width: 42.5%;
 	height: 20%;
 	position: absolute;
@@ -575,10 +581,10 @@ input:-webkit-autofill:active{
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: var(--black);
+	color: var(--gray);
 	box-shadow:
-		5px 5px 15px 0px var(--shadow-black),
-		0px 0px 5px 0px var(--shadow-black) inset;
+		5px 5px 8px 0px var(--shadow-white),
+		0px 0px 5px 0px var(--shadow-white) inset;
 }
 .station-card #bikesImage {
 	width: 42.5%;
@@ -589,7 +595,7 @@ input:-webkit-autofill:active{
 	bottom: calc(5vw + 20% + 2vw);
 }
 .station-card #bikesButton {
-	background-color: var(--white);
+	background-color: transparent;
 	outline: 2px solid var(--green);
 	width: 42.5%;
 	height: 20%;
@@ -602,12 +608,12 @@ input:-webkit-autofill:active{
 	align-items: center;
 	color: var(--green);
 	box-shadow:
-		5px 5px 15px 0px var(--shadow-green),
+		5px 5px 8px 0px var(--shadow-green),
 		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .station-card #bikesButtonDisabled {
     /* Same as above, but with gray instead of green */
-    background-color: var(--white);
+    background-color: var(--black);
     outline: 2px solid var(--gray);
     width: 42.5%;
     height: 20%;
@@ -655,7 +661,7 @@ input:-webkit-autofill:active{
 	position: absolute;
 	top: -8vh;
 	right: 7vh;
-	background-color: var(--black);
+	background-color: var(--pure-black);
 	border-radius: 999px;
 	color: white;
 	display: flex;
@@ -680,7 +686,7 @@ input:-webkit-autofill:active{
 	position: absolute;
 	top: -8vh;
 	left: 0;
-	background-color: var(--black);
+	background-color: var(--pure-black);
 	border-radius: 999px;
 	color: white;
 	display: flex;
@@ -695,7 +701,7 @@ input:-webkit-autofill:active{
 
 /* #region Login menu */
 .login-menu {
-	background-color: rgba(35, 31, 32, 0.9);
+	background-color: var(--glass-black);
 	width: 100%;
 	height: 100%;
 	position: absolute;
@@ -710,7 +716,7 @@ input:-webkit-autofill:active{
 	left: 25%;
 }
 #loginCard {
-	background-color: white;
+	background-color: var(--black);
 	width: 100%;
 	height: 30dvh;
 	position: absolute;
@@ -731,13 +737,14 @@ input:-webkit-autofill:active{
 	outline: 1px solid var(--green);
 	padding: 5px 15px;
 	border-radius: 999px;
-	background-color: var(--glass-white);
+	background-color: var(--glass-black);
 	background-image: url("images/envelope-at.svg");
 	background-repeat: no-repeat;
 	background-position-x: calc(100% - 10px);
 	background-position-y: calc(100% - 14px);
 	padding-right: 35px;
 	z-index: 1;
+	color: var(--gray);
 }
 #loginCard input[name="password"] {
 	top: calc(10% + 5.25dvh + 10px + 2dvh);
@@ -746,7 +753,7 @@ input:-webkit-autofill:active{
 #registerButton,
 #loginButton {
 	background-color: var(--green);
-	color: var(--white);
+	color: var(--black);
 	width: 37.5%;
 	height: 6dvh;
 	position: absolute;
@@ -777,7 +784,7 @@ input:-webkit-autofill:active{
 
 /* #region Bike list */
 .bike-list {
-	background-color: var(--white);
+	background-color: var(--black);
 	width: 100%;
 	height: 100%;
 	position: absolute;
@@ -786,6 +793,7 @@ input:-webkit-autofill:active{
 	top: 0;
 	border-radius: 0;
 	animation: smooth-slide-from-bottom 0.5s ease forwards;
+	color: var(--gray);
 }
 .bike-list #graphics {
 	height: 25vw;
@@ -835,42 +843,27 @@ input:-webkit-autofill:active{
 	right: 5%;
 	top: 4%;
 }
-.bike-list #listGradient {
-	position: absolute;
-	top: 25vw;
-	left: 0;
-	width: 100%;
-	height: 2vh;
-	background: linear-gradient(180deg, #fff 0%, transparent 100%);
-	z-index: 2;
-}
 .bike-list #bikeList {
 	position: absolute;
-	width: 100%;
-	left: 0;
-	top: 25vw;
+	width: 90%;
+	left: 5%;
+	top: 15%;
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	max-height: calc(100dvh - 25vw - 2vh);
+	max-height: 85%;
 	overflow: scroll;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding-top: 2vh;
 }
 .bike-list-element {
-	background-color: var(--white);
+	background-color: var(--black);
 	border-radius: 999px;
 	position: relative;
 	height: 7vh;
-	width: 90%;
 	margin-bottom: 10px;
 	border: 1px solid var(--green);
 	box-shadow:
 		0px 4px 6px 0px var(--shadow-green),
 		0px 0px 5px 0px var(--shadow-green) inset;
-	flex-shrink: 0;
 }
 .bike-list-element #battery {
 	position: absolute;
@@ -926,7 +919,7 @@ input:-webkit-autofill:active{
 
 /* #region Bike reserve */
 .bike-reserve {
-	background-color: rgba(35, 31, 32, 0.9);
+	background-color: var(--glass-black);
 	width: 100%;
 	height: 100%;
 	position: absolute;
@@ -935,13 +928,14 @@ input:-webkit-autofill:active{
 	z-index: 3;
 }
 #bikeReserveCard {
-	background-color: white;
+	background-color: var(--black);
 	width: 100%;
 	height: 35%;
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	border-radius: 30px 30px 0 0;
+	color: var(--white)
 }
 #bikeReserveCard #backButton {
 	position: absolute;
@@ -953,7 +947,6 @@ input:-webkit-autofill:active{
 	font-size: calc(0.35 * 8vh);
 	margin-bottom: 1vh;
 	border-radius: 999px;
-	color: white;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -1001,7 +994,7 @@ input:-webkit-autofill:active{
 }
 #bikeReserveCard #unlockSlider {
 	appearance: none;
-	background-color: var(--black);
+	background-color: var(--pure-black);
 	width: 90%;
 	height: 20%;
 	position: absolute;
@@ -1073,9 +1066,11 @@ input:-webkit-autofill:active{
 }
 .timer > svg > text {
     font-size: 1.5rem;
+	fill: var(--white);
 }
 .timer > svg > text + text {
     font-size: 0.8rem;
+	fill: var(--white);
 }
 #bikeReserveCard #bikeLeavingDock {
 	width: 70%;
@@ -1156,7 +1151,7 @@ input:-webkit-autofill:active{
 
 /* #region User menu */
 .user-settings {
-	background-color: var(--white);
+	background-color: var(--black);
 	width: 100%;
 	min-height: 100%;
 	position: absolute;
@@ -1167,20 +1162,7 @@ input:-webkit-autofill:active{
 	display: flex;
 	flex-direction: column;
 	animation: smooth-slide-from-bottom 0.3s ease forwards;
-}
-.user-settings #backButton {
-	position: absolute;
-	top: 10px;
-	left: 10px;
-	background-color: transparent;
-	width: 6vh;
-	height: 6vh;
-	font-size: calc(0.35 * 6vh);
-	margin-bottom: 1vh;
-	color: var(--green);
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	color: var(--gray);
 }
 .user-settings i {
 	width: 32px;
@@ -1203,6 +1185,7 @@ input:-webkit-autofill:active{
 	height: 12vh;
 	object-fit: cover;
 	opacity: 70%;
+	content:url("images/gira_footer.svg")
 }
 .user-settings #topUserContainer #backButton {
 	position: absolute;
@@ -1213,7 +1196,7 @@ input:-webkit-autofill:active{
 	font-size: calc(0.35 * 6vh);
 	margin-bottom: 1vh;
 	border-radius: 999px;
-	color: white;
+	color: var(--black);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -1226,7 +1209,7 @@ input:-webkit-autofill:active{
 	align-items: center;
 }
 .user-settings #topUserContainer #userImage {
-	background-color: var(--black);
+	background-color: var(--pure-black);
 	border-radius: 999px;
 	width: 22vh;
 	height: 22vh;
@@ -1239,7 +1222,7 @@ input:-webkit-autofill:active{
 }
 .user-settings #topUserContainer #userImage #userInitialsSettings {
 	font-size: 8vh;
-	color: var(--white);
+	color: var(--gray);
 }
 .user-settings #topUserContainer #bottomCard {
 	position: absolute;
@@ -1247,14 +1230,16 @@ input:-webkit-autofill:active{
 	left: 0;
 	width: 100%;
 	height: 3dvh;
-	background-color: var(--white);
+	background-color: var(--black);
 	border-radius: 3dvh 3dvh 0 0;
 }
 .user-settings #userName {
 	width: 100%;
 	text-align: center;
 	font-size: larger;
+	font-weight: bold;
 	margin-top: 5vh;
+	color: var(--green);
 }
 .user-settings #balanceAndBonusContainer {
 	width: 100vw;
@@ -1274,10 +1259,8 @@ input:-webkit-autofill:active{
 	display: flex;
 	justify-content: center;
 	position: relative;
-	/*outline: 1px solid var(--green);*/
-	box-shadow:
-		0px 1px 6px 0px var(--green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	outline: none;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 .user-settings #balanceAndBonusContainer #balanceContainer #balanceLabel,
 .user-settings #balanceAndBonusContainer #bonusContainer #bonusLabel {
@@ -1305,10 +1288,8 @@ input:-webkit-autofill:active{
 	border-radius: 25px;
 	display: flex;
 	position: relative;
-	/*outline: 1px solid var(--green);*/
-	box-shadow:
-		0px 1px 6px 0px var(--green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	outline: none;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 .user-settings #subscriptionContainer div #cardSVG {
 	position: absolute;
@@ -1348,11 +1329,10 @@ input:-webkit-autofill:active{
 	padding: 2dvh 3dvh;
 	background-color: var(--green);
 	border-radius: 999px;
-	color: var(--white);
+	color: var(--black);
 	display: flex;
 	align-items: center;
 	gap: 1dvh;
-	box-shadow: 0px 1px 6px 0px var(--green),
 }
 .user-settings #statisticsMenuButton i,
 .user-settings #tripHistoryButton i {
@@ -1374,10 +1354,8 @@ input:-webkit-autofill:active{
 	display: flex;
 	justify-content: center;
 	position: relative;
-	/*outline: 1px solid var(--green);*/
-	box-shadow:
-		0px 1px 6px 0px var(--green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	outline: none;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 
 .user-settings #settingsContainer #proxy > div:first-child {
@@ -1390,13 +1368,13 @@ input:-webkit-autofill:active{
 }
 
 .user-settings #settingsContainer #proxy #proxyUrlInput {
-	background-color: rgb(255, 255, 255);
+	background-color: var(--black);
 	width: 85%;
 	height: 40%;
 	position: absolute;
 	left: 5%;
 	top: 35%;
-	outline: 1px solid var(--green);
+	outline: none;
 	border-radius: 999px;
 	display: flex;
 	align-items: center;
@@ -1405,10 +1383,11 @@ input:-webkit-autofill:active{
 	color: var(--green);
 	border: none;
 	font-size: medium;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 
 .user-settings #settingsContainer #proxy #resetProxyButton {
-	background-color: var(--black);
+	background-color: var(--pure-black);
 	position: absolute;
 	right: 13%;
 	top: 35%;
@@ -1417,7 +1396,7 @@ input:-webkit-autofill:active{
 	padding-left: 5%;
 	text-align: center;
 	border-radius: 999px 0 0 999px;
-	color: white;
+	color: var(--gray);
 	font-size: large;
 	display: flex;
 	justify-content: left;
@@ -1433,7 +1412,7 @@ input:-webkit-autofill:active{
 	aspect-ratio: 1/1;
 	text-align: center;
 	border-radius: 999px;
-	color: white;
+	color: var(--black);
 	font-size: large;
 	display: flex;
 	justify-content: center;
@@ -1447,15 +1426,15 @@ input:-webkit-autofill:active{
 }
 .user-settings #versionNumber {
 	padding: 10px 10px;
-	color: var(--black);
+	color: var(--gray);
 	font-size: large;
 	margin-left: 5vw;
 }
 .user-settings #logoutButton {
 	padding: 10px 40px;
-	background-color: var(--black);
+	background-color: var(--pure-black);
 	border-radius: 999px;
-	color: white;
+	color: var(--gray);
 	font-size: large;
 	margin-left: auto;
 	margin-right: 5vw;
@@ -1472,7 +1451,7 @@ input:-webkit-autofill:active{
 
 /* #region Place search menu */
 .place-search-menu {
-	background: linear-gradient(0deg, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%);
+	background: linear-gradient(0deg, var(--black) 50%, transparent 100%);
 	width: 100%;
 	min-height: 20%;
 	max-height: 45%;
@@ -1498,25 +1477,25 @@ input:-webkit-autofill:active{
 	flex-direction: column;
 }
 .place-search-element {
-	background-color: var(--glass-white);
+	background-color: var(--glass-black);
 	border-radius: 999px;
 	padding: 15px 25px;
 	position: relative;
 	margin-bottom: 10px;
 	border: 2px solid var(--green);
-	color: #79c000;
+	color: var(--green);
 	width: calc(100% - 25 * 2px - 2 * 2px);
 }
 .place-search-element:hover {
 	background-color: var(--green);
-	color: #ffffff;
+	color: var(--gray);
 	cursor: pointer;
 }
 .place-search-menu #startNavigationButton {
 	position: absolute;
 	top: -10dvh;
 	right: 2dvh;
-	background-color: var(--black);
+	background-color: var(--pure-black);
 	border-radius: 999px;
 	color: white;
 	display: flex;
@@ -1540,7 +1519,7 @@ input:-webkit-autofill:active{
 	position: absolute;
 	top: -10dvh;
 	left: 2dvh;
-	background-color: var(--black);
+	background-color: var(--pure-black);
 	border-radius: 999px;
 	color: white;
 	display: flex;
@@ -1620,8 +1599,8 @@ input:-webkit-autofill:active{
 	font-size: 0.9rem;
 }
 #navigationInfoPanel #speedContainer {
-	background-color: var(--white);
-	color: var(--black);
+	background-color: var(--black);
+	color: var(--gray);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -1738,7 +1717,7 @@ input:-webkit-autofill:active{
 
 /* #region Rate trip menu */
 .rate-trip-menu {
-	background-color: rgba(35, 31, 32, 0.9);
+	background-color: var(--glass-black);
 	width: 100%;
 	height: 100%;
 	position: absolute;
@@ -1747,7 +1726,7 @@ input:-webkit-autofill:active{
 	z-index: 3;
 }
 #rateTripMenuCard {
-	background-color: white;
+	background-color: var(--black);
 	width: calc(100% - 14dvh);
 	height: fit-content;
 	position: absolute;
@@ -1755,6 +1734,7 @@ input:-webkit-autofill:active{
 	left: 0;
 	border-radius: 20px 20px 0 0;
 	padding: 2dvh 7dvh 10dvh 7dvh;
+	color: var(--gray);
 }
 #rateTripMenuCard #backButton {
 	position: absolute;
@@ -1773,7 +1753,7 @@ input:-webkit-autofill:active{
 #rateTripMenuCard #tripInfo #time,
 #rateTripMenuCard #tripInfo #cost,
 #rateTripMenuCard #tripInfo #points {
-	color: var(--black);
+	color: var(--gray);
 	font-size: 1rem;
 	display: flex;
 	flex-direction: row;
@@ -1849,14 +1829,14 @@ input:-webkit-autofill:active{
 	color: transparent;
 }
 #rateTripMenuCard #ratingFormContainer .rating label:last-child .icon {
-	color: var(--black);
+	color: var(--gray);
 }
 #rateTripMenuCard #ratingFormContainer .rating:not(:hover) label input:checked ~ .icon,
 #rateTripMenuCard #ratingFormContainer .rating:hover label:hover input ~ .icon {
 	color: var(--green);
 }
 #rateTripMenuCard #ratingFormContainer .rating label input:focus:not(:checked) ~ .icon:last-child {
-	color: var(--black);
+	color: var(--gray);
 	text-shadow: 0 0 5px var(--green);
 }
 #rateTripMenuCard #sendButton {
@@ -1881,8 +1861,8 @@ input:-webkit-autofill:active{
 
 /* #region Take unregistered bike */
 #openTakeUnregisteredBikeButton {
-	background-color: var(--black);
-	color: var(--white);
+	background-color: var(--pure-black);
+	color: var(--gray);
 	border-radius: 30px;
 	padding: 2vh;
 	position: relative;
@@ -1891,8 +1871,6 @@ input:-webkit-autofill:active{
 	text-align: center;
 	height: 15vh;
 	margin: 2vh 0;
-	flex-shrink: 0;
-	width: calc(90vw - 4vh);
 }
 #openTakeUnregisteredBikeButton #upperText {
 	position: absolute;
@@ -1922,7 +1900,7 @@ input:-webkit-autofill:active{
 	left: 5%;
 	width: 90%;
 	height: 20%;
-	background-color: var(--white);
+	background-color: var(--black);
 	border-radius: 20px;
 	box-shadow: 5px 5px 15px 0px var(--shadow-black);
 }
@@ -1944,7 +1922,7 @@ input:-webkit-autofill:active{
 	font-size: 0.9rem;
 }
 #takeUnregisteredBike #cancelButton {
-	background-color: var(--black);
+	background-color: var(--pure-black);
 	width: 30%;
 	height: 28%;
 	position: absolute;
@@ -1977,7 +1955,7 @@ input:-webkit-autofill:active{
 
 /* #region Custom alert box */
 #modalContainer {
-	background-color: rgba(0, 0, 0, 0.3);
+	background-color: var(--glass-black);
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -1993,7 +1971,8 @@ input:-webkit-autofill:active{
 	width: 80%;
 	min-height: 10%;
 	border-radius: 20px;
-	background-color: #fff;
+	background-color: var(--black);
+	color: var(--gray);
 }
 
 #modalContainer > #alertBox {
@@ -2030,7 +2009,7 @@ input:-webkit-autofill:active{
 	width: 30%;
 	text-transform: uppercase;
 	text-align: center;
-	color: #fff;
+	color: var(--gray);
 	background-color: var(--green);
 	border-radius: 999px;
 	float: right;
@@ -2044,7 +2023,7 @@ input:-webkit-autofill:active{
 	padding: 7px;
 	width: 30%;
 	text-align: center;
-	color: #fff;
+	color: var(--gray);
 	background-color: var(--green);
 	border-radius: 999px;
 	float: left;
@@ -2058,8 +2037,8 @@ input:-webkit-autofill:active{
 	padding: 7px;
 	width: 30%;
 	text-align: center;
-	color: #fff;
-	background-color: var(--black);
+	color: var(--gray);
+	background-color: var(--pure-black);
 	border-radius: 999px;
 	float: right;
 	margin-bottom: 10px;
@@ -2078,14 +2057,14 @@ input:-webkit-autofill:active{
 		width: 40%;
 		min-height: 10%;
 		border-radius: 20px;
-		background-color: #fff;
+		background-color: var(--black);
 	}
   }
 /* #endregion */
 
 /* #region Trip history */
 #tripHistory {
-	background-color: var(--white);
+	background-color: var(--black);
 	width: 100%;
 	height: 100%;
 	position: absolute;
@@ -2094,6 +2073,7 @@ input:-webkit-autofill:active{
 	top: 0;
 	border-radius: 0;
 	/*animation: smooth-slide-from-bottom 1s ease forwards;*/
+	color: var(--gray);
 }
 #tripHistory #graphics {
 	height: 25vw;
@@ -2138,7 +2118,7 @@ input:-webkit-autofill:active{
 	background-color: var(--green);
 	font-size: 1.75rem;
 	border-radius: 999px;
-	color: var(--white);
+	color: var(--gray);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -2147,37 +2127,32 @@ input:-webkit-autofill:active{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	color: var(--black);
 }
 #tripHistory #tripList {
 	position: absolute;
-	width: 100%;
-	left: 0;
+	width: 90%;
+	left: 5%;
 	bottom: 0;
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
 	max-height: 90%;
 	overflow: scroll;
-	padding-top: 2vh;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: flex-start;
 }
 .trip-list-element {
-	background-color: var(--white);
+	background-color: var(--black);
 	border-radius: 30px;
 	position: relative;
-	margin-bottom: 2vh;
-	/*border: 1px solid var(--green);*/
+	margin-bottom: 10px;
+	border: 1px solid var(--green);
 	box-shadow:
-		0px 1px 6px 0px var(--green),
+		0px 4px 6px 0px var(--shadow-green),
 		0px 0px 5px 0px var(--shadow-green) inset;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	padding: 2.5dvh 2dvh;
-	width: calc(90% - 4dvh);
 }
 .trip-list-element #tripInfo {
 	width: fit-content;
@@ -2190,7 +2165,7 @@ input:-webkit-autofill:active{
 .trip-list-element #tripInfo #time,
 .trip-list-element #tripInfo #cost,
 .trip-list-element #tripInfo #points {
-	color: var(--black);
+	color: var(--gray);
 	font-size: 0.9rem;
 	display: flex;
 	flex-direction: row;
@@ -2297,7 +2272,7 @@ input:-webkit-autofill:active{
 #statisticsMenu #statsControls {
 	width: 100vw;
 	height: fit-content;
-	background-color: var(--white);
+	background-color: var(--pure-black);
 	border-radius: 30px 30px 0 0;
 	padding-bottom: 4dvh;
 }
@@ -2308,7 +2283,7 @@ input:-webkit-autofill:active{
 	margin-left: 5%;
 	font-size: 1rem;
 	padding: 0.675em 6em 0.675em 1em;
-	background-color: var(--white);
+	background-color: var(--pure-black);
 	border: 1px solid var(--green);
 	border-radius: 999px;
 	color: var(--green);
@@ -2341,7 +2316,7 @@ input:-webkit-autofill:active{
 	height: 6dvh;
 	border-radius: 999px;
 	background-color: var(--green);
-	color: var(--white);
+	color: var(--black);
 	font-size: 1rem;
 	display: flex;
 	align-items: center;

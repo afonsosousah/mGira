@@ -49,6 +49,7 @@
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.1.0/ol.css" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
 		<link rel="stylesheet" href="assets/style.css" />
+		<link rel="stylesheet" media="(prefers-color-scheme: dark)" href="assets/dark.css" />
 
 		<!-- JS imports -->
 		<script src="scripts/bikeSerialNumberMapping.js?v=0.0.4"></script>
@@ -64,6 +65,7 @@
 		<script src="scripts/extras.js?v=0.0.4"></script>
 		<script src="scripts/swipe.js?v=0.0.4"></script>
 		<script src="scripts/version.js?v=0.0.4"></script>
+		<script src="scripts/theme.js?v=0.0.4"></script>
 		<script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
 		<script type="module" src="https://unpkg.com/openrouteservice-js@0.3.2/dist/ors-js-client.js"></script>
 		<script src=" https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js "></script>
@@ -105,6 +107,9 @@
 			if ("serviceWorker" in navigator) {
 				navigator.serviceWorker.register("scripts/serviceworker.js");
 			}
+
+			// Check theme to set status bar color
+			changeThemeColor("#ffffff", "#000000");
 
 			// Check if location permission is given
 			navigator.permissions.query({ name: "geolocation" }).then(result => {

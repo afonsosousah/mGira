@@ -287,7 +287,7 @@ function hideUserSettings() {
 		userSettings.classList.add("smooth-slide-to-bottom");
 		setTimeout(() => userSettings.remove(), 300); // remove element after animation end
 	}
-	changeThemeColor("#ffffff"); // Set status bar color in PWA
+	changeThemeColor("#ffffff", "#000000"); // Set status bar color in PWA
 }
 
 function openSetProxyPrompt() {
@@ -485,7 +485,7 @@ function openStatisticsMenu() {
 	updateStatisticsChart();
 
 	// Set status bar color in PWA
-	changeThemeColor("#231f20");
+	changeThemeColor("#231f20", "#1a1517");
 }
 
 function hideStatisticsMenu() {
