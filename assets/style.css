@@ -2336,3 +2336,522 @@ input:-webkit-autofill:active{
 	text-align: center;
 }
 /* #endregion */
+
+
+@media (orientation: landscape) {
+
+	/* #region Animations and Transitions */
+
+	/* appear from bottom animations */
+	@keyframes smooth-appear {
+		from {
+			bottom: -35%;
+			opacity: 0;
+		}
+		to {
+			bottom: 0px;
+			opacity: 1;
+		}
+	}
+
+	/* Zoom controls animations */
+	@keyframes smooth-slide-up-zoom-controls {
+		to {
+			bottom: calc(100vh - 22vw);
+		}
+	}
+	@keyframes smooth-slide-down-zoom-controls {
+		from {
+			bottom: calc(100vh - 22vw);
+		}
+		to {
+			bottom: calc(2vw + 7vw + 2vw);
+		}
+	}
+
+	@keyframes smooth-slide-top-zoom-controls {
+		to {
+			bottom: calc(100vh - 22vw);
+		}
+	}
+	@keyframes smooth-slide-bottom-zoom-controls {
+		from {
+			bottom: calc(100vh - 22vw);
+		}
+		to {
+			bottom: calc(2vw + 7vw + 2vw);
+		}
+	}
+
+	/* Search bar appear animations */
+	@keyframes slide-fwd-top {
+		from {
+			-webkit-transform: translateZ(-12dvw) translateY(10dvw);
+			transform: translateZ(-12dvw) translateY(10dvw);
+		}
+		to {
+			-webkit-transform: translateZ(0) translateY(0);
+			transform: translateZ(0) translateY(0);
+		}
+	}
+	@keyframes slide-back-top {
+		from {
+			-webkit-transform: translateZ(0) translateY(0);
+			transform: translateZ(0) translateY(0);
+		}
+		to {
+			-webkit-transform: translateZ(-12dvw) translateY(10dvw);
+			transform: translateZ(-12dvw) translateY(10dvw);
+		}
+	}
+
+	/* #endregion */
+
+	/* #region Logo */
+	#logo {
+		width: 18%;
+		left: 2vw;
+		bottom: 2vw;
+	}
+	/* #endregion */
+
+	/* #region Zoom controls */
+	#zoomControls {
+		right: 2vw;
+		bottom: calc(2vw + 7vw + 2vw);
+		gap: 1vw;
+	}
+	#zoomControls div {
+		background-color: var(--green);
+		width: 6vw;
+		height: 6vw;
+		font-size: calc(0.2 * 20vw);
+		border-radius: 999px;
+		color: white;
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+	}
+	#zoomControls div i {
+		width: 32px;
+		height: 32px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	/* #endregion */
+
+	/* #region Search bar */
+	#searchBarCancelButton {
+		left: 2vw;
+		bottom: 2vw;
+		width: 6vw;
+		height: 7vw;
+	}
+	#searchBar {
+		width: calc(100vw - 4vw - 6vw);
+		height: 7vw;
+		left: calc(2vw + 6vw);
+		bottom: 2vw;
+	}
+	/* #endregion */
+
+	/* #region Navigation Button */
+	#navigationButton {
+		width: 7vw;
+		height: 7vw;
+		right: calc(2vw + 7vw + 2vw);
+		bottom: 2vw;
+	}
+	#navigationButton img {
+		width: 4vw;
+		height: 4vw;
+	}
+	/* #endregion */
+
+	/* #region User picture */
+	#userPicture {
+		width: 7vw;
+		height: 7vw;
+		right: 2vw;
+		bottom: 2vw;
+	}
+	#userPicture #userInitials {
+		font-size: 3dvw;
+		color: var(--green);
+	}
+	/* #endregion */
+
+	/* #region Station card */
+	.station-card {
+		width: 90vh;
+		height: 55vh;
+		left: calc((100vw - 90vh)/2);
+		bottom: 2vw;
+	}
+	.station-card #stationName {
+		width: calc(100% - 25vh);
+		left: 12.5vh;
+		top: 5vh;
+	}
+	.station-card #docksImage {
+		left: 5vh;
+		bottom: calc(5vh + 20% + 2vh);
+	}
+	.station-card #docksButton {
+		left: 5vh;
+		bottom: 5vh;
+	}
+	.station-card #bikesImage {
+		right: 5vh;
+		bottom: calc(5vh + 20% + 2vh);
+	}
+	.station-card #bikesButton {
+		right: 5vh;
+		bottom: 5vh;
+	}
+	.station-card #bikesButtonDisabled {
+		right: 5vh;
+		bottom: 5vh;
+	}
+	.station-card #navigateToButton {
+		right: 5vh;
+		top: 5vh;
+	}
+	.station-card #startNavigationButton {
+		top: -8vw;
+		right: 0;
+		height: 6vw;
+		width: 6vw;
+	}
+	.station-card #routeDetails {
+		top: -8vw;
+		left: 0;
+		height: 6vw;
+		padding: 0 2dvw;
+	}
+	/* #endregion */
+
+	/* #region Login menu */
+	.login-menu {
+		background-color: rgba(35, 31, 32, 0.9);
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 3;
+	}
+	#loginCard #logo {
+		position: absolute;
+		top: calc(-15.625% - 3dvh); /* the -15.625 is calculated using the aspect ratio of the logo (800x250) */
+		width: 50%;
+		left: 25%;
+	}
+	#loginCard {
+		background-color: white;
+		width: 100%;
+		height: 30dvh;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		border-radius: 30px 30px 0 0;
+		animation: smooth-appear 0.5s ease forwards;
+	}
+	#loginCard input {
+		position: absolute;
+		width: calc(70% - 35px - 15px);
+		height: 5.25dvh;
+		left: 15%;
+		top: 10%;
+		line-height: 15%;
+		text-decoration: none;
+		border: none;
+		outline: 1px solid var(--green);
+		padding: 5px 15px;
+		border-radius: 999px;
+		background-color: var(--glass-white);
+		background-image: url("images/envelope-at.svg");
+		background-repeat: no-repeat;
+		background-position-x: calc(100% - 10px);
+		background-position-y: calc(100% - 14px);
+		padding-right: 35px;
+		z-index: 1;
+	}
+	#loginCard input[name="password"] {
+		top: calc(10% + 5.25dvh + 10px + 2dvh);
+		background-image: url("images/key.svg");
+	}
+	#registerButton,
+	#loginButton {
+		background-color: var(--green);
+		color: var(--white);
+		width: 37.5%;
+		height: 6dvh;
+		position: absolute;
+		z-index: 1;
+		left: 7.5%;
+		bottom: 10%;
+		border-radius: 999px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	#loginButton {
+		left: unset;
+		right: 7.5%;
+	}
+	#loginCard #footer {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		animation: none;
+		height: 14dvh;
+		width: 100%;
+		object-fit: cover;
+		z-index: 0;
+		opacity: 0.05;
+	}
+	/* #endregion */
+
+	/* #region Bike list */
+	.bike-list #backButton {
+		width: 7vw;
+		height: 7vw;
+		font-size: calc(0.35 * 7vw);
+	}
+	.bike-list #stationName {
+		width: 70%;
+		height: 10%;
+		left: 10%;
+		top: 5%;
+	}
+	.bike-list #stationImage {
+		width: 10%;
+		right: 3%;
+		top: 4%;
+	}
+	.bike-list #listGradient {
+		top: 20vh;
+	}
+	.bike-list #bikeList {
+		top: 20vh;
+		max-height: calc(100dvh - 20vh - 2vh);
+	}
+	.bike-list-element {
+		height: 7vw;
+	}
+	.bike-list-element #content #bikeIcon {
+		height: 4vw;
+	}
+	.bike-list-element #content #reserveBikeIcon {
+		font-size: 3dvw;
+	}
+	/* #endregion */
+
+	/* #region Bike reserve */
+	#bikeReserveCard {
+		height: 70%;
+	}
+	#bikeReserveCard #backButton {
+		width: 6vw;
+		height: 6vw;
+		font-size: calc(0.35 * 8vw);
+		margin-bottom: 1vw;
+	}
+	#bikeReserveCard #textContent {
+		position: absolute;
+		top: 20px;
+		left: calc(6vw + 20px);
+		width: calc(80% - 20px - 20px);
+		display: flex;
+		flex-direction: column;
+	}
+	#bikeReserveCard #unlockSlider {
+		appearance: none;
+		background-color: var(--black);
+		width: 90%;
+		height: 20%;
+		position: absolute;
+		left: 5%;
+		bottom: 10%;
+		border-radius: 999px;
+		z-index: 4;
+	}
+	#bikeReserveCard #unlockSlider::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		height: calc(0.2 * 35vh);
+		width: 45vw;
+		border-radius: 999px;
+		background-color: var(--green);
+		background-image: url("images/unlockSlider_PT.png");
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center;
+		cursor: pointer;
+	}
+	#bikeReserveCard #unlockSlider::-moz-range-thumb {
+		height: 100%;
+		width: 50%;
+		background-color: var(--green);
+		cursor: pointer;
+		border-radius: 999px;
+		border: none;
+		background-image: url("images/unlockSlider_PT.png");
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+	#bikeReserveCard #footer {
+		height: 14dvw;
+		object-position: center top;
+	}
+	.timer {
+		bottom: 13dvw;
+		left: calc(50vw - 8vw);
+	}
+	.timer > svg {
+		width: 16vw;
+		height: 16vw;
+	}
+	.timer > svg > circle {
+		stroke-width: 1.5vw;
+		r: 7.25vw;
+	}
+	#bikeReserveCard #bikeLeavingDock {
+		width: 60%;
+		aspect-ratio: 1/1;
+		object-fit: contain;
+		position: absolute;
+		left: 40%;
+		bottom: -40%;
+	}
+	/* #endregion */
+
+	/* #region Trip overlay */
+	.trip-overlay {
+		width: calc(35% - 4vw);
+		height: 20dvw;
+		top: 2vw;
+		left: 2vw;
+	}
+	.trip-overlay #onTripText {
+		top: 2vw;
+		left: 2vw;
+		font-size: 1.75rem;
+	}
+	.trip-overlay #tripCost {
+		bottom: 2vw;
+		left: 2.5vw;
+		font-size: 1rem;
+	}
+	.trip-overlay #tripTime {
+		bottom: calc(2vw +  1rem + .2rem);
+		left: 2.5vw;
+		font-size: 1rem;
+	}
+	.trip-overlay #callAssistance {
+		bottom: 1.5vw;
+		right: 1.5vw;
+		padding: 1.5vw;
+	}
+	/* #endregion */
+
+	/* #region User menu */
+	.user-settings #topUserContainer {
+		height: 24vw;
+	}
+	.user-settings #topUserContainer #footer {
+		height: 12vw;
+		object-fit: cover;
+		object-position: top center;
+	}
+	.user-settings #topUserContainer #backButton {
+		width: 6vw;
+		height: 6vw;
+		font-size: calc(0.35 * 6vw);
+	}
+	.user-settings #topUserContainer #userImage {
+		width: 22vw;
+		height: 22vw;
+		top: calc(65% - (22vw / 2));
+		left: calc(50% - (22vw / 2));
+	}
+	.user-settings #topUserContainer #userImage #userInitialsSettings {
+		font-size: 8vw;
+	}
+	.user-settings #topUserContainer #bottomCard {
+
+		height: 3vw;
+		border-radius: 3vw 3vw 0 0;
+	}
+	.user-settings #userName {
+		margin-top: 5vw;
+	}
+	.user-settings #balanceAndBonusContainer {
+		width: 100vw;
+		height: 12vw;
+		gap: 2vw;
+		margin-top: 5vw;
+	}
+	.user-settings #balanceAndBonusContainer #balanceContainer,
+	.user-settings #balanceAndBonusContainer #bonusContainer {
+		width: 25%;
+	}
+	.user-settings #subscriptionContainer {
+		height: 12vw;
+		margin-top: 3vw;
+	}
+	.user-settings #subscriptionContainer div:first-child {
+		width: calc(50vw + 2vw);
+	}
+	.user-settings #subscriptionContainer div #cardSVG {
+		position: absolute;
+		height: 6vw;
+		width: 6vw;
+		font-size: 6vw;
+		top: 10px;
+		left: calc(25% - 3vw);
+	}
+	.user-settings #subscriptionContainer div #subscriptionName {
+		top: 7vw;
+	}
+	.user-settings #statisticsMenuButtonContainer,
+	.user-settings #tripHistoryButtonContainer {
+		margin-top: 3vw;
+	}
+	.user-settings #statisticsMenuButton,
+	.user-settings #tripHistoryButton {
+		width: calc(50vw + 2vw - 5vw);
+		padding: 2vw 3vw;
+		gap: 1vw;
+	}
+	.user-settings #settingsContainer {
+		height: 16vw;
+		margin-top: 3vw;
+	}
+	.user-settings #settingsContainer #proxy {
+		width: calc(50vw + 2vw);
+	}
+	#bottom {
+		margin-top: 3vw;
+		display: flex;
+		width: 50vw;
+		margin-bottom: 5vh;
+		margin-left: 25vw;
+	}
+	.user-settings #versionNumber {
+		margin-left: 0;
+	}
+	.user-settings #logoutButton {
+		margin-right: 0;
+	}
+
+	.user-settings #proxyNotWorking {
+		bottom: 5vh;
+		right: 5vh;
+	}
+	/* #endregion */
+
+	
+}

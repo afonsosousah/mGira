@@ -205,7 +205,8 @@ async function stopNavigation() {
 	map
 		.getLayers()
 		.getArray()
-		.find(layer => layer.get("name") === "cyclewaysLayer").setVisible(true);
+		.find(layer => layer.get("name") === "cyclewaysLayer")
+		.setVisible(true);
 
 	// If the screen is not portrait, tell the user to rotate it
 	orientationChangeHandler(window.matchMedia("(orientation: portrait)"));
@@ -326,7 +327,7 @@ function updatePositionAndRotationWhenNavigating() {
 	}
 }
 
-function orientationChangeHandler(event) {
+async function orientationChangeHandler(event) {
 	if (event.matches) {
 		// Portrait mode
 		if (navigationActive && navigationMode === "bike") {
@@ -353,6 +354,7 @@ function orientationChangeHandler(event) {
 			// Hide the rotate screen notice
 			if (document.querySelector("#rotateScreenNotice")) document.querySelector("#rotateScreenNotice").remove();
 		} else {
+			/*
 			appendElementToBodyFromHTML(`
                 <div class="rotate-screen-notice" id="rotateScreenNotice">
                     <div id="phone">
@@ -362,6 +364,16 @@ function orientationChangeHandler(event) {
                     </div>
                 </div>
             `);
+			*/
+
+			// Wait for map to finish loading
+			while (typeof map !== "object") {
+				console.log("map has not loaded");
+				await new Promise(resolve => setTimeout(resolve, 200));
+			}
+
+			// Set map pixel ratio (fix mobile map not loading at some points)
+			map.pixelRatio_ = 1.5;
 		}
 	}
 }
