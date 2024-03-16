@@ -105,7 +105,8 @@ async function initMap() {
 
 function mapDotSVG(ratio) {
 	// Calculate the Y coordinate at which the top of the "fill" rectangle will be
-	const y = ((1 - ratio) * 460).toFixed(0);
+	// (the filled area is only visible from y=18 to y=430)
+	const y = (18 + (1 - ratio) * (430 - 18)).toFixed(0);
 
 	// Create the SVG itself
 	const svgString = `
