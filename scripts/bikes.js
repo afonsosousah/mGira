@@ -534,8 +534,8 @@ async function payTrip(tripCode, tripCost) {
 		createCustomYesNoPrompt(
 			`Deseja pagar a viagem com ${tripCost * 500} pontos?`,
 			async () => {
-				if ((await tripPayWithPoints(tripCode)) !== 0)
-					// the success response is a 0
+				if ((await tripPayWithPoints(tripCode)) !== tripCost * 500)
+					// the success response is the number of points paid
 					alert("Não foi possível pagar a viagem.");
 			},
 			async () => {

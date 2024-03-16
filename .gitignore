@@ -2,7 +2,8 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode
 
 ### VisualStudioCode ###
-.vscode
+.vscode/
+!.vscode/extensions.json
 
 # Local History for Visual Studio Code
 .history/

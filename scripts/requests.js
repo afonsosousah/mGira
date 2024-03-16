@@ -283,7 +283,6 @@ function startWSConnection(force = false) {
 					msgObj.payload.data &&
 					Object.hasOwn(msgObj.payload.data, "operationalStationsSubscription")
 				) {
-					console.log("operationalStationsSubscription update");
 					const operationalStations = msgObj.payload.data.operationalStationsSubscription;
 					loadStationMarkersFromArray(operationalStations); // Load the stations to the map
 				} else if (Object.hasOwn(msgObj.payload, "errors") && msgObj.payload.errors) {

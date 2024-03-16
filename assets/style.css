@@ -6,7 +6,7 @@
 	--gray: #d9d9da;
 	--shadow-black: rgba(35, 31, 32, 0.2);
 	--shadow-green: rgba(121, 192, 0, 0.2);
-	--glass-white: rgba(255, 255, 255, 0.9);
+	--glass-white: rgba(255, 255, 255, 0.7);
 	--glass-green: rgba(121, 192, 0, 0.9);
 }
 /* #endregion */
@@ -283,7 +283,6 @@ body {
 	position: absolute;
 	left: 2vh;
 	bottom: 2vh;
-	filter: drop-shadow(0px 4px 6px 0px var(--shadow-green)),
 }
 /* #endregion */
 
@@ -309,9 +308,6 @@ body {
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
 }
 #zoomControls div i {
 	width: 32px;
@@ -324,7 +320,6 @@ body {
 
 /* #region Search bar */
 #searchBarDiv {
-	border-radius: 999px;
 	width: 100%;
 	position: absolute;
 	bottom: 0;
@@ -336,38 +331,45 @@ body {
 	background-color: var(--white);
 	border-radius: 999px 0 0 999px;
 	color: var(--green);
-	outline: 1px solid var(--green);
+	/*border: 1px solid var(--green);*/
+	border-right: none;
 	position: absolute;
 	left: 2vh;
 	bottom: 2vh;
-	width: 7vh;
+	width: 6vh;
 	height: 7vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
-
+	box-shadow: 0px 1px 6px 0px var(--green);
+	clip-path: inset(-6px -6px -6px -6px);
+}
+#searchBarCancelButton i {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 1.4rem;
 }
 #searchBar {
 	background-color: rgb(255, 255, 255);
-	width: calc(100vw - 4vh - 7vh);
+	width: calc(100vw - 4vh - 6vh);
 	height: 7vh;
 	position: absolute;
-	left: calc(2vh + 7vh);
+	left: calc(2vh + 6vh);
 	bottom: 2vh;
-	outline: 1px solid var(--green);
+	outline: none;
+	border: none;
+	/*border: 1px solid var(--green);*/
+	border-left: none;
 	border-radius: 0 999px 999px 0;
 	display: flex;
 	align-items: center;
-	padding-left: 5%;
+	padding: 0;
 	color: var(--green);
-	border: none;
 	font-size: medium;
-	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-sizing: content-box;
+	box-shadow: 0px 1px 6px 0px var(--green);
+	clip-path: inset(-6px -6px -6px 0px);
 }
 #searchBar::-webkit-input-placeholder {
 	color: var(--green);
@@ -380,11 +382,26 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
 	-webkit-appearance: none;
 }
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+#searchBar:-webkit-autofill,
+#searchBar:-webkit-autofill:hover, 
+#searchBar:-webkit-autofill:focus, 
+#searchBar:-webkit-autofill:active{
+    -webkit-box-shadow: 
+		0px 1px 6px 0px var(--green),
+		0 0 0 30px white inset !important;
+}
+
 /* #endregion */
 
 /* #region Navigation Button */
 #navigationButton {
-	background-color: transparent;
+	background-color: var(--glass-white);
 	width: 7vh;
 	height: 7vh;
 	position: absolute;
@@ -392,13 +409,11 @@ input[type="search"]::-webkit-search-results-decoration {
 	right: calc(2vh + 7vh + 2vh);
 	bottom: 2vh;
 	border-radius: 999px;
-	outline: 1px solid var(--green);
+	/*outline: 1px solid var(--green);*/
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 #navigationButton img {
 	border-radius: 999px;
@@ -409,7 +424,7 @@ input[type="search"]::-webkit-search-results-decoration {
 
 /* #region User picture */
 #userPicture {
-	background-color: transparent;
+	background-color: var(--glass-white);
 	width: 7vh;
 	height: 7vh;
 	position: absolute;
@@ -417,13 +432,11 @@ input[type="search"]::-webkit-search-results-decoration {
 	right: 2vh;
 	bottom: 2vh;
 	border-radius: 999px;
-	outline: 1px solid var(--green);
+	/*outline: 1px solid var(--green);*/
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 /*#userPicture img {
 	border-radius: 999px;
@@ -822,27 +835,42 @@ input[type="search"]::-webkit-search-results-decoration {
 	right: 5%;
 	top: 4%;
 }
+.bike-list #listGradient {
+	position: absolute;
+	top: 25vw;
+	left: 0;
+	width: 100%;
+	height: 2vh;
+	background: linear-gradient(180deg, #fff 0%, transparent 100%);
+	z-index: 2;
+}
 .bike-list #bikeList {
 	position: absolute;
-	width: 90%;
-	left: 5%;
-	top: 15%;
+	width: 100%;
+	left: 0;
+	top: 25vw;
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	max-height: 85%;
+	max-height: calc(100dvh - 25vw - 2vh);
 	overflow: scroll;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-top: 2vh;
 }
 .bike-list-element {
 	background-color: var(--white);
 	border-radius: 999px;
 	position: relative;
 	height: 7vh;
+	width: 90%;
 	margin-bottom: 10px;
 	border: 1px solid var(--green);
 	box-shadow:
 		0px 4px 6px 0px var(--shadow-green),
 		0px 0px 5px 0px var(--shadow-green) inset;
+	flex-shrink: 0;
 }
 .bike-list-element #battery {
 	position: absolute;
@@ -1910,6 +1938,8 @@ input[type="search"]::-webkit-search-results-decoration {
 	text-align: center;
 	height: 15vh;
 	margin: 2vh 0;
+	flex-shrink: 0;
+	width: calc(90vw - 4vh);
 }
 #openTakeUnregisteredBikeButton #upperText {
 	position: absolute;
@@ -2167,28 +2197,34 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 #tripHistory #tripList {
 	position: absolute;
-	width: 90%;
-	left: 5%;
+	width: 100%;
+	left: 0;
 	bottom: 0;
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
 	max-height: 90%;
 	overflow: scroll;
+	padding-top: 2vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
 }
 .trip-list-element {
 	background-color: var(--white);
 	border-radius: 30px;
 	position: relative;
-	margin-bottom: 10px;
-	border: 1px solid var(--green);
+	margin-bottom: 2vh;
+	/*border: 1px solid var(--green);*/
 	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
+		0px 1px 6px 0px var(--green),
 		0px 0px 5px 0px var(--shadow-green) inset;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	padding: 2.5dvh 2dvh;
+	width: calc(90% - 4dvh);
 }
 .trip-list-element #tripInfo {
 	width: fit-content;
