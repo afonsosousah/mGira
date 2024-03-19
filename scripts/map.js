@@ -103,6 +103,39 @@ async function initMap() {
 	startLocationDotRotation();
 }
 
+function mapDotSVG(ratio) {
+	// Calculate the Y coordinate at which the top of the "fill" rectangle will be
+	// (the filled area is only visible from y=18 to y=430)
+	const y = (18 + (1 - ratio) * (430 - 18)).toFixed(0);
+
+	// Create the SVG itself
+	const svgString = `
+	<svg version="1.1" id="svg1" xmlns="http://www.w3.org/2000/svg" width="330" height="460">
+		<defs id="defs1">
+				<clipPath clipPathUnits="userSpaceOnUse" id="clipPath2">
+					<rect
+						style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.88976;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+						id="rect3" width="330" height="460" x="0" y="${y}" />
+				</clipPath>
+			</defs>
+		<path
+			style="display:inline;fill:#e0e0e0;fill-opacity:1;stroke:#79c000;stroke-width:18.7654;stroke-dasharray:none;stroke-opacity:1"
+			d="m 150.64877,9.8461145 c 57.16501,-4.258271 111.80887,20.7649535 143.44461,69.5189515 12.7641,19.67082 22.23978,42.693894 25.06946,65.999984 1.34592,11.08539 1.94787,21.74182 1.0531,33 -1.7515,22.03766 -9.10877,42.82477 -18.33856,63 -14.32541,31.31363 -32.31354,60.48767 -51.56003,89 -18.047,26.73535 -37.56418,52.55286 -57.38361,77.99997 -6.85646,8.80334 -27.29104,35.89627 -27.29104,35.89627 0,0 -21.06879,-25.43823 -27.71569,-33.89642 -21.15264,-26.91672 -41.528643,-54.50803 -60.495103,-82.99982 -26.462,-39.75177 -58.07102,-85.91321 -66.12871,-134 -1.3324596,-7.95187 -1.8654696,-15.94962 -1.9170296,-24 -0.0518,-8.09448 0.484,-15.95865 1.2292996,-24 C 17.147547,74.88771 81.088477,15.027725 150.64877,9.8461145"
+			id="path1"
+		/>
+		<path
+			style="display:inline;fill:#79c000;fill-opacity:1;stroke:#79c000;stroke-width:18.7654;stroke-dasharray:none;stroke-opacity:1"
+			d="m 150.64877,9.8461145 c 57.16501,-4.258271 111.80887,20.7649535 143.44461,69.5189515 12.7641,19.67082 22.23978,42.693894 25.06946,65.999984 1.34592,11.08539 1.94787,21.74182 1.0531,33 -1.7515,22.03766 -9.10877,42.82477 -18.33856,63 -14.32541,31.31363 -32.31354,60.48767 -51.56003,89 -18.047,26.73535 -37.56418,52.55286 -57.38361,77.99997 -6.85646,8.80334 -27.29104,35.89627 -27.29104,35.89627 0,0 -21.06879,-25.43823 -27.71569,-33.89642 -21.15264,-26.91672 -41.528643,-54.50803 -60.495103,-82.99982 -26.462,-39.75177 -58.07102,-85.91321 -66.12871,-134 -1.3324596,-7.95187 -1.8654696,-15.94962 -1.9170296,-24 -0.0518,-8.09448 0.484,-15.95865 1.2292996,-24 C 17.147547,74.88771 81.088477,15.027725 150.64877,9.8461145"
+			id="path2"  clip-path="url(#clipPath2)"
+		/>
+	</svg>`;
+
+	// Create a data URI from the SVG string
+	const svgDataURI = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgString);
+
+	return svgDataURI;
+}
+
 async function loadStationMarkersFromArray(stationsArray) {
 	// Wait for map to finish loading
 	while (typeof map !== "object") {
@@ -123,33 +156,21 @@ async function loadStationMarkersFromArray(stationsArray) {
 		let iconStyle;
 		if (station.docks !== 0) {
 			const bikeRatio = station.bikes / station.docks;
-			const filled =
-				station.bikes === 0
-					? 0
-					: bikeRatio <= 0.15
-					? 15
-					: bikeRatio <= 0.3
-					? 30
-					: bikeRatio <= 0.5
-					? 50
-					: bikeRatio < 1
-					? 80
-					: 100;
 
 			iconStyle = new ol.style.Style({
 				image: new ol.style.Icon({
-					width: 40,
-					height: 50,
+					width: 33,
+					height: 46,
 					anchor: [0.5, 1],
 					anchorXUnits: "fraction",
 					anchorYUnits: "fraction",
-					src: `assets/images/mapDot_${filled}.png`,
+					src: mapDotSVG(bikeRatio),
 				}),
 				text: new ol.style.Text({
 					text: station.bikes.toString(),
 					font: "bold 15px sans-serif",
 					offsetX: 0,
-					offsetY: -30,
+					offsetY: -28,
 					textAlign: "center",
 					fill: new ol.style.Fill({
 						color: "#FFFFFF",
