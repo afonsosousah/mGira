@@ -94,7 +94,7 @@ async function initMap() {
 	showUpdateInfoIfNeeded();
 
 	// Get the stations and load them to the map
-	await getStations();
+	//await getStations();
 
 	// Get the user location on app open
 	getLocation();
@@ -104,12 +104,6 @@ async function initMap() {
 }
 
 async function loadStationMarkersFromArray(stationsArray) {
-	// Wait for map to finish loading
-	while (typeof map !== "object") {
-		console.log("map has not loaded");
-		await new Promise(resolve => setTimeout(resolve, 200));
-	}
-
 	// Wait for map to finish loading
 	while (typeof map !== "object") {
 		console.log("map has not loaded");
@@ -208,8 +202,11 @@ async function loadStationMarkersFromArray(stationsArray) {
 			.getArray()
 			.find(layer => layer.get("name") === "stationsLayer");
 
+		const source = stationsLayer.getSource();
+
 		// Refresh the features
-		stationsLayer.getSource().set("features", featuresArray, true);
+		source.clear();
+		source.addFeatures(featuresArray);
 	}
 
 	// Hide login menu if it is showing
