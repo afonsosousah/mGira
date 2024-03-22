@@ -215,7 +215,6 @@ async function openBikeList(stationSerialNumber) {
         <div id="backButton" onclick="hideBikeList();"><i class="bi bi-arrow-90deg-left"></i></div>
         <div id="stationName">${stationObj.name}</div>
         <img id="stationImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
-		<div id="listGradient"></div>
         <ul id="bikeList">
             <!-- Populate with the list here -->
         </ul>
