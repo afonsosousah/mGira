@@ -211,7 +211,6 @@ async function openBikeList(stationSerialNumber) {
 	menu.className = "bike-list";
 	menu.id = "bikeMenu";
 	menu.innerHTML = `
-        <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
         <div id="backButton" onclick="hideBikeList();"><i class="bi bi-arrow-90deg-left"></i></div>
         <div id="stationName">${stationObj.name}</div>
         <img id="stationImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
