@@ -40,9 +40,9 @@ async function tokenRefresh() {
 					user.refreshToken = responseObject.data.refreshToken;
 					user.expiration = responseObject.data.expiration;
 
-					// Set the cookie expiry to 1 month after today.
+					// Set the cookie expiry to 1 year after today.
 					const refreshTokenExpiryDate = new Date();
-					refreshTokenExpiryDate.setMonth(refreshTokenExpiryDate.getMonth() + 1);
+					refreshTokenExpiryDate.setFullYear(refreshTokenExpiryDate.getFullYear() + 1);
 
 					// Store refreshToken cookie (stay logged in)
 					createCookie("refreshToken", user.refreshToken, refreshTokenExpiryDate);

@@ -414,7 +414,7 @@ function startLocationDotRotation() {
 		compassHeading = -(Math.PI / 180) * (360 - currentOrientation);
 
 		// Adjust heading if device is on landscape
-		if (window.matchMedia("(orientation: landscape)").matches) compassHeading += (Math.PI / 180) * 90;
+		//if (window.matchMedia("(orientation: landscape)").matches) compassHeading += (Math.PI / 180) * 90;
 
 		if (!pos) return;
 
