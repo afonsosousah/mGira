@@ -183,7 +183,7 @@ async function loadStationMarkersFromArray(stationsArray, showDocks = false) {
 				zIndex: featureID,
 			});
 		} else if (station.docks !== 0 && showDocks) {
-			const dockRatio = station.docks / station.bikes;
+			const dockRatio = (station.docks - station.bikes) / station.docks;
 
 			iconStyle = new ol.style.Style({
 				image: new ol.style.Icon({
