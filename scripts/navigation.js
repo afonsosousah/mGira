@@ -333,82 +333,119 @@ function updatePositionAndRotationWhenNavigating() {
 
 async function orientationChangeHandler(event) {
 	if (event.matches) {
-		// Portrait mode
-		if (navigationActive && navigationMode === "bike") {
-			// Tell the user that there is navigation going, so he needs to rotate the screen
-			appendElementToBodyFromHTML(`
-                <div class="rotate-screen-notice" id="rotateScreenNotice">
-                    <div id="phone">
-                    </div>
-                    <div id="message">
-                        Rode o seu dispositivo
-                    </div>
-                </div>
-            `);
-		} else {
+		// Portrait
+
+		if (document.querySelector("#rotateScreenNotice")) {
 			// Hide the rotate screen notice
-			if (document.getElementById("rotateScreenNotice")) document.getElementById("rotateScreenNotice").remove();
+			document.getElementById("rotateScreenNotice").remove();
 
 			// Update the inner height if the app started in portrait mode
 			initialWindowHeight = window.innerHeight;
 		}
+
+		// If in navigation UI, change to default UI
+		if (document.querySelector("#navigationInfoPanel")) {
+			// Exit fullscreen
+			try {
+				await document.exitFullscreen();
+			} catch (error) {
+				console.log(error);
+			}
+
+			// Remove all the on bike navigation elements
+			const navigationElements = Array.from(document.querySelectorAll("*")).filter(
+				e => getComputedStyle(e).zIndex === "16"
+			);
+			for (element of navigationElements) {
+				element.remove();
+			}
+
+			// Remove the on bike button
+			if (document.getElementById("onBikeButton")) document.getElementById("onBikeButton").remove();
+
+			// Update the map style to show the standard UI
+			const mapElement = document.getElementById("map");
+			mapElement.style.zIndex = "0";
+
+			// Change map dots to available bikes
+			loadStationMarkersFromArray(stationsArray, !tripEnded);
+		}
 	} else {
 		// Landscape
-		if (navigationActive && navigationMode === "bike") {
-			// Hide the rotate screen notice
-			if (document.querySelector("#rotateScreenNotice")) document.querySelector("#rotateScreenNotice").remove();
-		} else {
-			/*
-			appendElementToBodyFromHTML(`
-                <div class="rotate-screen-notice" id="rotateScreenNotice">
-                    <div id="phone">
-                    </div>
-                    <div id="message">
-                        Rode o seu dispositivo
-                    </div>
-                </div>
-            `);
-			*/
 
-			// Wait for map to finish loading
-			while (typeof map !== "object") {
-				console.log("map has not loaded");
-				await new Promise(resolve => setTimeout(resolve, 200));
+		if (document.querySelector("#rotateScreenNotice")) {
+			// Hide the rotate screen notice
+			document.querySelector("#rotateScreenNotice").remove();
+		}
+
+		// Wait for map to finish loading
+		while (typeof map !== "object") {
+			console.log("map has not loaded");
+			await new Promise(resolve => setTimeout(resolve, 200));
+		}
+
+		// Set map pixel ratio (fix mobile map not loading at some points)
+		map.pixelRatio_ = 1.5;
+
+		// Recommend to user to switch to fullscreen when in landscape
+		if (typeof document.body.requestFullscreen === "function") {
+			createCustomYesNoPrompt(
+				"Para usar a aplicação em modo landscape é recomendado estar em ecrã inteiro.",
+				() => {
+					// Request fullscreen
+					document.body.requestFullscreen();
+				},
+				() => {},
+				"Ok",
+				"Ignorar"
+			);
+		}
+
+		// If user switches to landscape while in trip, put into navigation UI
+		if (!tripEnded) {
+			// Make the device awake
+			try {
+				wakeLock = await navigator.wakeLock.request("screen");
+			} catch (err) {
+				// The Wake Lock request has failed - usually system related, such as battery.
+				console.log(`${err.name}, ${err.message}`);
 			}
+
+			// Add the Navigation Information Panel
+			let navInfoPanelElement = document.createElement("div");
+			navInfoPanelElement.id = "navigationInfoPanel";
+			navInfoPanelElement.innerHTML = `
+			<div id="costAndTimeContainer">
+				<div>
+					<i class="bi bi-currency-euro"></i>
+					<span id="tripCost">0.00€</span>
+				</div>
+				<div>
+					<i class="bi bi-clock"></i>
+					<span id="tripTime">00:00:00</span>
+				</div>
+			</div>
+			<div id="speedContainer">
+				<div id="speed">00</div>
+				<div id="speedLabel">km/h</div>
+			</div>
+			`.trim();
+			document.body.appendChild(navInfoPanelElement);
+
+			// Append the end navigation button
+			appendElementToBodyFromHTML(`
+				<div id="changeRotationModeButton" onclick="changeRotationMode()" style="bottom: 2dvh; right: 2dvh;"><i class="bi bi-sign-turn-right"></i></div>
+			`);
 
 			// Set map pixel ratio (fix mobile map not loading at some points)
 			map.pixelRatio_ = 1.5;
 
-			// Recommend to user to switch to fullscreen when in landscape
-			if (typeof document.body.requestFullscreen === "function") {
-				createCustomYesNoPrompt(
-					"Para usar a aplicação em modo landscape é recomendado estar em ecrã inteiro.",
-					() => {
-						// Request fullscreen
-						document.body.requestFullscreen();
-					},
-					() => {},
-					"Ok",
-					"Ignorar"
-				);
-			}
+			// Update the map style to hide the on foot UI
+			const mapElement = document.getElementById("map");
+			mapElement.style.zIndex = "15";
 
-			// If user switches to landscape while in trip, put into navigation UI
-			if (!tripEnded) {
-				// Make the device awake
-				try {
-					wakeLock = await navigator.wakeLock.request("screen");
-				} catch (err) {
-					// The Wake Lock request has failed - usually system related, such as battery.
-					console.log(`${err.name}, ${err.message}`);
-				}
-
-				// Set landscape navigation UI
-				onBikeNavigation();
-
-				// Change map dots to available docks
-				loadStationMarkersFromArray(stationsArray, true);
-			}
+			// Change map dots to available docks
+			loadStationMarkersFromArray(stationsArray, true);
 		}
 	}
 }

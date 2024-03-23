@@ -266,8 +266,38 @@ function startWSConnection(force = false) {
 										console.log(`${err.name}, ${err.message}`);
 									}
 
-									// Set landscape navigation UI
-									onBikeNavigation();
+									// Add the Navigation Information Panel
+									let navInfoPanelElement = document.createElement("div");
+									navInfoPanelElement.id = "navigationInfoPanel";
+									navInfoPanelElement.innerHTML = `
+									<div id="costAndTimeContainer">
+										<div>
+											<i class="bi bi-currency-euro"></i>
+											<span id="tripCost">0.00€</span>
+										</div>
+										<div>
+											<i class="bi bi-clock"></i>
+											<span id="tripTime">00:00:00</span>
+										</div>
+									</div>
+									<div id="speedContainer">
+										<div id="speed">00</div>
+										<div id="speedLabel">km/h</div>
+									</div>
+									`.trim();
+									document.body.appendChild(navInfoPanelElement);
+
+									// Append the end navigation button
+									appendElementToBodyFromHTML(`
+										<div id="changeRotationModeButton" onclick="changeRotationMode()" style="bottom: 2dvh; right: 2dvh;"><i class="bi bi-sign-turn-right"></i></div>
+									`);
+
+									// Set map pixel ratio (fix mobile map not loading at some points)
+									map.pixelRatio_ = 1.5;
+
+									// Update the map style to hide the on foot UI
+									const mapElement = document.getElementById("map");
+									mapElement.style.zIndex = "15";
 
 									// Change map dots to available docks
 									loadStationMarkersFromArray(stationsArray, true);
@@ -301,7 +331,7 @@ function startWSConnection(force = false) {
 					Object.hasOwn(msgObj.payload.data, "operationalStationsSubscription")
 				) {
 					let newStationsArray = msgObj.payload.data.operationalStationsSubscription;
-					loadStationMarkersFromArray(newStationsArray, tripEnded ? false : true); // Load the stations to the map
+					loadStationMarkersFromArray(newStationsArray, !tripEnded); // Load the stations to the map
 					stationsArray = newStationsArray; // update stations array
 				} else if (Object.hasOwn(msgObj.payload, "errors") && msgObj.payload.errors) {
 					console.log(msgObj.payload.errors[0].message);
