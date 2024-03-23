@@ -375,14 +375,26 @@ async function orientationChangeHandler(event) {
 			// Set map pixel ratio (fix mobile map not loading at some points)
 			map.pixelRatio_ = 1.5;
 
+			createCustomYesNoPrompt(
+				"Para usar a aplicação em modo landscape é recomendado estar em ecrã inteiro.",
+				() => {
+					// Request fullscreen
+					document.body.requestFullscreen();
+				},
+				() => {},
+				"Ok",
+				"Ignorar"
+			);
+
 			// If user switches to landscape while in trip, put into navigation UI
 			if (!tripEnded) onBikeNavigation();
 		}
 	}
 }
 
-let portrait = window.matchMedia("(orientation: portrait)");
-
+// Add an event listener for changes in orientation
+const portrait = window.matchMedia("(orientation: portrait)");
 portrait.addEventListener("change", orientationChangeHandler);
 
-window.addEventListener("load", () => orientationChangeHandler(window.matchMedia("(orientation: portrait)"))); // Initial orientation check
+// Initial orientation check
+window.addEventListener("load", () => orientationChangeHandler(window.matchMedia("(orientation: portrait)")));

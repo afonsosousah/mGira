@@ -469,6 +469,7 @@ function hideTripHistory() {
 	// Show user settings again
 	let userSettingsElem = document.getElementById("userSettings");
 	userSettingsElem.style.maxHeight = "";
+	userSettingsElem.style.overflow = "";
 
 	// Set status bar color in PWA
 	changeThemeColor("#79c000");
@@ -559,6 +560,12 @@ async function openStatisticsMenu() {
     `.trim();
 	document.body.appendChild(menu);
 
+	// Hide user settings behind statistics menu (without animations)
+	if (document.getElementById("userSettings")) {
+		let userSettingsElem = document.getElementById("userSettings");
+		userSettingsElem.style.maxHeight = "100dvh";
+	}
+
 	// Populate chart
 	updateStatisticsChart();
 
@@ -573,6 +580,7 @@ function hideStatisticsMenu() {
 	// Show user settings again
 	let userSettingsElem = document.getElementById("userSettings");
 	userSettingsElem.style.maxHeight = "";
+	userSettingsElem.style.overflow = "";
 
 	// Set status bar color in PWA
 	changeThemeColor("#79c000");

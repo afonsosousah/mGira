@@ -2533,84 +2533,24 @@ input:-webkit-autofill:active{
 	/* #endregion */
 
 	/* #region Login menu */
-	.login-menu {
-		background-color: rgba(35, 31, 32, 0.9);
-		width: 100%;
-		height: 100%;
-		position: absolute;
-		top: 0;
-		left: 0;
-		z-index: 3;
-	}
 	#loginCard #logo {
 		position: absolute;
-		top: calc(-15.625% - 3dvh); /* the -15.625 is calculated using the aspect ratio of the logo (800x250) */
-		width: 50%;
-		left: 25%;
+		top: calc(-15.625% - 14vh); /* the -15.625 is calculated using the aspect ratio of the logo (800x250) */
+		width: 30%;
+		left: 35%;
 	}
 	#loginCard {
-		background-color: white;
-		width: 100%;
-		height: 30dvh;
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		border-radius: 30px 30px 0 0;
-		animation: smooth-appear 0.5s ease forwards;
+		height: 50vh;
 	}
 	#loginCard input {
-		position: absolute;
-		width: calc(70% - 35px - 15px);
-		height: 5.25dvh;
-		left: 15%;
-		top: 10%;
-		line-height: 15%;
-		text-decoration: none;
-		border: none;
-		outline: 1px solid var(--green);
-		padding: 5px 15px;
-		border-radius: 999px;
-		background-color: var(--glass-white);
-		background-image: url("images/envelope-at.svg");
-		background-repeat: no-repeat;
-		background-position-x: calc(100% - 10px);
-		background-position-y: calc(100% - 14px);
-		padding-right: 35px;
-		z-index: 1;
+		height: 10vh;
 	}
 	#loginCard input[name="password"] {
-		top: calc(10% + 5.25dvh + 10px + 2dvh);
-		background-image: url("images/key.svg");
+		top: calc(10% + 10vh + 10px + 2dvh);
 	}
 	#registerButton,
 	#loginButton {
-		background-color: var(--green);
-		color: var(--white);
-		width: 37.5%;
-		height: 6dvh;
-		position: absolute;
-		z-index: 1;
-		left: 7.5%;
-		bottom: 10%;
-		border-radius: 999px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-	#loginButton {
-		left: unset;
-		right: 7.5%;
-	}
-	#loginCard #footer {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		animation: none;
-		height: 14dvh;
-		width: 100%;
-		object-fit: cover;
-		z-index: 0;
-		opacity: 0.05;
+		height: 10vh;
 	}
 	/* #endregion */
 
@@ -2766,7 +2706,7 @@ input:-webkit-autofill:active{
 		object-fit: cover;
 		object-position: top center;
 	}
-	.user-settings #topUserContainer #backButton {
+	.user-settings #backButton, .user-settings #topUserContainer #backButton {
 		width: 6vw;
 		height: 6vw;
 		font-size: calc(0.35 * 6vw);
@@ -2827,11 +2767,28 @@ input:-webkit-autofill:active{
 		gap: 1vw;
 	}
 	.user-settings #settingsContainer {
-		height: 16vw;
+		width: 100vw;
+		height: fit-content;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		gap: 3vw;
 		margin-top: 3vw;
 	}
 	.user-settings #settingsContainer #proxy {
 		width: calc(50vw + 2vw);
+		height: 16vw;
+	}
+	.user-settings #settingsContainer #proxy #resetProxyButton {
+		right: 10%;
+		height: 40%;
+		width: 15%;
+		padding-left: 3%;
+	}
+	.user-settings #settingsContainer #distanceToStation {
+		width: calc(50vw + 2vw);
+		height: 16vw;
 	}
 	#bottom {
 		margin-top: 3vw;
@@ -2885,7 +2842,7 @@ input:-webkit-autofill:active{
 		left: 2vw;
 		width: 6vw;
 		height: 6vw;
-		font-size: calc(0.35 * 8vw);
+		font-size: calc(0.35 * 6vw);
 		margin-bottom: 1vw;
 	}
 	#rateTripMenuCard #tripInfo {
@@ -2947,11 +2904,11 @@ input:-webkit-autofill:active{
 	
 	/* #region Trip history */
 	#tripHistory #backButton {
-		top: 2vw;
+		top: 1vw;
 		left: 2vw;
 		width: 6vw;
 		height: 6vw;
-		font-size: calc(0.35 * 8vw);
+		font-size: calc(0.35 * 6vw);
 		margin-bottom: 1vw;
 	}
 	#tripHistory #title {
@@ -2979,11 +2936,11 @@ input:-webkit-autofill:active{
 
 	/* #region Statistics menu */
 	#statisticsMenu #backButton {
-		top: 2vw;
+		top: 1vw;
 		left: 2vw;
 		width: 6vw;
 		height: 6vw;
-		font-size: calc(0.35 * 8vw);
+		font-size: calc(0.35 * 6vw);
 		margin-bottom: 1vw;
 	}
 	#statisticsMenu #title {
