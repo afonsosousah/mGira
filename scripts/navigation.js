@@ -59,18 +59,20 @@ function onBikeNavigation() {
 	navigationMode = "bike";
 
 	// Request fullscreen
-	document.body.requestFullscreen();
+	if (typeof document.body.requestFullscreen === "function") document.body.requestFullscreen();
 
-	// Tell the user that there is navigation going, so he needs to rotate the screen
-	appendElementToBodyFromHTML(`
-    <div class="rotate-screen-notice" id="rotateScreenNotice">
-        <div id="phone">
-        </div>
-        <div id="message">
-            Rode o seu dispositivo
-        </div>
-    </div>
-    `);
+	// Tell the user that there is navigation going, so he needs to rotate the screen to landscape
+	if (window.matchMedia("(orientation: portrait)").matches) {
+		appendElementToBodyFromHTML(`
+		<div class="rotate-screen-notice" id="rotateScreenNotice">
+			<div id="phone">
+			</div>
+			<div id="message">
+				Rode o seu dispositivo
+			</div>
+		</div>
+		`);
+	}
 
 	// Add the Navigation Information Panel
 	let navInfoPanelElement = document.createElement("div");
@@ -132,16 +134,18 @@ async function finalOnFootNavigation() {
 	const mapElement = document.getElementById("map");
 	mapElement.style.zIndex = "10";
 
-	// Tell the user that there is navigation going, so he needs to rotate the screen
-	appendElementToBodyFromHTML(`
-    <div class="rotate-screen-notice" id="rotateScreenNotice">
-        <div id="phone">
-        </div>
-        <div id="message">
-            Rode o seu dispositivo
-        </div>
-    </div>
-    `);
+	// Tell the user that there is navigation going, so he needs to rotate the screen to portrait
+	if (window.matchMedia("(orientation: landscape)").matches) {
+		appendElementToBodyFromHTML(`
+		<div class="rotate-screen-notice" id="rotateScreenNotice">
+			<div id="phone">
+			</div>
+			<div id="message">
+				Rode o seu dispositivo
+			</div>
+		</div>
+		`);
+	}
 
 	// Set map pixel ratio (fix mobile map not loading at some points)
 	map.pixelRatio_ = 2;
@@ -375,16 +379,19 @@ async function orientationChangeHandler(event) {
 			// Set map pixel ratio (fix mobile map not loading at some points)
 			map.pixelRatio_ = 1.5;
 
-			createCustomYesNoPrompt(
-				"Para usar a aplicação em modo landscape é recomendado estar em ecrã inteiro.",
-				() => {
-					// Request fullscreen
-					document.body.requestFullscreen();
-				},
-				() => {},
-				"Ok",
-				"Ignorar"
-			);
+			// Recommend to user to switch to fullscreen when in landscape
+			if (typeof document.body.requestFullscreen === "function") {
+				createCustomYesNoPrompt(
+					"Para usar a aplicação em modo landscape é recomendado estar em ecrã inteiro.",
+					() => {
+						// Request fullscreen
+						document.body.requestFullscreen();
+					},
+					() => {},
+					"Ok",
+					"Ignorar"
+				);
+			}
 
 			// If user switches to landscape while in trip, put into navigation UI
 			if (!tripEnded) {
