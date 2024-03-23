@@ -224,7 +224,7 @@ async function openUserSettings() {
         <div id="subscriptionContainer">
             <div>
                 <i class="bi bi-credit-card" id="cardSVG"></i>
-                <div id="subscriptionName">${userObj.activeUserSubscriptions[0].name}</div>
+                <div id="subscriptionName">Passe ${toPascalCase(userObj.activeUserSubscriptions[0].type)}</div>
                 <div id="subscriptionValidity">Válido até ${subscriptionExpiration.toLocaleDateString("pt")}</div>
             </div>
         </div>
