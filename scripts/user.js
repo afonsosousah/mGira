@@ -583,7 +583,7 @@ function updateStatisticsChart() {
 		});
 
 		// Get the time (in ms) and distance (in km) ridden for each trip
-		for (trip of dayTrips) {
+		for (const trip of dayTrips) {
 			let tripTime = Date.parse(trip.endDate) - Date.parse(trip.startDate);
 			trip.riddenTime = tripTime;
 			// Calculate an estimate for trip distance (assuming an avg speed of 15km/h)
