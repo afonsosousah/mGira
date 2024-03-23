@@ -55,19 +55,11 @@ async function startNavigation(walkingOnly = false) {
 	updatePositionAndRotationWhenNavigating(); // do twice because the first time the alignment is not right (no idea why)
 }
 
-async function onBikeNavigation() {
+function onBikeNavigation() {
 	navigationMode = "bike";
 
 	// Request fullscreen
 	document.body.requestFullscreen();
-
-	// Make the device awake
-	try {
-		wakeLock = await navigator.wakeLock.request("screen");
-	} catch (err) {
-		// The Wake Lock request has failed - usually system related, such as battery.
-		console.log(`${err.name}, ${err.message}`);
-	}
 
 	// Tell the user that there is navigation going, so he needs to rotate the screen
 	appendElementToBodyFromHTML(`
@@ -395,7 +387,21 @@ async function orientationChangeHandler(event) {
 			);
 
 			// If user switches to landscape while in trip, put into navigation UI
-			if (!tripEnded) onBikeNavigation();
+			if (!tripEnded) {
+				// Make the device awake
+				try {
+					wakeLock = await navigator.wakeLock.request("screen");
+				} catch (err) {
+					// The Wake Lock request has failed - usually system related, such as battery.
+					console.log(`${err.name}, ${err.message}`);
+				}
+
+				// Set landscape navigation UI
+				onBikeNavigation();
+
+				// Change map dots to available docks
+				loadStationMarkersFromArray(stationsArray, true);
+			}
 		}
 	}
 }

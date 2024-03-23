@@ -257,7 +257,21 @@ function startWSConnection(force = false) {
 								);
 
 								// If user is in landscape when the trip starts, put into navigation UI
-								if (window.matchMedia("(orientation: landscape)").matches) onBikeNavigation();
+								if (window.matchMedia("(orientation: landscape)").matches) {
+									// Make the device awake
+									try {
+										wakeLock = await navigator.wakeLock.request("screen");
+									} catch (err) {
+										// The Wake Lock request has failed - usually system related, such as battery.
+										console.log(`${err.name}, ${err.message}`);
+									}
+
+									// Set landscape navigation UI
+									onBikeNavigation();
+
+									// Change map dots to available docks
+									loadStationMarkersFromArray(stationsArray, true);
+								}
 
 								// start the trip timer
 								tripEnded = false;
@@ -287,7 +301,7 @@ function startWSConnection(force = false) {
 					Object.hasOwn(msgObj.payload.data, "operationalStationsSubscription")
 				) {
 					let newStationsArray = msgObj.payload.data.operationalStationsSubscription;
-					loadStationMarkersFromArray(newStationsArray); // Load the stations to the map
+					loadStationMarkersFromArray(newStationsArray, tripEnded ? false : true); // Load the stations to the map
 					stationsArray = newStationsArray; // update stations array
 				} else if (Object.hasOwn(msgObj.payload, "errors") && msgObj.payload.errors) {
 					console.log(msgObj.payload.errors[0].message);
