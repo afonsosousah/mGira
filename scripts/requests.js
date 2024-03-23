@@ -249,6 +249,7 @@ function startWSConnection(force = false) {
 								tripOverlay.innerHTML = `
 									<span id="onTripText">Em viagem</span>
 									<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
+									<span id="tripBike">${activeTripObj.bike}</span>
 									<span id="tripCost">0.00€</span>
 									<span id="tripTime">00:00:00</span>
 									<a id="callAssistance" href="tel:211163125"><i class="bi bi-exclamation-triangle"></i></a>

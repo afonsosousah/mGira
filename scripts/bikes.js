@@ -319,22 +319,6 @@ async function startBikeTrip(event, bikeSerialNumber) {
 			// hide bike list if it is showing
 			if (document.querySelector("#bikeMenu")) document.querySelector("#bikeMenu").remove();
 
-			// show the trip overlay if user is not in navigation
-			if (!navigationActive) {
-				let tripOverlay = document.createElement("div");
-				tripOverlay.className = "trip-overlay";
-				tripOverlay.id = "tripOverlay";
-				tripOverlay.innerHTML = `
-					<span id="onTripText">Em viagem</span>
-					<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
-					<span id="tripCost">0.00€</span>
-					<span id="tripTime">00:00:00</span>
-					<a id="callAssistance" href="tel:211163125"><i class="bi bi-exclamation-triangle"></i></a>
-					<img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
-				`.trim();
-				document.body.appendChild(tripOverlay);
-			}
-
 			// start the trip timer
 			tripEnded = false;
 			tripTimer(Date.now());

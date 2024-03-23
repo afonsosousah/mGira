@@ -1037,14 +1037,25 @@ input:-webkit-autofill:active{
 	bottom: 2dvh;
 	left: 3dvh;
 	font-size: 1.2rem;
+	line-height: 1.2rem;
 	color: var(--black);
 	z-index: 4;
 }
 .trip-overlay #tripTime {
 	position: absolute;
-	bottom: 6dvh;
+	bottom: calc(2dvh + 1.2rem + 1dvh);
 	left: 3dvh;
 	font-size: 1.2rem;
+	line-height: 1.2rem;
+	color: var(--black);
+	z-index: 4;
+}
+.trip-overlay #tripBike {
+	position: absolute;
+	bottom: calc(2dvh + 1.2rem + 1dvh + 1.2rem + 1dvh);
+	left: 3dvh;
+	font-size: 1.2rem;
+	line-height: 1.2rem;
 	color: var(--black);
 	z-index: 4;
 }
