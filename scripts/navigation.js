@@ -374,6 +374,9 @@ async function orientationChangeHandler(event) {
 
 			// Set map pixel ratio (fix mobile map not loading at some points)
 			map.pixelRatio_ = 1.5;
+
+			// If user switches to landscape while in trip, put into navigation UI
+			if (!tripEnded) onBikeNavigation();
 		}
 	}
 }

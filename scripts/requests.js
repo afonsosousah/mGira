@@ -256,6 +256,9 @@ function startWSConnection(force = false) {
 								`.trim()
 								);
 
+								// If user is in landscape when the trip starts, put into navigation UI
+								if (window.matchMedia("(orientation: landscape)").matches) onBikeNavigation();
+
 								// start the trip timer
 								tripEnded = false;
 								tripTimer(Date.parse(activeTripObj.startDate));
