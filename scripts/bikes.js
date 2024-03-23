@@ -329,16 +329,26 @@ async function startBikeTrip(event, bikeSerialNumber) {
 async function tripTimer(startTime) {
 	// Update only is trip has not ended, and websocket is connected
 	if (!tripEnded && ws?.readyState === WebSocket.OPEN) {
+		// Calculate elapsed time
+		const elapsedTime = Date.now() - startTime;
+
 		// Update timer on trip overlay
 		if (document.querySelector("#tripTime")) {
-			// Calculate elapsed time
-			const elapsedTime = Date.now() - startTime;
 			for (let element of document.querySelectorAll("#tripTime")) {
 				element.innerHTML = parseMillisecondsIntoTripTime(elapsedTime);
 			}
 		}
+
+		// Update cost on trip overlay
 		if (document.querySelector("#tripCost") && activeTripObj) {
-			let cost = activeTripObj.cost;
+			let cost = 0;
+
+			// Set the cost based on values on the website (API doesn't return the cost)
+			const numberOf45MinPeriods = Math.floor(elapsedTime / (45 * 60 * 1000));
+			if (numberOf45MinPeriods === 1) cost = 1;
+			else if (numberOf45MinPeriods > 1) cost = 2 * numberOf45MinPeriods;
+
+			// Update the element
 			if (cost) {
 				for (let element of document.querySelectorAll("#tripCost")) {
 					element.innerHTML = parseFloat(cost).toFixed(2) + "€";
