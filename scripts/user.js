@@ -564,6 +564,8 @@ async function openStatisticsMenu() {
 	if (document.getElementById("userSettings")) {
 		let userSettingsElem = document.getElementById("userSettings");
 		userSettingsElem.style.maxHeight = "100dvh";
+		userSettingsElem.style.overflow = "hidden";
+		document.body.scrollTop = document.documentElement.scrollTop = 0; // scroll to top of the page
 	}
 
 	// Populate chart

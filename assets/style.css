@@ -2955,6 +2955,7 @@ input:-webkit-autofill:active{
 	}
 	#statisticsMenu #statsTotals {
 		height: calc(6vw + 1rem);
+		gap: 1.5vw;
 	}
 	#statisticsMenu #statsTotals .stats-totals-element {
 		height: calc(6vw + 1rem);
