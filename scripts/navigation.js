@@ -343,15 +343,15 @@ async function orientationChangeHandler(event) {
 			initialWindowHeight = window.innerHeight;
 		}
 
+		// Exit fullscreen
+		try {
+			if (document.fullscreenElement) await document.exitFullscreen();
+		} catch (error) {
+			console.log(error);
+		}
+
 		// If in navigation UI, change to default UI
 		if (document.querySelector("#navigationInfoPanel")) {
-			// Exit fullscreen
-			try {
-				await document.exitFullscreen();
-			} catch (error) {
-				console.log(error);
-			}
-
 			// Remove all the on bike navigation elements
 			const navigationElements = Array.from(document.querySelectorAll("*")).filter(
 				e => getComputedStyle(e).zIndex === "16"
