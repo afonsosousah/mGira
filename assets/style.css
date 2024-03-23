@@ -2853,5 +2853,158 @@ input:-webkit-autofill:active{
 	}
 	/* #endregion */
 
+	/* #region Place search menu */
+	.place-search-menu {
+	max-height: calc(30vh + 2vw + 7vw + 1vw);
+	}
+	.place-search-menu #placeList {
+	width: calc(100% - 4vw);
+	margin-bottom: calc(2vw + 7vw + 1vw);
+	margin-left: 2vw;
+	max-height: 30vh;
+	}
+	.place-search-menu #startNavigationButton {
+	top: -15vh;
+	right: calc(2vw + 6vw + 2vw);
+	height: 6vw;
+	width: 6vw;
+	}
+	.place-search-menu #routeDetails {
+	top: -15vh;
+	left: 2vw;
+	height: 6vw;
+	}
+	/* #endregion */
+
+	/* #region Rate trip menu */
+	#rateTripMenuCard {
+		height: 25%;
+	}
+	#rateTripMenuCard #backButton {
+		top: 2vw;
+		left: 2vw;
+		width: 6vw;
+		height: 6vw;
+		font-size: calc(0.35 * 8vw);
+		margin-bottom: 1vw;
+	}
+	#rateTripMenuCard #tripInfo {
+		position: absolute;
+		top: 5vh;
+		left: calc(2vw + 6vw);
+	}
+	#rateTripMenuCard #stationImg {
+		top: 3vw;
+		right: 3vw;
+		width: 10%;
+	}
+	#rateTripMenuCard #ratingLabel {
+		position: absolute;
+		bottom: calc(4vw + 7vw);
+		left: 0;
+	}
+	#rateTripMenuCard #ratingFormContainer {
+		position: absolute;
+		bottom: 4vw;
+		left: 0;
+	}
+	#rateTripMenuCard #ratingFormContainer .rating {
+		line-height: 7vw;
+		font-size: 7vw;
+	}
+	#rateTripMenuCard #sendButton {
+		width: 40vh;
+		height: 6vw;
+		right: 1.5vw;
+		bottom: 1.5vw;
+	}
+	/* #endregion */
+
+	/* #region Take unregistered bike */
+	#openTakeUnregisteredBikeButton {
+		padding: 2vw;
+		height: 15vw;
+		margin: 2vw 0;
+		width: calc(90vw - 4vw);
+	}
+	#openTakeUnregisteredBikeButton #upperText {
+		top: 2vw;
+		left: 3vw;
+	}
+	#openTakeUnregisteredBikeButton #lowerText {
+		bottom: 2vw;
+		left: 3vw;
+	}
+	#openTakeUnregisteredBikeButton img {
+		bottom: 2vw;
+		right: 2vw;
+		height: 13vw;
+	}
+	#takeUnregisteredBike {
+		height: 40%;
+	}
+	/* #endregion */
 	
+	/* #region Trip history */
+	#tripHistory #backButton {
+		top: 2vw;
+		left: 2vw;
+		width: 6vw;
+		height: 6vw;
+		font-size: calc(0.35 * 8vw);
+		margin-bottom: 1vw;
+	}
+	#tripHistory #title {
+		top: 3vw;
+		right: 2vw;
+	}
+	#tripHistory #downloadTripHistoryButton {
+		bottom: 2.5vw;
+		right: 2.5vw;
+		width: 8vw;
+		height: 8vw;
+	}
+	#tripHistory #tripList {
+		max-height: 80%;
+	}
+	.trip-list-element {
+		margin-bottom: 2vw;
+		padding: 2.5vw 2vw;
+		width: calc(50% - 4vw);
+	}
+	.trip-list-element #tripStations img {
+		max-width: 50vh;
+	}
+	/* #endregion */
+
+	/* #region Statistics menu */
+	#statisticsMenu #backButton {
+		top: 2vw;
+		left: 2vw;
+		width: 6vw;
+		height: 6vw;
+		font-size: calc(0.35 * 8vw);
+		margin-bottom: 1vw;
+	}
+	#statisticsMenu #title {
+		top: 3vw;
+	}
+	#statisticsMenu #usableArea {
+		top: 8vw;
+	}
+	#statisticsMenu #statsControls {
+		padding-bottom: 4vw;
+		padding-top: 2vw;
+	}
+	#statisticsMenu #statsTotals {
+		height: calc(6vw + 1rem);
+	}
+	#statisticsMenu #statsTotals .stats-totals-element {
+		height: calc(6vw + 1rem);
+	}
+	#statisticsMenu #statsTotals .stats-totals-element div:first-child {
+		height: 6vw;
+	}
+	/* #endregion */
+
 }
