@@ -1052,7 +1052,7 @@ input:-webkit-autofill:active{
 }
 .trip-overlay #tripBike {
 	position: absolute;
-	bottom: calc(2dvh + 1.2rem + 1dvh + 1.2rem + 1dvh);
+	top: calc(2.5dvh + 2rem + 1dvh);
 	left: 3dvh;
 	font-size: 1.2rem;
 	line-height: 1.2rem;

@@ -243,10 +243,8 @@ function startWSConnection(force = false) {
 							// Show the trip overlay if it is not shown already and the user is not on navigation
 							if (!document.querySelector("#tripOverlay") && !navigationActive) {
 								// show the trip overlay if user is not in navigation
-								let tripOverlay = document.createElement("div");
-								tripOverlay.className = "trip-overlay";
-								tripOverlay.id = "tripOverlay";
-								tripOverlay.innerHTML = `
+								appendElementToBodyFromHTML(`
+								<div class="trip-overlay" id="tripOverlay">
 									<span id="onTripText">Em viagem</span>
 									<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
 									<span id="tripBike">${activeTripObj.bike}</span>
@@ -254,8 +252,9 @@ function startWSConnection(force = false) {
 									<span id="tripTime">00:00:00</span>
 									<a id="callAssistance" href="tel:211163125"><i class="bi bi-exclamation-triangle"></i></a>
 									<img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
-                                `.trim();
-								document.body.appendChild(tripOverlay);
+								<div>
+								`.trim()
+								);
 
 								// start the trip timer
 								tripEnded = false;
