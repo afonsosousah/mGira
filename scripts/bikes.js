@@ -193,7 +193,7 @@ async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSer
 					<text x="50%" y="65%" text-anchor="middle">segundos</text>
 				</svg>
 			</div>
-			<input type="range" name="unlockSlider" id="unlockSlider" onchange="startBikeTrip(event, '${bikeSerialNumber}');" min="0" max="100" value="0">
+			<input type="range" name="unlockSlider" id="unlockSlider" onchange="startBikeTrip(event, '${bikeObj.name}');" min="0" max="100" value="0">
 			<img src="assets/images/gira_footer.svg" id="footer" alt="footer">
         </div>
     `.trim();
@@ -286,7 +286,7 @@ function takeUnregisteredBike() {
 }
 
 // Handles the range input value changed event, and starts the bike trip if the slider is all the way to the right
-async function startBikeTrip(event, bikeSerialNumber) {
+async function startBikeTrip(event, bikeName) {
 	if (event.target.value === "100") {
 		// Show the bike leaving dock animation in the card
 		let bikeReserveCardElem = document.getElementById("bikeReserveCard");
@@ -318,6 +318,20 @@ async function startBikeTrip(event, bikeSerialNumber) {
 
 			// hide bike list if it is showing
 			if (document.querySelector("#bikeMenu")) document.querySelector("#bikeMenu").remove();
+
+			// show the trip overlay
+			appendElementToBodyFromHTML(`
+				<div class="trip-overlay" id="tripOverlay">
+					<span id="onTripText">Em viagem</span>
+					<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
+					<span id="tripBike">${bikeName}</span>
+					<span id="tripCost">0.00€</span>
+					<span id="tripTime">00:00:00</span>
+					<a id="callAssistance" href="tel:211163125"><i class="bi bi-exclamation-triangle"></i></a>
+					<img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
+				<div>
+			`.trim()
+			);
 
 			// start the trip timer
 			tripEnded = false;
