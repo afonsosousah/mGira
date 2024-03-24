@@ -331,6 +331,19 @@ function updatePositionAndRotationWhenNavigating() {
 	}
 }
 
+function updatePositionWhenInNavigationUI() {
+	if (window.matchMedia("(orientation: landscape)").matches && !tripEnded) {
+		// Pan to location (pos object is global and is updated getLocation() in map.js)
+		const view = map.getView();
+		const mapSize = map.getSize();
+		const userPosition = ol.proj.fromLonLat(pos);
+
+		view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.9]);
+
+		requestAnimationFrame(updatePositionWhenInNavigationUI);
+	}
+}
+
 async function orientationChangeHandler(event) {
 	if (event.matches) {
 		// Portrait
@@ -446,6 +459,9 @@ async function orientationChangeHandler(event) {
 
 			// Change map dots to available docks
 			loadStationMarkersFromArray(stationsArray, true);
+
+			// Start the position updating
+			updatePositionWhenInNavigationUI();
 		}
 	}
 }
