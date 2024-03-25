@@ -241,7 +241,7 @@ async function openBikeList(stationSerialNumber) {
 
 		bikeListElement.innerHTML = `
             <div id="battery" style="width: ${bike.name[0] === "E" ? `${bike.battery}%` : `0`}"></div>
-            <div id="content" onclick="openUnlockBikeCard('${stationSerialNumber}','${bike.serialNumber}','${
+            <div id="content" onclick="openUnlockBikeCard('${stationSerialNumber}','${JSON.stringify(bike)}','${
 			dockObj.serialNumber
 		}')">
 				<img id="bikeIcon" src="assets/images/${bike.name[0] === "E" ? `ebike.png` : `classic.png`}">

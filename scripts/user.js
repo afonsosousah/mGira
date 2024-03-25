@@ -417,7 +417,7 @@ function openTripHistory() {
 			<div id="tripStations">
 				<img src="assets/images/tripStations.png">
 				<div id="startStation">${trip.startLocation}</div>
-				<div id="endStation">${trip.endLocation}</div>
+				<div id="endStation">${trip.endLocation ?? "Não foi possível obter a estação final"}</div>
 			</div>
         `.trim();
 		document.getElementById("tripList").appendChild(tripListElement);

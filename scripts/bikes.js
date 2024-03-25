@@ -123,7 +123,7 @@ async function tripPayWithPoints(tripCode) {
 	return response.data.tripPayWithPoints;
 }
 
-async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSerialNumber, unregistered = false) {
+async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNumber, unregistered = false) {
 	let stationObj;
 
 	if (stationSerialNumber !== null) {
@@ -149,9 +149,9 @@ async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSer
 	let bikeObj;
 
 	if (!unregistered) {
-		bikeObj = stationObj.bikeList.find(obj => obj.serialNumber === bikeSerialNumber);
+		bikeObj = JSON.parse(bikeObjJSON);
 	} else {
-		bikeObj = bikeSerialNumberMapping.find(obj => obj.serialNumber === bikeSerialNumber);
+		bikeObj = JSON.parse(bikeObjJSON);
 		bikeObj.battery = "?";
 		stationObj = { name: "Bicicleta não registada" };
 	}
@@ -168,7 +168,7 @@ async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSer
 	console.log("The bike will be reserved!");
 
 	// reserve the bike
-	if (typeof (await reserveBike(bikeSerialNumber)) === "undefined") {
+	if (typeof (await reserveBike(bikeObj.serialNumber)) === "undefined") {
 		alert("Ocorreu um erro ao reservar a bicicleta.");
 		return;
 	}
@@ -193,7 +193,9 @@ async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSer
 					<text x="50%" y="65%" text-anchor="middle">segundos</text>
 				</svg>
 			</div>
-			<input type="range" name="unlockSlider" id="unlockSlider" onchange="startBikeTrip(event, '${bikeObj.name}');" min="0" max="100" value="0">
+			<input type="range" name="unlockSlider" id="unlockSlider" onchange="startBikeTrip(event, '${
+				bikeObj.name
+			}');" min="0" max="100" value="0">
 			<img src="assets/images/gira_footer.svg" id="footer" alt="footer">
         </div>
     `.trim();
@@ -271,17 +273,16 @@ function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 
 function takeUnregisteredBike() {
 	// Get the bike object from the name written on the input element
-	let bikeName = document.getElementById("unregisteredBikeNameInput").value;
-	let bikeObj = bikeSerialNumberMapping.filter(bike => bike.name === bikeName)[0];
+	const bikeName = document.getElementById("unregisteredBikeNameInput").value;
+	const bikeObj = bikeSerialNumberMapping.filter(bike => bike.name === bikeName)[0];
 
 	// Try to open the unlock bike card, to take bike
 	if (typeof bikeObj !== "undefined") {
-		let serialNumber = bikeObj.serialNumber;
-		openUnlockBikeCard(null, serialNumber, null, true);
-		if (document.getElementById("takeUnregisteredBike")) document.getElementById("takeUnregisteredBike").remove();
+		openUnlockBikeCard(null, JSON.stringify(bikeObj), null, true);
+		document.getElementById("takeUnregisteredBike")?.remove();
 	} else {
 		alert("A bicicleta não foi encontrada...");
-		if (document.getElementById("takeUnregisteredBike")) document.getElementById("takeUnregisteredBike").remove();
+		document.getElementById("takeUnregisteredBike")?.remove();
 	}
 }
 
@@ -320,7 +321,8 @@ async function startBikeTrip(event, bikeName) {
 			if (document.querySelector("#bikeMenu")) document.querySelector("#bikeMenu").remove();
 
 			// show the trip overlay
-			appendElementToBodyFromHTML(`
+			appendElementToBodyFromHTML(
+				`
 				<div class="trip-overlay" id="tripOverlay">
 					<span id="onTripText">Em viagem</span>
 					<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
