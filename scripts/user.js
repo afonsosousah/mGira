@@ -119,16 +119,32 @@ async function getUserInformation() {
 			query: `query {
             client: client { code, type, balance, paypalReference, bonus, numberNavegante }
             activeUserSubscriptions: activeUserSubscriptions { code, cost, expirationDate, name, nameEnglish, subscriptionCost, subscriptionPeriod, subscriptionStatus, type, active }
-            tripHistory: tripHistory(pageInput: { _pageNum: 1, _pageSize: 1000 }) { bikeName bikeType bonus code cost endDate endLocation rating startDate startLocation usedPoints }
         }`,
 		}),
 		user.accessToken
 	);
 	user = { ...user, ...response.data.client[0] };
 	user.activeUserSubscriptions = response.data.activeUserSubscriptions;
-	user.tripHistory = response.data.tripHistory;
+
+	// Get user's trip history asynchronously
+	getTripHistory();
 
 	return user;
+}
+
+// get tripHistory
+async function getTripHistory() {
+	response = await makePostRequest(
+		"https://apigira.emel.pt/graphql",
+		JSON.stringify({
+			operationName: "tripHistory",
+			variables: { in: { _pageNum: 1, _pageSize: 1000 } },
+			query:
+				"query tripHistory($in: PageInput) { tripHistory(pageInput: $in) { bikeName bikeType bonus code cost endDate endLocation rating startDate startLocation usedPoints }}",
+		}),
+		user.accessToken
+	);
+	user.tripHistory = response.data.tripHistory;
 }
 
 // Open the login menu element and populate it
@@ -351,10 +367,30 @@ function setUserImageInitials(username) {
 	userInitialsElement.innerHTML = initials;
 }
 
-function openTripHistory() {
-	// Create element
+async function openTripHistory() {
 	let menu = document.createElement("div");
 	menu.id = "tripHistory";
+
+	if (document.querySelectorAll("#tripHistory").length === 0) document.body.appendChild(menu);
+
+	// Hide user settings behind trip history (without animations)
+	let userSettingsElem = document.getElementById("userSettings");
+	userSettingsElem.style.maxHeight = "100dvh";
+
+	if (!user.tripHistory) {
+		// show loading animation
+		menu.innerHTML = `
+		<img src="assets/images/mGira_spinning.gif" id="spinner">
+		<div id="backButton" onclick="hideTripHistory();"><i class="bi bi-arrow-90deg-left"></i></div>
+		`;
+
+		// Get user's trip history
+		await getTripHistory();
+
+		if (document.querySelectorAll("#tripHistory").length === 0) hideTripHistory();
+	}
+
+	// Create element
 	menu.innerHTML = `
         <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
         <div id="backButton" onclick="hideTripHistory();"><i class="bi bi-arrow-90deg-left"></i></div>
@@ -366,11 +402,6 @@ function openTripHistory() {
 			<i class="bi bi-cloud-download"></i>
 		</div>
     `.trim();
-	document.body.appendChild(menu);
-
-	// Hide user settings behind trip history (without animations)
-	let userSettingsElem = document.getElementById("userSettings");
-	userSettingsElem.style.maxHeight = "100dvh";
 
 	// populate the trip list
 	for (let trip of user.tripHistory) {
@@ -444,10 +475,38 @@ function hideTripHistory() {
 }
 
 // Statistics Menu
-function openStatisticsMenu() {
+async function openStatisticsMenu() {
 	// Create element
 	let menu = document.createElement("div");
 	menu.id = "statisticsMenu";
+
+	if (document.querySelectorAll("#statisticsMenu").length === 0) document.body.appendChild(menu);
+
+	// Hide user settings behind statistics menu (without animations)
+	if (document.getElementById("userSettings")) {
+		let userSettingsElem = document.getElementById("userSettings");
+		userSettingsElem.style.maxHeight = "100dvh";
+	}
+
+	if (!user.tripHistory) {
+		// set background to white
+		menu.style.backgroundColor = "var(--white)";
+
+		// show loading animation
+		menu.innerHTML = `
+		<img src="assets/images/mGira_spinning.gif" id="spinner">
+		<div id="backButton" onclick="hideStatisticsMenu();"><i class="bi bi-arrow-90deg-left"></i></div>
+		`;
+
+		// Get user's trip history
+		await getTripHistory();
+
+		if (document.querySelectorAll("#statisticsMenu").length === 0) hideStatisticsMenu();
+
+		// set background back to black
+		menu.style.backgroundColor = "var(--black)";
+	}
+
 	menu.innerHTML = `
         <img src="assets/images/gira_footer_white.svg" alt="footer" id="graphics">
         <div id="backButton" onclick="hideStatisticsMenu();"><i class="bi bi-arrow-90deg-left"></i></div>
@@ -499,12 +558,6 @@ function openStatisticsMenu() {
 		</div>
     `.trim();
 	document.body.appendChild(menu);
-
-	// Hide user settings behind statistics menu (without animations)
-	if (document.getElementById("userSettings")) {
-		let userSettingsElem = document.getElementById("userSettings");
-		userSettingsElem.style.maxHeight = "100dvh";
-	}
 
 	// Populate chart
 	updateStatisticsChart();
