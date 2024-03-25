@@ -243,7 +243,8 @@ function startWSConnection(force = false) {
 							// Show the trip overlay if it is not shown already and the user is not on navigation
 							if (!document.querySelector("#tripOverlay") && !navigationActive) {
 								// show the trip overlay if user is not in navigation
-								appendElementToBodyFromHTML(`
+								appendElementToBodyFromHTML(
+									`
 								<div class="trip-overlay" id="tripOverlay">
 									<span id="onTripText">Em viagem</span>
 									<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
@@ -255,6 +256,9 @@ function startWSConnection(force = false) {
 								<div>
 								`.trim()
 								);
+
+								// Change map dots to available docks
+								loadStationMarkersFromArray(stationsArray, true);
 
 								// If user is in landscape when the trip starts, put into navigation UI
 								if (window.matchMedia("(orientation: landscape)").matches) {

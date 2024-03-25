@@ -335,6 +335,9 @@ async function startBikeTrip(event, bikeName) {
 			`.trim()
 			);
 
+			// Change map dots to available docks
+			loadStationMarkersFromArray(stationsArray, true);
+
 			// start the trip timer
 			tripEnded = false;
 			tripTimer(Date.now());
