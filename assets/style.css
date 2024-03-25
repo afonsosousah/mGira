@@ -257,6 +257,8 @@ body {
 	bottom: unset !important;
 	right: unset !important;
 	border-radius: 999px !important;
+	margin-left: env(safe-area-inset-left);
+	margin-top: env(safe-area-inset-top);
 }
 .ol-attribution button {
 	all: unset;
@@ -283,6 +285,7 @@ body {
 	position: absolute;
 	left: 2vh;
 	bottom: 2vh;
+	margin-left: env(safe-area-inset-left);	
 }
 /* #endregion */
 
@@ -292,11 +295,12 @@ body {
 	width: fit-content;
 	height: fit-content;
 	position: absolute;
-	right: 2vh;
+	right: calc(2vh);
 	bottom: calc(2vh + 7vh + 2vh);
 	display: flex;
 	flex-direction: column;
 	gap: 1vh;
+	margin-right: env(safe-area-inset-right);	
 }
 #zoomControls div {
 	background-color: var(--green);
@@ -320,7 +324,7 @@ body {
 
 /* #region Search bar */
 #searchBarDiv {
-	width: 100%;
+	width: calc(100%);
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -414,6 +418,7 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	align-items: center;
 	box-shadow: 0px 1px 6px 0px var(--green);
+	margin-right: env(safe-area-inset-right);	
 }
 #navigationButton img {
 	border-radius: 999px;
@@ -437,6 +442,7 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	align-items: center;
 	box-shadow: 0px 1px 6px 0px var(--green);
+	margin-right: env(safe-area-inset-right);
 }
 /*#userPicture img {
 	border-radius: 999px;
@@ -1111,6 +1117,8 @@ input:-webkit-autofill:active{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin-top: env(safe-area-inset-top);
+	margin-left: env(safe-area-inset-left);
 }
 .user-settings i {
 	width: 32px;
@@ -1124,6 +1132,7 @@ input:-webkit-autofill:active{
 	width: 100vw;
 	height: 24vh;
 	background-color: var(--green);
+	padding-top: env(safe-area-inset-top);
 }
 .user-settings #topUserContainer #footer {
 	position: absolute;
@@ -1587,6 +1596,7 @@ input:-webkit-autofill:active{
 	align-items: center;
 	justify-content: right;
 	flex-direction: column;
+	margin-left: env(safe-area-inset-left);
 }
 #navigationInfoPanel #costAndTimeContainer {
 	background-color: var(--green);
@@ -1631,6 +1641,12 @@ input:-webkit-autofill:active{
 	font-size: 2.5rem;
 	line-height: 2rem;
 	color: var(--black);
+	margin-right: env(safe-area-inset-right);
+}
+#changeRotationModeButton img {
+	height: 2.5rem;
+	width: 2.5rem;
+	object-fit: contain;
 }
 #endNavigationButton {
 	height: 4rem;
@@ -1647,6 +1663,7 @@ input:-webkit-autofill:active{
 	font-size: 2.5rem;
 	line-height: 2rem;
 	color: var(--green);
+	margin-right: env(safe-area-inset-right);
 }
 #reachedFinalStation {
 	height: 8%;
@@ -2091,6 +2108,7 @@ input:-webkit-autofill:active{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin-top: env(safe-area-inset-top);
 }
 #tripHistory #backButton i {
 	width: 32px;
@@ -2106,6 +2124,7 @@ input:-webkit-autofill:active{
 	font-size: 1.3rem;
 	font-weight: bold;
 	color: var(--green);
+	margin-top: env(safe-area-inset-top);
 }
 #tripHistory #downloadTripHistoryButton {
 	position: absolute;
@@ -2134,7 +2153,7 @@ input:-webkit-autofill:active{
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	max-height: 90%;
+	max-height: calc(90% - env(safe-area-inset-top));
 	overflow: scroll;
 	padding-top: 2vh;
 	display: flex;
@@ -2241,6 +2260,7 @@ input:-webkit-autofill:active{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin-top: env(safe-area-inset-top);
 }
 #statisticsMenu #backButton i {
 	width: 32px;
@@ -2256,13 +2276,14 @@ input:-webkit-autofill:active{
 	font-size: 1.3rem;
 	font-weight: bold;
 	color: var(--green);
+	margin-top: env(safe-area-inset-top);
 }
 #statisticsMenu #usableArea {
 	position: absolute;
-	top: 8dvh;
+	bottom: 0;
 	left: 0;
 	width: 100vw;
-	height: 92dvh;
+	height: calc(92dvh - env(safe-area-inset-top));
 	display: flex;
 	flex-direction: column;
 	gap: 2dvh;

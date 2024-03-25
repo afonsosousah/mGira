@@ -441,8 +441,8 @@ function startLocationDotRotation() {
 		// Calculate the current compass heading that the user is 'looking at' (in radians) (global)
 		compassHeading = -(Math.PI / 180) * (360 - currentOrientation);
 
-		// Adjust heading if device is on landscape
-		//if (window.matchMedia("(orientation: landscape)").matches) compassHeading += (Math.PI / 180) * 90;
+		// Adjust heading with device orientation
+		compassHeading += (Math.PI / 180) * window.screen.orientation.angle;
 
 		if (!pos) return;
 
