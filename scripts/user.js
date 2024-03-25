@@ -374,8 +374,12 @@ async function openTripHistory() {
 	if (document.querySelectorAll("#tripHistory").length === 0) document.body.appendChild(menu);
 
 	// Hide user settings behind trip history (without animations)
-	let userSettingsElem = document.getElementById("userSettings");
-	userSettingsElem.style.maxHeight = "100dvh";
+	const userSettingsElem = document.getElementById("userSettings");
+	if (userSettingsElem) {
+		userSettingsElem.style.maxHeight = "100dvh";
+		userSettingsElem.style.overflow = "hidden";
+		document.body.scrollTop = document.documentElement.scrollTop = 0; // scroll to top of the page
+	}
 
 	if (!user.tripHistory) {
 		// show loading animation
@@ -484,9 +488,11 @@ async function openStatisticsMenu() {
 	if (document.querySelectorAll("#statisticsMenu").length === 0) document.body.appendChild(menu);
 
 	// Hide user settings behind statistics menu (without animations)
-	if (document.getElementById("userSettings")) {
-		let userSettingsElem = document.getElementById("userSettings");
+	const userSettingsElem = document.getElementById("userSettings");
+	if (userSettingsElem) {
 		userSettingsElem.style.maxHeight = "100dvh";
+		userSettingsElem.style.overflow = "hidden";
+		document.body.scrollTop = document.documentElement.scrollTop = 0; // scroll to top of the page
 	}
 
 	if (!user.tripHistory) {
@@ -559,14 +565,6 @@ async function openStatisticsMenu() {
 		</div>
     `.trim();
 	document.body.appendChild(menu);
-
-	// Hide user settings behind statistics menu (without animations)
-	if (document.getElementById("userSettings")) {
-		let userSettingsElem = document.getElementById("userSettings");
-		userSettingsElem.style.maxHeight = "100dvh";
-		userSettingsElem.style.overflow = "hidden";
-		document.body.scrollTop = document.documentElement.scrollTop = 0; // scroll to top of the page
-	}
 
 	// Populate chart
 	updateStatisticsChart();
