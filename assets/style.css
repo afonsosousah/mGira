@@ -1245,14 +1245,14 @@ input:-webkit-autofill:active{
 	height: 6vh;
 	width: 6vh;
 	font-size: 6vh;
-	top: 10px;
+	top: calc((100% - 6vh - 1.5rem)/2);
 	left: calc(25% - 3vh);
 }
 .user-settings #subscriptionContainer div #subscriptionName {
 	position: absolute;
 	left: 5%;
 	width: 40%;
-	top: 7vh;
+	top: calc(6vh + 0.75rem);
 	text-align: center;
 }
 .user-settings #subscriptionContainer div #subscriptionValidity {
