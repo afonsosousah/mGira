@@ -217,6 +217,8 @@ async function stopNavigation() {
 }
 
 function changeRotationMode() {
+	let endNavigationButton = document.getElementById("endNavigationButton");
+	let endNavigationButtonPortrait = document.getElementById("endNavigationButtonPortrait");
 	let changeRotationModeButton = document.getElementById("changeRotationModeButton");
 	let changeRotationModeButtonPortrait = document.getElementById("changeRotationModeButtonPortrait");
 
@@ -224,11 +226,20 @@ function changeRotationMode() {
 		rotationMode = "compass";
 		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-compass"></i>`;
 		if (changeRotationModeButtonPortrait) changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-compass"></i>`;
+	} else if (rotationMode === "compass" && !endNavigationButton && !endNavigationButtonPortrait) {
+		rotationMode = "north";
+		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<img src="assets/images/north.png">`;
+		if (changeRotationModeButtonPortrait)
+			changeRotationModeButtonPortrait.innerHTML = `<img src="assets/images/north.png">`;
 	} else if (rotationMode === "compass") {
 		rotationMode = "route";
 		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
 		if (changeRotationModeButtonPortrait)
 			changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
+	} else if (rotationMode === "north") {
+		rotationMode = "compass";
+		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-compass"></i>`;
+		if (changeRotationModeButtonPortrait) changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-compass"></i>`;
 	}
 }
 
@@ -331,16 +342,24 @@ function updatePositionAndRotationWhenNavigating() {
 	}
 }
 
-function updatePositionWhenInNavigationUI() {
+function updatePositionAndRotationWhenInNavigationUI() {
 	if (window.matchMedia("(orientation: landscape)").matches && !tripEnded) {
-		// Pan to location (pos object is global and is updated getLocation() in map.js)
+		let angleRad = 0;
+
+		// Get rotation
+		if (rotationMode === "compass") {
+			angleRad = -compassHeading;
+		}
+
+		// Pan to location and set rotation (pos object is global and is updated getLocation() in map.js)
 		const view = map.getView();
 		const mapSize = map.getSize();
 		const userPosition = ol.proj.fromLonLat(pos);
+		view.setRotation(angleRad);
 
-		view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.9]);
+		view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.7]);
 
-		requestAnimationFrame(updatePositionWhenInNavigationUI);
+		requestAnimationFrame(updatePositionAndRotationWhenInNavigationUI);
 	}
 }
 
@@ -364,25 +383,7 @@ async function orientationChangeHandler(event) {
 		}
 
 		// If in navigation UI, change to default UI
-		if (document.querySelector("#navigationInfoPanel")) {
-			// Remove all the on bike navigation elements
-			const navigationElements = Array.from(document.querySelectorAll("*")).filter(
-				e => getComputedStyle(e).zIndex === "16"
-			);
-			for (element of navigationElements) {
-				element.remove();
-			}
-
-			// Remove the on bike button
-			if (document.getElementById("onBikeButton")) document.getElementById("onBikeButton").remove();
-
-			// Update the map style to show the standard UI
-			const mapElement = document.getElementById("map");
-			mapElement.style.zIndex = "0";
-
-			// Change map dots to available bikes
-			loadStationMarkersFromArray(stationsArray, !tripEnded);
-		}
+		exitLandscapeNavigationUI();
 	} else {
 		// Landscape
 
@@ -416,53 +417,82 @@ async function orientationChangeHandler(event) {
 
 		// If user switches to landscape while in trip, put into navigation UI
 		if (!tripEnded) {
-			// Make the device awake
-			try {
-				wakeLock = await navigator.wakeLock.request("screen");
-			} catch (err) {
-				// The Wake Lock request has failed - usually system related, such as battery.
-				console.log(`${err.name}, ${err.message}`);
-			}
-
-			// Add the Navigation Information Panel
-			let navInfoPanelElement = document.createElement("div");
-			navInfoPanelElement.id = "navigationInfoPanel";
-			navInfoPanelElement.innerHTML = `
-			<div id="costAndTimeContainer">
-				<div>
-					<i class="bi bi-currency-euro"></i>
-					<span id="tripCost">0.00€</span>
-				</div>
-				<div>
-					<i class="bi bi-clock"></i>
-					<span id="tripTime">00:00:00</span>
-				</div>
-			</div>
-			<div id="speedContainer">
-				<div id="speed">00</div>
-				<div id="speedLabel">km/h</div>
-			</div>
-			`.trim();
-			document.body.appendChild(navInfoPanelElement);
-
-			// Append the end navigation button
-			appendElementToBodyFromHTML(`
-				<div id="changeRotationModeButton" onclick="changeRotationMode()" style="bottom: 2dvh; right: 2dvh;"><i class="bi bi-sign-turn-right"></i></div>
-			`);
-
-			// Set map pixel ratio (fix mobile map not loading at some points)
-			map.pixelRatio_ = 1.5;
-
-			// Update the map style to hide the on foot UI
-			const mapElement = document.getElementById("map");
-			mapElement.style.zIndex = "15";
-
-			// Change map dots to available docks
-			loadStationMarkersFromArray(stationsArray, true);
-
-			// Start the position updating
-			updatePositionWhenInNavigationUI();
+			goIntoLandscapeNavigationUI();
 		}
+	}
+}
+
+async function goIntoLandscapeNavigationUI() {
+	// Make the device awake
+	try {
+		wakeLock = await navigator.wakeLock.request("screen");
+	} catch (err) {
+		// The Wake Lock request has failed - usually system related, such as battery.
+		console.log(`${err.name}, ${err.message}`);
+	}
+
+	// Add the Navigation Information Panel
+	let navInfoPanelElement = document.createElement("div");
+	navInfoPanelElement.id = "navigationInfoPanel";
+	navInfoPanelElement.innerHTML = `
+	<div id="costAndTimeContainer">
+		<div>
+			<i class="bi bi-currency-euro"></i>
+			<span id="tripCost">0.00€</span>
+		</div>
+		<div>
+			<i class="bi bi-clock"></i>
+			<span id="tripTime">00:00:00</span>
+		</div>
+	</div>
+	<div id="speedContainer">
+		<div id="speed">00</div>
+		<div id="speedLabel">km/h</div>
+	</div>
+	`.trim();
+	document.body.appendChild(navInfoPanelElement);
+
+	rotationMode = "north";
+
+	// Append the end navigation button
+	appendElementToBodyFromHTML(`
+		<div id="changeRotationModeButton" onclick="changeRotationMode()" style="bottom: 2dvh; right: 2dvh;"><img src="assets/images/north.png"></div>
+	`);
+
+	// Set map pixel ratio (fix mobile map not loading at some points)
+	map.pixelRatio_ = 1.5;
+
+	// Update the map style to hide the on foot UI
+	const mapElement = document.getElementById("map");
+	mapElement.style.zIndex = "15";
+
+	// Change map dots to available docks
+	loadStationMarkersFromArray(stationsArray, true);
+
+	// Start the position updating
+	updatePositionAndRotationWhenInNavigationUI();
+}
+
+function exitLandscapeNavigationUI() {
+	// If in navigation UI, change to default UI
+	if (document.querySelector("#navigationInfoPanel")) {
+		// Remove all the on bike navigation elements
+		const navigationElements = Array.from(document.querySelectorAll("*")).filter(
+			e => getComputedStyle(e).zIndex === "16"
+		);
+		for (element of navigationElements) {
+			element.remove();
+		}
+
+		// Remove the on bike button
+		if (document.getElementById("onBikeButton")) document.getElementById("onBikeButton").remove();
+
+		// Update the map style to show the standard UI
+		const mapElement = document.getElementById("map");
+		mapElement.style.zIndex = "0";
+
+		// Change map dots to available bikes
+		loadStationMarkersFromArray(stationsArray, !tripEnded);
 	}
 }
 
