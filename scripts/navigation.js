@@ -227,16 +227,16 @@ function changeRotationMode() {
 		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-compass"></i>`;
 		if (changeRotationModeButtonPortrait) changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-compass"></i>`;
 	} else if (rotationMode === "compass" && !endNavigationButton && !endNavigationButtonPortrait) {
-		rotationMode = "north";
-		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<img src="assets/images/north.png">`;
+		rotationMode = "free";
+		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-crosshair"></i>`;
 		if (changeRotationModeButtonPortrait)
-			changeRotationModeButtonPortrait.innerHTML = `<img src="assets/images/north.png">`;
+			changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-crosshair"></i>`;
 	} else if (rotationMode === "compass") {
 		rotationMode = "route";
 		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
 		if (changeRotationModeButtonPortrait)
 			changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
-	} else if (rotationMode === "north") {
+	} else if (rotationMode === "free") {
 		rotationMode = "compass";
 		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-compass"></i>`;
 		if (changeRotationModeButtonPortrait) changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-compass"></i>`;
@@ -343,8 +343,9 @@ function updatePositionAndRotationWhenNavigating() {
 }
 
 function updatePositionAndRotationWhenInNavigationUI() {
-	if (window.matchMedia("(orientation: landscape)").matches && !tripEnded) {
-		let angleRad = 0;
+	if (window.matchMedia("(orientation: landscape)").matches && !tripEnded && rotationMode !== "free") {
+		// Keep current rotation by default
+		let angleRad = map.getView().getRotation();
 
 		// Get rotation
 		if (rotationMode === "compass") {
@@ -355,12 +356,12 @@ function updatePositionAndRotationWhenInNavigationUI() {
 		const view = map.getView();
 		const mapSize = map.getSize();
 		const userPosition = ol.proj.fromLonLat(pos);
-		view.setRotation(angleRad);
 
+		view.setRotation(angleRad);
 		view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.7]);
 
 		requestAnimationFrame(updatePositionAndRotationWhenInNavigationUI);
-	}
+	} else if (rotationMode === "free") requestAnimationFrame(updatePositionAndRotationWhenInNavigationUI);
 }
 
 async function orientationChangeHandler(event) {
@@ -452,11 +453,11 @@ async function goIntoLandscapeNavigationUI() {
 	`.trim();
 	document.body.appendChild(navInfoPanelElement);
 
-	rotationMode = "north";
+	rotationMode = "free";
 
 	// Append the end navigation button
 	appendElementToBodyFromHTML(`
-		<div id="changeRotationModeButton" onclick="changeRotationMode()" style="bottom: 2dvh; right: 2dvh;"><img src="assets/images/north.png"></div>
+		<div id="changeRotationModeButton" onclick="changeRotationMode()" style="bottom: 2dvh; right: 2dvh;"><i class="bi bi-crosshair"></i></div>
 	`);
 
 	// Set map pixel ratio (fix mobile map not loading at some points)

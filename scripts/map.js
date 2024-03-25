@@ -195,7 +195,7 @@ async function loadStationMarkersFromArray(stationsArray, showDocks = false) {
 					src: mapDotSVG(dockRatio, true),
 				}),
 				text: new ol.style.Text({
-					text: station.docks.toString(),
+					text: (station.docks - station.bikes).toString(),
 					font: "bold 15px sans-serif",
 					offsetX: 0,
 					offsetY: -28,
