@@ -224,6 +224,13 @@ async function openBikeList(stationSerialNumber) {
 	// If there is navigation going, make the menu still appear
 	if (navigationActive) menu.style.zIndex = 99;
 
+	if (!stationObj.bikeList) {
+		// get list of available bikes and docks
+		const bikeAndDocks = await getBikesAndDocks(stationSerialNumber);
+		stationObj.bikeList = bikeAndDocks.getBikes;
+		stationObj.dockList = bikeAndDocks.getDocks;
+	}
+
 	// get the bikes in the station
 	for (let bike of stationObj.bikeList) {
 		const bikeListElement = document.createElement("li");
