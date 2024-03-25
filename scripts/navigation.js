@@ -89,7 +89,7 @@ function onBikeNavigation() {
 		</div>
 	</div>
 	<div id="speedContainer">
-		<div id="speed">00</div>
+		<div id="speed">0</div>
 		<div id="speedLabel">km/h</div>
 	</div>
     `.trim();
@@ -447,7 +447,7 @@ async function goIntoLandscapeNavigationUI() {
 		</div>
 	</div>
 	<div id="speedContainer">
-		<div id="speed">00</div>
+		<div id="speed">0</div>
 		<div id="speedLabel">km/h</div>
 	</div>
 	`.trim();
