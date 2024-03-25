@@ -10,6 +10,9 @@ let rotationMode = "route";
 async function startNavigation(walkingOnly = false) {
 	navigationActive = true;
 
+	// Tell the user that there is navigation going, so he needs to rotate the screen to portrait
+	if (window.matchMedia("(orientation: landscape)").matches) showRotationNotice();
+
 	// Make the device awake
 	try {
 		wakeLock = await navigator.wakeLock.request("screen");
@@ -62,17 +65,7 @@ function onBikeNavigation() {
 	if (typeof document.body.requestFullscreen === "function") document.body.requestFullscreen();
 
 	// Tell the user that there is navigation going, so he needs to rotate the screen to landscape
-	if (window.matchMedia("(orientation: portrait)").matches) {
-		appendElementToBodyFromHTML(`
-		<div class="rotate-screen-notice" id="rotateScreenNotice">
-			<div id="phone">
-			</div>
-			<div id="message">
-				Rode o seu dispositivo
-			</div>
-		</div>
-		`);
-	}
+	if (window.matchMedia("(orientation: portrait)").matches) showRotationNotice();
 
 	// Add the Navigation Information Panel
 	let navInfoPanelElement = document.createElement("div");
@@ -135,17 +128,7 @@ async function finalOnFootNavigation() {
 	mapElement.style.zIndex = "10";
 
 	// Tell the user that there is navigation going, so he needs to rotate the screen to portrait
-	if (window.matchMedia("(orientation: landscape)").matches) {
-		appendElementToBodyFromHTML(`
-		<div class="rotate-screen-notice" id="rotateScreenNotice">
-			<div id="phone">
-			</div>
-			<div id="message">
-				Rode o seu dispositivo
-			</div>
-		</div>
-		`);
-	}
+	if (window.matchMedia("(orientation: landscape)").matches) showRotationNotice();
 
 	// Set map pixel ratio (fix mobile map not loading at some points)
 	map.pixelRatio_ = 2;
@@ -160,9 +143,9 @@ async function stopNavigation() {
 		wakeLock.release().then(() => (wakeLock = null));
 	}
 
-	// Exit fullscreen
+	// Exit fullscreen, if not on landscape
 	try {
-		await document.exitFullscreen();
+		if (!window.matchMedia("(orientation: landscape)").matches) await document.exitFullscreen();
 	} catch (error) {
 		console.log(error);
 	}
@@ -368,6 +351,9 @@ async function orientationChangeHandler(event) {
 	if (event.matches) {
 		// Portrait
 
+		if (navigationActive && navigationMode === "bike") {
+		}
+
 		if (document.querySelector("#rotateScreenNotice")) {
 			// Hide the rotate screen notice
 			document.getElementById("rotateScreenNotice").remove();
@@ -402,8 +388,10 @@ async function orientationChangeHandler(event) {
 		// Set map pixel ratio (fix mobile map not loading at some points)
 		map.pixelRatio_ = 1.5;
 
+		console.log(typeof document.body.requestFullscreen === "function" && !document.fullscreenElement);
+		console.log(document.fullscreenElement);
 		// Recommend to user to switch to fullscreen when in landscape
-		if (typeof document.body.requestFullscreen === "function") {
+		if (typeof document.body.requestFullscreen === "function" && !document.fullscreenElement) {
 			createCustomYesNoPrompt(
 				"Para usar a aplicação em modo landscape é recomendado estar em ecrã inteiro.",
 				() => {
@@ -476,7 +464,7 @@ async function goIntoLandscapeNavigationUI() {
 
 function exitLandscapeNavigationUI() {
 	// If in navigation UI, change to default UI
-	if (document.querySelector("#navigationInfoPanel")) {
+	if (document.querySelector("#navigationInfoPanel") && !navigationActive) {
 		// Remove all the on bike navigation elements
 		const navigationElements = Array.from(document.querySelectorAll("*")).filter(
 			e => getComputedStyle(e).zIndex === "16"
@@ -495,6 +483,18 @@ function exitLandscapeNavigationUI() {
 		// Change map dots to available bikes
 		loadStationMarkersFromArray(stationsArray, !tripEnded);
 	}
+}
+
+function showRotationNotice() {
+	appendElementToBodyFromHTML(`
+		<div class="rotate-screen-notice" id="rotateScreenNotice">
+			<div id="phone">
+			</div>
+			<div id="message">
+				Rode o seu dispositivo
+			</div>
+		</div>
+		`);
 }
 
 // Add an event listener for changes in orientation

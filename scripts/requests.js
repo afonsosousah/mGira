@@ -295,8 +295,19 @@ function startWSConnection(force = false) {
 					Object.hasOwn(msgObj.payload.data, "operationalStationsSubscription")
 				) {
 					let newStationsArray = msgObj.payload.data.operationalStationsSubscription;
-					loadStationMarkersFromArray(newStationsArray, !tripEnded); // Load the stations to the map
-					stationsArray = newStationsArray; // update stations array
+
+					// Only update if the layer exists
+					if (
+						map
+							.getLayers()
+							.getArray()
+							.filter(layer => layer.get("name") === "stationsLayer").length !== 0
+					) {
+						loadStationMarkersFromArray(newStationsArray, !tripEnded); // Load the stations to the map
+					}
+
+					// update stations array
+					stationsArray = newStationsArray;
 				} else if (Object.hasOwn(msgObj.payload, "errors") && msgObj.payload.errors) {
 					console.log(msgObj.payload.errors[0].message);
 					// The subscription errored out, restart connection
