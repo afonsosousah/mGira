@@ -3,6 +3,7 @@
 	--green: #79c000;
 	--black: #231f20;
 	--white: #ffffff;
+	--medium-gray: #57565d;
 	--gray: #d9d9da;
 	--medium-gray: #57565d;
 	--dark-gray: #454449;
@@ -10,6 +11,7 @@
 	--shadow-green: rgba(121, 192, 0, 0.2);
 	--glass-white: rgba(255, 255, 255, 0.7);
 	--glass-green: rgba(121, 192, 0, 0.9);
+	--glass-black: rgba(35, 31, 32, 0.7);
 }
 /* #endregion */
 
@@ -86,7 +88,6 @@
 		opacity: 0;
 	}
 	to {
-		bottom: 0px;
 		opacity: 1;
 	}
 }
@@ -326,13 +327,16 @@ body {
 
 /* #region Search bar */
 #searchBarDiv {
-	width: calc(100%);
+	width: calc(100% - 4vh);
+	height: 7vh;
 	position: absolute;
-	bottom: 0;
-	left: 0;
+	bottom: 2vh;
+	left: 2vh;
 	z-index: 2;
 	animation: slide-fwd-top 0.5s cubic-bezier(0.39, 0.575, 0.565, 1) both;
 	margin-left: env(safe-area-inset-left);
+	box-shadow: 0px 1px 6px 0px var(--gray);
+	border-radius: 999px;
 }
 #searchBarCancelButton {
 	background-color: var(--white);
@@ -341,15 +345,13 @@ body {
 	/*border: 1px solid var(--green);*/
 	border-right: none;
 	position: absolute;
-	left: 2vh;
-	bottom: 2vh;
+	left: 0;
+	bottom: 0;
 	width: 6vh;
 	height: 7vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow: 0px 1px 6px 0px var(--green);
-	clip-path: inset(-6px -6px -6px -6px);
 }
 #searchBarCancelButton i {
 	display: flex;
@@ -362,8 +364,8 @@ body {
 	width: calc(100vw - 4vh - 6vh);
 	height: 7vh;
 	position: absolute;
-	left: calc(2vh + 6vh);
-	bottom: 2vh;
+	left: 6vh;
+	bottom: 0;
 	outline: none;
 	border: none;
 	/*border: 1px solid var(--green);*/
@@ -375,8 +377,6 @@ body {
 	color: var(--green);
 	font-size: medium;
 	box-sizing: content-box;
-	box-shadow: 0px 1px 6px 0px var(--green);
-	clip-path: inset(-6px -6px -6px 0px);
 }
 #searchBar::-webkit-input-placeholder {
 	color: var(--green);
@@ -399,9 +399,7 @@ input:-webkit-autofill:active{
 #searchBar:-webkit-autofill:hover, 
 #searchBar:-webkit-autofill:focus, 
 #searchBar:-webkit-autofill:active{
-    -webkit-box-shadow: 
-		0px 1px 6px 0px var(--green),
-		0 0 0 30px white inset !important;
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
 }
 
 /* #endregion */
@@ -595,7 +593,7 @@ input:-webkit-autofill:active{
 	align-items: center;
 	height: 6vh;
 	width: 6vh;
-	box-shadow: 0px 4px 6px 0px var(--shadow-black), 0px 0px 5px 0px var(--shadow-black) inset;
+	box-shadow: 0px 4px 6px 0px var(--shadow-black);
 }
 .station-card #startNavigationButton:hover {
 	cursor: pointer;
@@ -621,7 +619,7 @@ input:-webkit-autofill:active{
 	height: 6vh;
 	padding: 0 2dvh;
 	font-size: 0.8rem;
-	box-shadow: 0px 4px 6px 0px var(--shadow-black), 0px 0px 5px 0px var(--shadow-black) inset;
+	box-shadow: 0px 4px 6px 0px var(--shadow-black);
 }
 /* #endregion */
 
@@ -1462,42 +1460,44 @@ input:-webkit-autofill:active{
 
 /* #region Place search menu */
 .place-search-menu {
-	background-color: var(--glass-white);
+	background-color: transparent;
 	width: 90%;
-	min-height: 20%;
-	max-height: 45%;
+	min-height: 15vh;
+	max-height: 45vh;
 	position: absolute;
 	z-index: 1;
 	left: 5%;
-	bottom: 0;
-	border-radius: 20px 20px 0 0;
+	bottom: calc(2vh + 7vh/2);
+	border-radius: 30px 30px 0 0;
 	animation: smooth-appear 0.5s ease forwards;
 	margin-left: env(safe-area-inset-left);
 	backdrop-filter: blur(1rem);
+	box-shadow: 0px 1px 6px 0px var(--gray);
 }
 .place-search-menu #placeList {
 	position: relative;
 	padding: 0;
 	width: 100%;
 	margin-top: 0;
-	margin-bottom: calc(2vh + 7vh + 1vh);
 	list-style-type: none;
-	max-height: 25vh;
+	max-height: calc(45vh - 2rem - 0.6rem);
 	overflow: scroll;
 	display: flex;
 	align-items: center;
 	flex-direction: column;
-	margin-top: 0.8rem;
-	padding-top: 0.4rem;
+	margin-top: 0.6rem;
+	padding-top: 0;
+	padding-bottom: 2rem;
 }
 .place-search-element {
+	background-color: var(--white);
 	border-radius: 999px;
 	padding: 15px 25px;
 	position: relative;
 	margin-bottom: 10px;
-	color: #79c000;
+	color: var(--medium-gray);
 	width: calc(95% - 25 * 2px - 2 * 2px);
-	box-shadow: 0px 1px 6px 0px var(--green);
+	box-shadow: 0px 1px 6px 0px var(--gray);
 }
 .place-search-element:hover {
 	background-color: var(--green);
@@ -1506,16 +1506,18 @@ input:-webkit-autofill:active{
 }
 .place-search-menu #startNavigationButton {
 	position: absolute;
-	top: -10dvh;
+	top: -8dvh;
 	right: 0;
-	background-color: var(--black);
+	background-color: var(--glass-black);
 	border-radius: 999px;
-	color: white;
+	color: var(--white);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 8dvh;
-	width: 8dvh;
+	height: 6dvh;
+	width: 6dvh;
+	box-shadow: 0px 4px 6px 0px var(--shadow-black);
+	backdrop-filter: blur(1rem);
 }
 .place-search-menu #startNavigationButton:hover {
 	cursor: pointer;
@@ -1530,21 +1532,25 @@ input:-webkit-autofill:active{
 }
 .place-search-menu #routeDetails {
 	position: absolute;
-	top: -10dvh;
+	top: -8dvh;
 	left: 0;
-	background-color: var(--black);
+	background-color: var(--glass-black);
 	border-radius: 999px;
-	color: white;
+	color: var(--white);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 8dvh;
-	padding: 0 15px;
+	height: 6vh;
+	padding: 0 2dvh;
+	font-size: 0.8rem;
+	box-shadow: 0px 4px 6px 0px var(--shadow-black);
+	backdrop-filter: blur(1rem);
 }
 .place-search-menu #spinner {
 	position: absolute;
 	top: 0;
-	height: 50%;
+	left: 37.5%;
+	width: 25%;
 	object-fit: contain;
 }
 /* #endregion */
@@ -2385,7 +2391,6 @@ input:-webkit-autofill:active{
 			opacity: 0;
 		}
 		to {
-			bottom: 0px;
 			opacity: 1;
 		}
 	}
@@ -2479,10 +2484,13 @@ input:-webkit-autofill:active{
 
 	/* #region Search bar */
 	#searchBarDiv {
+		width: 40vw;
+		height: 7vw;
 		bottom: 2vw;
+		left: 2vw;
 	}
 	#searchBarCancelButton {
-		left: 2vw;
+		left: 0;
 		bottom: 0;
 		width: 6vw;
 		height: 7vw;
@@ -2490,7 +2498,7 @@ input:-webkit-autofill:active{
 	#searchBar {
 		width: calc(40vw - 6vw);
 		height: 7vw;
-		left: calc(2vw + 6vw);
+		left: 6vw;
 		bottom: 0;
 	}
 	/* #endregion */
@@ -2851,21 +2859,15 @@ input:-webkit-autofill:active{
 
 	/* #region Place search menu */
 	.place-search-menu {
-		background: none;
-		background-color: var(--glass-white);
 		width: 40vw;
 		min-height: 30vh;
 		max-height: calc(100vh - 4rem);
 		position: absolute;
-		z-index: 1;
 		left: 2vw;
-		bottom: 0;
-		border-radius: 20px 20px 0 0;
-		animation: smooth-appear 0.5s ease forwards;
+		bottom: calc(2vw + 7vw/2);
 	}
 	.place-search-menu #placeList {
 		width: 100%;
-		margin-bottom: calc(2vw + 7vw + 1vw);
 		margin-left: 0;
 		max-height: 50vh;
 	}

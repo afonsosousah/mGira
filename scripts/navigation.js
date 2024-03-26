@@ -388,8 +388,6 @@ async function orientationChangeHandler(event) {
 		// Set map pixel ratio (fix mobile map not loading at some points)
 		map.pixelRatio_ = 1.5;
 
-		console.log(typeof document.body.requestFullscreen === "function" && !document.fullscreenElement);
-		console.log(document.fullscreenElement);
 		// Recommend to user to switch to fullscreen when in landscape
 		if (typeof document.body.requestFullscreen === "function" && !document.fullscreenElement) {
 			createCustomYesNoPrompt(
