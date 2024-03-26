@@ -296,13 +296,7 @@ function startWSConnection(force = false) {
 				) {
 					let newStationsArray = msgObj.payload.data.operationalStationsSubscription;
 
-					// Only update if the layer exists
-					if (
-						map
-							.getLayers()
-							.getArray()
-							.filter(layer => layer.get("name") === "stationsLayer").length !== 0
-					) {
+					if (!document.getElementById("placeSearchMenu")) {
 						loadStationMarkersFromArray(newStationsArray, !tripEnded); // Load the stations to the map
 					}
 

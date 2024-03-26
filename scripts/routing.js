@@ -149,44 +149,23 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	const convertedBbox = [Xmin, Ymin, Xmax, Ymax];
 
 	if (window.matchMedia("(orientation: portrait)").matches) {
-		let menuHeight;
-		if (document.getElementById("placeSearchMenu"))
-			menuHeight = document.getElementById("placeSearchMenu").clientHeight;
-		else if (document.getElementById("stationMenu"))
-			menuHeight = document.getElementById("stationMenu").clientHeight + 30;
-		else menuHeight = 0;
-		const viewableBox = [map.getSize()[0], map.getSize()[1] - menuHeight];
+		const offset =
+			document.getElementById("placeSearchMenu")?.clientHeight ??
+			document.getElementById("stationMenu")?.clientHeight + 30 ??
+			0;
 		map.getView().fit(convertedBbox, {
-			size: viewableBox,
-			padding: [50, 100, menuHeight + 50, 100],
+			padding: [50, 100, 120 + offset, 100],
 			maxZoom: 16.5,
 		});
 	} else if (window.matchMedia("(orientation: landscape)").matches) {
-		if (document.getElementById("placeSearchMenu")) {
-			const offset = document.getElementById("placeSearchMenu").clientWidth;
-			const viewableBox = [map.getSize()[0] - offset, map.getSize()[1]];
-			map.getView().fit(convertedBbox, {
-				size: viewableBox,
-				padding: [50, 100, 50, 100 + offset],
-				maxZoom: 16.5,
-			});
-		} else if (document.getElementById("stationMenu")) {
-			const offset = document.getElementById("stationMenu").clientWidth;
-			const viewableBox = [map.getSize()[0] - offset, map.getSize()[1]];
-			map.getView().fit(convertedBbox, {
-				size: viewableBox,
-				padding: [50, 100, 50, 100 + offset],
-				maxZoom: 16.5,
-			});
-		} else {
-			menuHeight = 0;
-			const viewableBox = [map.getSize()[0], map.getSize()[1] - menuHeight];
-			map.getView().fit(convertedBbox, {
-				size: viewableBox,
-				padding: [50, 100, menuHeight + 50, 100],
-				maxZoom: 16.5,
-			});
-		}
+		const offset =
+			document.getElementById("placeSearchMenu")?.clientWidth ??
+			document.getElementById("stationMenu")?.clientWidth ??
+			0;
+		map.getView().fit(convertedBbox, {
+			padding: [50, 100, 50, 100 + offset],
+			maxZoom: 16.5,
+		});
 	}
 
 	// Show the start navigation button and route details panel
@@ -433,18 +412,22 @@ async function searchPlace() {
 
 			// Fit all the places to the map
 			const convertedBbox = convertBbox(response.bbox);
+			const placeSearchMenu = document.getElementById("placeSearchMenu");
 
 			if (window.matchMedia("(orientation: portrait)").matches) {
-				let viewableBox = [
-					map.getSize()[0],
-					map.getSize()[1] - document.getElementById("placeSearchMenu").clientHeight,
-				];
-				let padding = [50, 100, 50 + document.getElementById("placeSearchMenu").clientHeight, 100];
-				map.getView().fit(convertedBbox, { size: viewableBox, padding: padding, maxZoom: 16.5 });
+				// Wait for the end of animation
+				placeSearchMenu.addEventListener("animationend", event => {
+					// Check if the animation that ended is the one you are interested in
+					if (event.animationName === "smooth-appear") {
+						const offset = placeSearchMenu.clientHeight;
+						const padding = [100, 100, 100 + offset, 100];
+						map.getView().fit(convertedBbox, { padding: padding, maxZoom: 16.5, duration: 200 });
+					}
+				});
 			} else if (window.matchMedia("(orientation: landscape)").matches) {
-				let viewableBox = [map.getSize()[0] - document.getElementById("placeSearchMenu").clientWidth, map.getSize()[1]];
-				let padding = [50, 100, 50, 100 + document.getElementById("placeSearchMenu").clientWidth];
-				map.getView().fit(convertedBbox, { size: viewableBox, padding: padding, maxZoom: 16.5 });
+				const offset = placeSearchMenu.clientWidth;
+				const padding = [100, 100, 100, 100 + offset];
+				map.getView().fit(convertedBbox, { padding: padding, maxZoom: 16.5 });
 			}
 
 			// get the results
@@ -586,16 +569,14 @@ function hidePlaceSearchMenu() {
 	map
 		.getLayers()
 		.getArray()
-		.filter(
-			layer =>
-				layer.get("name") === "placesLayer" ||
-				layer.get("name") === "stationsLayer" ||
-				layer.get("name") === "routeLayer"
-		)
+		.filter(layer => layer.get("name") === "placesLayer" || layer.get("name") === "routeLayer")
 		.forEach(layer => map.removeLayer(layer));
 
 	// Add back the stations layer
-	getStations();
+	loadStationMarkersFromArray(stationsArray);
+
+	// Pan to user location
+	getLocation();
 }
 
 function viewRoute(toCoordinates) {
