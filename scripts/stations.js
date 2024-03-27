@@ -118,7 +118,8 @@ async function openStationMenu(stationSerialNumber) {
 	if (typeof bikeAndDocks.getBikes !== "undefined" && typeof bikeAndDocks.getDocks !== "undefined") {
 		menu.innerHTML = `
             <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
-            <div id="stationName">${stationObj.name}</div>
+			<div id="stationID">Estação ${stationObj.name.split("-")[0].trim()}</div>
+            <div id="stationName">${stationObj.name.split("-")[1].trim()}</div>
 			<div id="navigateToButton" onclick="routeToStation('${stationSerialNumber}')"><i class="bi bi-sign-turn-right"></i></div>
             <img id="docksImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
             <div id="docksButton">${numDocks === 1 ? "1 doca" : `${numDocks} docas`}</div>

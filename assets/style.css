@@ -4,6 +4,8 @@
 	--black: #231f20;
 	--white: #ffffff;
 	--gray: #d9d9da;
+	--medium-gray: #57565d;
+	--dark-gray: #454449;
 	--shadow-black: rgba(35, 31, 32, 0.2);
 	--shadow-green: rgba(121, 192, 0, 0.2);
 	--glass-white: rgba(255, 255, 255, 0.7);
@@ -139,12 +141,12 @@
 /* Zoom controls animations */
 @keyframes smooth-slide-up-zoom-controls {
 	to {
-		bottom: calc(2vh + 7vh + 2vh + 55vw + 2vh);
+		bottom: calc(2vh + 7vh + 2vh + 50vw + 2vh);
 	}
 }
 @keyframes smooth-slide-down-zoom-controls {
 	from {
-		bottom: calc(2vh + 7vh + 2vh + 55vw + 2vh);
+		bottom: calc(2vh + 7vh + 2vh + 50vw + 2vh);
 	}
 	to {
 		bottom: calc(2vh + 7vh + 2vh);
@@ -225,7 +227,7 @@ body {
 	margin: 0;
 	padding: 0;
 	position: relative;
-	font-family: Roboto, Arial, sans-serif;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 	font-weight: normal;
 	user-select: none;
 	overflow-y: scroll;
@@ -439,13 +441,6 @@ input:-webkit-autofill:active{
 	box-shadow: 0px 1px 6px 0px var(--green);
 }
 /*#userPicture img {
-	border-radius: 999px;
-	width: 7vh;
-	height: 7vh;
-}
-#userPicture i {
-	font-size: calc(0.2 * 25vh);
-}*/
 #userPicture #userInitials {
 	font-size: 3dvh;
 	color: var(--green);
@@ -454,17 +449,16 @@ input:-webkit-autofill:active{
 
 /* #region Station card */
 .station-card {
-	background-color: var(--white);
 	width: 90vw;
-	height: 55vw;
+	height: 50vw;
 	position: absolute;
 	z-index: 1;
 	left: 5vw;
 	bottom: calc(2vh + 7vh + 2vh);
 	border-radius: 20px;
 	box-shadow: 5px 5px 15px 0px var(--shadow-black);
-	opacity: 95%;
 	animation: smooth-slide-from-left 0.5s ease forwards;
+	backdrop-filter: blur(0.5rem);
 }
 .station-card #graphics {
 	height: 50%;
@@ -473,29 +467,37 @@ input:-webkit-autofill:active{
 	rotate: 180deg;
 	opacity: 5%;
 }
-.station-card #stationName {
-	width: calc(100% - 25vw);
+.station-card #stationID {
+	width: calc(100% - 17.5vw);
 	position: absolute;
-	left: 12.5vw;
-	top: 5vw;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
+	left: 5vw;
+	top: 4vw;
+	text-align: left;
 	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--dark-gray);
+}
+.station-card #stationName {
+	width: calc(100% - 17.5vw);
+	position: absolute;
+	left: 5vw;
+	top: calc(4vw + 1rem + 0.2rem);
+	text-align: left;
+	font-size: 0.7rem;
+	line-height: 0.7rem;
+	color: var(--medium-gray);
 }
 .station-card #docksImage {
 	width: 42.5%;
-	height: 25%;
+	height: 26%;
 	object-fit: contain;
 	position: absolute;
 	left: 5vw;
-	bottom: calc(5vw + 20% + 2vw);
+	bottom: calc(5vw + 2.5rem + 2vw);
 }
 .station-card #docksButton {
-	background-color: var(--white);
 	width: 42.5%;
-	height: 20%;
+	height: 2.5rem;
 	position: absolute;
 	left: 5vw;
 	bottom: 5vw;
@@ -508,16 +510,15 @@ input:-webkit-autofill:active{
 }
 .station-card #bikesImage {
 	width: 42.5%;
-	height: 25%;
+	height: 24%;
 	object-fit: contain;
 	position: absolute;
 	right: 5vw;
-	bottom: calc(5vw + 20% + 2vw);
+	bottom: calc(5vw + 2.5rem + 2vw);
 }
 .station-card #bikesButton {
-	background-color: var(--white);
 	width: 42.5%;
-	height: 20%;
+	height: 2.5rem;
 	position: absolute;
 	right: 5vw;
 	bottom: 5vw;
@@ -572,6 +573,7 @@ input:-webkit-autofill:active{
 	right: 5vw;
 	top: 5vw;
 	font-size: 1.2rem;
+	color: var(--dark-gray)
 }
 .station-card #startNavigationButton {
 	position: absolute;
