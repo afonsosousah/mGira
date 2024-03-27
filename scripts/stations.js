@@ -112,7 +112,7 @@ async function openStationMenu(stationSerialNumber) {
 	stationObj.bikeList = bikeAndDocks.getBikes;
 	stationObj.dockList = bikeAndDocks.getDocks;
 	const numBikes = stationObj.bikeList.length;
-	const numDocks = stationObj.dockList.length - numBikes; // number of free docks
+	const numDocks = stationObj.docks - numBikes; // number of free docks
 
 	// set the inner HTML after the animation has started
 	if (typeof bikeAndDocks.getBikes !== "undefined" && typeof bikeAndDocks.getDocks !== "undefined") {
