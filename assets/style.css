@@ -440,7 +440,6 @@ input:-webkit-autofill:active{
 	align-items: center;
 	box-shadow: 0px 1px 6px 0px var(--green);
 }
-/*#userPicture img {
 #userPicture #userInitials {
 	font-size: 3dvh;
 	color: var(--green);
@@ -449,6 +448,7 @@ input:-webkit-autofill:active{
 
 /* #region Station card */
 .station-card {
+	background-color: rgba(255, 255, 255, 0.9);
 	width: 90vw;
 	height: 50vw;
 	position: absolute;
@@ -466,6 +466,7 @@ input:-webkit-autofill:active{
 	object-fit: cover;
 	rotate: 180deg;
 	opacity: 5%;
+	display: none;
 }
 .station-card #stationID {
 	width: calc(100% - 17.5vw);
