@@ -203,15 +203,6 @@ function routeToStation(stationSerialNumber) {
 	userClickedNavigateToStation = true;
 }
 
-function htmlEncode(str) {
-	return String(str)
-		.replace(/&/g, "&amp;")
-		.replace(/"/g, "&quot;")
-		.replace(/'/g, "&#39;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;");
-}
-
 // Open the bike list element and populate it
 async function openBikeList(stationSerialNumber) {
 	// get station object
