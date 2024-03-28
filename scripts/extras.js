@@ -179,3 +179,12 @@ function getStationsDiff(newStationsArray, oldStationsArray = null) {
 function toPascalCase(str) {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+function htmlEncode(str) {
+	return String(str)
+		.replace(/&/g, "&amp;")
+		.replace(/"/g, "&quot;")
+		.replace(/'/g, "&#39;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;");
+}
