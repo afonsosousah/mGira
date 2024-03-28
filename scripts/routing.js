@@ -169,6 +169,147 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	targetElement.appendChild(routeDetailsElement);
 }
 
+async function recalculateFullRoute(fromCoordinates, toCoordinates) {
+	// Loading animation over the map while the route is being calculated
+	let loadingElement = document.createElement("img");
+	loadingElement.id = "spinner";
+	loadingElement.src = "assets/images/mGira_spinning.gif";
+	loadingElement.style.top = "calc(35% - 40px)";
+	document.body.appendChild(loadingElement);
+
+	// Remove previous layer containing the results, the stations layer and the previous route layer
+	map
+		.getLayers()
+		.getArray()
+		.filter(
+			layer =>
+				layer.get("name") === "placesLayer" ||
+				layer.get("name") === "stationsLayer" ||
+				layer.get("name") === "routeLayer"
+		)
+		.forEach(layer => map.removeLayer(layer));
+
+	// Hide cycleways layer
+	map
+		.getLayers()
+		.getArray()
+		.find(layer => layer.get("name") === "cyclewaysLayer")
+		.setVisible(false);
+
+	// select the stations from which the user should grab the bike and leave the bike
+	// from the 3 stations nearer to the starting point and the 3 stations nearer to the ending point
+	// make a rough calculation on which of the combinations will result in the less distance (which should take less time)
+	let nearestStationsStart = getStationsByDistance(fromCoordinates).slice(0, 3);
+	let nearestStationsEnd = getStationsByDistance(toCoordinates).slice(0, 3);
+
+	let bestDistance;
+	let grabStation;
+	let dropoffStationInternal;
+
+	for (stationStart of nearestStationsStart) {
+		for (stationEnd of nearestStationsEnd) {
+			const walkingDistanceToStartStation = distance(fromCoordinates, [stationStart.longitude, stationStart.latitude]);
+			const cyclingDistanceFromStartToEnd = distance(
+				[stationStart.longitude, stationStart.latitude],
+				[stationEnd.longitude, stationEnd.latitude]
+			);
+			const walkingDistanceFromEndStation = distance([stationEnd.longitude, stationEnd.latitude], toCoordinates);
+
+			const totalTripDistance =
+				walkingDistanceToStartStation + cyclingDistanceFromStartToEnd + walkingDistanceFromEndStation;
+
+			if (bestDistance && totalTripDistance < bestDistance) {
+				bestDistance = totalTripDistance;
+				grabStation = stationStart;
+				dropoffStationInternal = stationEnd;
+			} else if (!bestDistance) {
+				bestDistance = totalTripDistance;
+				grabStation = stationStart;
+				dropoffStationInternal = stationEnd;
+			}
+		}
+	}
+
+	// Store dropoff station as global (to be accesssed in navigation)
+	dropoffStation = dropoffStationInternal;
+
+	// Store final destination as global (to be accesssed in navigation)
+	finalDestination = toCoordinates;
+
+	let totalDistance = 0; // will be in meters and exact
+	let totalTime = 0; // will be in seconds
+	let routeSummaryBike;
+	let routeSummary;
+	let walkingOnly = false;
+	let allCoordinates = [];
+
+	// If the grab station and droppoff station are the same, we should calculate the route on foot
+	if (grabStation.code === dropoffStation.code) {
+		// Calculate only on foot route
+
+		// Calculate walking route from start to end
+		routeSummary = await calculateRoute(fromCoordinates, toCoordinates, false);
+		totalDistance += routeSummary.distance;
+		totalTime += routeSummary.duration;
+		routeSummaryBike = routeSummary; // we need to set this for the bbox to be set
+		allCoordinates.push(...routeSummary.coordinates);
+
+		// Set that the route is walking only
+		walkingOnly = true;
+	} else {
+		// Calculate normal Gira route
+
+		if (navigationMode !== "bike") {
+			// Calculate walking route from start to station
+			routeSummary = await calculateRoute(fromCoordinates, [grabStation.longitude, grabStation.latitude], false);
+			totalDistance += routeSummary.distance;
+			totalTime += routeSummary.duration;
+			allCoordinates.push(...routeSummary.coordinates);
+
+			// Now calculate cycling route from start station to end station
+			routeSummaryBike = await calculateRoute(
+				[grabStation.longitude, grabStation.latitude],
+				[dropoffStation.longitude, dropoffStation.latitude],
+				true
+			);
+			totalDistance += routeSummaryBike.distance;
+			totalTime += routeSummaryBike.duration * 0.8; // Adjust time because the Gira ebike will be faster than the default on openrouteservice
+			allCoordinates.push(...routeSummaryBike.coordinates);
+		} else {
+			// Calculate cycling route from current location to end station
+			routeSummaryBike = await calculateRoute(
+				fromCoordinates,
+				[dropoffStation.longitude, dropoffStation.latitude],
+				true
+			);
+			totalDistance += routeSummaryBike.distance;
+			totalTime += routeSummaryBike.duration * 0.8; // Adjust time because the Gira ebike will be faster than the default on openrouteservice
+			allCoordinates.push(...routeSummaryBike.coordinates);
+		}
+
+		// Finnaly, calculate walking route from station to end
+		routeSummary = await calculateRoute([dropoffStation.longitude, dropoffStation.latitude], toCoordinates, false);
+		totalDistance += routeSummary.distance;
+		totalTime += routeSummary.duration;
+		allCoordinates.push(...routeSummary.coordinates);
+
+		// Add start station point to map
+		if (navigationMode !== "bike") addStationPointToMap(grabStation, true);
+
+		// Add end station point to map
+		addStationPointToMap(dropoffStation, false);
+	}
+
+	// Remove the duplicate coordinates arrays inside allCoordinates
+	allCoordinates = allCoordinates.filter(((t = {}), a => !(t[a] = a in t))); // explanation https://stackoverflow.com/questions/53452875/find-if-two-arrays-are-repeated-in-array-and-then-select-them
+
+	// Save the coordinates in a global variable to be used in the navigation
+	currentRouteCoordinates = allCoordinates;
+
+	// Hide loading animation
+	loadingElement.remove();
+}
+
 async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 	let orsDirections = new Openrouteservice.Directions({ api_key: orsApiKey });
 
@@ -180,40 +321,62 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 			format: "geojson",
 		});
 
-		// Load GeoJSON route to map
+		// Set styles of map features
 		const styles = {
-			Point: new ol.style.Style({
-				image: new ol.style.Circle({
-					radius: 5,
-					fill: new ol.style.Fill({ color: "#79C000" }),
-					stroke: new ol.style.Stroke({ color: "#231F20", width: 1 }),
-				}),
-			}),
-			LineString: new ol.style.Style({
+			cycling: new ol.style.Style({
 				stroke: new ol.style.Stroke({
-					color: cycling ? "#79C000" : "#231F20",
+					color: "#79C000",
 					width: 8,
-					lineDash: cycling ? null : [3, 9],
 					width: 4,
 				}),
+				zIndex: 0,
+			}),
+			walking: new ol.style.Style({
+				stroke: new ol.style.Stroke({
+					color: "#231F20",
+					width: 8,
+					lineDash: [3, 9],
+					width: 4,
+				}),
+				zIndex: 1,
 			}),
 		};
+		const styleFunction = feature => styles[feature.type];
 
-		const styleFunction = feature => styles[feature.getGeometry().getType()];
-		let vectorLayer = new ol.layer.Vector({
-			name: "routeLayer",
-			source: new ol.source.Vector({
-				features: new ol.format.GeoJSON({ dataProjection: "EPSG:4326", featureProjection: "EPSG:3857" }).readFeatures(
-					response
-				),
-			}),
-			style: styleFunction,
-		});
+		// Load GeoJSON route to map
 
-		map.addLayer(vectorLayer);
+		// get existing routeLayer
+		const routeLayer = map
+			.getLayers()
+			.getArray()
+			.find(layer => layer.get("name") === "routeLayer");
 
-		if (cycling) BikeRouteGeoJSON = response;
+		// convert the features
+		const routeFeature = new ol.format.GeoJSON({
+			dataProjection: "EPSG:4326",
+			featureProjection: "EPSG:3857",
+		}).readFeatures(response)[0];
 
+		// set feature type
+		routeFeature.type = cycling ? "cycling" : "walking";
+
+		// check if there is already a routeLayer to load to
+		if (routeLayer) {
+			// Add the new features to the existing layer
+			routeLayer.getSource().addFeatures([routeFeature]);
+		} else {
+			// Add a new layer
+			const vectorLayer = new ol.layer.Vector({
+				name: "routeLayer",
+				source: new ol.source.Vector({
+					features: [routeFeature],
+				}),
+				style: styleFunction,
+			});
+			map.addLayer(vectorLayer);
+		}
+
+		// return useful information
 		let summary = response.features[0].properties.summary;
 		return {
 			distance: summary.distance ?? 0,
