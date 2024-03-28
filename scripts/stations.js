@@ -204,12 +204,12 @@ function routeToStation(stationSerialNumber) {
 }
 
 function htmlEncode(str) {
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+	return String(str)
+		.replace(/&/g, "&amp;")
+		.replace(/"/g, "&quot;")
+		.replace(/'/g, "&#39;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;");
 }
 
 // Open the bike list element and populate it
@@ -251,9 +251,9 @@ async function openBikeList(stationSerialNumber) {
 
 		bikeListElement.innerHTML = `
             <div id="battery" style="width: ${bike.name[0] === "E" ? `${bike.battery}%` : `0`}"></div>
-            <div id="content" onclick="openUnlockBikeCard('${stationSerialNumber}','${htmlEncode(JSON.stringify(bike))}','${
-			dockObj.serialNumber
-		}')">
+            <div id="content" onclick="openUnlockBikeCard('${stationSerialNumber}','${htmlEncode(
+			JSON.stringify(bike)
+		)}','${dockObj.serialNumber}')">
 				<img id="bikeIcon" src="assets/images/${bike.name[0] === "E" ? `ebike.png` : `classic.png`}">
 				<div id="bikeInfo">
 					<div id="bikeName">${bike.name}</div>
