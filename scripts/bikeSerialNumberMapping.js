@@ -24,6 +24,10 @@ const bikeSerialNumberMapping = [
 		serialNumber: "d69cef9c39",
 	},
 	{
+		name: "E0010",
+		serialNumber: "a0db9647aa",
+	},
+	{
 		name: "E0011",
 		serialNumber: "c3597ae505",
 	},
@@ -40,8 +44,16 @@ const bikeSerialNumberMapping = [
 		serialNumber: "92597709b5",
 	},
 	{
+		name: "E0015",
+		serialNumber: "11db88d89a",
+	},
+	{
 		name: "E0016",
 		serialNumber: "1e59792b15",
+	},
+	{
+		name: "E0017",
+		serialNumber: "3090f0eaba",
 	},
 	{
 		name: "E0018",
@@ -58,6 +70,10 @@ const bikeSerialNumberMapping = [
 	{
 		name: "E0021",
 		serialNumber: "47db93b5ba",
+	},
+	{
+		name: "E0022",
+		serialNumber: "10db99683a",
 	},
 	{
 		name: "E0023",
@@ -84,12 +100,32 @@ const bikeSerialNumberMapping = [
 		serialNumber: "6359818e35",
 	},
 	{
-		name: "C0035",
-		serialNumber: "8c59935315",
+		name: "E0029",
+		serialNumber: "8959947135",
 	},
 	{
-		name: "C0036",
-		serialNumber: "3edb96b9ca",
+		name: "E0030",
+		serialNumber: "68db8a83ba",
+	},
+	{
+		name: "E0031",
+		serialNumber: "bddb919d6a",
+	},
+	{
+		name: "E0033",
+		serialNumber: "45597b2245",
+	},
+	{
+		name: "E0034",
+		serialNumber: "dbdb8d67ea",
+	},
+	{
+		name: "E0035",
+		serialNumber: "b0598b2745",
+	},
+	{
+		name: "E0036",
+		serialNumber: "ab14d75931",
 	},
 	{
 		name: "C0037",
@@ -108,44 +144,96 @@ const bikeSerialNumberMapping = [
 		serialNumber: "3adb8ce78a",
 	},
 	{
-		name: "C0041",
-		serialNumber: "a9db835baa",
+		name: "E0041",
+		serialNumber: "dddba418ba",
 	},
 	{
-		name: "C0042",
+		name: "E0042",
+		serialNumber: "d7dba3258a",
+	},
+	{
+		name: "E0043",
+		serialNumber: "d4597f8775",
+	},
+	{
+		name: "E0044",
+		serialNumber: "f5a2703e19",
+	},
+	{
+		name: "E0045",
+		serialNumber: "84599991d5",
+	},
+	{
+		name: "E0046",
+		serialNumber: "3459781005",
+	},
+	{
+		name: "E0047",
+		serialNumber: "eedba54ada",
+	},
+	{
+		name: "E0048",
+		serialNumber: "f8598bbf95",
+	},
+	{
+		name: "E0049",
+		serialNumber: "adf36ae9dd",
+	},
+	{
+		name: "E0050",
 		serialNumber: "90597f43f5",
 	},
 	{
-		name: "C0044",
-		serialNumber: "36dba1f6ba",
+		name: "E0052",
+		serialNumber: "b3599a7505",
 	},
 	{
-		name: "C0049",
-		serialNumber: "8b597a2d85",
-	},
-	{
-		name: "C0050",
-		serialNumber: "45db93474a",
-	},
-	{
-		name: "C0052",
-		serialNumber: "8f598390c5",
+		name: "E0053",
+		serialNumber: "be5998cab5",
 	},
 	{
 		name: "C0054",
 		serialNumber: "da598d6b65",
 	},
 	{
-		name: "C0055",
-		serialNumber: "bd597d4cd5",
+		name: "E0055",
+		serialNumber: "86a2959829",
 	},
 	{
-		name: "C0056",
+		name: "E0056",
+		serialNumber: "845995cd85",
+	},
+	{
+		name: "E0057",
+		serialNumber: "addb8834ca",
+	},
+	{
+		name: "E0058",
+		serialNumber: "addb85c93a",
+	},
+	{
+		name: "E0059",
 		serialNumber: "bf5981e285",
 	},
 	{
-		name: "C0062",
-		serialNumber: "5ba2804039",
+		name: "E0060",
+		serialNumber: "4559825bc5",
+	},
+	{
+		name: "E0061",
+		serialNumber: "34db9c790a",
+	},
+	{
+		name: "E0062",
+		serialNumber: "71db9e1e2a",
+	},
+	{
+		name: "E0063",
+		serialNumber: "d359923d25",
+	},
+	{
+		name: "E0064",
+		serialNumber: "6edba4dbca",
 	},
 	{
 		name: "E0065",
@@ -252,24 +340,28 @@ const bikeSerialNumberMapping = [
 		serialNumber: "99db8e76ba",
 	},
 	{
-		name: "C0096",
-		serialNumber: "9fdb817fba",
+		name: "E0095",
+		serialNumber: "b559975e25",
 	},
 	{
-		name: "C0097",
-		serialNumber: "92597709b5",
+		name: "E0096",
+		serialNumber: "5cdb9f928a",
 	},
 	{
-		name: "C0098",
-		serialNumber: "52f3732ffd",
+		name: "E0097",
+		serialNumber: "d05992fee5",
 	},
 	{
-		name: "C0099",
-		serialNumber: "2659902ac5",
+		name: "E0098",
+		serialNumber: "3e5977b5a5",
 	},
 	{
-		name: "C0100",
-		serialNumber: "badb9b40ba",
+		name: "E0099",
+		serialNumber: "4990e98aba",
+	},
+	{
+		name: "E0100",
+		serialNumber: "c0597ed235",
 	},
 	{
 		name: "C0101",
@@ -1608,8 +1700,8 @@ const bikeSerialNumberMapping = [
 		serialNumber: "ac597e7ef5",
 	},
 	{
-		name: "C0561",
-		serialNumber: "47598e8515",
+		name: "E0561",
+		serialNumber: "21db91214a",
 	},
 	{
 		name: "C0562",
@@ -2724,6 +2816,10 @@ const bikeSerialNumberMapping = [
 		serialNumber: "be59994b35",
 	},
 	{
+		name: "E0929",
+		serialNumber: "7790f18c9a",
+	},
+	{
 		name: "E0930",
 		serialNumber: "02db8182da",
 	},
@@ -2738,6 +2834,10 @@ const bikeSerialNumberMapping = [
 	{
 		name: "E0933",
 		serialNumber: "36dba1f6ba",
+	},
+	{
+		name: "E0934",
+		serialNumber: "87db9d5b9a",
 	},
 	{
 		name: "E0935",
@@ -3396,6 +3496,10 @@ const bikeSerialNumberMapping = [
 		serialNumber: "8bd4c9e472",
 	},
 	{
+		name: "E1132",
+		serialNumber: "55d4cf1c52",
+	},
+	{
 		name: "E1134",
 		serialNumber: "fb2df07a5c",
 	},
@@ -3410,6 +3514,10 @@ const bikeSerialNumberMapping = [
 	{
 		name: "E1139",
 		serialNumber: "55d4ad3e12",
+	},
+	{
+		name: "E1140",
+		serialNumber: "3fd4cc0522",
 	},
 	{
 		name: "E1141",
@@ -3944,6 +4052,10 @@ const bikeSerialNumberMapping = [
 		serialNumber: "2ad4a46832",
 	},
 	{
+		name: "E1325",
+		serialNumber: "292E06CDCC",
+	},
+	{
 		name: "E1326",
 		serialNumber: "9bd471bc82",
 	},
@@ -3998,6 +4110,10 @@ const bikeSerialNumberMapping = [
 	{
 		name: "E1345",
 		serialNumber: "41d46dfa02",
+	},
+	{
+		name: "E1347",
+		serialNumber: "b6d4aa0ac2",
 	},
 	{
 		name: "E1349",
@@ -4128,6 +4244,10 @@ const bikeSerialNumberMapping = [
 		serialNumber: "66d450f012",
 	},
 	{
+		name: "E1396",
+		serialNumber: "63d4af8a92",
+	},
+	{
 		name: "E1398",
 		serialNumber: "43d4b3d6f2",
 	},
@@ -4204,6 +4324,10 @@ const bikeSerialNumberMapping = [
 		serialNumber: "ead4a7ab32",
 	},
 	{
+		name: "E1421",
+		serialNumber: "afd4b28b42",
+	},
+	{
 		name: "E1422",
 		serialNumber: "88d4c1bf22",
 	},
@@ -4218,6 +4342,10 @@ const bikeSerialNumberMapping = [
 	{
 		name: "E1428",
 		serialNumber: "63d4c00572",
+	},
+	{
+		name: "E1430",
+		serialNumber: "9a2e0df54c",
 	},
 	{
 		name: "E1432",
@@ -4508,6 +4636,10 @@ const bikeSerialNumberMapping = [
 		serialNumber: "062e06d2fc",
 	},
 	{
+		name: "E1560",
+		serialNumber: "8ef373030d",
+	},
+	{
 		name: "E1561",
 		serialNumber: "b2f3735f6d",
 	},
@@ -4518,6 +4650,14 @@ const bikeSerialNumberMapping = [
 	{
 		name: "E1564",
 		serialNumber: "af14d66c01",
+	},
+	{
+		name: "E1565",
+		serialNumber: "f1a23f5539",
+	},
+	{
+		name: "E1566",
+		serialNumber: "bef36acaed",
 	},
 	{
 		name: "E1568",
@@ -4550,6 +4690,10 @@ const bikeSerialNumberMapping = [
 	{
 		name: "E1581",
 		serialNumber: "869d086a79",
+	},
+	{
+		name: "E1582",
+		serialNumber: "59a23fdd19",
 	},
 	{
 		name: "E1584",
@@ -4588,6 +4732,10 @@ const bikeSerialNumberMapping = [
 		serialNumber: "49f36afd2d",
 	},
 	{
+		name: "E1597",
+		serialNumber: "0fa25ce819",
+	},
+	{
 		name: "E1599",
 		serialNumber: "33a29aa2a9",
 	},
@@ -4602,6 +4750,10 @@ const bikeSerialNumberMapping = [
 	{
 		name: "E1612",
 		serialNumber: "ef14ba90d1",
+	},
+	{
+		name: "E1613",
+		serialNumber: "e1a29aa079",
 	},
 	{
 		name: "E1614",
@@ -4854,6 +5006,10 @@ const bikeSerialNumberMapping = [
 	{
 		name: "E1713",
 		serialNumber: "fad4b6ea72",
+	},
+	{
+		name: "E1714",
+		serialNumber: "f2d4a450d2",
 	},
 	{
 		name: "E1717",

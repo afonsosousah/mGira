@@ -123,7 +123,7 @@ async function tripPayWithPoints(tripCode) {
 	return response.data.tripPayWithPoints;
 }
 
-async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSerialNumber, unregistered = false) {
+async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNumber, unregistered = false) {
 	let stationObj;
 
 	if (stationSerialNumber !== null) {
@@ -139,7 +139,7 @@ async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSer
 		}
 
 		// check if the user is close to the station (less than 50 meters)
-		if (!(distance(pos, [stationObj.longitude, stationObj.latitude]) < 50)) {
+		if (!(distance(pos, [stationObj.longitude, stationObj.latitude]) < minimumDistanceToStation)) {
 			alert("Não está próximo da estação!");
 			return;
 		}
@@ -149,9 +149,9 @@ async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSer
 	let bikeObj;
 
 	if (!unregistered) {
-		bikeObj = stationObj.bikeList.find(obj => obj.serialNumber === bikeSerialNumber);
+		bikeObj = JSON.parse(bikeObjJSON);
 	} else {
-		bikeObj = bikeSerialNumberMapping.find(obj => obj.serialNumber === bikeSerialNumber);
+		bikeObj = JSON.parse(bikeObjJSON);
 		bikeObj.battery = "?";
 		stationObj = { name: "Bicicleta não registada" };
 	}
@@ -168,7 +168,7 @@ async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSer
 	console.log("The bike will be reserved!");
 
 	// reserve the bike
-	if (typeof (await reserveBike(bikeSerialNumber)) === "undefined") {
+	if (typeof (await reserveBike(bikeObj.serialNumber)) === "undefined") {
 		alert("Ocorreu um erro ao reservar a bicicleta.");
 		return;
 	}
@@ -193,7 +193,9 @@ async function openUnlockBikeCard(stationSerialNumber, bikeSerialNumber, dockSer
 					<text x="50%" y="65%" text-anchor="middle">segundos</text>
 				</svg>
 			</div>
-			<input type="range" name="unlockSlider" id="unlockSlider" onchange="startBikeTrip(event, '${bikeSerialNumber}');" min="0" max="100" value="0">
+			<input type="range" name="unlockSlider" id="unlockSlider" onchange="startBikeTrip(event, '${
+				bikeObj.name
+			}');" min="0" max="100" value="0">
 			<img src="assets/images/gira_footer.svg" id="footer" alt="footer">
         </div>
     `.trim();
@@ -250,7 +252,7 @@ function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 	}
 
 	// check if the user is close to the station (less than 50 meters)
-	if (!(distance(pos, [stationObj.longitude, stationObj.latitude]) < 50)) {
+	if (!(distance(pos, [stationObj.longitude, stationObj.latitude]) < minimumDistanceToStation)) {
 		alert("Não está próximo da estação!");
 		return;
 	}
@@ -271,22 +273,21 @@ function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 
 function takeUnregisteredBike() {
 	// Get the bike object from the name written on the input element
-	let bikeName = document.getElementById("unregisteredBikeNameInput").value;
-	let bikeObj = bikeSerialNumberMapping.filter(bike => bike.name === bikeName)[0];
+	const bikeName = document.getElementById("unregisteredBikeNameInput").value;
+	const bikeObj = bikeSerialNumberMapping.filter(bike => bike.name === bikeName)[0];
 
 	// Try to open the unlock bike card, to take bike
 	if (typeof bikeObj !== "undefined") {
-		let serialNumber = bikeObj.serialNumber;
-		openUnlockBikeCard(null, serialNumber, null, true);
-		if (document.getElementById("takeUnregisteredBike")) document.getElementById("takeUnregisteredBike").remove();
+		openUnlockBikeCard(null, JSON.stringify(bikeObj), null, true);
+		document.getElementById("takeUnregisteredBike")?.remove();
 	} else {
 		alert("A bicicleta não foi encontrada...");
-		if (document.getElementById("takeUnregisteredBike")) document.getElementById("takeUnregisteredBike").remove();
+		document.getElementById("takeUnregisteredBike")?.remove();
 	}
 }
 
 // Handles the range input value changed event, and starts the bike trip if the slider is all the way to the right
-async function startBikeTrip(event, bikeSerialNumber) {
+async function startBikeTrip(event, bikeName) {
 	if (event.target.value === "100") {
 		// Show the bike leaving dock animation in the card
 		let bikeReserveCardElem = document.getElementById("bikeReserveCard");
@@ -319,21 +320,20 @@ async function startBikeTrip(event, bikeSerialNumber) {
 			// hide bike list if it is showing
 			if (document.querySelector("#bikeMenu")) document.querySelector("#bikeMenu").remove();
 
-			// show the trip overlay if user is not in navigation
-			if (!navigationActive) {
-				let tripOverlay = document.createElement("div");
-				tripOverlay.className = "trip-overlay";
-				tripOverlay.id = "tripOverlay";
-				tripOverlay.innerHTML = `
+			// show the trip overlay
+			appendElementToBodyFromHTML(
+				`
+				<div class="trip-overlay" id="tripOverlay">
 					<span id="onTripText">Em viagem</span>
 					<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
+					<span id="tripBike">${bikeName}</span>
 					<span id="tripCost">0.00€</span>
 					<span id="tripTime">00:00:00</span>
 					<a id="callAssistance" href="tel:211163125"><i class="bi bi-exclamation-triangle"></i></a>
 					<img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
-				`.trim();
-				document.body.appendChild(tripOverlay);
-			}
+				<div>
+			`.trim()
+			);
 
 			// start the trip timer
 			tripEnded = false;
@@ -345,16 +345,26 @@ async function startBikeTrip(event, bikeSerialNumber) {
 async function tripTimer(startTime) {
 	// Update only is trip has not ended, and websocket is connected
 	if (!tripEnded && ws?.readyState === WebSocket.OPEN) {
+		// Calculate elapsed time
+		const elapsedTime = Date.now() - startTime;
+
 		// Update timer on trip overlay
 		if (document.querySelector("#tripTime")) {
-			// Calculate elapsed time
-			const elapsedTime = Date.now() - startTime;
 			for (let element of document.querySelectorAll("#tripTime")) {
 				element.innerHTML = parseMillisecondsIntoTripTime(elapsedTime);
 			}
 		}
+
+		// Update cost on trip overlay
 		if (document.querySelector("#tripCost") && activeTripObj) {
-			let cost = activeTripObj.cost;
+			let cost = 0;
+
+			// Set the cost based on values on the website (API doesn't return the cost)
+			const numberOf45MinPeriods = Math.floor(elapsedTime / (45 * 60 * 1000));
+			if (numberOf45MinPeriods === 1) cost = 1;
+			else if (numberOf45MinPeriods > 1) cost = 2 * numberOf45MinPeriods;
+
+			// Update the element
 			if (cost) {
 				for (let element of document.querySelectorAll("#tripCost")) {
 					element.innerHTML = parseFloat(cost).toFixed(2) + "€";
@@ -534,8 +544,8 @@ async function payTrip(tripCode, tripCost) {
 		createCustomYesNoPrompt(
 			`Deseja pagar a viagem com ${tripCost * 500} pontos?`,
 			async () => {
-				if ((await tripPayWithPoints(tripCode)) !== 0)
-					// the success response is a 0
+				if ((await tripPayWithPoints(tripCode)) !== tripCost * 500)
+					// the success response is the number of points paid
 					alert("Não foi possível pagar a viagem.");
 			},
 			async () => {

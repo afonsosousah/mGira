@@ -4,6 +4,8 @@
 	--black: #231f20;
 	--white: #ffffff;
 	--gray: #d9d9da;
+	--medium-gray: #57565d;
+	--dark-gray: #454449;
 	--shadow-black: rgba(35, 31, 32, 0.2);
 	--shadow-green: rgba(121, 192, 0, 0.2);
 	--glass-white: rgba(255, 255, 255, 0.7);
@@ -139,12 +141,12 @@
 /* Zoom controls animations */
 @keyframes smooth-slide-up-zoom-controls {
 	to {
-		bottom: calc(2vh + 7vh + 2vh + 55vw + 2vh);
+		bottom: calc(2vh + 7vh + 2vh + 50vw + 2vh);
 	}
 }
 @keyframes smooth-slide-down-zoom-controls {
 	from {
-		bottom: calc(2vh + 7vh + 2vh + 55vw + 2vh);
+		bottom: calc(2vh + 7vh + 2vh + 50vw + 2vh);
 	}
 	to {
 		bottom: calc(2vh + 7vh + 2vh);
@@ -225,7 +227,7 @@ body {
 	margin: 0;
 	padding: 0;
 	position: relative;
-	font-family: Roboto, Arial, sans-serif;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 	font-weight: normal;
 	user-select: none;
 	overflow-y: scroll;
@@ -438,104 +440,25 @@ input:-webkit-autofill:active{
 	align-items: center;
 	box-shadow: 0px 1px 6px 0px var(--green);
 }
-/*#userPicture img {
-	border-radius: 999px;
-	width: 7vh;
-	height: 7vh;
-}
-#userPicture i {
-	font-size: calc(0.2 * 25vh);
-}*/
 #userPicture #userInitials {
 	font-size: 3dvh;
 	color: var(--green);
 }
 /* #endregion */
 
-/* #region Station menu */
-.station-menu {
-	background-color: var(--white);
-	width: 100%;
-	height: 45%;
-	position: absolute;
-	z-index: 1;
-	left: 0;
-	bottom: -45%;
-	border-radius: 20px 20px 0 0;
-	animation: smooth-appear 0.5s ease forwards;
-}
-.station-menu #stationName {
-	width: 55%;
-	height: 25%;
-	position: absolute;
-	z-index: 2;
-	left: 5%;
-	top: 5%;
-	display: flex;
-	align-items: center;
-	text-align: center;
-}
-.station-menu #stationImage {
-	width: 30%;
-	position: absolute;
-	z-index: 2;
-	right: 5%;
-	top: 5%;
-}
-.station-menu #availableBikesNumber {
-	width: 90%;
-	height: 10%;
-	position: absolute;
-	z-index: 2;
-	left: 5%;
-	top: 35%;
-	text-align: center;
-}
-.station-menu #cancelButton {
-	background-color: var(--green);
-	width: 42.5%;
-	height: 15%;
-	position: absolute;
-	z-index: 2;
-	left: 5%;
-	top: 52%;
-	border-radius: 999px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: white;
-	font-weight: bold;
-}
-.station-menu #seeBikesButton {
-	background-color: var(--green);
-	width: 42.5%;
-	height: 15%;
-	position: absolute;
-	z-index: 2;
-	left: 52.5%;
-	top: 52%;
-	border-radius: 999px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: white;
-	font-weight: bold;
-}
-/* #endregion */
-
 /* #region Station card */
 .station-card {
-	background-color: var(--white);
+	background-color: rgba(255, 255, 255, 0.9);
 	width: 90vw;
-	height: 55vw;
+	height: 50vw;
 	position: absolute;
 	z-index: 1;
 	left: 5vw;
 	bottom: calc(2vh + 7vh + 2vh);
 	border-radius: 20px;
 	box-shadow: 5px 5px 15px 0px var(--shadow-black);
-	opacity: 95%;
 	animation: smooth-slide-from-left 0.5s ease forwards;
+	backdrop-filter: blur(0.5rem);
 }
 .station-card #graphics {
 	height: 50%;
@@ -543,31 +466,39 @@ input:-webkit-autofill:active{
 	object-fit: cover;
 	rotate: 180deg;
 	opacity: 5%;
+	display: none;
+}
+.station-card #stationID {
+	width: calc(100% - 17.5vw);
+	position: absolute;
+	left: 5vw;
+	top: 4vw;
+	text-align: left;
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--dark-gray);
 }
 .station-card #stationName {
-	width: calc(100% - 25vw);
+	width: calc(100% - 17.5vw);
 	position: absolute;
-	left: 12.5vw;
-	top: 5vw;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-	font-size: 0.9rem;
+	left: 5vw;
+	top: calc(4vw + 1rem + 0.2rem);
+	text-align: left;
+	font-size: 0.7rem;
+	line-height: 0.7rem;
+	color: var(--medium-gray);
 }
 .station-card #docksImage {
 	width: 42.5%;
-	height: 25%;
+	height: 26%;
 	object-fit: contain;
 	position: absolute;
 	left: 5vw;
-	bottom: calc(5vw + 20% + 2vw);
+	bottom: calc(5vw + 2.5rem + 2vw);
 }
 .station-card #docksButton {
-	background-color: var(--white);
-	outline: 2px solid var(--black);
 	width: 42.5%;
-	height: 20%;
+	height: 2.5rem;
 	position: absolute;
 	left: 5vw;
 	bottom: 5vw;
@@ -576,23 +507,19 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	align-items: center;
 	color: var(--black);
-	box-shadow:
-		5px 5px 15px 0px var(--shadow-black),
-		0px 0px 5px 0px var(--shadow-black) inset;
+	box-shadow: 0px 1px 6px 0px var(--black);
 }
 .station-card #bikesImage {
 	width: 42.5%;
-	height: 25%;
+	height: 24%;
 	object-fit: contain;
 	position: absolute;
 	right: 5vw;
-	bottom: calc(5vw + 20% + 2vw);
+	bottom: calc(5vw + 2.5rem + 2vw);
 }
 .station-card #bikesButton {
-	background-color: var(--white);
-	outline: 2px solid var(--green);
 	width: 42.5%;
-	height: 20%;
+	height: 2.5rem;
 	position: absolute;
 	right: 5vw;
 	bottom: 5vw;
@@ -601,14 +528,11 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	align-items: center;
 	color: var(--green);
-	box-shadow:
-		5px 5px 15px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 .station-card #bikesButtonDisabled {
     /* Same as above, but with gray instead of green */
     background-color: var(--white);
-    outline: 2px solid var(--gray);
     width: 42.5%;
     height: 20%;
     position: absolute;
@@ -619,7 +543,7 @@ input:-webkit-autofill:active{
     justify-content: center;
     align-items: center;
     color: var(--gray);
-    box-shadow: 5px 5px 15px 0px var(--shadow-gray), 0px 0px 5px 0px var(--shadow-gray) inset;
+    box-shadow: 0px 1px 6px 0px var(--gray);
 }
 .station-card #availableBikesNumber {
 	width: 90%;
@@ -650,6 +574,7 @@ input:-webkit-autofill:active{
 	right: 5vw;
 	top: 5vw;
 	font-size: 1.2rem;
+	color: var(--dark-gray)
 }
 .station-card #startNavigationButton {
 	position: absolute;
@@ -840,7 +765,7 @@ input:-webkit-autofill:active{
 	top: 25vw;
 	left: 0;
 	width: 100%;
-	height: 2vh;
+	height: 1.2vh;
 	background: linear-gradient(180deg, #fff 0%, transparent 100%);
 	z-index: 2;
 }
@@ -866,10 +791,7 @@ input:-webkit-autofill:active{
 	height: 7vh;
 	width: 90%;
 	margin-bottom: 10px;
-	border: 1px solid var(--green);
-	box-shadow:
-		0px 4px 6px 0px var(--shadow-green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-shadow: 0px 1px 6px 0px var(--green);
 	flex-shrink: 0;
 }
 .bike-list-element #battery {
@@ -1118,14 +1040,25 @@ input:-webkit-autofill:active{
 	bottom: 2dvh;
 	left: 3dvh;
 	font-size: 1.2rem;
+	line-height: 1.2rem;
 	color: var(--black);
 	z-index: 4;
 }
 .trip-overlay #tripTime {
 	position: absolute;
-	bottom: 6dvh;
+	bottom: calc(2dvh + 1.2rem + 1dvh);
 	left: 3dvh;
 	font-size: 1.2rem;
+	line-height: 1.2rem;
+	color: var(--black);
+	z-index: 4;
+}
+.trip-overlay #tripBike {
+	position: absolute;
+	top: calc(2.5dvh + 2rem + 1dvh);
+	left: 3dvh;
+	font-size: 1.2rem;
+	line-height: 1.2rem;
 	color: var(--black);
 	z-index: 4;
 }
@@ -1315,14 +1248,14 @@ input:-webkit-autofill:active{
 	height: 6vh;
 	width: 6vh;
 	font-size: 6vh;
-	top: 10px;
+	top: calc((100% - 6vh - 1.5rem)/2);
 	left: calc(25% - 3vh);
 }
 .user-settings #subscriptionContainer div #subscriptionName {
 	position: absolute;
 	left: 5%;
 	width: 40%;
-	top: 7vh;
+	top: calc(6vh + 0.75rem);
 	text-align: center;
 }
 .user-settings #subscriptionContainer div #subscriptionValidity {
@@ -1360,15 +1293,17 @@ input:-webkit-autofill:active{
 }
 .user-settings #settingsContainer {
 	width: 100vw;
-	height: 16vh;
+	height: fit-content;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	flex-direction: column;
+	gap: 3vh;
 	margin-top: 3vh;
 }
 .user-settings #settingsContainer #proxy {
 	width: calc(85vw + 2vh);
-	height: 100%;
+	height: 16vh;
 	color: var(--green);
 	border-radius: 25px;
 	display: flex;
@@ -1439,6 +1374,51 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	align-items: center;
 }
+
+.user-settings #settingsContainer #distanceToStation {
+	width: calc(85vw + 2vh);
+	height: 16vh;
+	color: var(--green);
+	border-radius: 25px;
+	display: flex;
+	justify-content: center;
+	position: relative;
+	/*outline: 1px solid var(--green);*/
+	box-shadow:
+		0px 1px 6px 0px var(--green),
+		0px 0px 5px 0px var(--shadow-green) inset;
+}
+
+.user-settings #settingsContainer #distanceToStation > div:first-child {
+	width: 100%;
+	position: absolute;
+	z-index: 2;
+	left: 0;
+	top: 8%;
+	text-align: center;
+}
+
+.user-settings #settingsContainer #distanceToStation #distanceToStationSelector {
+	appearance: none;
+	-webkit-appearance: none;
+	width: 90%;
+	height: 40%;
+	font-size: 1rem;
+	padding: 0.675em 6em 0.675em 1em;
+	background-color: var(--white);
+	border: 1px solid var(--green);
+	border-radius: 999px;
+	color: var(--green);
+	cursor: pointer;
+	background-image: url("images/caret-down.svg");
+	background-repeat: no-repeat;
+	background-position-x: calc(100% - 10px);
+	background-position-y: calc(100% - 14px);
+	position: absolute;
+	left: 5%;
+	top: 35%;
+}
+
 #bottom {
 	margin-top: 3vh;
 	display: flex;
@@ -1893,6 +1873,7 @@ input:-webkit-autofill:active{
 	margin: 2vh 0;
 	flex-shrink: 0;
 	width: calc(90vw - 4vh);
+	box-shadow: 0px 1px 6px 0px var(--black);
 }
 #openTakeUnregisteredBikeButton #upperText {
 	position: absolute;

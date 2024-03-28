@@ -1,4 +1,5 @@
 let tokenRefreshed = false;
+let minimumDistanceToStation = 50;
 
 // Define the global user, where the variables will be stored
 let user = {};
@@ -81,9 +82,9 @@ async function login(event) {
 		// Start rotation of location dot
 		startLocationDotRotation();
 
-		// Set the cookie expiry to 1 month after today.
+		// Set the cookie expiry to 1 year after today.
 		const refreshTokenExpiryDate = new Date();
-		refreshTokenExpiryDate.setMonth(refreshTokenExpiryDate.getMonth() + 1);
+		refreshTokenExpiryDate.setFullYear(refreshTokenExpiryDate.getFullYear() + 1);
 
 		// Store refreshToken cookie (stay logged in)
 		createCookie("refreshToken", user.refreshToken, refreshTokenExpiryDate);
@@ -118,16 +119,32 @@ async function getUserInformation() {
 			query: `query {
             client: client { code, type, balance, paypalReference, bonus, numberNavegante }
             activeUserSubscriptions: activeUserSubscriptions { code, cost, expirationDate, name, nameEnglish, subscriptionCost, subscriptionPeriod, subscriptionStatus, type, active }
-            tripHistory: tripHistory(pageInput: { _pageNum: 1, _pageSize: 1000 }) { bikeName bikeType bonus code cost endDate endLocation rating startDate startLocation usedPoints }
         }`,
 		}),
 		user.accessToken
 	);
 	user = { ...user, ...response.data.client[0] };
 	user.activeUserSubscriptions = response.data.activeUserSubscriptions;
-	user.tripHistory = response.data.tripHistory;
+
+	// Get user's trip history asynchronously
+	getTripHistory();
 
 	return user;
+}
+
+// get tripHistory
+async function getTripHistory() {
+	response = await makePostRequest(
+		"https://apigira.emel.pt/graphql",
+		JSON.stringify({
+			operationName: "tripHistory",
+			variables: { in: { _pageNum: 1, _pageSize: 1000 } },
+			query:
+				"query tripHistory($in: PageInput) { tripHistory(pageInput: $in) { bikeName bikeType bonus code cost endDate endLocation rating startDate startLocation usedPoints }}",
+		}),
+		user.accessToken
+	);
+	user.tripHistory = response.data.tripHistory;
 }
 
 // Open the login menu element and populate it
@@ -223,7 +240,7 @@ async function openUserSettings() {
         <div id="subscriptionContainer">
             <div>
                 <i class="bi bi-credit-card" id="cardSVG"></i>
-                <div id="subscriptionName">${userObj.activeUserSubscriptions[0].name}</div>
+                <div id="subscriptionName">Passe ${toPascalCase(userObj.activeUserSubscriptions[0].type)}</div>
                 <div id="subscriptionValidity">Válido até ${subscriptionExpiration.toLocaleDateString("pt")}</div>
             </div>
         </div>
@@ -246,6 +263,14 @@ async function openUserSettings() {
                 <div id="resetProxyButton"><i class="bi bi-arrow-counterclockwise"></i></div>
                 <div id="setProxyButton"><i class="bi bi-check-lg"></i></div>
             </div>
+			<div id="distanceToStation">
+				<div>Distância mínima até estação</div>
+				<select id="distanceToStationSelector">
+					<option value="50" ${minimumDistanceToStation === 50 ? `selected="selected"` : ""}>50m</option>
+					<option value="75" ${minimumDistanceToStation === 75 ? `selected="selected"` : ""}>75m</option>
+					<option value="100" ${minimumDistanceToStation === 100 ? `selected="selected"` : ""}>100m</option>
+				</select>
+			</div>
         </div>
         <div id="bottom">
             <div id="versionNumber">${currentVersion}</div>
@@ -274,6 +299,22 @@ async function openUserSettings() {
 		document.getElementById("proxyUrlInput").value = proxyURL;
 
 		alert("O proxy foi redefinido.");
+	});
+
+	// Handle value change on distance to station selector
+	const distanceToStationSelector = document.getElementById("distanceToStationSelector");
+	distanceToStationSelector.addEventListener("change", () => {
+		const newDistance = Number(distanceToStationSelector.value); // convert to int
+		minimumDistanceToStation = newDistance; // Set the value
+
+		// Set the cookie expiry to 1 year after today.
+		const expiryDate = new Date();
+		expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+
+		// Store minimum distance to station cookie
+		createCookie("minimumDistanceToStation", minimumDistanceToStation, expiryDate);
+
+		console.log(`Minimum distance to station was set to ${minimumDistanceToStation}m`);
 	});
 
 	// Set status bar color in PWA
@@ -326,10 +367,30 @@ function setUserImageInitials(username) {
 	userInitialsElement.innerHTML = initials;
 }
 
-function openTripHistory() {
-	// Create element
+async function openTripHistory() {
 	let menu = document.createElement("div");
 	menu.id = "tripHistory";
+
+	if (document.querySelectorAll("#tripHistory").length === 0) document.body.appendChild(menu);
+
+	// Hide user settings behind trip history (without animations)
+	let userSettingsElem = document.getElementById("userSettings");
+	userSettingsElem.style.maxHeight = "100dvh";
+
+	if (!user.tripHistory) {
+		// show loading animation
+		menu.innerHTML = `
+		<img src="assets/images/mGira_spinning.gif" id="spinner">
+		<div id="backButton" onclick="hideTripHistory();"><i class="bi bi-arrow-90deg-left"></i></div>
+		`;
+
+		// Get user's trip history
+		await getTripHistory();
+
+		if (document.querySelectorAll("#tripHistory").length === 0) hideTripHistory();
+	}
+
+	// Create element
 	menu.innerHTML = `
         <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
         <div id="backButton" onclick="hideTripHistory();"><i class="bi bi-arrow-90deg-left"></i></div>
@@ -341,11 +402,6 @@ function openTripHistory() {
 			<i class="bi bi-cloud-download"></i>
 		</div>
     `.trim();
-	document.body.appendChild(menu);
-
-	// Hide user settings behind trip history (without animations)
-	let userSettingsElem = document.getElementById("userSettings");
-	userSettingsElem.style.maxHeight = "100dvh";
 
 	// populate the trip list
 	for (let trip of user.tripHistory) {
@@ -392,7 +448,7 @@ function openTripHistory() {
 			<div id="tripStations">
 				<img src="assets/images/tripStations.png">
 				<div id="startStation">${trip.startLocation}</div>
-				<div id="endStation">${trip.endLocation}</div>
+				<div id="endStation">${trip.endLocation ?? "Não foi possível obter a estação final"}</div>
 			</div>
         `.trim();
 		document.getElementById("tripList").appendChild(tripListElement);
@@ -419,10 +475,38 @@ function hideTripHistory() {
 }
 
 // Statistics Menu
-function openStatisticsMenu() {
+async function openStatisticsMenu() {
 	// Create element
 	let menu = document.createElement("div");
 	menu.id = "statisticsMenu";
+
+	if (document.querySelectorAll("#statisticsMenu").length === 0) document.body.appendChild(menu);
+
+	// Hide user settings behind statistics menu (without animations)
+	if (document.getElementById("userSettings")) {
+		let userSettingsElem = document.getElementById("userSettings");
+		userSettingsElem.style.maxHeight = "100dvh";
+	}
+
+	if (!user.tripHistory) {
+		// set background to white
+		menu.style.backgroundColor = "var(--white)";
+
+		// show loading animation
+		menu.innerHTML = `
+		<img src="assets/images/mGira_spinning.gif" id="spinner">
+		<div id="backButton" onclick="hideStatisticsMenu();"><i class="bi bi-arrow-90deg-left"></i></div>
+		`;
+
+		// Get user's trip history
+		await getTripHistory();
+
+		if (document.querySelectorAll("#statisticsMenu").length === 0) hideStatisticsMenu();
+
+		// set background back to black
+		menu.style.backgroundColor = "var(--black)";
+	}
+
 	menu.innerHTML = `
         <img src="assets/images/gira_footer_white.svg" alt="footer" id="graphics">
         <div id="backButton" onclick="hideStatisticsMenu();"><i class="bi bi-arrow-90deg-left"></i></div>
@@ -474,12 +558,6 @@ function openStatisticsMenu() {
 		</div>
     `.trim();
 	document.body.appendChild(menu);
-
-	// Hide user settings behind statistics menu (without animations)
-	if (document.getElementById("userSettings")) {
-		let userSettingsElem = document.getElementById("userSettings");
-		userSettingsElem.style.maxHeight = "100dvh";
-	}
 
 	// Populate chart
 	updateStatisticsChart();
@@ -558,7 +636,7 @@ function updateStatisticsChart() {
 		});
 
 		// Get the time (in ms) and distance (in km) ridden for each trip
-		for (trip of dayTrips) {
+		for (const trip of dayTrips) {
 			let tripTime = Date.parse(trip.endDate) - Date.parse(trip.startDate);
 			trip.riddenTime = tripTime;
 			// Calculate an estimate for trip distance (assuming an avg speed of 15km/h)

@@ -243,18 +243,18 @@ function startWSConnection(force = false) {
 							// Show the trip overlay if it is not shown already and the user is not on navigation
 							if (!document.querySelector("#tripOverlay") && !navigationActive) {
 								// show the trip overlay if user is not in navigation
-								let tripOverlay = document.createElement("div");
-								tripOverlay.className = "trip-overlay";
-								tripOverlay.id = "tripOverlay";
-								tripOverlay.innerHTML = `
+								appendElementToBodyFromHTML(`
+								<div class="trip-overlay" id="tripOverlay">
 									<span id="onTripText">Em viagem</span>
 									<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
+									<span id="tripBike">${activeTripObj.bike}</span>
 									<span id="tripCost">0.00€</span>
 									<span id="tripTime">00:00:00</span>
 									<a id="callAssistance" href="tel:211163125"><i class="bi bi-exclamation-triangle"></i></a>
 									<img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
-                                `.trim();
-								document.body.appendChild(tripOverlay);
+								<div>
+								`.trim()
+								);
 
 								// start the trip timer
 								tripEnded = false;
@@ -283,8 +283,9 @@ function startWSConnection(force = false) {
 					msgObj.payload.data &&
 					Object.hasOwn(msgObj.payload.data, "operationalStationsSubscription")
 				) {
-					const operationalStations = msgObj.payload.data.operationalStationsSubscription;
-					loadStationMarkersFromArray(operationalStations); // Load the stations to the map
+					let newStationsArray = msgObj.payload.data.operationalStationsSubscription;
+					loadStationMarkersFromArray(newStationsArray); // Load the stations to the map
+					stationsArray = newStationsArray; // update stations array
 				} else if (Object.hasOwn(msgObj.payload, "errors") && msgObj.payload.errors) {
 					console.log(msgObj.payload.errors[0].message);
 					// The subscription errored out, restart connection

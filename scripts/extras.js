@@ -142,3 +142,40 @@ function createCookie(name, value, expiryDate) {
 function deleteCookie(name) {
 	document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT; Domain=" + getTLD() + "; Path=/; SameSite=strict";
 }
+
+function getStationsDiff(newStationsArray, oldStationsArray = null) {
+	oldStationsArray ?? stationsArray;
+
+	for (const newStation of newStationsArray) {
+		// Get previous station state
+		const oldStation = oldStationsArray.find(obj => obj.serialNumber === newStation.serialNumber);
+
+		// Compare number of bikes
+		if (newStation.bikes !== oldStation.bikes) {
+			const difference = newStation.bikes - oldStation.bikes;
+			console.log(
+				`Station ${newStation.serialNumber} has ${difference > 0 ? "+" + difference : difference} available bikes`
+			);
+			//map.getView().setCenter(ol.proj.fromLonLat([newStation.longitude, newStation.latitude]));
+		}
+
+		// Compare number of docks
+		if (newStation.docks !== oldStation.docks) {
+			const difference = newStation.docks - oldStation.docks;
+			console.log(
+				`Station ${newStation.serialNumber} has ${difference > 0 ? "+" + difference : difference} free docks`
+			);
+		}
+
+		// Compare status
+		if (newStation.assetStatus !== oldStation.assetStatus) {
+			console.log(
+				`Station ${newStation.serialNumber} went from ${oldStation.assetStatus} status to ${newStation.assetStatus} status`
+			);
+		}
+	}
+}
+
+function toPascalCase(str) {
+	return str.charAt(0).toUpperCase() + str.slice(1);
+}

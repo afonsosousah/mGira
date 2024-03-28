@@ -118,7 +118,8 @@ async function openStationMenu(stationSerialNumber) {
 	if (typeof bikeAndDocks.getBikes !== "undefined" && typeof bikeAndDocks.getDocks !== "undefined") {
 		menu.innerHTML = `
             <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
-            <div id="stationName">${stationObj.name}</div>
+			<div id="stationID">Estação ${stationObj.name.split("-")[0].trim()}</div>
+            <div id="stationName">${stationObj.name.split("-")[1].trim()}</div>
 			<div id="navigateToButton" onclick="routeToStation('${stationSerialNumber}')"><i class="bi bi-sign-turn-right"></i></div>
             <img id="docksImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
             <div id="docksButton">${numDocks === 1 ? "1 doca" : `${numDocks} docas`}</div>
@@ -211,7 +212,6 @@ async function openBikeList(stationSerialNumber) {
 	menu.className = "bike-list";
 	menu.id = "bikeMenu";
 	menu.innerHTML = `
-        <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
         <div id="backButton" onclick="hideBikeList();"><i class="bi bi-arrow-90deg-left"></i></div>
         <div id="stationName">${stationObj.name}</div>
         <img id="stationImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
@@ -225,6 +225,13 @@ async function openBikeList(stationSerialNumber) {
 	// If there is navigation going, make the menu still appear
 	if (navigationActive) menu.style.zIndex = 99;
 
+	if (!stationObj.bikeList) {
+		// get list of available bikes and docks
+		const bikeAndDocks = await getBikesAndDocks(stationSerialNumber);
+		stationObj.bikeList = bikeAndDocks.getBikes;
+		stationObj.dockList = bikeAndDocks.getDocks;
+	}
+
 	// get the bikes in the station
 	for (let bike of stationObj.bikeList) {
 		const bikeListElement = document.createElement("li");
@@ -235,7 +242,7 @@ async function openBikeList(stationSerialNumber) {
 
 		bikeListElement.innerHTML = `
             <div id="battery" style="width: ${bike.name[0] === "E" ? `${bike.battery}%` : `0`}"></div>
-            <div id="content" onclick="openUnlockBikeCard('${stationSerialNumber}','${bike.serialNumber}','${
+            <div id="content" onclick="openUnlockBikeCard('${stationSerialNumber}','${JSON.stringify(bike)}','${
 			dockObj.serialNumber
 		}')">
 				<img id="bikeIcon" src="assets/images/${bike.name[0] === "E" ? `ebike.png` : `classic.png`}">
