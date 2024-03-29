@@ -1,5 +1,5 @@
 on: 
-  pull_request:
+  pull_request_target:
   workflow_dispatch:
 name: Staging pull request to alpha.mgira.pt/pr/number
 
