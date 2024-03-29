@@ -181,10 +181,10 @@ function toPascalCase(str) {
 }
 
 function htmlEncode(str) {
-	return String(str)
-		.replace(/&/g, "&amp;")
-		.replace(/"/g, "&quot;")
-		.replace(/'/g, "&#39;")
-		.replace(/</g, "&lt;")
-		.replace(/>/g, "&gt;");
+	return str
+		.replaceAll("&", "&amp;")
+		.replaceAll('"', "&quot;")
+		.replaceAll("'", "&#39;")
+		.replaceAll("<", "&lt;")
+		.replaceAll(">", "&gt;");
 }
