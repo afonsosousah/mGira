@@ -392,6 +392,7 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 }
 
 const degToRad = Math.PI / 180;
+const radToDeg = 180 / Math.PI;
 const EARTH_RADIUS_KM = 6371;
 // Calculate the distance between two points in meters (given the latitude/longitude of those points).
 function distance(point1, point2) {
@@ -416,6 +417,50 @@ function distance(point1, point2) {
 
 		return distance * 1000;
 	}
+}
+
+// Function to estimate a position a certain distance (meters) and angle (radians, clockwise north) from a starting point
+function estimateNewPosition(lon, lat, distance, angle) {
+	const earth_radius = EARTH_RADIUS_KM * 1000; // in meters
+
+	// convert angle from clockwise north to clockwise east
+	angle += Math.PI / 2;
+
+	// switch the atan2 arguments (not exactly sure on the explanation of this)
+	angle = Math.atan2(Math.cos(angle), Math.sin(angle)); // from the atan2(x,y) in coordinatesToAngle to atan2(y,x) needed for this function
+
+	lon = degToRad * lon;
+	lat = degToRad * lat;
+
+	const new_lat =
+		radToDeg *
+		Math.asin(
+			Math.sin(lat) * Math.cos(distance / earth_radius) +
+				Math.cos(lat) * Math.sin(distance / earth_radius) * Math.cos(angle)
+		);
+
+	const new_lon =
+		radToDeg *
+		(lon +
+			Math.atan2(
+				Math.sin(angle) * Math.sin(distance / earth_radius) * Math.cos(lat),
+				Math.cos(distance / earth_radius) - Math.sin(lat) * Math.sin(new_lat)
+			));
+
+	return [new_lon, new_lat];
+}
+
+function coordinatesToAngle(lon1, lat1, lon2, lat2) {
+	const lonDiff = degToRad * (lon2 - lon1);
+	lat1 = degToRad * lat1;
+	lat2 = degToRad * lat2;
+
+	const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lonDiff);
+	const y = Math.sin(lonDiff) * Math.cos(lat2);
+
+	const angle = -(Math.PI / 2) + Math.atan2(x, y); // correct from clockwise east to clockwise north
+
+	return angle >= 0 ? angle : angle + 2 * Math.PI;
 }
 
 function getStationsByDistance(currentLocation) {

@@ -8,6 +8,7 @@ let promptedDestination;
 let rotationMode = "route";
 let travelledDistance = 0;
 let lastUserPosition = null;
+let ignoreOffRoute = false;
 
 async function startNavigation(walkingOnly = false) {
 	navigationActive = true;
@@ -54,6 +55,7 @@ async function startNavigation(walkingOnly = false) {
 
 	// reset travelled distance
 	travelledDistance = 0;
+	ignoreOffRoute = false;
 
 	// Pan to user location and set the correct rotation based on the route
 	updatePositionAndRotationWhenNavigating();
@@ -233,19 +235,19 @@ function changeRotationMode() {
 	}
 }
 
-function updatePositionAndRotationWhenNavigating() {
+function updatePositionAndRotationWhenNavigating(timestamp) {
 	if (navigationActive) {
 		let angleRad = map.getView().getRotation();
 
-		const currentPosition = pos;
+		const lastKnownPosition = pos;
 
-		if (rotationMode === "route" && currentPosition != lastUserPosition) {
+		if (rotationMode === "route" && lastKnownPosition != lastUserPosition) {
 			let closestDistance;
 			let closestPointIndex;
 
 			// Get the closest route point to current location
 			for (const [i, routePoint] of currentRouteCoordinates.entries()) {
-				const computedDistance = distance(currentPosition, routePoint);
+				const computedDistance = distance(lastKnownPosition, routePoint);
 				if (!closestDistance) {
 					closestDistance = computedDistance;
 					closestPointIndex = i;
@@ -257,8 +259,8 @@ function updatePositionAndRotationWhenNavigating() {
 
 			// If the closest point is less than 1 meter away, update lastRoutePointIndex
 			if (lastRoutePointIndex) {
-				const distanceToClosestPoint = distance(currentPosition, currentRouteCoordinates[closestPointIndex]);
-				const distanceToLastPoint = distance(currentPosition, currentRouteCoordinates[lastRoutePointIndex]);
+				const distanceToClosestPoint = distance(lastKnownPosition, currentRouteCoordinates[closestPointIndex]);
+				const distanceToLastPoint = distance(lastKnownPosition, currentRouteCoordinates[lastRoutePointIndex]);
 				const distanceBetweenClosestAndLastPoint = distance(
 					currentRouteCoordinates[closestPointIndex],
 					currentRouteCoordinates[lastRoutePointIndex]
@@ -283,6 +285,7 @@ function updatePositionAndRotationWhenNavigating() {
 			const nextRoutePoint =
 				currentRouteCoordinates[Math.min(closestPointIndex + 1, currentRouteCoordinates.length - 1)]; // make sure the point doesn't go out of bounds
 
+			/*
 			const routeDistance = map
 				.getLayers()
 				.getArray()
@@ -294,31 +297,33 @@ function updatePositionAndRotationWhenNavigating() {
 			// calculate route progress
 			const routeProgress = travelledDistance / routeDistance;
 			const remainingDistance = routeDistance - travelledDistance;
+			*/
 
 			// check if the user is off-route
-			// (user is out of the circle containing the closest and next route points + 10 meters of margin of error)
-			if (distance(currentPosition, nextRoutePoint) - distance(closestRoutePoint, nextRoutePoint) > 30) {
-				alert("You are off-route!");
-				recalculateFullRoute(currentPosition, currentRouteCoordinates[currentRouteCoordinates.length - 1]);
+			// (user is out of the circle containing the closest and next route points + 50 meters of margin of error)
+			if (distance(lastKnownPosition, nextRoutePoint) - distance(closestRoutePoint, nextRoutePoint) > 50) {
+				createCustomYesNoPrompt(
+					"Estás fora do caminho. Queres que encontre um novo percurso?",
+					() => recalculateFullRoute(lastKnownPosition, currentRouteCoordinates[currentRouteCoordinates.length - 1]),
+					() => (ignoreOffRoute = true),
+					"Sim",
+					"Ignorar"
+				);
 			}
 
-			// Get the differences between coordinates
-			const diffLat = nextRoutePoint[1] - closestRoutePoint[1];
-			const diffLon = nextRoutePoint[0] - closestRoutePoint[0];
-
-			// Get the angle between the current route point and the next route point (corrected from clockwise east to clockwise north)
-			angleRad = -90 * (Math.PI / 180) + Math.atan2(diffLat, diffLon);
+			// Get the angle between the current route point and the next route point
+			angleRad = coordinatesToAngle(closestRoutePoint[0], closestRoutePoint[1], nextRoutePoint[0], nextRoutePoint[1]);
 
 			// Update last user position
-			lastUserPosition = currentPosition;
+			lastUserPosition = lastKnownPosition;
 		} else if (rotationMode === "compass") {
 			angleRad = -compassHeading;
 		}
 
-		// Pan to location and update rotation (pos object is global and is updated getLocation() in map.js)
+		// Pan to location and update rotation
 		const view = map.getView();
 		const mapSize = map.getSize();
-		const userPosition = ol.proj.fromLonLat(currentPosition);
+		const userPosition = ol.proj.fromLonLat(lastKnownPosition);
 
 		view.setRotation(angleRad);
 
@@ -326,7 +331,7 @@ function updatePositionAndRotationWhenNavigating() {
 		else view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.85]);
 
 		// Check if user is near to dropoff station, and prompt them if they reached the dropoff station
-		let distanceToDropoffStation = distance(currentPosition, [dropoffStation.longitude, dropoffStation.latitude]);
+		let distanceToDropoffStation = distance(lastKnownPosition, [dropoffStation.longitude, dropoffStation.latitude]);
 		if (distanceToDropoffStation < 30 && !promptedDropoffStation) {
 			createCustomYesNoPrompt(
 				`Chegou à estação?`,
@@ -341,7 +346,7 @@ function updatePositionAndRotationWhenNavigating() {
 		} else if (distanceToDropoffStation >= 30) promptedDropoffStation = false;
 
 		// Check if user is near to destination, and prompt them if they reached the destination
-		let distanceToDestination = distance(currentPosition, finalDestination);
+		let distanceToDestination = distance(lastKnownPosition, finalDestination);
 		if (distanceToDestination < 30 && !promptedDestination) {
 			createCustomYesNoPrompt(
 				`Chegou ao destino?`,
