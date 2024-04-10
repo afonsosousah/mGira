@@ -62,6 +62,7 @@ function onBikeNavigation() {
 	navigationMode = "bike";
 
 	// Request fullscreen
+	// https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullscreen
 	if (typeof document.body.requestFullscreen === "function") document.body.requestFullscreen();
 
 	// Tell the user that there is navigation going, so he needs to rotate the screen to landscape
@@ -82,7 +83,7 @@ function onBikeNavigation() {
 		</div>
 	</div>
 	<div id="speedContainer">
-		<div id="speed">0</div>
+		<div id="speed">N/A</div>
 		<div id="speedLabel">km/h</div>
 	</div>
     `.trim();
@@ -380,10 +381,12 @@ async function orientationChangeHandler(event) {
 		}
 
 		// Wait for map to finish loading
-		while (typeof map !== "object") {
-			console.log("map has not loaded");
-			await new Promise(resolve => setTimeout(resolve, 200));
-		}
+		await new Promise(resolve => {
+			(function isMapLoaded() {
+				if (typeof map === "object") resolve(map)
+				else setTimeout(isMapLoaded, 100)
+			})()
+		})
 
 		// Set map pixel ratio (fix mobile map not loading at some points)
 		map.pixelRatio_ = 1.5;
@@ -433,7 +436,7 @@ async function goIntoLandscapeNavigationUI() {
 		</div>
 	</div>
 	<div id="speedContainer">
-		<div id="speed">0</div>
+		<div id="speed">N/A</div>
 		<div id="speedLabel">km/h</div>
 	</div>
 	`.trim();
@@ -472,7 +475,7 @@ function exitLandscapeNavigationUI() {
 		}
 
 		// Remove the on bike button
-		if (document.getElementById("onBikeButton")) document.getElementById("onBikeButton").remove();
+		document.getElementById("onBikeButton")?.remove();
 
 		// Update the map style to show the standard UI
 		const mapElement = document.getElementById("map");

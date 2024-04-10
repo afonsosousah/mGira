@@ -180,6 +180,13 @@ function toPascalCase(str) {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+function convertBbox(bbox) {
+	const minCoords = ol.proj.fromLonLat([bbox[0], bbox[1]]);
+	const maxCoords = ol.proj.fromLonLat([bbox[2], bbox[3]]);
+
+	return [...minCoords, ...maxCoords];
+}
+
 function htmlEncode(str) {
 	return str
 		.replaceAll("&", "&amp;")

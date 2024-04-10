@@ -141,12 +141,12 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	const bboxBike = convertBbox(routeSummaryBike?.bbox ?? routeSummaryFoot1.bbox);
 	const bboxFoot2 = convertBbox(routeSummaryFoot2?.bbox ?? routeSummaryFoot1.bbox);
 
-	const Xmin = Math.min(bboxFoot1[0], bboxBike[0], bboxFoot2[0]);
-	const Ymin = Math.min(bboxFoot1[1], bboxBike[1], bboxFoot2[1]);
-	const Xmax = Math.max(bboxFoot1[2], bboxBike[2], bboxFoot2[2]);
-	const Ymax = Math.max(bboxFoot1[3], bboxBike[3], bboxFoot2[3]);
+	const xMin = Math.min(bboxFoot1[0], bboxBike[0], bboxFoot2[0]);
+	const yMin = Math.min(bboxFoot1[1], bboxBike[1], bboxFoot2[1]);
+	const xMax = Math.max(bboxFoot1[2], bboxBike[2], bboxFoot2[2]);
+	const yMax = Math.max(bboxFoot1[3], bboxBike[3], bboxFoot2[3]);
 
-	const convertedBbox = [Xmin, Ymin, Xmax, Ymax];
+	const convertedBbox = [xMin, yMin, xMax, yMax];
 
 	if (window.matchMedia("(orientation: portrait)").matches) {
 		const offset =
@@ -403,7 +403,7 @@ async function searchPlace() {
             `.trim();
 
 			// if there are no results, put a message saying that
-			if (!response || (response && response.features.length === 0)) {
+			if (!response || response.features.length === 0) {
 				document.getElementById("placeList").innerHTML = "Nenhum lugar encontrado";
 				return;
 			}
@@ -569,7 +569,7 @@ function hidePlaceSearchMenu() {
 	map
 		.getLayers()
 		.getArray()
-		.filter(layer => layer.get("name") === "placesLayer" || layer.get("name") === "routeLayer")
+		.filter(layer => ["placesLayer", "routeLayer"].includes(layer.get("name")))
 		.forEach(layer => map.removeLayer(layer));
 
 	// Add back the stations layer
