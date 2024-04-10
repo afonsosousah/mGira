@@ -158,31 +158,24 @@ async function loadStationMarkersFromArray(stationsArray, showDocks = false) {
 		});
 
 		let iconStyle;
-		if (station.docks !== 0 && !showDocks) {
-			const bikeRatio = station.bikes / station.docks;
+
+		if (station.docks === 0) {
+			// Deactivated station
 
 			iconStyle = new ol.style.Style({
 				image: new ol.style.Icon({
-					width: 33,
-					height: 46,
+					width: 40,
+					height: 50,
 					anchor: [0.5, 1],
 					anchorXUnits: "fraction",
 					anchorYUnits: "fraction",
-					src: mapDotSVG(bikeRatio),
-				}),
-				text: new ol.style.Text({
-					text: station.bikes.toString(),
-					font: "bold 15px sans-serif",
-					offsetX: 0,
-					offsetY: -28,
-					textAlign: "center",
-					fill: new ol.style.Fill({
-						color: "#FFFFFF",
-					}),
+					src: `assets/images/mapDot_Deactivated.png`,
 				}),
 				zIndex: featureID,
 			});
-		} else if (station.docks !== 0 && showDocks) {
+		} else if (showDocks) {
+			// Show number of available docks
+
 			const dockRatio = (station.docks - station.bikes) / station.docks;
 
 			iconStyle = new ol.style.Style({
@@ -206,18 +199,33 @@ async function loadStationMarkersFromArray(stationsArray, showDocks = false) {
 				}),
 				zIndex: featureID,
 			});
-		} else
+		} else {
+			// Show number of available bikes
+
+			const bikeRatio = station.bikes / station.docks;
+
 			iconStyle = new ol.style.Style({
 				image: new ol.style.Icon({
-					width: 40,
-					height: 50,
+					width: 33,
+					height: 46,
 					anchor: [0.5, 1],
 					anchorXUnits: "fraction",
 					anchorYUnits: "fraction",
-					src: `assets/images/mapDot_Deactivated.png`,
+					src: mapDotSVG(bikeRatio),
+				}),
+				text: new ol.style.Text({
+					text: station.bikes.toString(),
+					font: "bold 15px sans-serif",
+					offsetX: 0,
+					offsetY: -28,
+					textAlign: "center",
+					fill: new ol.style.Fill({
+						color: "#FFFFFF",
+					}),
 				}),
 				zIndex: featureID,
 			});
+		}
 
 		iconFeature.setStyle(iconStyle);
 
