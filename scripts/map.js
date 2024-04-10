@@ -294,7 +294,7 @@ function getLocation(zoom = true) {
 				pos = [position.coords.longitude, position.coords.latitude];
 				speed = position.coords.speed ?? 0;
 
-				gpsHeading = -(Math.PI / 180) * position.coords.heading; // adjusted to radians
+				gpsHeading = (Math.PI / 180) * position.coords.heading; // adjusted to radians
 
 				let speedKMH = (speed * 60 * 60) / 1000;
 				if (document.getElementById("speed")) document.getElementById("speed").innerHTML = speedKMH.toFixed(0); // convert m/s to km/h
@@ -450,7 +450,7 @@ function startLocationDotRotation() {
 		} else currentOrientation = e.webkitCompassHeading;
 
 		// Calculate the current compass heading that the user is 'looking at' (in radians) (global)
-		compassHeading = -(Math.PI / 180) * (360 - currentOrientation);
+		compassHeading = (Math.PI / 180) * currentOrientation;
 
 		// Adjust heading with device orientation
 		compassHeading += (Math.PI / 180) * window.screen.orientation.angle;
