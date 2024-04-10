@@ -210,16 +210,18 @@ function changeRotationMode() {
 		rotationMode = "compass";
 		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-compass"></i>`;
 		if (changeRotationModeButtonPortrait) changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-compass"></i>`;
-	} else if (rotationMode === "compass" && !endNavigationButton && !endNavigationButtonPortrait) {
-		rotationMode = "free";
-		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-crosshair"></i>`;
-		if (changeRotationModeButtonPortrait)
-			changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-crosshair"></i>`;
 	} else if (rotationMode === "compass") {
-		rotationMode = "route";
-		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
-		if (changeRotationModeButtonPortrait)
-			changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
+		if (!endNavigationButton && !endNavigationButtonPortrait) {
+			rotationMode = "free";
+			if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-crosshair"></i>`;
+			if (changeRotationModeButtonPortrait)
+				changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-crosshair"></i>`;
+		} else {
+			rotationMode = "route";
+			if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
+			if (changeRotationModeButtonPortrait)
+				changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
+		}
 	} else if (rotationMode === "free") {
 		rotationMode = "compass";
 		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-compass"></i>`;
@@ -383,10 +385,10 @@ async function orientationChangeHandler(event) {
 		// Wait for map to finish loading
 		await new Promise(resolve => {
 			(function isMapLoaded() {
-				if (typeof map === "object") resolve(map)
-				else setTimeout(isMapLoaded, 100)
-			})()
-		})
+				if (typeof map === "object") resolve(map);
+				else setTimeout(isMapLoaded, 100);
+			})();
+		});
 
 		// Set map pixel ratio (fix mobile map not loading at some points)
 		map.pixelRatio_ = 1.5;
