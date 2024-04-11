@@ -6,6 +6,9 @@ let lastRoutePointIndex = null;
 let promptedDropoffStation;
 let promptedDestination;
 let rotationMode = "route";
+let travelledDistance = 0;
+let lastUserPosition = null;
+let ignoreOffRoute = false;
 
 async function startNavigation(walkingOnly = false) {
 	navigationActive = true;
@@ -49,6 +52,10 @@ async function startNavigation(walkingOnly = false) {
 	// hide station menu
 	if (document.getElementById("stationMenu")) document.getElementById("stationMenu").remove();
 	document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
+
+	// reset travelled distance
+	travelledDistance = 0;
+	ignoreOffRoute = false;
 
 	// Pan to user location and set the correct rotation based on the route
 	updatePositionAndRotationWhenNavigating();
@@ -205,7 +212,8 @@ async function stopNavigation() {
 	map
 		.getLayers()
 		.getArray()
-		.find(layer => layer.get("name") === "cyclewaysLayer").setVisible(true);
+		.find(layer => layer.get("name") === "cyclewaysLayer")
+		.setVisible(true);
 
 	// If the screen is not portrait, tell the user to rotate it
 	orientationChangeHandler(window.matchMedia("(orientation: portrait)"));
@@ -227,17 +235,19 @@ function changeRotationMode() {
 	}
 }
 
-function updatePositionAndRotationWhenNavigating() {
+function updatePositionAndRotationWhenNavigating(timestamp) {
 	if (navigationActive) {
-		let angleRad;
+		let angleRad = map.getView().getRotation();
 
-		if (rotationMode === "route") {
+		const lastKnownPosition = pos;
+
+		if (rotationMode === "route" && lastKnownPosition != lastUserPosition) {
 			let closestDistance;
 			let closestPointIndex;
 
 			// Get the closest route point to current location
 			for (const [i, routePoint] of currentRouteCoordinates.entries()) {
-				const computedDistance = distance(pos, routePoint);
+				const computedDistance = distance(lastKnownPosition, routePoint);
 				if (!closestDistance) {
 					closestDistance = computedDistance;
 					closestPointIndex = i;
@@ -249,19 +259,21 @@ function updatePositionAndRotationWhenNavigating() {
 
 			// If the closest point is less than 1 meter away, update lastRoutePointIndex
 			if (lastRoutePointIndex) {
-				let distanceToClosestPoint = distance(pos, currentRouteCoordinates[closestPointIndex]);
-				let distanceToLastPoint = distance(pos, currentRouteCoordinates[lastRoutePointIndex]);
-				let distanceBetweenClosestAndLastPoint = distance(
+				const distanceToClosestPoint = distance(lastKnownPosition, currentRouteCoordinates[closestPointIndex]);
+				const distanceToLastPoint = distance(lastKnownPosition, currentRouteCoordinates[lastRoutePointIndex]);
+				const distanceBetweenClosestAndLastPoint = distance(
 					currentRouteCoordinates[closestPointIndex],
 					currentRouteCoordinates[lastRoutePointIndex]
 				);
 
 				if (
-					(distanceToClosestPoint < 1 && distanceToClosestPoint < distanceToLastPoint) ||
-					distanceToLastPoint > distanceBetweenClosestAndLastPoint ||
-					Math.abs(lastRoutePointIndex - closestPointIndex) > 1 // If the difference is more than 1 point
+					((distanceToClosestPoint < 1 && distanceToClosestPoint < distanceToLastPoint) ||
+						distanceToLastPoint > distanceBetweenClosestAndLastPoint ||
+						Math.abs(lastRoutePointIndex - closestPointIndex) > 1) && // If the difference is more than 1 point
+					closestPointIndex != lastRoutePointIndex
 				) {
-					lastRoutePointIndex = closestPointIndex;
+					lastRoutePointIndex = closestPointIndex; // Move to next point
+					travelledDistance += distanceBetweenClosestAndLastPoint;
 				} else {
 					closestPointIndex = lastRoutePointIndex;
 				}
@@ -269,23 +281,49 @@ function updatePositionAndRotationWhenNavigating() {
 				lastRoutePointIndex = closestPointIndex;
 			}
 
-			let closestRoutePoint = currentRouteCoordinates[closestPointIndex];
-			let nextRoutePoint = currentRouteCoordinates[Math.min(closestPointIndex + 1, currentRouteCoordinates.length - 1)]; // make sure the point doesn't go out of bounds
+			const closestRoutePoint = currentRouteCoordinates[closestPointIndex];
+			const nextRoutePoint =
+				currentRouteCoordinates[Math.min(closestPointIndex + 1, currentRouteCoordinates.length - 1)]; // make sure the point doesn't go out of bounds
 
-			// Get the differences between coordinates
-			let diffLat = nextRoutePoint[1] - closestRoutePoint[1];
-			let diffLon = nextRoutePoint[0] - closestRoutePoint[0];
+			/*
+			const routeDistance = map
+				.getLayers()
+				.getArray()
+				.filter(layer => layer.get("name") === "routeLayer")[0]
+				.getSource()
+				.getFeatures()
+				.reduce((sum, cur) => sum + cur.values_.summary.distance, 0);
 
-			// Get the angle between the current route point and the next route point (corrected from clockwise east to clockwise north)
-			angleRad = -90 * (Math.PI / 180) + Math.atan2(diffLat, diffLon);
+			// calculate route progress
+			const routeProgress = travelledDistance / routeDistance;
+			const remainingDistance = routeDistance - travelledDistance;
+			*/
+
+			// check if the user is off-route
+			// (user is out of the circle containing the closest and next route points + 50 meters of margin of error)
+			if (distance(lastKnownPosition, nextRoutePoint) - distance(closestRoutePoint, nextRoutePoint) > 50) {
+				createCustomYesNoPrompt(
+					"Estás fora do caminho. Queres que encontre um novo percurso?",
+					() => recalculateFullRoute(lastKnownPosition, currentRouteCoordinates[currentRouteCoordinates.length - 1]),
+					() => (ignoreOffRoute = true),
+					"Sim",
+					"Ignorar"
+				);
+			}
+
+			// Get the angle between the current route point and the next route point
+			angleRad = coordinatesToAngle(closestRoutePoint[0], closestRoutePoint[1], nextRoutePoint[0], nextRoutePoint[1]);
+
+			// Update last user position
+			lastUserPosition = lastKnownPosition;
 		} else if (rotationMode === "compass") {
 			angleRad = -compassHeading;
 		}
 
-		// Pan to location and update rotation (pos object is global and is updated getLocation() in map.js)
+		// Pan to location and update rotation
 		const view = map.getView();
 		const mapSize = map.getSize();
-		const userPosition = ol.proj.fromLonLat(pos);
+		const userPosition = ol.proj.fromLonLat(lastKnownPosition);
 
 		view.setRotation(angleRad);
 
@@ -293,7 +331,7 @@ function updatePositionAndRotationWhenNavigating() {
 		else view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.85]);
 
 		// Check if user is near to dropoff station, and prompt them if they reached the dropoff station
-		let distanceToDropoffStation = distance(pos, [dropoffStation.longitude, dropoffStation.latitude]);
+		let distanceToDropoffStation = distance(lastKnownPosition, [dropoffStation.longitude, dropoffStation.latitude]);
 		if (distanceToDropoffStation < 30 && !promptedDropoffStation) {
 			createCustomYesNoPrompt(
 				`Chegou à estação?`,
@@ -308,7 +346,7 @@ function updatePositionAndRotationWhenNavigating() {
 		} else if (distanceToDropoffStation >= 30) promptedDropoffStation = false;
 
 		// Check if user is near to destination, and prompt them if they reached the destination
-		let distanceToDestination = distance(pos, finalDestination);
+		let distanceToDestination = distance(lastKnownPosition, finalDestination);
 		if (distanceToDestination < 30 && !promptedDestination) {
 			createCustomYesNoPrompt(
 				`Chegou ao destino?`,

@@ -5,6 +5,12 @@ let previousSelectedMarker;
 let pos;
 let speed;
 let compassHeading = null; // null by default so that any math will assume 0
+let previousLocationTimestamp = null;
+let previousLocation = null;
+let locationQueue = [];
+let locationUpdateRunning = false;
+let frameTime = null;
+let lastAnimationFrameTimestamp = null;
 
 async function initMap() {
 	// Set cycleways style
@@ -254,12 +260,27 @@ function getLocation(zoom = true) {
 		navigator.geolocation.watchPosition(
 			async position => {
 				// Convert to the OpenLayers format
-				pos = [position.coords.longitude, position.coords.latitude];
+				//pos = [position.coords.longitude, position.coords.latitude];
 				speed = position.coords.speed ?? 0;
 
 				let speedKMH = (speed * 60 * 60) / 1000;
 				if (document.getElementById("speed")) document.getElementById("speed").innerHTML = speedKMH.toFixed(0); // convert m/s to km/h
 
+				// Linear animation between previous location and current one (for smooth updates)
+				if (previousLocationTimestamp && previousLocation) {
+					const timeBetweenUpdates = position.timestamp - previousLocationTimestamp; // milliseconds
+					addSmoothLocationUpdateToQueue(
+						previousLocation,
+						[position.coords.longitude, position.coords.latitude],
+						timeBetweenUpdates
+					);
+				}
+
+				// Store the timestamp and location
+				previousLocationTimestamp = position.timestamp;
+				previousLocation = [position.coords.longitude, position.coords.latitude];
+
+				/*
 				const iconFeature = new ol.Feature({
 					geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
 					name: "Current location",
@@ -307,7 +328,7 @@ function getLocation(zoom = true) {
 					let feature = currentLocationLayer.getSource().getFeatures()[0];
 					feature.setStyle(iconStyle);
 					feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
-				}
+				}*/
 			},
 			error => console.log(error ? error : "Error: Your browser doesn't support geolocation."),
 			{
@@ -399,10 +420,72 @@ function getLocation(zoom = true) {
 	}
 }
 
+function addSmoothLocationUpdateToQueue(startLocation, endLocation, totalTime) {
+	const distanceBetweenLocations = distance(startLocation, endLocation); // meters
+	const angle = coordinatesToAngle(startLocation[0], startLocation[1], endLocation[0], endLocation[1]); // radians
+	const speed = distanceBetweenLocations / (totalTime / 1000); // m/s
+
+	const msUpdate = 19.5; // NEED TO SYNC WITH FRAMES
+
+	let stepTime = 0;
+	let positionsArray = [startLocation];
+	let stepDistance = speed * (msUpdate / 1000); // distance travelled each frametime (ms)
+
+	while (stepTime < totalTime) {
+		positionsArray.push(estimateNewPosition(positionsArray.at(-1)[0], positionsArray.at(-1)[1], stepDistance, angle));
+		stepTime += msUpdate;
+	}
+
+	locationQueue = positionsArray;
+	//console.log(locationQueue);
+
+	/*console.log(startLocation);
+	console.log(endLocation);
+	console.log(estimateNewPosition(startLocation[0], startLocation[1], distanceBetweenLocations, angle));
+	console.log(positionsArray);*/
+
+	/*
+	if (!locationUpdateRunning) {
+		// Get the layer containing the previous current location
+		const currentLocationLayer = map
+			.getLayers()
+			.getArray()
+			.find(layer => layer.get("name") === "currentLocationLayer");
+
+		if (!currentLocationLayer) {
+			pos = locationQueue.at(-1);
+			return;
+		}
+
+		currentLocationLayer.on("postrender", function (event) {
+			//const vectorContext = ol.render.getVectorContext(event);
+			//const frameState = event.frameState;
+			//console.log(vectorContext);
+			//console.log(frameState);
+
+			// Refresh the feature
+			const feature = currentLocationLayer.getSource().getFeatures()[0];
+			feature.getGeometry().setCoordinates(pos);
+			console.log(pos);
+
+			map.render();
+		});
+		
+	}*/
+}
+
 function startLocationDotRotation() {
 	let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
-	let handler = e => {
+	let handler = (e, timestamp) => {
+		// Store frameTime
+		/*frameTime = timestamp - lastAnimationFrameTimestamp;
+		lastAnimationFrameTimestamp = timestamp;*/
+
+		// Refresh position
+		if (locationQueue.length > 0) pos = locationQueue.shift();
+		//console.log(pos);
+
 		// Get current compass heading in degrees
 		let currentOrientation;
 		if (typeof e.webkitCompassHeading === "undefined") {
@@ -419,11 +502,6 @@ function startLocationDotRotation() {
 		if (!pos) return;
 
 		// Set rotation of map dot
-		const iconFeature = new ol.Feature({
-			geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
-			name: "Current location",
-		});
-
 		const iconStyle = new ol.style.Style({
 			image: new ol.style.Icon({
 				width: 40,
@@ -436,26 +514,12 @@ function startLocationDotRotation() {
 			}),
 		});
 
-		iconFeature.setStyle(iconStyle);
-		const vectorSource = new ol.source.Vector({
-			features: [iconFeature],
-		});
-
-		const vectorLayer = new ol.layer.Vector({
-			name: "currentLocationLayer",
-			source: vectorSource,
-			zIndex: 99,
-		});
-
 		if (
 			map
 				.getLayers()
 				.getArray()
-				.filter(layer => layer.get("name") === "currentLocationLayer").length === 0
+				.filter(layer => layer.get("name") === "currentLocationLayer").length > 0
 		) {
-			// Add the layer
-			map.addLayer(vectorLayer);
-		} else {
 			// Get the layer containing the previous current location
 			const currentLocationLayer = map
 				.getLayers()
@@ -465,6 +529,7 @@ function startLocationDotRotation() {
 			// Refresh the feature
 			let feature = currentLocationLayer.getSource().getFeatures()[0];
 			feature.setStyle(iconStyle);
+			//console.log(pos);
 			feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
 		}
 	};
@@ -479,7 +544,11 @@ function startLocationDotRotation() {
 					DeviceOrientationEvent.requestPermission()
 						.then(response => {
 							if (response === "granted") {
-								window.addEventListener("deviceorientation", e => requestAnimationFrame(() => handler(e)), true);
+								window.addEventListener(
+									"deviceorientation",
+									e => requestAnimationFrame(timestamp => handler(e, timestamp)),
+									true
+								);
 							} else {
 								alert("A orientação não irá funcionar corretamente!");
 							}
@@ -498,7 +567,11 @@ function startLocationDotRotation() {
 		DeviceOrientationEvent.requestPermission()
 			.then(response => {
 				if (response === "granted") {
-					window.addEventListener("deviceorientation", e => requestAnimationFrame(() => handler(e)), true);
+					window.addEventListener(
+						"deviceorientation",
+						e => requestAnimationFrame(timestamp => handler(e, timestamp)),
+						true
+					);
 				} else {
 					// Let the user give permission if he has previously rejected it
 					promptUserForPermission();
@@ -507,6 +580,10 @@ function startLocationDotRotation() {
 			// Permission had not been given before
 			.catch(() => promptUserForPermission());
 	} else {
-		window.addEventListener("deviceorientationabsolute", e => requestAnimationFrame(() => handler(e)), true);
+		window.addEventListener(
+			"deviceorientationabsolute",
+			e => requestAnimationFrame(timestamp => handler(e, timestamp)),
+			true
+		);
 	}
 }
