@@ -274,7 +274,7 @@ function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 function takeUnregisteredBike() {
 	// Get the bike object from the name written on the input element
 	const bikeName = document.getElementById("unregisteredBikeNameInput").value;
-	const bikeObj = bikeSerialNumberMapping.filter(bike => bike.name === bikeName)[0];
+	const bikeObj = bikeSerialNumberMapping[bikeName];
 
 	// Try to open the unlock bike card, to take bike
 	if (typeof bikeObj !== "undefined") {
