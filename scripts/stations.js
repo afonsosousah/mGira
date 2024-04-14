@@ -318,7 +318,7 @@ async function updateBikeList() {
 			Object.entries(bikeSerialNumberMapping)
 				.concat(missingBikes.map(bike => [bike.name, bike.serialNumber]))
 				// Keep only the electric bikes and the classic bikes that don't have an electric one with the same number
-				.filter(([name]) => name.startsWith("E") || !bikeSerialNumberMapping[name.replace("C", "E")])
+				.filter(([name], _, self) => name.startsWith("E") || !self.find(([b]) => b === name.replace("C", "E")))
 				.sort(([a], [b]) => Number(a.slice(1)) - Number(b.slice(1)))
 		);
 
