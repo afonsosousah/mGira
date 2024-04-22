@@ -54,8 +54,8 @@ async function startNavigation(walkingOnly = false) {
 	document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
 
 	// Pan to user location and set the correct rotation based on the route
-	updatePositionAndRotationWhenNavigating();
-	updatePositionAndRotationWhenNavigating(); // do twice because the first time the alignment is not right (no idea why)
+	updateRotation();
+	updateRotation(); // do twice because the first time the alignment is not right (no idea why)
 }
 
 function onBikeNavigation() {
@@ -229,66 +229,69 @@ function changeRotationMode() {
 	}
 }
 
-function updatePositionAndRotationWhenNavigating() {
-	if (navigationActive) {
-		let angleRad;
+function updateRotation() {
+	// Keep current rotation by default
+	let angleRad = map.getView().getRotation();
 
-		if (rotationMode === "route") {
-			let closestDistance;
-			let closestPointIndex;
+	// Get correct rotation
+	if (rotationMode === "route") {
+		let closestDistance;
+		let closestPointIndex;
 
-			// Get the closest route point to current location
-			for (const [i, routePoint] of currentRouteCoordinates.entries()) {
-				const computedDistance = distance(pos, routePoint);
-				if (!closestDistance) {
-					closestDistance = computedDistance;
-					closestPointIndex = i;
-				} else if (computedDistance < closestDistance) {
-					closestDistance = computedDistance;
-					closestPointIndex = i;
-				}
+		// Get the closest route point to current location
+		for (const [i, routePoint] of currentRouteCoordinates.entries()) {
+			const computedDistance = distance(pos, routePoint);
+			if (!closestDistance) {
+				closestDistance = computedDistance;
+				closestPointIndex = i;
+			} else if (computedDistance < closestDistance) {
+				closestDistance = computedDistance;
+				closestPointIndex = i;
 			}
-
-			// If the closest point is less than 1 meter away, update lastRoutePointIndex
-			if (lastRoutePointIndex) {
-				let distanceToClosestPoint = distance(pos, currentRouteCoordinates[closestPointIndex]);
-				let distanceToLastPoint = distance(pos, currentRouteCoordinates[lastRoutePointIndex]);
-				let distanceBetweenClosestAndLastPoint = distance(
-					currentRouteCoordinates[closestPointIndex],
-					currentRouteCoordinates[lastRoutePointIndex]
-				);
-
-				if (
-					(distanceToClosestPoint < 1 && distanceToClosestPoint < distanceToLastPoint) ||
-					distanceToLastPoint > distanceBetweenClosestAndLastPoint ||
-					Math.abs(lastRoutePointIndex - closestPointIndex) > 1 // If the difference is more than 1 point
-				) {
-					lastRoutePointIndex = closestPointIndex;
-				} else {
-					closestPointIndex = lastRoutePointIndex;
-				}
-			} else {
-				lastRoutePointIndex = closestPointIndex;
-			}
-
-			let closestRoutePoint = currentRouteCoordinates[closestPointIndex];
-			let nextRoutePoint = currentRouteCoordinates[Math.min(closestPointIndex + 1, currentRouteCoordinates.length - 1)]; // make sure the point doesn't go out of bounds
-
-			// Get the differences between coordinates
-			let diffLat = nextRoutePoint[1] - closestRoutePoint[1];
-			let diffLon = nextRoutePoint[0] - closestRoutePoint[0];
-
-			// Get the angle between the current route point and the next route point (corrected from clockwise east to clockwise north)
-			angleRad = -90 * (Math.PI / 180) + Math.atan2(diffLat, diffLon);
-		} else if (rotationMode === "compass") {
-			angleRad = -compassHeading;
 		}
 
-		// Pan to location and update rotation (pos object is global and is updated getLocation() in map.js)
-		const view = map.getView();
-		const mapSize = map.getSize();
-		const userPosition = ol.proj.fromLonLat(pos);
+		// If the closest point is less than 1 meter away, update lastRoutePointIndex
+		if (lastRoutePointIndex) {
+			let distanceToClosestPoint = distance(pos, currentRouteCoordinates[closestPointIndex]);
+			let distanceToLastPoint = distance(pos, currentRouteCoordinates[lastRoutePointIndex]);
+			let distanceBetweenClosestAndLastPoint = distance(
+				currentRouteCoordinates[closestPointIndex],
+				currentRouteCoordinates[lastRoutePointIndex]
+			);
 
+			if (
+				(distanceToClosestPoint < 1 && distanceToClosestPoint < distanceToLastPoint) ||
+				distanceToLastPoint > distanceBetweenClosestAndLastPoint ||
+				Math.abs(lastRoutePointIndex - closestPointIndex) > 1 // If the difference is more than 1 point
+			) {
+				lastRoutePointIndex = closestPointIndex;
+			} else {
+				closestPointIndex = lastRoutePointIndex;
+			}
+		} else {
+			lastRoutePointIndex = closestPointIndex;
+		}
+
+		let closestRoutePoint = currentRouteCoordinates[closestPointIndex];
+		let nextRoutePoint = currentRouteCoordinates[Math.min(closestPointIndex + 1, currentRouteCoordinates.length - 1)]; // make sure the point doesn't go out of bounds
+
+		// Get the differences between coordinates
+		let diffLat = nextRoutePoint[1] - closestRoutePoint[1];
+		let diffLon = nextRoutePoint[0] - closestRoutePoint[0];
+
+		// Get the angle between the current route point and the next route point (corrected from clockwise east to clockwise north)
+		angleRad = -90 * (Math.PI / 180) + Math.atan2(diffLat, diffLon);
+	} else if (rotationMode === "compass") {
+		angleRad = -compassHeading;
+	}
+
+	// Get values and view (pos object is global and is updated getLocation() in map.js)
+	const view = map.getView();
+	const mapSize = map.getSize();
+	const userPosition = ol.proj.fromLonLat(pos);
+
+	if (navigationActive) {
+		// Pan to location and update rotation
 		view.setRotation(angleRad);
 
 		if (navigationMode === "bike") view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.9]);
@@ -324,30 +327,14 @@ function updatePositionAndRotationWhenNavigating() {
 			);
 		} else if (distanceToDestination >= 30) promptedDestination = false;
 
-		requestAnimationFrame(updatePositionAndRotationWhenNavigating);
-	}
-}
-
-function updatePositionAndRotationWhenInNavigationUI() {
-	if (window.matchMedia("(orientation: landscape)").matches && !tripEnded && rotationMode !== "free") {
-		// Keep current rotation by default
-		let angleRad = map.getView().getRotation();
-
-		// Get rotation
-		if (rotationMode === "compass") {
-			angleRad = -compassHeading;
-		}
-
-		// Pan to location and set rotation (pos object is global and is updated getLocation() in map.js)
-		const view = map.getView();
-		const mapSize = map.getSize();
-		const userPosition = ol.proj.fromLonLat(pos);
-
-		view.setRotation(angleRad);
+		requestAnimationFrame(updateRotation);
+	} else if (window.matchMedia("(orientation: landscape)").matches && !tripEnded) {
+		// Pan to location and set rotation
+		if (rotationMode !== "free") view.setRotation(angleRad);
 		view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.7]);
 
-		requestAnimationFrame(updatePositionAndRotationWhenInNavigationUI);
-	} else if (rotationMode === "free") requestAnimationFrame(updatePositionAndRotationWhenInNavigationUI);
+		requestAnimationFrame(updateRotation);
+	}
 }
 
 async function orientationChangeHandler(event) {
@@ -461,8 +448,8 @@ async function goIntoLandscapeNavigationUI() {
 	// Change map dots to available docks
 	loadStationMarkersFromArray(stationsArray, true);
 
-	// Start the position updating
-	updatePositionAndRotationWhenInNavigationUI();
+	// Start the rotation updates
+	updateRotation();
 }
 
 function exitLandscapeNavigationUI() {

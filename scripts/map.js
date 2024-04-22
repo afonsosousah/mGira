@@ -6,6 +6,7 @@ let pos;
 let speed;
 let compassHeading = null; // null by default so that any math will assume 0
 let gpsHeading = null;
+let followLocation = false;
 
 async function initMap() {
 	// Set cycleways style
@@ -66,6 +67,25 @@ async function initMap() {
 		if (layer.get("name") === "stationsLayer") openStationMenu(feature.get("name"));
 		else if (layer.get("name") === "placesLayer")
 			viewRoute(ol.proj.transform(feature.getGeometry().getCoordinates(), "EPSG:3857", "EPSG:4326"));
+	});
+
+	// disable follow location when user interacts with map
+	// differentiate between user move and function move using pointerdrag event
+	// (if user drags between move start and end, it is a user drag)
+	let drag;
+	map.on("pointerdrag", () => (drag = true));
+	map.on("movestart", () => (drag = false));
+	map.on("moveend", () => {
+		if (drag) {
+			followLocation = false;
+		}
+	});
+
+	// detect if user is coming back to app from running in background, and update location
+	document.addEventListener("visibilitychange", () => {
+		if (document.visibilityState === "visible") {
+			getLocation();
+		}
 	});
 
 	/* Run the startup functions */
@@ -286,8 +306,46 @@ function zoomOut() {
 }
 
 function getLocation(zoom = true) {
-	// Try HTML5 geolocation.
+	// Create the current position icon feature
+	const iconFeature = new ol.Feature({
+		geometry: new ol.geom.Point(ol.proj.fromLonLat(pos ?? [0, 0])),
+		name: "Current location",
+	});
+	const iconStyle = new ol.style.Style({
+		image: new ol.style.Icon({
+			width: 40,
+			height: 40,
+			anchor: [0.5, 0.5],
+			anchorXUnits: "fraction",
+			anchorYUnits: "fraction",
+			src: "assets/images/gps_dot.png",
+			rotation: compassHeading + map.getView().getRotation(), // have map rotation into account
+		}),
+	});
+	iconFeature.setStyle(iconStyle);
+	const vectorSource = new ol.source.Vector({
+		features: [iconFeature],
+	});
+	const vectorLayer = new ol.layer.Vector({
+		name: "currentLocationLayer",
+		source: vectorSource,
+		zIndex: 99,
+	});
+
+	// Get an array of all current location layers
+	const locationLayersArray = map
+		.getLayers()
+		.getArray()
+		.filter(layer => layer.get("name") === "currentLocationLayer");
+
+	if (locationLayersArray.length === 0) {
+		// Add the layer
+		map.addLayer(vectorLayer);
+	}
+
+	// HTML5 geolocation
 	if (navigator.geolocation) {
+		// Handle location updates
 		navigator.geolocation.watchPosition(
 			async position => {
 				// Convert to the OpenLayers format
@@ -299,53 +357,34 @@ function getLocation(zoom = true) {
 				let speedKMH = (speed * 60 * 60) / 1000;
 				if (document.getElementById("speed")) document.getElementById("speed").innerHTML = speedKMH.toFixed(0); // convert m/s to km/h
 
-				const iconFeature = new ol.Feature({
-					geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
-					name: "Current location",
-				});
+				// Get an array of all current location layers
+				const locationLayersArray = map
+					.getLayers()
+					.getArray()
+					.filter(layer => layer.get("name") === "currentLocationLayer");
 
-				const iconStyle = new ol.style.Style({
-					image: new ol.style.Icon({
-						width: 40,
-						height: 40,
-						anchor: [0.5, 0.5],
-						anchorXUnits: "fraction",
-						anchorYUnits: "fraction",
-						src: "assets/images/gps_dot.png",
-						rotation: compassHeading + map.getView().getRotation(), // have map rotation into account
-					}),
-				});
-
-				iconFeature.setStyle(iconStyle);
-				const vectorSource = new ol.source.Vector({
-					features: [iconFeature],
-				});
-
-				const vectorLayer = new ol.layer.Vector({
-					name: "currentLocationLayer",
-					source: vectorSource,
-					zIndex: 99,
-				});
-
-				if (
-					map
-						.getLayers()
-						.getArray()
-						.filter(layer => layer.get("name") === "currentLocationLayer").length === 0
-				) {
+				if (locationLayersArray.length === 0) {
 					// Add the layer
 					map.addLayer(vectorLayer);
 				} else {
 					// Get the layer containing the previous current location
-					const currentLocationLayer = map
-						.getLayers()
-						.getArray()
-						.find(layer => layer.get("name") === "currentLocationLayer");
+					const currentLocationLayer = locationLayersArray[0];
 
 					// Refresh the feature
 					let feature = currentLocationLayer.getSource().getFeatures()[0];
 					feature.setStyle(iconStyle);
 					feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
+				}
+
+				if (followLocation) {
+					console.log("pan in watchposition");
+					// Pan to location
+					const view = map.getView();
+					view.animate({
+						center: ol.proj.fromLonLat(pos),
+						zoom: map.getView().getZoom(), // use the current zoom
+						duration: 100,
+					});
 				}
 			},
 			error => console.log(error ? error : "Error: Your browser doesn't support geolocation."),
@@ -356,81 +395,26 @@ function getLocation(zoom = true) {
 
 		// Pan to location only once when position has been set
 		if (zoom) {
-			checkPos = () => {
-				if (!pos) setTimeout(checkPos, 0);
-				else {
-					// Draw the new location dot only once
-					const iconFeature = new ol.Feature({
-						geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
-						name: "Current location",
-					});
+			const locationPromise = new Promise((resolve, reject) => {
+				const loop = () => (pos ? resolve(pos) : setTimeout(loop));
+				loop();
+			});
 
-					let iconStyle = new ol.style.Style({
-						image: new ol.style.Icon({
-							width: 40,
-							height: 40,
-							anchor: [0.5, 0.5],
-							anchorXUnits: "fraction",
-							anchorYUnits: "fraction",
-							src: "assets/images/gps_dot.png",
-							rotation: compassHeading + map.getView().getRotation(), // have map rotation into account
-						}),
-					});
+			locationPromise.then(pos => {
+				console.log("pan in zoom");
+				// Pan to location
+				const currentZoom = map.getView().getZoom();
 
-					iconFeature.setStyle(iconStyle);
-					const vectorSource = new ol.source.Vector({
-						features: [iconFeature],
-					});
+				const view = map.getView();
+				view.animate({
+					center: ol.proj.fromLonLat(pos),
+					zoom: currentZoom < 13.5 ? 16 : currentZoom,
+					duration: 100,
+				});
 
-					const vectorLayer = new ol.layer.Vector({
-						name: "currentLocationLayer",
-						source: vectorSource,
-						zIndex: 99,
-					});
-
-					if (
-						map
-							.getLayers()
-							.getArray()
-							.filter(layer => layer.get("name") === "currentLocationLayer").length === 0
-					) {
-						// Add the layer
-						map.addLayer(vectorLayer);
-					} else {
-						// Get the layer containing the previous current location
-						const currentLocationLayer = map
-							.getLayers()
-							.getArray()
-							.filter(layer => layer.get("name") === "currentLocationLayer")[0];
-
-						// Refresh the feature
-						let feature = currentLocationLayer.getSource().getFeatures()[0];
-						feature.setStyle(iconStyle);
-						feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
-					}
-
-					// Pan to location only once
-					if (map.getView().getZoom() < 13.5) {
-						// Pan to location
-						const view = map.getView();
-						view.animate({
-							center: ol.proj.fromLonLat(pos),
-							zoom: 16,
-							duration: 100,
-						});
-					} else {
-						// Pan to location
-						const view = map.getView();
-						view.animate({
-							center: ol.proj.fromLonLat(pos),
-							zoom: map.getView().getZoom(), // use the current zoom
-							duration: 100,
-						});
-					}
-				}
-			};
-
-			checkPos();
+				// Only set the follow location at the end, so that the one time zoom works
+				if (!followLocation) followLocation = true;
+			});
 		}
 	} else {
 		// Browser doesn't support Geolocation
