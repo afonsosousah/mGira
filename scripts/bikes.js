@@ -4,6 +4,8 @@ let ratedTripsList = [];
 let finishedTripsList = [];
 let tripBeingRated = false;
 
+//test
+
 // reserves the bike and returns a success boolean
 async function reserveBike(serialNumber) {
 	const response = await makePostRequest(
