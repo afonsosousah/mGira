@@ -291,7 +291,7 @@ async function updateBikeList() {
 	let queryString = "query {";
 	let i = 0;
 
-	for (station of stationsArray) {
+	for (const station of stationsArray) {
 		queryString += ` station_${i}: getBikes(input: "${station.serialNumber}") { battery, code, name, kms, serialNumber, type, parent } `;
 		i += 1;
 	}
@@ -311,21 +311,16 @@ async function updateBikeList() {
 		const allBikesList = Object.values(response.data).flat(1);
 
 		// get the bikes not in the bikeSerialNumberMapping
-		let missingBikes = allBikesList.filter(
-			({ name: name1 }) => !bikeSerialNumberMapping.some(({ name: name2 }) => name2 === name1)
-		);
+		let missingBikes = allBikesList.filter(({ name }) => !bikeSerialNumberMapping[name]);
 
 		// compact the missing bikes list
-		const newList = bikeSerialNumberMapping
-			.concat(
-				...missingBikes.map(bike => ({
-					name: bike.name,
-					serialNumber: bike.serialNumber,
-				}))
-			)
-			// Account for classic bikes converted into electric, filters our the classic bikes that had an electric one added
-			.filter(({ name }, _, arr) => name.startsWith("E") || !arr.find(bike => bike.name === name.replace("C", "E")))
-			.sort((a, b) => Number(a.name.slice(1)) - Number(b.name.slice(1)));
+		const newList = Object.fromEntries(
+			Object.entries(bikeSerialNumberMapping)
+				.concat(missingBikes.map(bike => [bike.name, bike.serialNumber]))
+				// Keep only the electric bikes and the classic bikes that don't have an electric one with the same number
+				.filter(([name], _, self) => name.startsWith("E") || !self.find(([b]) => b === name.replace("C", "E")))
+				.sort(([a], [b]) => Number(a.slice(1)) - Number(b.slice(1)))
+		);
 
 		console.log(newList);
 		return newList;
