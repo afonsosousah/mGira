@@ -273,12 +273,12 @@ function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 
 function takeUnregisteredBike() {
 	// Get the bike object from the name written on the input element
-	const bikeName = document.getElementById("unregisteredBikeNameInput").value;
-	const bikeObj = bikeSerialNumberMapping[bikeName];
+	const bikeName = document.getElementById("unregisteredBikeNameInput").value.toUpperCase();
+	const bikeSerialNum = bikeSerialNumberMapping[bikeName];
 
 	// Try to open the unlock bike card, to take bike
-	if (typeof bikeObj !== "undefined") {
-		openUnlockBikeCard(null, JSON.stringify(bikeObj), null, true);
+	if (typeof bikeSerialNum !== "undefined") {
+		openUnlockBikeCard(null, JSON.stringify({ name: bikeName, serialNumber: bikeSerialNum }), null, true);
 		document.getElementById("takeUnregisteredBike")?.remove();
 	} else {
 		alert("A bicicleta não foi encontrada...");
