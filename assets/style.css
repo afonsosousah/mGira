@@ -453,7 +453,7 @@ input:-webkit-autofill:active{
 
 /* #region Station card */
 .station-card {
-	background-color: rgba(255, 255, 255, 0.9);
+	background-color: transparent;
 	width: 90vw;
 	height: 50vw;
 	position: absolute;
@@ -463,7 +463,8 @@ input:-webkit-autofill:active{
 	border-radius: 20px;
 	box-shadow: 5px 5px 15px 0px var(--shadow-black);
 	animation: smooth-slide-from-left 0.5s ease forwards;
-	backdrop-filter: blur(0.5rem);
+	backdrop-filter: blur(1rem);
+	margin-left: env(safe-area-inset-left);
 }
 .station-card #graphics {
 	height: 50%;
@@ -737,6 +738,8 @@ input:-webkit-autofill:active{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin-left: env(safe-area-inset-left);
+	margin-top: env(safe-area-inset-top);
 }
 .bike-list #backButton i {
 	width: 32px;
@@ -757,6 +760,8 @@ input:-webkit-autofill:active{
 	text-align: center;
 	word-break: normal;
 	white-space: pre-wrap;
+	margin-left: env(safe-area-inset-left);
+	margin-top: env(safe-area-inset-top);
 }
 .bike-list #stationImage {
 	width: 20%;
@@ -764,6 +769,8 @@ input:-webkit-autofill:active{
 	z-index: 2;
 	right: 5%;
 	top: 4%;
+	margin-right: env(safe-area-inset-right);
+	margin-top: env(safe-area-inset-top);
 }
 .bike-list #listGradient {
 	position: absolute;
@@ -776,7 +783,7 @@ input:-webkit-autofill:active{
 }
 .bike-list #bikeList {
 	position: absolute;
-	width: 100%;
+	width: calc(100% - env(safe-area-inset-left) - env(safe-area-inset-right));
 	left: 0;
 	top: 25vw;
 	list-style-type: none;
@@ -788,6 +795,8 @@ input:-webkit-autofill:active{
 	flex-direction: column;
 	align-items: center;
 	padding-top: 2vh;
+	margin-left: env(safe-area-inset-left);
+	margin-right: env(safe-area-inset-right);
 }
 .bike-list-element {
 	background-color: var(--white);
@@ -1904,8 +1913,10 @@ input:-webkit-autofill:active{
 	height: 15vh;
 	margin: 2vh 0;
 	flex-shrink: 0;
-	width: calc(90vw - 4vh);
+	width: calc(90vw - 4vh - env(safe-area-inset-left) - env(safe-area-inset-right));
 	box-shadow: 0px 1px 6px 0px var(--black);
+	margin-left: env(safe-area-inset-left);
+	margin-right: env(safe-area-inset-right);
 }
 #openTakeUnregisteredBikeButton #upperText {
 	position: absolute;
@@ -2938,7 +2949,7 @@ input:-webkit-autofill:active{
 		padding: 2vw;
 		height: 15vw;
 		margin: 2vw 0;
-		width: calc(90vw - 4vw);
+		/*width: calc(90vw - 4vw);*/
 	}
 	#openTakeUnregisteredBikeButton #upperText {
 		top: 2vw;
