@@ -5,6 +5,8 @@ let previousSelectedMarker;
 let pos;
 let speed;
 let compassHeading = null; // null by default so that any math will assume 0
+let gpsHeading = null;
+let followLocation = false;
 
 async function initMap() {
 	// Set cycleways style
@@ -67,6 +69,25 @@ async function initMap() {
 			viewRoute(ol.proj.transform(feature.getGeometry().getCoordinates(), "EPSG:3857", "EPSG:4326"));
 	});
 
+	// disable follow location when user interacts with map
+	// differentiate between user move and function move using pointerdrag event
+	// (if user drags between move start and end, it is a user drag)
+	let drag;
+	map.on("pointerdrag", () => (drag = true));
+	map.on("movestart", () => (drag = false));
+	map.on("moveend", () => {
+		if (drag) {
+			followLocation = false;
+		}
+	});
+
+	// detect if user is coming back to app from running in background, and update location
+	document.addEventListener("visibilitychange", () => {
+		if (document.visibilityState === "visible") {
+			getLocation();
+		}
+	});
+
 	/* Run the startup functions */
 
 	// Check if the user is logged in, if not, prompt to login
@@ -93,17 +114,17 @@ async function initMap() {
 	// Check if update info should be shown
 	showUpdateInfoIfNeeded();
 
-	// Get the stations and load them to the map
-	//await getStations();
-
 	// Get the user location on app open
 	getLocation();
 
 	// Start rotation of location dot
 	startLocationDotRotation();
+
+	// Get the stations and load them to the map
+	await getStations();
 }
 
-function mapDotSVG(ratio) {
+function mapDotSVG(ratio, docks = false) {
 	// Calculate the Y coordinate at which the top of the "fill" rectangle will be
 	// (the filled area is only visible from y=18 to y=430)
 	const y = (18 + (1 - ratio) * (430 - 18)).toFixed(0);
@@ -119,12 +140,16 @@ function mapDotSVG(ratio) {
 				</clipPath>
 			</defs>
 		<path
-			style="display:inline;fill:#e0e0e0;fill-opacity:1;stroke:#79c000;stroke-width:18.7654;stroke-dasharray:none;stroke-opacity:1"
+			style="display:inline;fill:#e0e0e0;fill-opacity:1;stroke:${
+				docks ? "#959595" : "#79c000"
+			};stroke-width:18.7654;stroke-dasharray:none;stroke-opacity:1"
 			d="m 150.64877,9.8461145 c 57.16501,-4.258271 111.80887,20.7649535 143.44461,69.5189515 12.7641,19.67082 22.23978,42.693894 25.06946,65.999984 1.34592,11.08539 1.94787,21.74182 1.0531,33 -1.7515,22.03766 -9.10877,42.82477 -18.33856,63 -14.32541,31.31363 -32.31354,60.48767 -51.56003,89 -18.047,26.73535 -37.56418,52.55286 -57.38361,77.99997 -6.85646,8.80334 -27.29104,35.89627 -27.29104,35.89627 0,0 -21.06879,-25.43823 -27.71569,-33.89642 -21.15264,-26.91672 -41.528643,-54.50803 -60.495103,-82.99982 -26.462,-39.75177 -58.07102,-85.91321 -66.12871,-134 -1.3324596,-7.95187 -1.8654696,-15.94962 -1.9170296,-24 -0.0518,-8.09448 0.484,-15.95865 1.2292996,-24 C 17.147547,74.88771 81.088477,15.027725 150.64877,9.8461145"
 			id="path1"
 		/>
 		<path
-			style="display:inline;fill:#79c000;fill-opacity:1;stroke:#79c000;stroke-width:18.7654;stroke-dasharray:none;stroke-opacity:1"
+			style="display:inline;fill:${docks ? "#959595" : "#79c000"};fill-opacity:1;stroke:${
+		docks ? "#959595" : "#79c000"
+	};stroke-width:18.7654;stroke-dasharray:none;stroke-opacity:1"
 			d="m 150.64877,9.8461145 c 57.16501,-4.258271 111.80887,20.7649535 143.44461,69.5189515 12.7641,19.67082 22.23978,42.693894 25.06946,65.999984 1.34592,11.08539 1.94787,21.74182 1.0531,33 -1.7515,22.03766 -9.10877,42.82477 -18.33856,63 -14.32541,31.31363 -32.31354,60.48767 -51.56003,89 -18.047,26.73535 -37.56418,52.55286 -57.38361,77.99997 -6.85646,8.80334 -27.29104,35.89627 -27.29104,35.89627 0,0 -21.06879,-25.43823 -27.71569,-33.89642 -21.15264,-26.91672 -41.528643,-54.50803 -60.495103,-82.99982 -26.462,-39.75177 -58.07102,-85.91321 -66.12871,-134 -1.3324596,-7.95187 -1.8654696,-15.94962 -1.9170296,-24 -0.0518,-8.09448 0.484,-15.95865 1.2292996,-24 C 17.147547,74.88771 81.088477,15.027725 150.64877,9.8461145"
 			id="path2"  clip-path="url(#clipPath2)"
 		/>
@@ -136,7 +161,7 @@ function mapDotSVG(ratio) {
 	return svgDataURI;
 }
 
-async function loadStationMarkersFromArray(stationsArray) {
+async function loadStationMarkersFromArray(stationsArray, showDocks = false) {
 	// Wait for map to finish loading
 	while (typeof map !== "object") {
 		console.log("map has not loaded");
@@ -154,7 +179,50 @@ async function loadStationMarkersFromArray(stationsArray) {
 		});
 
 		let iconStyle;
-		if (station.docks !== 0) {
+
+		if (station.docks === 0) {
+			// Deactivated station
+
+			iconStyle = new ol.style.Style({
+				image: new ol.style.Icon({
+					width: 40,
+					height: 50,
+					anchor: [0.5, 1],
+					anchorXUnits: "fraction",
+					anchorYUnits: "fraction",
+					src: `assets/images/mapDot_Deactivated.png`,
+				}),
+				zIndex: featureID,
+			});
+		} else if (showDocks) {
+			// Show number of available docks
+
+			const dockRatio = (station.docks - station.bikes) / station.docks;
+
+			iconStyle = new ol.style.Style({
+				image: new ol.style.Icon({
+					width: 33,
+					height: 46,
+					anchor: [0.5, 1],
+					anchorXUnits: "fraction",
+					anchorYUnits: "fraction",
+					src: mapDotSVG(dockRatio, true),
+				}),
+				text: new ol.style.Text({
+					text: (station.docks - station.bikes).toString(),
+					font: "bold 15px sans-serif",
+					offsetX: 0,
+					offsetY: -28,
+					textAlign: "center",
+					fill: new ol.style.Fill({
+						color: "#FFFFFF",
+					}),
+				}),
+				zIndex: featureID,
+			});
+		} else {
+			// Show number of available bikes
+
 			const bikeRatio = station.bikes / station.docks;
 
 			iconStyle = new ol.style.Style({
@@ -178,18 +246,7 @@ async function loadStationMarkersFromArray(stationsArray) {
 				}),
 				zIndex: featureID,
 			});
-		} else
-			iconStyle = new ol.style.Style({
-				image: new ol.style.Icon({
-					width: 40,
-					height: 50,
-					anchor: [0.5, 1],
-					anchorXUnits: "fraction",
-					anchorYUnits: "fraction",
-					src: `assets/images/mapDot_Deactivated.png`,
-				}),
-				zIndex: featureID,
-			});
+		}
 
 		iconFeature.setStyle(iconStyle);
 
@@ -249,64 +306,85 @@ function zoomOut() {
 }
 
 function getLocation(zoom = true) {
-	// Try HTML5 geolocation.
+	// Create the current position icon feature
+	const iconFeature = new ol.Feature({
+		geometry: new ol.geom.Point(ol.proj.fromLonLat(pos ?? [0, 0])),
+		name: "Current location",
+	});
+	const iconStyle = new ol.style.Style({
+		image: new ol.style.Icon({
+			width: 40,
+			height: 40,
+			anchor: [0.5, 0.5],
+			anchorXUnits: "fraction",
+			anchorYUnits: "fraction",
+			src: "assets/images/gps_dot.png",
+			rotation: compassHeading + map.getView().getRotation(), // have map rotation into account
+		}),
+	});
+	iconFeature.setStyle(iconStyle);
+	const vectorSource = new ol.source.Vector({
+		features: [iconFeature],
+	});
+	const vectorLayer = new ol.layer.Vector({
+		name: "currentLocationLayer",
+		source: vectorSource,
+		zIndex: 99,
+	});
+
+	// Get an array of all current location layers
+	const locationLayersArray = map
+		.getLayers()
+		.getArray()
+		.filter(layer => layer.get("name") === "currentLocationLayer");
+
+	if (locationLayersArray.length === 0) {
+		// Add the layer
+		map.addLayer(vectorLayer);
+	}
+
+	// HTML5 geolocation
 	if (navigator.geolocation) {
+		// Handle location updates
 		navigator.geolocation.watchPosition(
 			async position => {
 				// Convert to the OpenLayers format
 				pos = [position.coords.longitude, position.coords.latitude];
 				speed = position.coords.speed ?? 0;
 
+				gpsHeading = (Math.PI / 180) * position.coords.heading; // adjusted to radians
+
 				let speedKMH = (speed * 60 * 60) / 1000;
 				if (document.getElementById("speed")) document.getElementById("speed").innerHTML = speedKMH.toFixed(0); // convert m/s to km/h
 
-				const iconFeature = new ol.Feature({
-					geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
-					name: "Current location",
-				});
+				// Get an array of all current location layers
+				const locationLayersArray = map
+					.getLayers()
+					.getArray()
+					.filter(layer => layer.get("name") === "currentLocationLayer");
 
-				const iconStyle = new ol.style.Style({
-					image: new ol.style.Icon({
-						width: 40,
-						height: 40,
-						anchor: [0.5, 0.5],
-						anchorXUnits: "fraction",
-						anchorYUnits: "fraction",
-						src: "assets/images/gps_dot.png",
-						rotation: compassHeading + map.getView().getRotation(), // have map rotation into account
-					}),
-				});
-
-				iconFeature.setStyle(iconStyle);
-				const vectorSource = new ol.source.Vector({
-					features: [iconFeature],
-				});
-
-				const vectorLayer = new ol.layer.Vector({
-					name: "currentLocationLayer",
-					source: vectorSource,
-					zIndex: 99,
-				});
-
-				if (
-					map
-						.getLayers()
-						.getArray()
-						.filter(layer => layer.get("name") === "currentLocationLayer").length === 0
-				) {
+				if (locationLayersArray.length === 0) {
 					// Add the layer
 					map.addLayer(vectorLayer);
 				} else {
 					// Get the layer containing the previous current location
-					const currentLocationLayer = map
-						.getLayers()
-						.getArray()
-						.find(layer => layer.get("name") === "currentLocationLayer");
+					const currentLocationLayer = locationLayersArray[0];
 
 					// Refresh the feature
 					let feature = currentLocationLayer.getSource().getFeatures()[0];
 					feature.setStyle(iconStyle);
 					feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
+				}
+
+				if (followLocation) {
+					console.log("pan in watchposition");
+					// Pan to location
+					const view = map.getView();
+					view.animate({
+						center: ol.proj.fromLonLat(pos),
+						zoom: map.getView().getZoom(), // use the current zoom
+						duration: 100,
+					});
 				}
 			},
 			error => console.log(error ? error : "Error: Your browser doesn't support geolocation."),
@@ -317,81 +395,26 @@ function getLocation(zoom = true) {
 
 		// Pan to location only once when position has been set
 		if (zoom) {
-			checkPos = () => {
-				if (!pos) setTimeout(checkPos, 0);
-				else {
-					// Draw the new location dot only once
-					const iconFeature = new ol.Feature({
-						geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
-						name: "Current location",
-					});
+			const locationPromise = new Promise((resolve, reject) => {
+				const loop = () => (pos ? resolve(pos) : setTimeout(loop));
+				loop();
+			});
 
-					let iconStyle = new ol.style.Style({
-						image: new ol.style.Icon({
-							width: 40,
-							height: 40,
-							anchor: [0.5, 0.5],
-							anchorXUnits: "fraction",
-							anchorYUnits: "fraction",
-							src: "assets/images/gps_dot.png",
-							rotation: compassHeading + map.getView().getRotation(), // have map rotation into account
-						}),
-					});
+			locationPromise.then(pos => {
+				console.log("pan in zoom");
+				// Pan to location
+				const currentZoom = map.getView().getZoom();
 
-					iconFeature.setStyle(iconStyle);
-					const vectorSource = new ol.source.Vector({
-						features: [iconFeature],
-					});
+				const view = map.getView();
+				view.animate({
+					center: ol.proj.fromLonLat(pos),
+					zoom: currentZoom < 13.5 ? 16 : currentZoom,
+					duration: 100,
+				});
 
-					const vectorLayer = new ol.layer.Vector({
-						name: "currentLocationLayer",
-						source: vectorSource,
-						zIndex: 99,
-					});
-
-					if (
-						map
-							.getLayers()
-							.getArray()
-							.filter(layer => layer.get("name") === "currentLocationLayer").length === 0
-					) {
-						// Add the layer
-						map.addLayer(vectorLayer);
-					} else {
-						// Get the layer containing the previous current location
-						const currentLocationLayer = map
-							.getLayers()
-							.getArray()
-							.filter(layer => layer.get("name") === "currentLocationLayer")[0];
-
-						// Refresh the feature
-						let feature = currentLocationLayer.getSource().getFeatures()[0];
-						feature.setStyle(iconStyle);
-						feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
-					}
-
-					// Pan to location only once
-					if (map.getView().getZoom() < 13.5) {
-						// Pan to location
-						const view = map.getView();
-						view.animate({
-							center: ol.proj.fromLonLat(pos),
-							zoom: 16,
-							duration: 100,
-						});
-					} else {
-						// Pan to location
-						const view = map.getView();
-						view.animate({
-							center: ol.proj.fromLonLat(pos),
-							zoom: map.getView().getZoom(), // use the current zoom
-							duration: 100,
-						});
-					}
-				}
-			};
-
-			checkPos();
+				// Only set the follow location at the end, so that the one time zoom works
+				if (!followLocation) followLocation = true;
+			});
 		}
 	} else {
 		// Browser doesn't support Geolocation
@@ -411,51 +434,23 @@ function startLocationDotRotation() {
 		} else currentOrientation = e.webkitCompassHeading;
 
 		// Calculate the current compass heading that the user is 'looking at' (in radians) (global)
-		compassHeading = -(Math.PI / 180) * (360 - currentOrientation);
+		compassHeading = (Math.PI / 180) * currentOrientation;
 
-		// Adjust heading if device is on landscape
-		//if (window.matchMedia("(orientation: landscape)").matches) compassHeading += (Math.PI / 180) * 90;
+		// Adjust heading with device orientation
+		compassHeading += (Math.PI / 180) * window.screen.orientation.angle;
 
 		if (!pos) return;
 
+		// Get the average with GPS heading (testing for more accurate heading)
+		if (gpsHeading) compassHeading = (compassHeading + gpsHeading) / 2;
+
 		// Set rotation of map dot
-		const iconFeature = new ol.Feature({
-			geometry: new ol.geom.Point(ol.proj.fromLonLat(pos)),
-			name: "Current location",
-		});
-
-		const iconStyle = new ol.style.Style({
-			image: new ol.style.Icon({
-				width: 40,
-				height: 40,
-				anchor: [0.5, 0.5],
-				anchorXUnits: "fraction",
-				anchorYUnits: "fraction",
-				src: "assets/images/gps_dot.png",
-				rotation: compassHeading + map.getView().getRotation(), // have map rotation into account
-			}),
-		});
-
-		iconFeature.setStyle(iconStyle);
-		const vectorSource = new ol.source.Vector({
-			features: [iconFeature],
-		});
-
-		const vectorLayer = new ol.layer.Vector({
-			name: "currentLocationLayer",
-			source: vectorSource,
-			zIndex: 99,
-		});
-
 		if (
 			map
 				.getLayers()
 				.getArray()
-				.filter(layer => layer.get("name") === "currentLocationLayer").length === 0
+				.filter(layer => layer.get("name") === "currentLocationLayer").length !== 0
 		) {
-			// Add the layer
-			map.addLayer(vectorLayer);
-		} else {
 			// Get the layer containing the previous current location
 			const currentLocationLayer = map
 				.getLayers()
@@ -463,9 +458,13 @@ function startLocationDotRotation() {
 				.find(layer => layer.get("name") === "currentLocationLayer");
 
 			// Refresh the feature
-			let feature = currentLocationLayer.getSource().getFeatures()[0];
-			feature.setStyle(iconStyle);
-			feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
+			currentLocationLayer
+				.getSource()
+				.getFeatures()[0]
+				.getStyle()
+				.getImage()
+				.setRotation(compassHeading + map.getView().getRotation());
+			currentLocationLayer.getSource().changed();
 		}
 	};
 

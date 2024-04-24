@@ -3,6 +3,7 @@
 	--green: #79c000;
 	--black: #231f20;
 	--white: #ffffff;
+	--medium-gray: #57565d;
 	--gray: #d9d9da;
 	--medium-gray: #57565d;
 	--dark-gray: #454449;
@@ -10,6 +11,7 @@
 	--shadow-green: rgba(121, 192, 0, 0.2);
 	--glass-white: rgba(255, 255, 255, 0.7);
 	--glass-green: rgba(121, 192, 0, 0.9);
+	--glass-black: rgba(35, 31, 32, 0.7);
 }
 /* #endregion */
 
@@ -86,7 +88,6 @@
 		opacity: 0;
 	}
 	to {
-		bottom: 0px;
 		opacity: 1;
 	}
 }
@@ -259,6 +260,8 @@ body {
 	bottom: unset !important;
 	right: unset !important;
 	border-radius: 999px !important;
+	margin-left: env(safe-area-inset-left);
+	margin-top: env(safe-area-inset-top);
 }
 .ol-attribution button {
 	all: unset;
@@ -285,6 +288,7 @@ body {
 	position: absolute;
 	left: 2vh;
 	bottom: 2vh;
+	margin-left: env(safe-area-inset-left);	
 }
 /* #endregion */
 
@@ -294,11 +298,12 @@ body {
 	width: fit-content;
 	height: fit-content;
 	position: absolute;
-	right: 2vh;
+	right: calc(2vh);
 	bottom: calc(2vh + 7vh + 2vh);
 	display: flex;
 	flex-direction: column;
 	gap: 1vh;
+	margin-right: env(safe-area-inset-right);	
 }
 #zoomControls div {
 	background-color: var(--green);
@@ -322,12 +327,16 @@ body {
 
 /* #region Search bar */
 #searchBarDiv {
-	width: 100%;
+	width: calc(100% - 4vh);
+	height: 7vh;
 	position: absolute;
-	bottom: 0;
-	left: 0;
+	bottom: 2vh;
+	left: 2vh;
 	z-index: 2;
 	animation: slide-fwd-top 0.5s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+	margin-left: env(safe-area-inset-left);
+	box-shadow: 0px 1px 6px 0px var(--gray);
+	border-radius: 999px;
 }
 #searchBarCancelButton {
 	background-color: var(--white);
@@ -336,15 +345,13 @@ body {
 	/*border: 1px solid var(--green);*/
 	border-right: none;
 	position: absolute;
-	left: 2vh;
-	bottom: 2vh;
+	left: 0;
+	bottom: 0;
 	width: 6vh;
 	height: 7vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow: 0px 1px 6px 0px var(--green);
-	clip-path: inset(-6px -6px -6px -6px);
 }
 #searchBarCancelButton i {
 	display: flex;
@@ -357,8 +364,8 @@ body {
 	width: calc(100vw - 4vh - 6vh);
 	height: 7vh;
 	position: absolute;
-	left: calc(2vh + 6vh);
-	bottom: 2vh;
+	left: 6vh;
+	bottom: 0;
 	outline: none;
 	border: none;
 	/*border: 1px solid var(--green);*/
@@ -370,8 +377,6 @@ body {
 	color: var(--green);
 	font-size: medium;
 	box-sizing: content-box;
-	box-shadow: 0px 1px 6px 0px var(--green);
-	clip-path: inset(-6px -6px -6px 0px);
 }
 #searchBar::-webkit-input-placeholder {
 	color: var(--green);
@@ -394,9 +399,7 @@ input:-webkit-autofill:active{
 #searchBar:-webkit-autofill:hover, 
 #searchBar:-webkit-autofill:focus, 
 #searchBar:-webkit-autofill:active{
-    -webkit-box-shadow: 
-		0px 1px 6px 0px var(--green),
-		0 0 0 30px white inset !important;
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
 }
 
 /* #endregion */
@@ -416,6 +419,7 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	align-items: center;
 	box-shadow: 0px 1px 6px 0px var(--green);
+	margin-right: env(safe-area-inset-right);	
 }
 #navigationButton img {
 	border-radius: 999px;
@@ -439,6 +443,7 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	align-items: center;
 	box-shadow: 0px 1px 6px 0px var(--green);
+	margin-right: env(safe-area-inset-right);
 }
 #userPicture #userInitials {
 	font-size: 3dvh;
@@ -448,7 +453,7 @@ input:-webkit-autofill:active{
 
 /* #region Station card */
 .station-card {
-	background-color: rgba(255, 255, 255, 0.9);
+	background-color: transparent;
 	width: 90vw;
 	height: 50vw;
 	position: absolute;
@@ -458,7 +463,8 @@ input:-webkit-autofill:active{
 	border-radius: 20px;
 	box-shadow: 5px 5px 15px 0px var(--shadow-black);
 	animation: smooth-slide-from-left 0.5s ease forwards;
-	backdrop-filter: blur(0.5rem);
+	backdrop-filter: blur(1rem);
+	margin-left: env(safe-area-inset-left);
 }
 .station-card #graphics {
 	height: 50%;
@@ -588,7 +594,7 @@ input:-webkit-autofill:active{
 	align-items: center;
 	height: 6vh;
 	width: 6vh;
-	box-shadow: 0px 4px 6px 0px var(--shadow-black), 0px 0px 5px 0px var(--shadow-black) inset;
+	box-shadow: 0px 4px 6px 0px var(--shadow-black);
 }
 .station-card #startNavigationButton:hover {
 	cursor: pointer;
@@ -614,7 +620,7 @@ input:-webkit-autofill:active{
 	height: 6vh;
 	padding: 0 2dvh;
 	font-size: 0.8rem;
-	box-shadow: 0px 4px 6px 0px var(--shadow-black), 0px 0px 5px 0px var(--shadow-black) inset;
+	box-shadow: 0px 4px 6px 0px var(--shadow-black);
 }
 /* #endregion */
 
@@ -732,6 +738,8 @@ input:-webkit-autofill:active{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin-left: env(safe-area-inset-left);
+	margin-top: env(safe-area-inset-top);
 }
 .bike-list #backButton i {
 	width: 32px;
@@ -752,6 +760,8 @@ input:-webkit-autofill:active{
 	text-align: center;
 	word-break: normal;
 	white-space: pre-wrap;
+	margin-left: env(safe-area-inset-left);
+	margin-top: env(safe-area-inset-top);
 }
 .bike-list #stationImage {
 	width: 20%;
@@ -759,6 +769,8 @@ input:-webkit-autofill:active{
 	z-index: 2;
 	right: 5%;
 	top: 4%;
+	margin-right: env(safe-area-inset-right);
+	margin-top: env(safe-area-inset-top);
 }
 .bike-list #listGradient {
 	position: absolute;
@@ -771,7 +783,7 @@ input:-webkit-autofill:active{
 }
 .bike-list #bikeList {
 	position: absolute;
-	width: 100%;
+	width: calc(100% - env(safe-area-inset-left) - env(safe-area-inset-right));
 	left: 0;
 	top: 25vw;
 	list-style-type: none;
@@ -783,6 +795,8 @@ input:-webkit-autofill:active{
 	flex-direction: column;
 	align-items: center;
 	padding-top: 2vh;
+	margin-left: env(safe-area-inset-left);
+	margin-right: env(safe-area-inset-right);
 }
 .bike-list-element {
 	background-color: var(--white);
@@ -1114,6 +1128,8 @@ input:-webkit-autofill:active{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin-top: env(safe-area-inset-top);
+	margin-left: env(safe-area-inset-left);
 }
 .user-settings i {
 	width: 32px;
@@ -1127,6 +1143,7 @@ input:-webkit-autofill:active{
 	width: 100vw;
 	height: 24vh;
 	background-color: var(--green);
+	padding-top: env(safe-area-inset-top);
 }
 .user-settings #topUserContainer #footer {
 	position: absolute;
@@ -1452,40 +1469,44 @@ input:-webkit-autofill:active{
 
 /* #region Place search menu */
 .place-search-menu {
-	background: linear-gradient(0deg, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%);
-	width: 100%;
-	min-height: 20%;
-	max-height: 45%;
+	background-color: transparent;
+	width: 90%;
+	min-height: 15vh;
+	max-height: 45vh;
 	position: absolute;
 	z-index: 1;
-	left: 0;
-	bottom: 0;
-	border-radius: 20px 20px 0 0;
+	left: 5%;
+	bottom: calc(2vh + 7vh/2);
+	border-radius: 30px 30px 0 0;
 	animation: smooth-appear 0.5s ease forwards;
+	margin-left: env(safe-area-inset-left);
+	backdrop-filter: blur(1rem);
+	box-shadow: 0px 1px 6px 0px var(--gray);
 }
 .place-search-menu #placeList {
 	position: relative;
 	padding: 0;
-	width: calc(100% - 4vh);
+	width: 100%;
 	margin-top: 0;
-	margin-bottom: calc(2vh + 7vh);
-	margin-left: 2vh;
 	list-style-type: none;
-	max-height: 25vh;
+	max-height: calc(45vh - 2rem - 0.6rem);
 	overflow: scroll;
 	display: flex;
-	align-items: end;
+	align-items: center;
 	flex-direction: column;
+	margin-top: 0.6rem;
+	padding-top: 0;
+	padding-bottom: 2rem;
 }
 .place-search-element {
-	background-color: var(--glass-white);
+	background-color: var(--white);
 	border-radius: 999px;
 	padding: 15px 25px;
 	position: relative;
 	margin-bottom: 10px;
-	border: 2px solid var(--green);
-	color: #79c000;
-	width: calc(100% - 25 * 2px - 2 * 2px);
+	color: var(--medium-gray);
+	width: calc(95% - 25 * 2px - 2 * 2px);
+	box-shadow: 0px 1px 6px 0px var(--gray);
 }
 .place-search-element:hover {
 	background-color: var(--green);
@@ -1494,16 +1515,18 @@ input:-webkit-autofill:active{
 }
 .place-search-menu #startNavigationButton {
 	position: absolute;
-	top: -10dvh;
-	right: 2dvh;
-	background-color: var(--black);
+	top: -8dvh;
+	right: 0;
+	background-color: var(--glass-black);
 	border-radius: 999px;
-	color: white;
+	color: var(--white);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 8dvh;
-	width: 8dvh;
+	height: 6dvh;
+	width: 6dvh;
+	box-shadow: 0px 4px 6px 0px var(--shadow-black);
+	backdrop-filter: blur(1rem);
 }
 .place-search-menu #startNavigationButton:hover {
 	cursor: pointer;
@@ -1518,16 +1541,26 @@ input:-webkit-autofill:active{
 }
 .place-search-menu #routeDetails {
 	position: absolute;
-	top: -10dvh;
-	left: 2dvh;
-	background-color: var(--black);
+	top: -8dvh;
+	left: 0;
+	background-color: var(--glass-black);
 	border-radius: 999px;
-	color: white;
+	color: var(--white);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 8dvh;
-	padding: 0 15px;
+	height: 6vh;
+	padding: 0 2dvh;
+	font-size: 0.8rem;
+	box-shadow: 0px 4px 6px 0px var(--shadow-black);
+	backdrop-filter: blur(1rem);
+}
+.place-search-menu #spinner {
+	position: absolute;
+	top: 0;
+	left: 37.5%;
+	width: 25%;
+	object-fit: contain;
 }
 /* #endregion */
 
@@ -1590,6 +1623,7 @@ input:-webkit-autofill:active{
 	align-items: center;
 	justify-content: right;
 	flex-direction: column;
+	margin-left: env(safe-area-inset-left);
 }
 #navigationInfoPanel #costAndTimeContainer {
 	background-color: var(--green);
@@ -1634,6 +1668,12 @@ input:-webkit-autofill:active{
 	font-size: 2.5rem;
 	line-height: 2rem;
 	color: var(--black);
+	margin-right: env(safe-area-inset-right);
+}
+#changeRotationModeButton img {
+	height: 2.5rem;
+	width: 2.5rem;
+	object-fit: contain;
 }
 #endNavigationButton {
 	height: 4rem;
@@ -1650,6 +1690,7 @@ input:-webkit-autofill:active{
 	font-size: 2.5rem;
 	line-height: 2rem;
 	color: var(--green);
+	margin-right: env(safe-area-inset-right);
 }
 #reachedFinalStation {
 	height: 8%;
@@ -1872,8 +1913,10 @@ input:-webkit-autofill:active{
 	height: 15vh;
 	margin: 2vh 0;
 	flex-shrink: 0;
-	width: calc(90vw - 4vh);
+	width: calc(90vw - 4vh - env(safe-area-inset-left) - env(safe-area-inset-right));
 	box-shadow: 0px 1px 6px 0px var(--black);
+	margin-left: env(safe-area-inset-left);
+	margin-right: env(safe-area-inset-right);
 }
 #openTakeUnregisteredBikeButton #upperText {
 	position: absolute;
@@ -2094,6 +2137,8 @@ input:-webkit-autofill:active{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin-top: env(safe-area-inset-top);
+	margin-left: env(safe-area-inset-left);
 }
 #tripHistory #backButton i {
 	width: 32px;
@@ -2109,6 +2154,7 @@ input:-webkit-autofill:active{
 	font-size: 1.3rem;
 	font-weight: bold;
 	color: var(--green);
+	margin-top: env(safe-area-inset-top);
 }
 #tripHistory #downloadTripHistoryButton {
 	position: absolute;
@@ -2137,7 +2183,7 @@ input:-webkit-autofill:active{
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	max-height: 90%;
+	max-height: calc(90% - env(safe-area-inset-top));
 	overflow: scroll;
 	padding-top: 2vh;
 	display: flex;
@@ -2217,16 +2263,21 @@ input:-webkit-autofill:active{
 /* #region Statistics menu */
 #statisticsMenu {
 	background-color: var(--black);
-	width: 100%;
-	height: 100%;
+	width: calc(100% - env(safe-area-inset-left) - env(safe-area-inset-right));
+	height: fit-content;
 	position: absolute;
 	z-index: 4;
 	left: 0;
 	top: 0;
 	border-radius: 0;
 	/*animation: smooth-slide-from-bottom 1s ease forwards;*/
+	padding-left: env(safe-area-inset-left);
+	padding-right: env(safe-area-inset-right);
 }
 #statisticsMenu #graphics {
+	position: absolute;
+	top: 0;
+	left: 0;
 	height: 25vw;
 	width: 100%;
 	object-fit: cover;
@@ -2244,6 +2295,8 @@ input:-webkit-autofill:active{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin-top: env(safe-area-inset-top);
+	margin-left: env(safe-area-inset-left);
 }
 #statisticsMenu #backButton i {
 	width: 32px;
@@ -2259,24 +2312,24 @@ input:-webkit-autofill:active{
 	font-size: 1.3rem;
 	font-weight: bold;
 	color: var(--green);
+	margin-top: env(safe-area-inset-top);
+	margin-right: env(safe-area-inset-right);
 }
 #statisticsMenu #usableArea {
-	position: absolute;
-	top: 8dvh;
-	left: 0;
-	width: 100vw;
-	height: 92dvh;
+	width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));
+	min-height: calc(100dvh - 8dvh);
 	display: flex;
 	flex-direction: column;
 	gap: 2dvh;
+	margin-top: calc(8dvh + env(safe-area-inset-top));
 }
 #statisticsMenu .chart-container {
 	position: relative;
-	width: 100vw;
+	width: 100%;
 	flex-grow: 1;
 }
 #statisticsMenu #statsControls {
-	width: 100vw;
+	width: 100%;
 	height: fit-content;
 	background-color: var(--white);
 	border-radius: 30px 30px 0 0;
@@ -2307,7 +2360,7 @@ input:-webkit-autofill:active{
 	margin-top: 3dvh;
 }
 #statisticsMenu #statsTotals {
-	width: 100vw;
+	width: 100%;
 	height: calc(6dvh + 1rem);
 	display: flex;
 	gap: 1dvh;
@@ -2336,3 +2389,650 @@ input:-webkit-autofill:active{
 	text-align: center;
 }
 /* #endregion */
+
+
+@media (orientation: landscape) {
+
+	/* #region Animations and Transitions */
+
+	/* appear from bottom animations */
+	@keyframes smooth-appear {
+		from {
+			bottom: -35%;
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	/* Zoom controls animations */
+	@keyframes smooth-slide-up-zoom-controls {
+		to {
+			bottom: calc(100vh - 22vw);
+		}
+	}
+	@keyframes smooth-slide-down-zoom-controls {
+		from {
+			bottom: calc(100vh - 22vw);
+		}
+		to {
+			bottom: calc(2vw + 7vw + 2vw);
+		}
+	}
+
+	@keyframes smooth-slide-top-zoom-controls {
+		to {
+			bottom: calc(100vh - 22vw);
+		}
+	}
+	@keyframes smooth-slide-bottom-zoom-controls {
+		from {
+			bottom: calc(100vh - 22vw);
+		}
+		to {
+			bottom: calc(2vw + 7vw + 2vw);
+		}
+	}
+
+	/* Search bar appear animations */
+	@keyframes slide-fwd-top {
+		from {
+			-webkit-transform: translateZ(-12dvw) translateY(10dvw);
+			transform: translateZ(-12dvw) translateY(10dvw);
+		}
+		to {
+			-webkit-transform: translateZ(0) translateY(0);
+			transform: translateZ(0) translateY(0);
+		}
+	}
+	@keyframes slide-back-top {
+		from {
+			-webkit-transform: translateZ(0) translateY(0);
+			transform: translateZ(0) translateY(0);
+		}
+		to {
+			-webkit-transform: translateZ(-12dvw) translateY(10dvw);
+			transform: translateZ(-12dvw) translateY(10dvw);
+		}
+	}
+
+	/* #endregion */
+
+	/* #region Logo */
+	#logo {
+		width: 18%;
+		left: 2vw;
+		bottom: 2vw;
+	}
+	/* #endregion */
+
+	/* #region Zoom controls */
+	#zoomControls {
+		right: 2vw;
+		bottom: calc(2vw + 7vw + 2vw);
+		gap: 1vw;
+	}
+	#zoomControls div {
+		background-color: var(--green);
+		width: 6vw;
+		height: 6vw;
+		font-size: calc(0.2 * 20vw);
+		border-radius: 999px;
+		color: white;
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+	}
+	#zoomControls div i {
+		width: 32px;
+		height: 32px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	/* #endregion */
+
+	/* #region Search bar */
+	#searchBarDiv {
+		width: 40vw;
+		height: 7vw;
+		bottom: 2vw;
+		left: 2vw;
+	}
+	#searchBarCancelButton {
+		left: 0;
+		bottom: 0;
+		width: 6vw;
+		height: 7vw;
+	}
+	#searchBar {
+		width: calc(40vw - 6vw);
+		height: 7vw;
+		left: 6vw;
+		bottom: 0;
+	}
+	/* #endregion */
+
+	/* #region Navigation Button */
+	#navigationButton {
+		width: 7vw;
+		height: 7vw;
+		right: calc(2vw + 7vw + 2vw);
+		bottom: 2vw;
+	}
+	#navigationButton img {
+		width: 4vw;
+		height: 4vw;
+	}
+	/* #endregion */
+
+	/* #region User picture */
+	#userPicture {
+		width: 7vw;
+		height: 7vw;
+		right: 2vw;
+		bottom: 2vw;
+	}
+	#userPicture #userInitials {
+		font-size: 3dvw;
+		color: var(--green);
+	}
+	/* #endregion */
+
+	/* #region Station card */
+	.station-card {
+		width: 90vh;
+		height: 55vh;
+		left: 2vw;
+		bottom: 2vw;
+	}
+	.station-card #stationID {
+		width: calc(100% - 17.5vh);
+		left: 5vh;
+		top: 4vh;
+	}
+	.station-card #stationName {
+		width: calc(100% - 17.5vh);
+		left: 5vh;
+		top: calc(4vh + 1rem + 0.2rem);
+	}
+	.station-card #docksImage {
+		left: 5vh;
+		bottom: calc(5vh + 20% + 2vh);
+	}
+	.station-card #docksButton {
+		left: 5vh;
+		bottom: 5vh;
+	}
+	.station-card #bikesImage {
+		right: 5vh;
+		bottom: calc(5vh + 20% + 2vh);
+	}
+	.station-card #bikesButton {
+		right: 5vh;
+		bottom: 5vh;
+	}
+	.station-card #bikesButtonDisabled {
+		right: 5vh;
+		bottom: 5vh;
+	}
+	.station-card #navigateToButton {
+		right: 5vh;
+		top: 5vh;
+	}
+	.station-card #startNavigationButton {
+		top: -8vw;
+		right: 0;
+		height: 6vw;
+		width: 6vw;
+	}
+	.station-card #routeDetails {
+		top: -8vw;
+		left: 0;
+		height: 6vw;
+		padding: 0 2dvw;
+	}
+	/* #endregion */
+
+	/* #region Login menu */
+	#loginCard #logo {
+		position: absolute;
+		top: calc(-15.625% - 14vh); /* the -15.625 is calculated using the aspect ratio of the logo (800x250) */
+		width: 30%;
+		left: 35%;
+	}
+	#loginCard {
+		height: 50vh;
+	}
+	#loginCard input {
+		height: 10vh;
+	}
+	#loginCard input[name="password"] {
+		top: calc(10% + 10vh + 10px + 2dvh);
+	}
+	#registerButton,
+	#loginButton {
+		height: 10vh;
+	}
+	/* #endregion */
+
+	/* #region Bike list */
+	.bike-list #backButton {
+		width: 7vw;
+		height: 7vw;
+		font-size: calc(0.35 * 7vw);
+	}
+	.bike-list #stationName {
+		width: 70%;
+		height: 10%;
+		left: 10%;
+		top: 5%;
+	}
+	.bike-list #stationImage {
+		width: 10%;
+		right: 3%;
+		top: 4%;
+	}
+	.bike-list #listGradient {
+		top: 20vh;
+	}
+	.bike-list #bikeList {
+		top: 20vh;
+		max-height: calc(100dvh - 20vh - 2vh);
+	}
+	.bike-list-element {
+		height: 7vw;
+	}
+	.bike-list-element #content #bikeIcon {
+		height: 4vw;
+	}
+	.bike-list-element #content #reserveBikeIcon {
+		font-size: 3dvw;
+	}
+	/* #endregion */
+
+	/* #region Bike reserve */
+	#bikeReserveCard {
+		height: 70%;
+	}
+	#bikeReserveCard #backButton {
+		width: 6vw;
+		height: 6vw;
+		font-size: calc(0.35 * 8vw);
+		margin-bottom: 1vw;
+	}
+	#bikeReserveCard #textContent {
+		position: absolute;
+		top: 20px;
+		left: calc(6vw + 20px);
+		width: calc(80% - 20px - 20px);
+		display: flex;
+		flex-direction: column;
+	}
+	#bikeReserveCard #unlockSlider {
+		appearance: none;
+		background-color: var(--black);
+		width: 90%;
+		height: 20%;
+		position: absolute;
+		left: 5%;
+		bottom: 10%;
+		border-radius: 999px;
+		z-index: 4;
+	}
+	#bikeReserveCard #unlockSlider::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		height: calc(0.2 * 35vh);
+		width: 45vw;
+		border-radius: 999px;
+		background-color: var(--green);
+		background-image: url("images/unlockSlider_PT.png");
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center;
+		cursor: pointer;
+	}
+	#bikeReserveCard #unlockSlider::-moz-range-thumb {
+		height: 100%;
+		width: 50%;
+		background-color: var(--green);
+		cursor: pointer;
+		border-radius: 999px;
+		border: none;
+		background-image: url("images/unlockSlider_PT.png");
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+	#bikeReserveCard #footer {
+		height: 14dvw;
+		object-position: center top;
+	}
+	.timer {
+		bottom: 13dvw;
+		left: calc(50vw - 8vw);
+	}
+	.timer > svg {
+		width: 16vw;
+		height: 16vw;
+	}
+	.timer > svg > circle {
+		stroke-width: 1.5vw;
+		r: 7.25vw;
+	}
+	#bikeReserveCard #bikeLeavingDock {
+		width: 60%;
+		aspect-ratio: 1/1;
+		object-fit: contain;
+		position: absolute;
+		left: 40%;
+		bottom: -40%;
+	}
+	/* #endregion */
+
+	/* #region Trip overlay */
+	.trip-overlay {
+		width: calc(35% - 4vw);
+		height: 20dvw;
+		top: 2vw;
+		left: 2vw;
+	}
+	.trip-overlay #onTripText {
+		top: 2vw;
+		left: 2vw;
+		font-size: 1.75rem;
+	}
+	.trip-overlay #tripCost {
+		bottom: 2vw;
+		left: 2.5vw;
+		font-size: 1rem;
+	}
+	.trip-overlay #tripTime {
+		bottom: calc(2vw +  1rem + .2rem);
+		left: 2.5vw;
+		font-size: 1rem;
+	}
+	.trip-overlay #callAssistance {
+		bottom: 1.5vw;
+		right: 1.5vw;
+		padding: 1.5vw;
+	}
+	/* #endregion */
+
+	/* #region User menu */
+	.user-settings #topUserContainer {
+		height: 24vw;
+	}
+	.user-settings #topUserContainer #footer {
+		height: 12vw;
+		object-fit: cover;
+		object-position: top center;
+	}
+	.user-settings #backButton, .user-settings #topUserContainer #backButton {
+		width: 6vw;
+		height: 6vw;
+		font-size: calc(0.35 * 6vw);
+	}
+	.user-settings #topUserContainer #userImage {
+		width: 22vw;
+		height: 22vw;
+		top: calc(65% - (22vw / 2));
+		left: calc(50% - (22vw / 2));
+	}
+	.user-settings #topUserContainer #userImage #userInitialsSettings {
+		font-size: 8vw;
+	}
+	.user-settings #topUserContainer #bottomCard {
+
+		height: 3vw;
+		border-radius: 3vw 3vw 0 0;
+	}
+	.user-settings #userName {
+		margin-top: 5vw;
+	}
+	.user-settings #balanceAndBonusContainer {
+		width: 100vw;
+		height: 12vw;
+		gap: 2vw;
+		margin-top: 5vw;
+	}
+	.user-settings #balanceAndBonusContainer #balanceContainer,
+	.user-settings #balanceAndBonusContainer #bonusContainer {
+		width: 25%;
+	}
+	.user-settings #subscriptionContainer {
+		height: 12vw;
+		margin-top: 3vw;
+	}
+	.user-settings #subscriptionContainer div:first-child {
+		width: calc(50vw + 2vw);
+	}
+	.user-settings #subscriptionContainer div #cardSVG {
+		position: absolute;
+		height: 6vw;
+		width: 6vw;
+		font-size: 6vw;
+		top: 10px;
+		left: calc(25% - 3vw);
+	}
+	.user-settings #subscriptionContainer div #subscriptionName {
+		top: 7vw;
+	}
+	.user-settings #statisticsMenuButtonContainer,
+	.user-settings #tripHistoryButtonContainer {
+		margin-top: 3vw;
+	}
+	.user-settings #statisticsMenuButton,
+	.user-settings #tripHistoryButton {
+		width: calc(50vw + 2vw - 5vw);
+		padding: 2vw 3vw;
+		gap: 1vw;
+	}
+	.user-settings #settingsContainer {
+		width: 100vw;
+		height: fit-content;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		gap: 3vw;
+		margin-top: 3vw;
+	}
+	.user-settings #settingsContainer #proxy {
+		width: calc(50vw + 2vw);
+		height: 16vw;
+	}
+	.user-settings #settingsContainer #proxy #resetProxyButton {
+		right: 10%;
+		height: 40%;
+		width: 15%;
+		padding-left: 3%;
+	}
+	.user-settings #settingsContainer #distanceToStation {
+		width: calc(50vw + 2vw);
+		height: 16vw;
+	}
+	#bottom {
+		margin-top: 3vw;
+		display: flex;
+		width: 50vw;
+		margin-bottom: 5vh;
+		margin-left: 25vw;
+	}
+	.user-settings #versionNumber {
+		margin-left: 0;
+	}
+	.user-settings #logoutButton {
+		margin-right: 0;
+	}
+
+	.user-settings #proxyNotWorking {
+		bottom: 5vh;
+		right: 5vh;
+	}
+	/* #endregion */
+
+	/* #region Place search menu */
+	.place-search-menu {
+		width: 40vw;
+		min-height: 30vh;
+		max-height: calc(100vh - 4rem);
+		position: absolute;
+		left: 2vw;
+		bottom: calc(2vw + 7vw/2);
+	}
+	.place-search-menu #placeList {
+		width: 100%;
+		margin-left: 0;
+		max-height: 50vh;
+	}
+	.place-search-menu #startNavigationButton {
+		top: -15vh;
+		right: 0;
+		height: 6vw;
+		width: 6vw;
+	}
+	.place-search-menu #routeDetails {
+		top: -15vh;
+		left: 0;
+		height: 6vw;
+	}
+	/* #endregion */
+
+	/* #region Rate trip menu */
+	#rateTripMenuCard {
+		height: 25%;
+	}
+	#rateTripMenuCard #backButton {
+		top: 2vw;
+		left: 2vw;
+		width: 6vw;
+		height: 6vw;
+		font-size: calc(0.35 * 6vw);
+		margin-bottom: 1vw;
+	}
+	#rateTripMenuCard #tripInfo {
+		position: absolute;
+		top: 5vh;
+		left: calc(2vw + 6vw);
+	}
+	#rateTripMenuCard #stationImg {
+		top: 3vw;
+		right: 3vw;
+		width: 10%;
+	}
+	#rateTripMenuCard #ratingLabel {
+		position: absolute;
+		bottom: calc(4vw + 7vw);
+		left: 0;
+	}
+	#rateTripMenuCard #ratingFormContainer {
+		position: absolute;
+		bottom: 4vw;
+		left: 0;
+	}
+	#rateTripMenuCard #ratingFormContainer .rating {
+		line-height: 7vw;
+		font-size: 7vw;
+	}
+	#rateTripMenuCard #sendButton {
+		width: 40vh;
+		height: 6vw;
+		right: 1.5vw;
+		bottom: 1.5vw;
+	}
+	/* #endregion */
+
+	/* #region Take unregistered bike */
+	#openTakeUnregisteredBikeButton {
+		padding: 2vw;
+		height: 15vw;
+		margin: 2vw 0;
+		/*width: calc(90vw - 4vw);*/
+	}
+	#openTakeUnregisteredBikeButton #upperText {
+		top: 2vw;
+		left: 3vw;
+	}
+	#openTakeUnregisteredBikeButton #lowerText {
+		bottom: 2vw;
+		left: 3vw;
+	}
+	#openTakeUnregisteredBikeButton img {
+		bottom: 2vw;
+		right: 2vw;
+		height: 13vw;
+	}
+	#takeUnregisteredBike {
+		height: 40%;
+	}
+	/* #endregion */
+	
+	/* #region Trip history */
+	#tripHistory #backButton {
+		top: 1vw;
+		left: 2vw;
+		width: 6vw;
+		height: 6vw;
+		font-size: calc(0.35 * 6vw);
+		margin-bottom: 1vw;
+	}
+	#tripHistory #title {
+		top: 3vw;
+		right: 2vw;
+	}
+	#tripHistory #downloadTripHistoryButton {
+		bottom: 2.5vw;
+		right: 2.5vw;
+		width: 8vw;
+		height: 8vw;
+	}
+	#tripHistory #tripList {
+		max-height: 80%;
+	}
+	.trip-list-element {
+		margin-bottom: 2vw;
+		padding: 2.5vw 2vw;
+		width: calc(50% - 4vw);
+	}
+	.trip-list-element #tripStations img {
+		max-width: 50vh;
+	}
+	/* #endregion */
+
+	/* #region Statistics menu */
+	#statisticsMenu #backButton {
+		top: 1vw;
+		left: 2vw;
+		width: 6vw;
+		height: 6vw;
+		font-size: calc(0.35 * 6vw);
+		margin-bottom: 1vw;
+	}
+	#statisticsMenu #title {
+		top: 3vw;
+	}
+	#statisticsMenu #usableArea {
+		margin-top: calc(8vw + env(safe-area-inset-top));
+	}
+	#statisticsMenu .chart-container {
+		height: 55vh;
+	}
+	#statisticsMenu #statsControls {
+		padding-bottom: 4vw;
+		padding-top: 2vw;
+	}
+	#statisticsMenu #statsTotals {
+		height: calc(6vw + 1rem);
+		gap: 1.5vw;
+	}
+	#statisticsMenu #statsTotals .stats-totals-element {
+		height: calc(6vw + 1rem);
+	}
+	#statisticsMenu #statsTotals .stats-totals-element div:first-child {
+		height: 6vw;
+	}
+	/* #endregion */
+
+}

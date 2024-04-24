@@ -126,11 +126,10 @@ async function tripPayWithPoints(tripCode) {
 async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNumber, unregistered = false) {
 	let stationObj;
 
-	if (stationSerialNumber !== null) {
+	if (lastStationObj !== null && !unregistered) {
 		// get station object
-		stationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
-
-		console.log(stationSerialNumber);
+		//stationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
+		stationObj = lastStationObj;
 
 		// check if the app has access to the user location
 		if (!pos) {
@@ -159,7 +158,7 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 	// get dock object
 	let dockObj;
 
-	if (!unregistered) {
+	if (!unregistered && stationObj.dockList) {
 		dockObj = stationObj.dockList.find(obj => obj.serialNumber === dockSerialNumber);
 	} else {
 		dockObj = { name: "?" };
@@ -167,19 +166,13 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 
 	console.log("The bike will be reserved!");
 
-	// reserve the bike
-	if (typeof (await reserveBike(bikeObj.serialNumber)) === "undefined") {
-		alert("Ocorreu um erro ao reservar a bicicleta.");
-		return;
-	}
-
 	// Create card element
 	let card = document.createElement("div");
 	card.className = "bike-reserve";
 	card.id = "unlockBikeCard";
 	card.innerHTML = `
         <div id="bikeReserveCard">			
-			<div id="backButton" onclick="document.getElementById('unlockBikeCard').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
+			<div id="backButton" onclick="closeUnlockBikeCard()"><i class="bi bi-arrow-90deg-left"></i></div>
 			<div id="textContent">
 				<div id="bikeName">${bikeObj.name}</div>
 				<div id="bikeDock">Doca ${dockObj.name}</div>
@@ -200,6 +193,12 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
         </div>
     `.trim();
 	document.body.appendChild(card);
+
+	// reserve the bike
+	if (typeof (await reserveBike(bikeObj.serialNumber)) === "undefined") {
+		alert("Ocorreu um erro ao reservar a bicicleta.");
+		return;
+	}
 
 	// Run the timer (30 seconds)
 	let timeLeft = 30;
@@ -239,6 +238,15 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 
 	// If there is navigation going, make the card still appear
 	if (navigationActive) card.style.zIndex = 99;
+}
+
+async function closeUnlockBikeCard() {
+	console.log("The reserve was cancelled.");
+	if (typeof (await cancelBikeReserve()) === "undefined") {
+		alert("Ocorreu um erro ao cancelar a reserva da bicicleta");
+		return;
+	}
+	document.getElementById("unlockBikeCard").remove();
 }
 
 function openTakeUnregisteredBikeMenu(stationSerialNumber) {
@@ -334,6 +342,9 @@ async function startBikeTrip(event, bikeName) {
 				<div>
 			`.trim()
 			);
+
+			// Change map dots to available docks
+			loadStationMarkersFromArray(stationsArray, true);
 
 			// start the trip timer
 			tripEnded = false;

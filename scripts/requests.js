@@ -243,7 +243,8 @@ function startWSConnection(force = false) {
 							// Show the trip overlay if it is not shown already and the user is not on navigation
 							if (!document.querySelector("#tripOverlay") && !navigationActive) {
 								// show the trip overlay if user is not in navigation
-								appendElementToBodyFromHTML(`
+								appendElementToBodyFromHTML(
+									`
 								<div class="trip-overlay" id="tripOverlay">
 									<span id="onTripText">Em viagem</span>
 									<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
@@ -255,6 +256,14 @@ function startWSConnection(force = false) {
 								<div>
 								`.trim()
 								);
+
+								// Change map dots to available docks
+								loadStationMarkersFromArray(stationsArray, true);
+
+								// If user is in landscape when the trip starts, put into navigation UI
+								if (window.matchMedia("(orientation: landscape)").matches) {
+									goIntoLandscapeNavigationUI();
+								}
 
 								// start the trip timer
 								tripEnded = false;
@@ -270,6 +279,8 @@ function startWSConnection(force = false) {
 					} else if (activeTripObj.code === "no_trip") {
 						// End trip
 						tripEnded = true;
+						// If in navigation UI, change to default UI
+						exitLandscapeNavigationUI();
 					} else if (activeTripObj.code === "unauthorized") {
 						// refresh token
 						await tokenRefresh();
@@ -284,8 +295,13 @@ function startWSConnection(force = false) {
 					Object.hasOwn(msgObj.payload.data, "operationalStationsSubscription")
 				) {
 					let newStationsArray = msgObj.payload.data.operationalStationsSubscription;
-					loadStationMarkersFromArray(newStationsArray); // Load the stations to the map
-					stationsArray = newStationsArray; // update stations array
+
+					if (!document.getElementById("placeSearchMenu")) {
+						loadStationMarkersFromArray(newStationsArray, !tripEnded); // Load the stations to the map
+					}
+
+					// update stations array
+					stationsArray = newStationsArray;
 				} else if (Object.hasOwn(msgObj.payload, "errors") && msgObj.payload.errors) {
 					console.log(msgObj.payload.errors[0].message);
 					// The subscription errored out, restart connection

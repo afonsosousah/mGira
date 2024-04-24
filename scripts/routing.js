@@ -4,6 +4,10 @@ let dropoffStation;
 let finalDestination;
 
 async function calculateFullRoute(fromCoordinates, toCoordinates) {
+	// Remove any previous loading animations
+	const oldSpinner = document.getElementById("spinner");
+	if (oldSpinner) oldSpinner.remove();
+
 	// Loading animation over the map while the route is being calculated
 	let loadingElement = document.createElement("img");
 	loadingElement.id = "spinner";
@@ -73,7 +77,8 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	let totalDistance = 0; // will be in meters and exact
 	let totalTime = 0; // will be in seconds
 	let routeSummaryBike;
-	let routeSummary;
+	let routeSummaryFoot1;
+	let routeSummaryFoot2;
 	let walkingOnly = false;
 	let allCoordinates = [];
 
@@ -82,11 +87,11 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 		// Calculate only on foot route
 
 		// Calculate walking route from start to end
-		routeSummary = await calculateRoute(fromCoordinates, toCoordinates, false);
-		totalDistance += routeSummary.distance;
-		totalTime += routeSummary.duration;
-		routeSummaryBike = routeSummary; // we need to set this for the bbox to be set
-		allCoordinates.push(...routeSummary.coordinates);
+		routeSummaryFoot1 = await calculateRoute(fromCoordinates, toCoordinates, false);
+		totalDistance += routeSummaryFoot1.distance;
+		totalTime += routeSummaryFoot1.duration;
+		//routeSummaryBike = routeSummaryFoot1; // we need to set this for the bbox to be set
+		allCoordinates.push(...routeSummaryFoot1.coordinates);
 
 		// Set that the route is walking only
 		walkingOnly = true;
@@ -94,10 +99,10 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 		// Calculate normal Gira route
 
 		// Calculate walking route from start to station
-		routeSummary = await calculateRoute(fromCoordinates, [grabStation.longitude, grabStation.latitude], false);
-		totalDistance += routeSummary.distance;
-		totalTime += routeSummary.duration;
-		allCoordinates.push(...routeSummary.coordinates);
+		routeSummaryFoot1 = await calculateRoute(fromCoordinates, [grabStation.longitude, grabStation.latitude], false);
+		totalDistance += routeSummaryFoot1.distance;
+		totalTime += routeSummaryFoot1.duration;
+		allCoordinates.push(...routeSummaryFoot1.coordinates);
 
 		// Now calculate cycling route from start station to end station
 		routeSummaryBike = await calculateRoute(
@@ -110,10 +115,10 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 		allCoordinates.push(...routeSummaryBike.coordinates);
 
 		// Finnaly, calculate walking route from station to end
-		routeSummary = await calculateRoute([dropoffStation.longitude, dropoffStation.latitude], toCoordinates, false);
-		totalDistance += routeSummary.distance;
-		totalTime += routeSummary.duration;
-		allCoordinates.push(...routeSummary.coordinates);
+		routeSummaryFoot2 = await calculateRoute([dropoffStation.longitude, dropoffStation.latitude], toCoordinates, false);
+		totalDistance += routeSummaryFoot2.distance;
+		totalTime += routeSummaryFoot2.duration;
+		allCoordinates.push(...routeSummaryFoot2.coordinates);
 
 		// Add start station point to map
 		addStationPointToMap(grabStation, true);
@@ -131,21 +136,37 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	// Hide loading animation
 	loadingElement.remove();
 
-	// Set the bbox
-	let coords1 = ol.proj.fromLonLat([routeSummaryBike.bbox[0], routeSummaryBike.bbox[1]]);
-	let coords2 = ol.proj.fromLonLat([routeSummaryBike.bbox[2], routeSummaryBike.bbox[3]]);
-	let convertedBbox = [coords1[0], coords1[1], coords2[0], coords2[1]];
-	let menuHeight;
-	if (document.getElementById("placeSearchMenu")) menuHeight = document.getElementById("placeSearchMenu").clientHeight;
-	else if (document.getElementById("stationMenu"))
-		menuHeight = document.getElementById("stationMenu").clientHeight + 30;
-	else menuHeight = 0;
-	const viewableBox = [map.getSize()[0], map.getSize()[1] - menuHeight];
-	map.getView().fit(convertedBbox, {
-		size: viewableBox,
-		padding: [50, 100, menuHeight + 50, 100],
-		maxZoom: 18,
-	});
+	// Calculate resulting bbox of all the routes
+	const bboxFoot1 = convertBbox(routeSummaryFoot1.bbox);
+	const bboxBike = convertBbox(routeSummaryBike?.bbox ?? routeSummaryFoot1.bbox);
+	const bboxFoot2 = convertBbox(routeSummaryFoot2?.bbox ?? routeSummaryFoot1.bbox);
+
+	const xMin = Math.min(bboxFoot1[0], bboxBike[0], bboxFoot2[0]);
+	const yMin = Math.min(bboxFoot1[1], bboxBike[1], bboxFoot2[1]);
+	const xMax = Math.max(bboxFoot1[2], bboxBike[2], bboxFoot2[2]);
+	const yMax = Math.max(bboxFoot1[3], bboxBike[3], bboxFoot2[3]);
+
+	const convertedBbox = [xMin, yMin, xMax, yMax];
+
+	if (window.matchMedia("(orientation: portrait)").matches) {
+		const offset =
+			document.getElementById("placeSearchMenu")?.clientHeight ??
+			document.getElementById("stationMenu")?.clientHeight + 30 ??
+			0;
+		map.getView().fit(convertedBbox, {
+			padding: [50, 100, 120 + offset, 100],
+			maxZoom: 16.5,
+		});
+	} else if (window.matchMedia("(orientation: landscape)").matches) {
+		const offset =
+			document.getElementById("placeSearchMenu")?.clientWidth ??
+			document.getElementById("stationMenu")?.clientWidth ??
+			0;
+		map.getView().fit(convertedBbox, {
+			padding: [50, 100, 50, 100 + offset],
+			maxZoom: 16.5,
+		});
+	}
 
 	// Show the start navigation button and route details panel
 	const targetElement = document.querySelector("#placeSearchMenu") ?? document.querySelector("#stationMenu");
@@ -373,6 +394,7 @@ async function searchPlace() {
 				],
 				boundary_country: ["PT"],
 			});
+
 			// set the inner HTML after the animation has started
 			menu.innerHTML = `
                 <ul id="placeList">
@@ -380,15 +402,33 @@ async function searchPlace() {
                 </ul>
             `.trim();
 
+			// if there are no results, put a message saying that
+			if (!response || response.features.length === 0) {
+				document.getElementById("placeList").innerHTML = "Nenhum lugar encontrado";
+				return;
+			}
+
 			let featuresArray = [];
 
 			// Fit all the places to the map
-			let coords1 = ol.proj.fromLonLat([response.bbox[0], response.bbox[1]]);
-			let coords2 = ol.proj.fromLonLat([response.bbox[2], response.bbox[3]]);
-			let convertedBbox = [coords1[0], coords1[1], coords2[0], coords2[1]];
-			let viewableBox = [map.getSize()[0], map.getSize()[1] - document.getElementById("placeSearchMenu").clientHeight];
-			let padding = [50, 100, 50 + document.getElementById("placeSearchMenu").clientHeight, 100];
-			map.getView().fit(convertedBbox, { size: viewableBox, padding: padding, maxZoom: 16.5 });
+			const convertedBbox = convertBbox(response.bbox);
+			const placeSearchMenu = document.getElementById("placeSearchMenu");
+
+			if (window.matchMedia("(orientation: portrait)").matches) {
+				// Wait for the end of animation
+				placeSearchMenu.addEventListener("animationend", event => {
+					// Check if the animation that ended is the one you are interested in
+					if (event.animationName === "smooth-appear") {
+						const offset = placeSearchMenu.clientHeight;
+						const padding = [100, 100, 100 + offset, 100];
+						map.getView().fit(convertedBbox, { padding: padding, maxZoom: 16.5, duration: 200 });
+					}
+				});
+			} else if (window.matchMedia("(orientation: landscape)").matches) {
+				const offset = placeSearchMenu.clientWidth;
+				const padding = [100, 100, 100, 100 + offset];
+				map.getView().fit(convertedBbox, { padding: padding, maxZoom: 16.5 });
+			}
 
 			// get the results
 			for (let result of response.features) {
@@ -489,10 +529,6 @@ async function searchPlace() {
 			});
 
 			map.addLayer(vectorLayer);
-
-			// if there are no results, put a message saying that
-			if (document.getElementById("placeList") && document.getElementById("placeList").childElementCount === 0)
-				document.getElementById("placeList").innerHTML = "Nenhum lugar encontrado.";
 		} catch (err) {
 			console.log(err);
 			/*console.log("An error occurred: " + err.status)
@@ -533,16 +569,14 @@ function hidePlaceSearchMenu() {
 	map
 		.getLayers()
 		.getArray()
-		.filter(
-			layer =>
-				layer.get("name") === "placesLayer" ||
-				layer.get("name") === "stationsLayer" ||
-				layer.get("name") === "routeLayer"
-		)
+		.filter(layer => ["placesLayer", "routeLayer"].includes(layer.get("name")))
 		.forEach(layer => map.removeLayer(layer));
 
 	// Add back the stations layer
-	getStations();
+	loadStationMarkersFromArray(stationsArray);
+
+	// Pan to user location
+	getLocation();
 }
 
 function viewRoute(toCoordinates) {
