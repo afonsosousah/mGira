@@ -376,14 +376,16 @@ function getLocation(zoom = true) {
 					feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
 				}
 
+				// Update rotation on each location update
+				updateRotation();
+
 				if (followLocation) {
-					console.log("pan in watchposition");
 					// Pan to location
 					const view = map.getView();
 					view.animate({
 						center: ol.proj.fromLonLat(pos),
 						zoom: map.getView().getZoom(), // use the current zoom
-						duration: 100,
+						duration: 500,
 					});
 				}
 			},
@@ -441,23 +443,17 @@ function startLocationDotRotation() {
 
 		if (!pos) return;
 
-		// Get the average with GPS heading (testing for more accurate heading)
-		if (gpsHeading) compassHeading = (compassHeading + gpsHeading) / 2;
+		// Use GPS heading above certain speed (5kph) (testing for more accurate heading)
+		if (gpsHeading && speed >= (5 * 1000) / (60 * 60)) compassHeading = gpsHeading;
+
+		// Get the layer containing the previous current location
+		const currentLocationLayer = map
+			.getLayers()
+			.getArray()
+			.find(layer => layer.get("name") === "currentLocationLayer");
 
 		// Set rotation of map dot
-		if (
-			map
-				.getLayers()
-				.getArray()
-				.filter(layer => layer.get("name") === "currentLocationLayer").length !== 0
-		) {
-			// Get the layer containing the previous current location
-			const currentLocationLayer = map
-				.getLayers()
-				.getArray()
-				.find(layer => layer.get("name") === "currentLocationLayer");
-
-			// Refresh the feature
+		if (currentLocationLayer) {
 			currentLocationLayer
 				.getSource()
 				.getFeatures()[0]

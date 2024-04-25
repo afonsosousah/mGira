@@ -5,7 +5,7 @@ let wakeLock = null;
 let lastRoutePointIndex = null;
 let promptedDropoffStation;
 let promptedDestination;
-let rotationMode = "route";
+let rotationMode = null;
 
 async function startNavigation(walkingOnly = false) {
 	navigationActive = true;
@@ -23,6 +23,9 @@ async function startNavigation(walkingOnly = false) {
 
 	// Navigation on-foot from user location to nearest station
 	navigationMode === "foot";
+
+	// Set rotation mode
+	rotationMode = "route";
 
 	// Zoom in to an approppriate level
 	map.getView().setZoom(17);
@@ -52,14 +55,14 @@ async function startNavigation(walkingOnly = false) {
 	// hide station menu
 	if (document.getElementById("stationMenu")) document.getElementById("stationMenu").remove();
 	document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
-
-	// Pan to user location and set the correct rotation based on the route
-	updateRotation();
-	updateRotation(); // do twice because the first time the alignment is not right (no idea why)
 }
 
 function onBikeNavigation() {
+	// Set navigation mode
 	navigationMode = "bike";
+
+	// Set rotation mode
+	if (!rotationMode) rotationMode = "route";
 
 	// Request fullscreen
 	// https://developer.mozilla.org/en-US/docs/Web/API/Element/requestFullscreen
@@ -95,6 +98,13 @@ function onBikeNavigation() {
 		<div id="endNavigationButton" onclick="stopNavigation()"><i class="bi bi-sign-stop"></i></div>
 	`);
 
+	// Append the change rotation button
+	if (!document.getElementById("changeRotationModeButton")) {
+		appendElementToBodyFromHTML(`
+			<div id="changeRotationModeButton" onclick="changeRotationMode()"><i class="bi bi-sign-turn-right"></i></div>
+		`);
+	}
+
 	// Set map pixel ratio (fix mobile map not loading at some points)
 	map.pixelRatio_ = 1.5;
 
@@ -104,7 +114,11 @@ function onBikeNavigation() {
 }
 
 async function finalOnFootNavigation() {
+	// Set navigation mode
 	navigationMode = "foot";
+
+	// Set rotation mode
+	if (!rotationMode) rotationMode = "route";
 
 	// Exit fullscreen
 	try {
@@ -136,8 +150,12 @@ async function finalOnFootNavigation() {
 }
 
 async function stopNavigation() {
+	// Unset the navigation properties
 	navigationActive = false;
 	navigationMode = null;
+
+	// Unset rotation mode
+	rotationMode = null;
 
 	// Don't force device to be awake anymore
 	if (wakeLock) {
@@ -172,6 +190,7 @@ async function stopNavigation() {
 	const userPosition = ol.proj.fromLonLat(pos);
 	view.setCenter(userPosition);
 	view.setRotation(0); // 0 degrees is north
+	view.padding = [0, 0, 0, 0]; // reset padding
 
 	// Reset map pixel ratio to default
 	map.pixelRatio_ = window.devicePixelRatio;
@@ -216,6 +235,7 @@ function changeRotationMode() {
 			if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-crosshair"></i>`;
 			if (changeRotationModeButtonPortrait)
 				changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-crosshair"></i>`;
+			followLocation = true;
 		} else {
 			rotationMode = "route";
 			if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
@@ -226,6 +246,7 @@ function changeRotationMode() {
 		rotationMode = "compass";
 		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-compass"></i>`;
 		if (changeRotationModeButtonPortrait) changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-compass"></i>`;
+		followLocation = true;
 	}
 }
 
@@ -291,11 +312,19 @@ function updateRotation() {
 	const userPosition = ol.proj.fromLonLat(pos);
 
 	if (navigationActive) {
-		// Pan to location and update rotation
-		view.setRotation(angleRad);
+		// Follow user location
+		followLocation = true;
 
-		if (navigationMode === "bike") view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.9]);
-		else view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.85]);
+		// Pan to location
+		if (navigationMode === "bike") view.padding = [mapSize[1] * 0.8, 0, 20, 0];
+		else view.padding = [mapSize[1] * 0.7, 0, 20, 0];
+
+		// Update rotation
+		view.animate({
+			duration: 500,
+			rotation: angleRad,
+			center: userPosition,
+		});
 
 		// Check if user is near to dropoff station, and prompt them if they reached the dropoff station
 		let distanceToDropoffStation = distance(pos, [dropoffStation.longitude, dropoffStation.latitude]);
@@ -326,14 +355,16 @@ function updateRotation() {
 				}
 			);
 		} else if (distanceToDestination >= 30) promptedDestination = false;
+	} else if (window.matchMedia("(orientation: landscape)").matches && !tripEnded && rotationMode !== "free") {
+		// Pan to location
+		view.padding = [mapSize[1] * 0.7, 0, 20, 0];
 
-		requestAnimationFrame(updateRotation);
-	} else if (window.matchMedia("(orientation: landscape)").matches && !tripEnded) {
-		// Pan to location and set rotation
-		if (rotationMode !== "free") view.setRotation(angleRad);
-		view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.7]);
-
-		requestAnimationFrame(updateRotation);
+		// Update rotation
+		view.animate({
+			duration: 500,
+			rotation: angleRad,
+			center: userPosition,
+		});
 	}
 }
 
@@ -431,11 +462,12 @@ async function goIntoLandscapeNavigationUI() {
 	`.trim();
 	document.body.appendChild(navInfoPanelElement);
 
+	// Set the default rotation mode
 	rotationMode = "free";
 
-	// Append the end navigation button
+	// Append the change rotation button
 	appendElementToBodyFromHTML(`
-		<div id="changeRotationModeButton" onclick="changeRotationMode()" style="bottom: 2dvh; right: 2dvh;"><i class="bi bi-crosshair"></i></div>
+		<div id="changeRotationModeButton" onclick="changeRotationMode()"><i class="bi bi-crosshair"></i></div>
 	`);
 
 	// Set map pixel ratio (fix mobile map not loading at some points)
@@ -447,9 +479,6 @@ async function goIntoLandscapeNavigationUI() {
 
 	// Change map dots to available docks
 	loadStationMarkersFromArray(stationsArray, true);
-
-	// Start the rotation updates
-	updateRotation();
 }
 
 function exitLandscapeNavigationUI() {
@@ -462,6 +491,17 @@ function exitLandscapeNavigationUI() {
 		for (element of navigationElements) {
 			element.remove();
 		}
+
+		// Unset rotation mode
+		rotationMode = null;
+
+		// Align the map to north and pan to user location on the center
+		const view = map.getView();
+		const userPosition = ol.proj.fromLonLat(pos);
+		view.setCenter(userPosition);
+		view.setRotation(0); // 0 degrees is north
+		view.padding = [0, 0, 0, 0]; // reset padding
+		followLocation = true;
 
 		// Remove the on bike button
 		document.getElementById("onBikeButton")?.remove();
