@@ -463,6 +463,7 @@ input:-webkit-autofill:active{
 	border-radius: 20px;
 	box-shadow: 5px 5px 15px 0px var(--shadow-black);
 	animation: smooth-slide-from-left 0.5s ease forwards;
+	-webkit-backdrop-filter: blur(1rem);
 	backdrop-filter: blur(1rem);
 	margin-left: env(safe-area-inset-left);
 }
@@ -1480,6 +1481,7 @@ input:-webkit-autofill:active{
 	border-radius: 30px 30px 0 0;
 	animation: smooth-appear 0.5s ease forwards;
 	margin-left: env(safe-area-inset-left);
+	-webkit-backdrop-filter: blur(1rem);
 	backdrop-filter: blur(1rem);
 	box-shadow: 0px 1px 6px 0px var(--gray);
 }
@@ -1527,6 +1529,7 @@ input:-webkit-autofill:active{
 	width: 6dvh;
 	box-shadow: 0px 4px 6px 0px var(--shadow-black);
 	backdrop-filter: blur(1rem);
+	-webkit-backdrop-filter: blur(1rem);
 }
 .place-search-menu #startNavigationButton:hover {
 	cursor: pointer;
@@ -1554,6 +1557,7 @@ input:-webkit-autofill:active{
 	font-size: 0.8rem;
 	box-shadow: 0px 4px 6px 0px var(--shadow-black);
 	backdrop-filter: blur(1rem);
+	-webkit-backdrop-filter: blur(1rem);
 }
 .place-search-menu #spinner {
 	position: absolute;
