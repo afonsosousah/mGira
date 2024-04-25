@@ -749,33 +749,35 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	align-items: center;
 }
-.bike-list #stationName {
-	width: 50%;
-	height: 10%;
+.bike-list #stationID {
+	width: calc(100% - 7vh - 10px - 5%);
 	position: absolute;
-	z-index: 2;
-	left: 20%;
-	top: 2%;
-	display: flex;
-	align-items: center;
-	text-align: center;
-	word-break: normal;
-	white-space: pre-wrap;
+	left: calc(10px + 7vh);
+	top: 3vh;
+	text-align: left;
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--dark-gray);
 	margin-left: env(safe-area-inset-left);
 	margin-top: env(safe-area-inset-top);
-}
-.bike-list #stationImage {
-	width: 20%;
-	position: absolute;
 	z-index: 2;
-	right: 5%;
-	top: 4%;
-	margin-right: env(safe-area-inset-right);
+}
+.bike-list #stationName {
+	width: calc(100% - 7vh - 10px - 5%);
+	position: absolute;
+	left: calc(10px + 7vh);
+	top: calc(3vh + 1rem + 0.2rem);
+	text-align: left;
+	font-size: 0.7rem;
+	line-height: 0.7rem;
+	color: var(--medium-gray);
+	margin-left: env(safe-area-inset-left);
 	margin-top: env(safe-area-inset-top);
+	z-index: 2;
 }
 .bike-list #listGradient {
 	position: absolute;
-	top: 25vw;
+	top: 17.5vw;
 	left: 0;
 	width: 100%;
 	height: 1.2vh;
@@ -786,7 +788,7 @@ input:-webkit-autofill:active{
 	position: absolute;
 	width: calc(100% - env(safe-area-inset-left) - env(safe-area-inset-right));
 	left: 0;
-	top: 25vw;
+	top: 17.5vw;
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
@@ -2178,6 +2180,15 @@ input:-webkit-autofill:active{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+#tripHistory #listGradient {
+	position: absolute;
+	top: 8vh;
+	left: 0;
+	width: 100%;
+	height: 1.2vh;
+	background: linear-gradient(180deg, #fff 0%, transparent 100%);
+	z-index: 2;
 }
 #tripHistory #tripList {
 	position: absolute;

@@ -403,7 +403,6 @@ function getLocation(zoom = true) {
 			});
 
 			locationPromise.then(pos => {
-				console.log("pan in zoom");
 				// Pan to location
 				const currentZoom = map.getView().getZoom();
 

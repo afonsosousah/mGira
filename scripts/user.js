@@ -381,6 +381,9 @@ async function openTripHistory() {
 		document.body.scrollTop = document.documentElement.scrollTop = 0; // scroll to top of the page
 	}
 
+	// Set status bar color in PWA
+	changeThemeColor("#ffffff");
+
 	if (!user.tripHistory) {
 		// show loading animation
 		menu.innerHTML = `
@@ -396,9 +399,9 @@ async function openTripHistory() {
 
 	// Create element
 	menu.innerHTML = `
-        <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
         <div id="backButton" onclick="hideTripHistory();"><i class="bi bi-arrow-90deg-left"></i></div>
 		<div id="title">Histórico de Viagens</div>
+		<div id="listGradient"></div>
         <ul id="tripList">
             <!-- Populate with the list here -->
         </ul>
@@ -461,9 +464,6 @@ async function openTripHistory() {
 	// if there are no trips, put a message saying that
 	if (document.getElementById("tripList").childElementCount === 0)
 		document.getElementById("tripList").innerHTML = "Não realizou nenhuma viagem";
-
-	// Set status bar color in PWA
-	changeThemeColor("#ffffff");
 }
 
 function hideTripHistory() {
@@ -514,8 +514,10 @@ async function openStatisticsMenu() {
 		menu.style.backgroundColor = "var(--black)";
 	}
 
+	// Set status bar color in PWA
+	changeThemeColor("#231f20");
+
 	menu.innerHTML = `
-        <img src="assets/images/gira_footer_white.svg" alt="footer" id="graphics">
         <div id="backButton" onclick="hideStatisticsMenu();"><i class="bi bi-arrow-90deg-left"></i></div>
 		<div id="title">Estatísticas</div>
 		<div id="usableArea">
@@ -540,8 +542,8 @@ async function openStatisticsMenu() {
 				<div id="periodControlParent">
 					<div id="periodControlLabel" class="stats-control-label">Período</div>
 					<select id="periodControl" onchange="updateStatisticsChart();">
-						<option value="last7days">Últimos 7 dias</option>
-						<option value="last30days" selected="selected">Últimos 30 dias</option>
+						<option value="last7days" selected="selected">Últimos 7 dias</option>
+						<option value="last30days">Últimos 30 dias</option>
 						<option value="lastYear">Último ano</option>
 						<option value="total">Total</option>
 					</select>
@@ -568,9 +570,6 @@ async function openStatisticsMenu() {
 
 	// Populate chart
 	updateStatisticsChart();
-
-	// Set status bar color in PWA
-	changeThemeColor("#231f20");
 }
 
 function hideStatisticsMenu() {
