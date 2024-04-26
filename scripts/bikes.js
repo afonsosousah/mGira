@@ -164,16 +164,24 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 		dockObj = { name: "?" };
 	}
 
+	// Create card element and show spinner
+	const card = document.createElement("div");
+	card.className = "bike-reserve";
+	card.id = "unlockBikeCard";
+	card.innerHTML = `
+		<div id="bikeReserveCard">	
+			<img src="assets/images/mGira_spinning.gif" id="spinner">
+		</div>
+	`.trim();
+	document.body.appendChild(card);
+
 	// reserve the bike
 	if (typeof (await reserveBike(bikeObj.serialNumber)) === "undefined") {
 		alert("Ocorreu um erro ao reservar a bicicleta.");
 		return;
 	}
 
-	// Create card element
-	let card = document.createElement("div");
-	card.className = "bike-reserve";
-	card.id = "unlockBikeCard";
+	// Populate card element
 	card.innerHTML = `
         <div id="bikeReserveCard">			
 			<div id="backButton" onclick="closeUnlockBikeCard()"><i class="bi bi-arrow-90deg-left"></i></div>
@@ -196,7 +204,6 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 			<img src="assets/images/gira_footer.svg" id="footer" alt="footer">
         </div>
     `.trim();
-	document.body.appendChild(card);
 
 	// Run the timer (30 seconds)
 	let timeLeft = 30;

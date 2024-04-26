@@ -319,7 +319,8 @@ function getLocation(zoom = true) {
 			anchorXUnits: "fraction",
 			anchorYUnits: "fraction",
 			src: "assets/images/gps_dot.png",
-			rotation: compassHeading + map.getView().getRotation(), // have map rotation into account
+			rotation: compassHeading,
+			rotateWithView: true, // very important
 		}),
 	});
 	iconFeature.setStyle(iconStyle);
@@ -330,6 +331,7 @@ function getLocation(zoom = true) {
 		name: "currentLocationLayer",
 		source: vectorSource,
 		zIndex: 99,
+		updateWhileInteracting: true,
 	});
 
 	// Get an array of all current location layers
@@ -376,9 +378,6 @@ function getLocation(zoom = true) {
 					feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
 				}
 
-				// Update rotation on each location update
-				updateRotation();
-
 				if (followLocation) {
 					// Pan to location
 					const view = map.getView();
@@ -387,7 +386,11 @@ function getLocation(zoom = true) {
 						zoom: map.getView().getZoom(), // use the current zoom
 						duration: 500,
 					});
+					//map.getView().setCenter(ol.proj.fromLonLat(pos));
 				}
+
+				// Update rotation on each location update
+				updateRotation();
 			},
 			error => console.log(error ? error : "Error: Your browser doesn't support geolocation."),
 			{
@@ -453,12 +456,7 @@ function startLocationDotRotation() {
 
 		// Set rotation of map dot
 		if (currentLocationLayer) {
-			currentLocationLayer
-				.getSource()
-				.getFeatures()[0]
-				.getStyle()
-				.getImage()
-				.setRotation(compassHeading + map.getView().getRotation());
+			currentLocationLayer.getSource().getFeatures()[0].getStyle().getImage().setRotation(compassHeading);
 			currentLocationLayer.getSource().changed();
 		}
 	};

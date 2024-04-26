@@ -239,7 +239,7 @@ function startWSConnection(force = false) {
 
 							// Show the rate trip menu (if trip has not been rated)
 							if (!ratedTripsList.includes(activeTripObj.code) && !tripBeingRated) openRateTripMenu(activeTripObj);
-						} else if (!finishedTripsList.includes(activeTripObj.code)) {
+						} else if (!finishedTripsList.includes(activeTripObj.code) && !onFakeTrip) {
 							// Show the trip overlay if it is not shown already and the user is not on navigation
 							if (!document.querySelector("#tripOverlay") && !navigationActive) {
 								// show the trip overlay if user is not in navigation
@@ -276,7 +276,7 @@ function startWSConnection(force = false) {
 								tripTimer(Date.parse(activeTripObj.startDate));
 							}
 						}
-					} else if (activeTripObj.code === "no_trip") {
+					} else if (activeTripObj.code === "no_trip" && !onFakeTrip) {
 						// End trip
 						tripEnded = true;
 						// If in navigation UI, change to default UI

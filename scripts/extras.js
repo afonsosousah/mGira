@@ -202,3 +202,75 @@ function convertBbox(bbox) {
 
 	return [minCoords[0], minCoords[1], maxCoords[0], maxCoords[1]];
 }
+
+function randomInteger(min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Testing functions
+let onFakeTrip = false;
+
+function startFakeTrip() {
+	// Generate random trip time (between 5 and 120 minutes)
+	const tripMs = randomInteger(5, 120) * 60 * 1000;
+
+	// Create fake start date
+	const startDate = new Date(Date.now() - tripMs);
+
+	// Create fake trip object
+	activeTripObj = {
+		code: "Q1BWYJLB1R",
+		bike: "E0000",
+		startDate: startDate.toISOString(),
+		endDate: null,
+		cost: null,
+		finished: false,
+		canPayWithMoney: null,
+		canUsePoints: null,
+		clientPoints: null,
+		tripPoints: null,
+		canceled: false,
+		period: "other",
+		periodTime: "312",
+		error: 0,
+	};
+
+	// Append the trip overlay
+	appendElementToBodyFromHTML(
+		`
+	  <div class="trip-overlay" id="tripOverlay">
+		  <span id="onTripText">Em viagem</span>
+		  <img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
+		  <span id="tripBike">${activeTripObj.bike}</span>
+		  <span id="tripCost">0.00€</span>
+		  <span id="tripTime">00:00:00</span>
+		  <a id="callAssistance" href="tel:211163125"><i class="bi bi-exclamation-triangle"></i></a>
+		  <img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
+	  <div>
+	  `.trim()
+	);
+
+	// Update the station markers
+	loadStationMarkersFromArray(stationsArray, true);
+
+	// Go into landscape UI if needed
+	if (window.matchMedia("(orientation: landscape)").matches) {
+		goIntoLandscapeNavigationUI();
+	}
+
+	// Set the trip ended flag and start timer
+	onFakeTrip = true;
+	tripEnded = false;
+	tripTimer(Date.parse(activeTripObj.startDate));
+}
+
+function endFakeTrip() {
+	onFakeTrip = false;
+	tripEnded = true;
+
+	// Update the station markers
+	loadStationMarkersFromArray(stationsArray, false);
+
+	// If in navigation UI, change to default UI
+	exitLandscapeNavigationUI();
+}
