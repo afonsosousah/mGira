@@ -792,7 +792,7 @@ input:-webkit-autofill:active{
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	max-height: calc(100dvh - 25vw - 2vh);
+	max-height: calc(100dvh - 17.5vw - 2vh);
 	overflow: scroll;
 	display: flex;
 	flex-direction: column;

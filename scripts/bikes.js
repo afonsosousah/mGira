@@ -164,7 +164,11 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 		dockObj = { name: "?" };
 	}
 
-	console.log("The bike will be reserved!");
+	// reserve the bike
+	if (typeof (await reserveBike(bikeObj.serialNumber)) === "undefined") {
+		alert("Ocorreu um erro ao reservar a bicicleta.");
+		return;
+	}
 
 	// Create card element
 	let card = document.createElement("div");
@@ -193,12 +197,6 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
         </div>
     `.trim();
 	document.body.appendChild(card);
-
-	// reserve the bike
-	if (typeof (await reserveBike(bikeObj.serialNumber)) === "undefined") {
-		alert("Ocorreu um erro ao reservar a bicicleta.");
-		return;
-	}
 
 	// Run the timer (30 seconds)
 	let timeLeft = 30;
