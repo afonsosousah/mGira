@@ -38,6 +38,34 @@
 			"src": "assets/icons/512.png",
 			"sizes": "512x512",
 			"purpose": "maskable"
+		},
+		{
+			"src": "assets/icons/48.png",
+			"sizes": "48x48"
+		},
+		{
+			"src": "assets/icons/72.png",
+			"sizes": "72x72"
+		},
+		{
+			"src": "assets/icons/96.png",
+			"sizes": "96x96"
+		},
+		{
+			"src": "assets/icons/128.png",
+			"sizes": "128x128"
+		},
+		{
+			"src": "assets/icons/192.png",
+			"sizes": "192x192"
+		},
+		{
+			"src": "assets/icons/384.png",
+			"sizes": "384x384"
+		},
+		{
+			"src": "assets/icons/512.png",
+			"sizes": "512x512"
 		}
 	],
 	"theme_color": "#ffffff",
