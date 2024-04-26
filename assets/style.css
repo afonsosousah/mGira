@@ -1327,7 +1327,8 @@ input:-webkit-autofill:active{
 	font-size: 1.2rem;
 }
 .user-settings #statisticsMenuButtonContainer,
-.user-settings #tripHistoryButtonContainer {
+.user-settings #tripHistoryButtonContainer,
+.user-settings #issueButtonContainer {
 	width: 100vw;
 	display: flex;
 	align-items: center;
@@ -1335,7 +1336,8 @@ input:-webkit-autofill:active{
 	margin-top: 3vh;
 }
 .user-settings #statisticsMenuButton,
-.user-settings #tripHistoryButton {
+.user-settings #tripHistoryButton,
+.user-settings #issueButton {
 	width: calc(85vw + 2vh - 5dvh);
 	padding: 2dvh 3dvh;
 	background-color: var(--green);
@@ -1346,8 +1348,12 @@ input:-webkit-autofill:active{
 	gap: 1dvh;
 	box-shadow: 0px 1px 6px 0px var(--green),
 }
+.user-settings #issueButton {
+	background-color: var(--dark-gray);
+}
 .user-settings #statisticsMenuButton i,
-.user-settings #tripHistoryButton i {
+.user-settings #tripHistoryButton i,
+.user-settings #issueButton i {
 	font-size: 1.5rem;
 }
 .user-settings #settingsContainer {
