@@ -113,13 +113,14 @@ async function openStationMenu(stationSerialNumber) {
 	stationObj.dockList = bikeAndDocks.getDocks;
 	const numBikes = stationObj.bikeList.length;
 	const numDocks = stationObj.dockList.filter(d => d.lockStatus === "unlocked").length - numBikes; // number of free docks
+	const distanceToStation = distance(pos, [lastStationObj.longitude, lastStationObj.latitude]);
 
 	// set the inner HTML after the animation has started
 	if (typeof bikeAndDocks.getBikes !== "undefined" && typeof bikeAndDocks.getDocks !== "undefined") {
 		menu.innerHTML = `
             <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
 			<div id="stationID">Estação ${stationObj.name.split("-")[0].trim()}</div>
-			<div id="stationDistance">??m</div>
+			<div id="stationDistance">${formatDistance(distanceToStation)}</div>
             <div id="stationName">${stationObj.name.split("-")[1].trim()}</div>
 			<div id="navigateToButton" onclick="routeToStation('${stationSerialNumber}')"><i class="bi bi-sign-turn-right"></i></div>
             <img id="docksImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
@@ -208,6 +209,7 @@ function routeToStation(stationSerialNumber) {
 async function openBikeList(stationSerialNumber) {
 	// get station object
 	const stationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
+	const distanceToStation = distance(pos, [lastStationObj.longitude, lastStationObj.latitude]);
 
 	let menu = document.createElement("div");
 	menu.className = "bike-list";
@@ -215,7 +217,7 @@ async function openBikeList(stationSerialNumber) {
 	menu.innerHTML = `
         <div id="backButton" onclick="hideBikeList();"><i class="bi bi-arrow-90deg-left"></i></div>
 		<div id="stationID">Estação ${stationObj.name.split("-")[0].trim()}</div>
-		<div id="stationDistance">??m</div>
+		<div id="stationDistance">${formatDistance(distanceToStation)}</div>
 		<div id="stationName">${stationObj.name.split("-")[1].trim()}</div>
 		<div id="listGradient"></div>
         <ul id="bikeList">
