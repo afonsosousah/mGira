@@ -3,9 +3,17 @@ const currentVersion = "0.0.5-alpha";
 
 // Changelog HTML
 const changelogHTML = `
-Nova versão 0.0.5!<br>
+Notas da versão ${currentVersion}<br>
 <ul>
-    <li>Ainda não há um changelog.</li>
+	<li>Agradecimento especial ao Rodrigo Leitão pelo apoio no projeto</li>
+    <li>Definição de distância necessária até estação (obrigado filipe-maia)</li>
+	<li>Marcadores da estações enchem com percentagem real (obrigado DanielAgostinho)</li>
+	<li>Novo ecrã landscape em viagem</li>
+	<li>Marcadores das estações atualizam automaticamente</li>
+	<li>Modo landscape</li>
+	<li>Reroteamento automático</li>
+	<li>Novo ícone para PWA</li>
+	<li>Pequenas melhorias visuais</li>
 </ul>
 `;
 

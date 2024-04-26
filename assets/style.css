@@ -2089,6 +2089,7 @@ input:-webkit-autofill:active{
 
 #alertBox p {
 	padding: 8%;
+	margin: 0;
 }
 
 #alertBox #customTextPromptInput {
@@ -2110,7 +2111,7 @@ input:-webkit-autofill:active{
 	display: block;
 	position: relative;
 	padding: 7px;
-	width: 30%;
+	width: 20%;
 	text-transform: uppercase;
 	text-align: center;
 	color: #fff;
@@ -2153,7 +2154,8 @@ input:-webkit-autofill:active{
 	padding-left: 20px;
 }
 #alertBox li {
-	margin-top: 10px;
+	margin-top: 0.5rem;
+	font-size: 0.8rem;
 }
 /* For landscape (useful for prompt in navigation) */
 @media screen and (orientation: landscape) {
