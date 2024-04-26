@@ -220,6 +220,7 @@ async function openUserSettings() {
 	settingsElement.innerHTML = `
         <div id="topUserContainer">
             <div id="backButton" onclick="hideUserSettings()"><i class="bi bi-arrow-90deg-left"></i></div>
+			<div id="refreshButton" onclick="refreshUserInformation()"><i class="bi bi-arrow-clockwise"></i></div>
             <img id="footer" src="assets/images/gira_footer_white.svg" alt="backImage">
 			<div id="bottomCard"></div>
             <div id="userImage">
@@ -322,13 +323,24 @@ async function openUserSettings() {
 	changeThemeColor("#79c000");
 }
 
-function hideUserSettings() {
+function hideUserSettings(animate = true) {
 	let userSettings = document.getElementById("userSettings");
-	if (userSettings) {
+	if (userSettings && animate) {
 		userSettings.classList.add("smooth-slide-to-bottom");
 		setTimeout(() => userSettings.remove(), 300); // remove element after animation end
+	} else if (userSettings) {
+		userSettings.remove();
 	}
 	changeThemeColor("#ffffff"); // Set status bar color in PWA
+}
+
+function refreshUserInformation() {
+	// Set this to null to force refresh on settings page open
+	user.activeUserSubscriptions = null;
+
+	// Close and reopen settings page
+	hideUserSettings(false);
+	openUserSettings();
 }
 
 function openSetProxyPrompt() {

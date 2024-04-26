@@ -1127,12 +1127,28 @@ input:-webkit-autofill:active{
 	height: 6vh;
 	font-size: calc(0.35 * 6vh);
 	margin-bottom: 1vh;
-	color: var(--green);
+	color: var(--white);
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	margin-top: env(safe-area-inset-top);
 	margin-left: env(safe-area-inset-left);
+}
+.user-settings #refreshButton {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	background-color: transparent;
+	width: 6vh;
+	height: 6vh;
+	font-size: calc(0.4 * 6vh);
+	margin-bottom: 1vh;
+	color: var(--white);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: env(safe-area-inset-top);
+	margin-right: env(safe-area-inset-right);
 }
 .user-settings i {
 	width: 32px;
