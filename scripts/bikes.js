@@ -485,12 +485,13 @@ function openRateTripMenu(tripObj) {
 
 async function rateTrip(tripCode, tripCost) {
 	// Get the selected input for the stars
-	let starsInput = document.querySelector(`input[type="radio"]:checked`);
+	const starsInput = document.querySelector(`input[type="radio"]:checked`);
 	const tripRating = Number(starsInput?.value);
-	if (starsInput) {
-		// hide the rate trip menu
-		if (document.getElementById("rateTripMenu")) document.getElementById("rateTripMenu").remove();
-	} else {
+	const rateTripMenu = document.getElementById("rateTripMenu");
+	const rateTripCard = document.getElementById("rateTripMenuCard");
+
+	// Could not get rating
+	if (!starsInput) {
 		alert("Não foi possível obter a classificação.");
 		tripBeingRated = false;
 		return;
@@ -498,58 +499,52 @@ async function rateTrip(tripCode, tripCost) {
 
 	// if the rating is 3 stars or less, prompt the user to comment on the trip
 	if (tripRating <= 3) {
-		createCustomTextPrompt(
-			"Descreva a sua experiência",
-			async () => {
-				// Yes handler
-				let comment = document.getElementById("customTextPromptInput").value;
-				let success = await rateTripAPI(tripCode, tripRating, comment);
-				if (success) {
-					// store that this trip was already rated, to not prompt again
-					ratedTripsList.push(tripCode);
+		rateTripCard.innerHTML = `
+			<div id="title">Descreva a sua experiência</div>
+			<textarea id="commentTextarea" spellcheck=false placeholder="Escreva aqui..."></textarea>
+			<div id="ignoreButton">Ignorar</div>
+			<div id="sendButton">Enviar</div>
+		`.trim();
 
-					// Pay the trip after rating it
-					payTrip(tripCode, tripCost);
-
-					// Thank the user for the feedback
-					alert("Agradecemos o feedback!");
-				} else {
-					alert("Não foi possível avaliar a viagem.");
-				}
-				tripBeingRated = false;
-			},
-			async () => {
-				// No handler
-				let success = await rateTripAPI(tripCode, tripRating, ""); // send empty comment if the user ignored
-				if (success) {
-					// store that this trip was already rated, to not prompt again
-					ratedTripsList.push(tripCode);
-
-					// Pay the trip after rating it
-					payTrip(tripCode, tripCost);
-
-					// Thank the user for the feedback
-					alert("Agradecemos o feedback!");
-				} else {
-					alert("Não foi possível avaliar a viagem.");
-				}
-				tripBeingRated = false;
+		// Send button handler
+		document.querySelector("#rateTripMenuCard #sendButton").addEventListener("click", async () => {
+			let comment = document.getElementById("commentTextarea").value;
+			let success = await rateTripAPI(tripCode, tripRating, comment);
+			if (success) {
+				ratedTripsList.push(tripCode); // store that this trip was already rated, to not prompt again
+				payTrip(tripCode, tripCost); // Pay the trip after rating it
+				alert("Agradecemos o feedback!"); // Thank the user for the feedback
+			} else {
+				alert("Não foi possível avaliar a viagem."); // Error
 			}
-		);
+			rateTripMenu?.remove(); // Hide rate trip menu
+			tripBeingRated = false;
+		});
+
+		// Ignore button handler
+		document.querySelector("#rateTripMenuCard #ignoreButton").addEventListener("click", async () => {
+			// No handler
+			let success = await rateTripAPI(tripCode, tripRating, ""); // send empty comment if the user ignored
+			if (success) {
+				ratedTripsList.push(tripCode); // store that this trip was already rated, to not prompt again
+				payTrip(tripCode, tripCost); // Pay the trip after rating it
+				alert("Agradecemos o feedback!"); // Thank the user for the feedback
+			} else {
+				alert("Não foi possível avaliar a viagem."); // Error
+			}
+			rateTripMenu?.remove(); // Hide rate trip menu
+			tripBeingRated = false;
+		});
 	} else {
 		let success = await rateTripAPI(tripCode, tripRating, ""); // send empty comment if the user gave a good rating
 		if (success) {
-			// store that this trip was already rated, to not prompt again
-			ratedTripsList.push(tripCode);
-
-			// Pay the trip after rating it
-			payTrip(tripCode, tripCost);
-
-			// Thank the user for the feedback
-			alert("Agradecemos o feedback!");
+			ratedTripsList.push(tripCode); // store that this trip was already rated, to not prompt again
+			payTrip(tripCode, tripCost); // Pay the trip after rating it
+			alert("Agradecemos o feedback!"); // Thank the user for the feedback
 		} else {
 			alert("Não foi possível avaliar a viagem.");
 		}
+		rateTripMenu?.remove(); // Hide rate trip menu
 		tripBeingRated = false;
 	}
 }

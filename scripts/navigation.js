@@ -336,8 +336,6 @@ function updateRotation() {
 		angleRad = -compassHeading;
 	}
 
-	console.log("rotation update");
-
 	// Get values and view (pos object is global and is updated getLocation() in map.js)
 	const view = map.getView();
 	const mapSize = map.getSize();

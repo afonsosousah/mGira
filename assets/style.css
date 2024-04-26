@@ -1920,6 +1920,43 @@ input:-webkit-autofill:active{
 #rateTripMenuCard #sendButton:focus {
 	cursor: pointer;
 }
+#rateTripMenuCard #ignoreButton {
+	background-color: var(--black);
+	width: 30vw;
+	height: 6dvh;
+	position: absolute;
+	z-index: 2;
+	left: 3dvh;
+	bottom: 3dvh;
+	border-radius: 999px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-weight: bold;
+}
+#rateTripMenuCard #commentTextarea {
+	width: calc(100vw - 2*3dvh - 2*2dvh);
+	height: 10dvh;
+	outline: 1px solid var(--green);
+	border: none;
+	border-radius: 15px;
+	display: block;
+	padding: 1dvh 2dvh;
+	color: var(--black);
+	resize: none;
+	font-family: inherit;
+   	font-size: inherit;
+	margin-left: -4dvh;
+	margin-bottom: 1dvh;
+	margin-top: 1dvh;
+}
+#rateTripMenuCard #title {
+	color: var(--green);
+	font-weight: 600;
+	margin-left: -4dvh;
+	font-size: 1.1rem;
+}
 /* #endregion */
 
 /* #region Take unregistered bike */
