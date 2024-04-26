@@ -119,8 +119,10 @@ async function openStationMenu(stationSerialNumber) {
 	if (typeof bikeAndDocks.getBikes !== "undefined" && typeof bikeAndDocks.getDocks !== "undefined") {
 		menu.innerHTML = `
             <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
-			<div id="stationID">Estação ${stationObj.name.split("-")[0].trim()}</div>
-			<div id="stationDistance">${formatDistance(distanceToStation)}</div>
+			<div id="stationIDandDistanceContainer">
+				<div id="stationID">Estação ${stationObj.name.split("-")[0].trim()}</div>
+				<div id="stationDistance">${formatDistance(distanceToStation)}</div>
+			</div>
             <div id="stationName">${stationObj.name.split("-")[1].trim()}</div>
 			<div id="navigateToButton" onclick="routeToStation('${stationSerialNumber}')"><i class="bi bi-sign-turn-right"></i></div>
             <img id="docksImage" src="assets/images/mGira_station.png" alt="Gira station" width="25%">
@@ -216,8 +218,10 @@ async function openBikeList(stationSerialNumber) {
 	menu.id = "bikeMenu";
 	menu.innerHTML = `
         <div id="backButton" onclick="hideBikeList();"><i class="bi bi-arrow-90deg-left"></i></div>
-		<div id="stationID">Estação ${stationObj.name.split("-")[0].trim()}</div>
-		<div id="stationDistance">${formatDistance(distanceToStation)}</div>
+		<div id="stationIDandDistanceContainer">
+			<div id="stationID">Estação ${stationObj.name.split("-")[0].trim()}</div>
+			<div id="stationDistance">${formatDistance(distanceToStation)}</div>
+		</div>
 		<div id="stationName">${stationObj.name.split("-")[1].trim()}</div>
 		<div id="listGradient"></div>
         <ul id="bikeList">

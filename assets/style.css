@@ -476,20 +476,25 @@ input:-webkit-autofill:active{
 	opacity: 5%;
 	display: none;
 }
-.station-card #stationID {
+.station-card #stationIDandDistanceContainer {
 	width: calc(100% - 17.5vw);
 	position: absolute;
 	left: 5vw;
 	top: 4vw;
+	display: flex;
+	align-items: center;
+	justify-content: left;
+	flex-direction: row;
+	gap: 0.5rem;
+}
+.station-card #stationID {
+	width: fit-content;
 	text-align: left;
 	font-size: 0.9rem;
 	font-weight: 600;
 	color: var(--dark-gray);
 }
 .station-card #stationDistance {
-	position: absolute;
-	left: calc(5vw + 5rem);
-	top: calc(4vw + 0.075rem);
 	width: fit-content;
 	font-size: 0.65rem;
 	padding: 0.1rem 0.25rem;
@@ -761,24 +766,27 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	align-items: center;
 }
-.bike-list #stationID {
+.bike-list #stationIDandDistanceContainer {
 	width: calc(100% - 7vh - 10px - 5%);
 	position: absolute;
 	left: calc(10px + 7vh);
 	top: 3vh;
+	display: flex;
+	align-items: center;
+	justify-content: left;
+	flex-direction: row;
+	gap: 0.5rem;
+	margin-left: env(safe-area-inset-left);
+	margin-top: env(safe-area-inset-top);
+}
+.bike-list #stationID {
 	text-align: left;
 	font-size: 0.9rem;
 	font-weight: 600;
 	color: var(--dark-gray);
-	margin-left: env(safe-area-inset-left);
-	margin-top: env(safe-area-inset-top);
 	z-index: 2;
 }
 .bike-list #stationDistance {
-	position: absolute;
-	left: calc(10px + 7vh + 5rem);
-	top: calc(3vh + 0.075rem);
-	width: fit-content;
 	font-size: 0.65rem;
 	padding: 0.1rem 0.25rem;
 	background-color: var(--glass-gray);
@@ -2646,7 +2654,7 @@ input:-webkit-autofill:active{
 		left: 2vw;
 		bottom: 2vw;
 	}
-	.station-card #stationID {
+	.station-card #stationIDandDistanceContainer {
 		width: calc(100% - 17.5vh);
 		left: 5vh;
 		top: 4vh;
