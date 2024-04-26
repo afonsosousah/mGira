@@ -458,6 +458,9 @@ function getStationsByDistance(currentLocation) {
 }
 
 function showSearchBar() {
+	// Stop following user
+	followLocation = false;
+
 	// don't show another search bar if one is shown
 	if (document.getElementById("searchBarDiv")) return;
 
@@ -706,6 +709,9 @@ async function searchPlace() {
 }
 
 function hidePlaceSearchMenu() {
+	// Start following user again
+	followLocation = true;
+
 	// Hide search bar
 	let searchBar = document.getElementById("searchBarDiv");
 	if (searchBar) {
