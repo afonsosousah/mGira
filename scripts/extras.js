@@ -207,6 +207,14 @@ function randomInteger(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function formatDistance(meters) {
+	if (meters > 999_000) return "+999km";
+	if (meters > 100_000) return (meters / 1000).toFixed(0) + "km";
+	if (meters > 10_000) return (meters / 1000).toFixed(1) + "km";
+	if (meters > 1_000) return (meters / 1000).toFixed(2) + "km";
+	return meters.toFixed(0) + "m";
+}
+
 // Testing functions
 let onFakeTrip = false;
 

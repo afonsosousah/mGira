@@ -12,6 +12,7 @@
 	--glass-white: rgba(255, 255, 255, 0.7);
 	--glass-green: rgba(121, 192, 0, 0.9);
 	--glass-black: rgba(35, 31, 32, 0.7);
+	--glass-gray: rgba(217, 217, 218, 0.7);
 }
 /* #endregion */
 
@@ -485,6 +486,17 @@ input:-webkit-autofill:active{
 	font-weight: 600;
 	color: var(--dark-gray);
 }
+.station-card #stationDistance {
+	position: absolute;
+	left: calc(5vw + 5rem);
+	top: calc(4vw + 0.075rem);
+	width: fit-content;
+	font-size: 0.65rem;
+	padding: 0.1rem 0.25rem;
+	background-color: var(--glass-gray);
+	border-radius: 0.3rem;
+	color: var(--dark-gray);
+}
 .station-card #stationName {
 	width: calc(100% - 17.5vw);
 	position: absolute;
@@ -761,6 +773,17 @@ input:-webkit-autofill:active{
 	margin-left: env(safe-area-inset-left);
 	margin-top: env(safe-area-inset-top);
 	z-index: 2;
+}
+.bike-list #stationDistance {
+	position: absolute;
+	left: calc(10px + 7vh + 5rem);
+	top: calc(3vh + 0.075rem);
+	width: fit-content;
+	font-size: 0.65rem;
+	padding: 0.1rem 0.25rem;
+	background-color: var(--glass-gray);
+	border-radius: 0.3rem;
+	color: var(--dark-gray);
 }
 .bike-list #stationName {
 	width: calc(100% - 7vh - 10px - 5%);

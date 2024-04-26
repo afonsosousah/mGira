@@ -354,10 +354,21 @@ function getLocation(zoom = true) {
 				pos = [position.coords.longitude, position.coords.latitude];
 				speed = position.coords.speed ?? 0;
 
+				// Update gps heading
 				gpsHeading = (Math.PI / 180) * position.coords.heading; // adjusted to radians
 
-				let speedKMH = (speed * 60 * 60) / 1000;
-				if (document.getElementById("speed")) document.getElementById("speed").innerHTML = speedKMH.toFixed(0); // convert m/s to km/h
+				// Update speed on landscape
+				const speedKMH = (speed * 60 * 60) / 1000;
+				const speedElem = document.getElementById("speed");
+				if (speedElem) speedElem.innerHTML = speedKMH.toFixed(0); // convert m/s to km/h
+
+				// Update distance to open station
+				if (lastStationObj) {
+					const distanceToStation = distance(pos, [lastStationObj.longitude, lastStationObj.latitude]);
+					for (const elem of document.querySelectorAll("#stationDistance")) {
+						elem.innerHTML = formatDistance(distanceToStation);
+					}
+				}
 
 				// Get an array of all current location layers
 				const locationLayersArray = map
