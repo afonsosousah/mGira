@@ -2730,16 +2730,15 @@ input:-webkit-autofill:active{
 		height: 7vw;
 		font-size: calc(0.35 * 7vw);
 	}
-	.bike-list #stationName {
-		width: 70%;
-		height: 10%;
-		left: 10%;
-		top: 5%;
+	.bike-list #stationIDandDistanceContainer {
+		width: calc(100% - 7vw - 10px - 5%);
+		left: calc(10px + 7vw);
+		top: 3vw;
 	}
-	.bike-list #stationImage {
-		width: 10%;
-		right: 3%;
-		top: 4%;
+	.bike-list #stationName {
+		width: calc(100% - 7vw - 10px - 5%);
+		left: calc(10px + 7vw);
+		top: calc(3vw + 1rem + 0.2rem);
 	}
 	.bike-list #listGradient {
 		top: 20vh;
@@ -2927,11 +2926,13 @@ input:-webkit-autofill:active{
 		top: 7vw;
 	}
 	.user-settings #statisticsMenuButtonContainer,
-	.user-settings #tripHistoryButtonContainer {
+	.user-settings #tripHistoryButtonContainer,
+	.user-settings #issueButtonContainer {
 		margin-top: 3vw;
 	}
 	.user-settings #statisticsMenuButton,
-	.user-settings #tripHistoryButton {
+	.user-settings #tripHistoryButton,
+	.user-settings #issueButton {
 		width: calc(50vw + 2vw - 5vw);
 		padding: 2vw 3vw;
 		gap: 1vw;
@@ -3094,6 +3095,9 @@ input:-webkit-autofill:active{
 		right: 2.5vw;
 		width: 8vw;
 		height: 8vw;
+	}
+	#tripHistory #listGradient {
+		top: 8vw;
 	}
 	#tripHistory #tripList {
 		max-height: 80%;
