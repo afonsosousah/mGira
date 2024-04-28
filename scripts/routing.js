@@ -520,10 +520,10 @@ async function searchPlace() {
 		}
 
 		// show the bottom panel from the start so that the request delay is less noticeable
-		let menu = document.createElement("div");
-		menu.className = "place-search-menu";
-		menu.id = "placeSearchMenu";
-		document.body.appendChild(menu);
+		const placeSearchMenu = document.createElement("div");
+		placeSearchMenu.className = "place-search-menu";
+		placeSearchMenu.id = "placeSearchMenu";
+		document.body.appendChild(placeSearchMenu);
 
 		// move zoom controls to top, to not be behind the place search menu
 		document
@@ -549,7 +549,7 @@ async function searchPlace() {
 			.forEach(layer => map.removeLayer(layer));
 
 		// show loading animation
-		menu.innerHTML = `<img src="assets/images/mGira_spinning.gif" id="spinner">`;
+		placeSearchMenu.innerHTML = `<img src="assets/images/mGira_spinning.gif" id="spinner">`;
 
 		try {
 			let response = await Geocode.geocode({
@@ -562,7 +562,7 @@ async function searchPlace() {
 			});
 
 			// set the inner HTML after the animation has started
-			menu.innerHTML = `
+			placeSearchMenu.innerHTML = `
                 <ul id="placeList">
                     <!-- Populate with the list here -->
                 </ul>
@@ -578,7 +578,6 @@ async function searchPlace() {
 
 			// Fit all the places to the map
 			const convertedBbox = convertBbox(response.bbox);
-			const placeSearchMenu = document.getElementById("placeSearchMenu");
 
 			if (window.matchMedia("(orientation: portrait)").matches) {
 				// Wait for the end of animation
