@@ -7,6 +7,7 @@ let speed;
 let compassHeading = null; // null by default so that any math will assume 0
 let gpsHeading = null;
 let followLocation = false;
+let deviceHeadingOffset = 0; // offset between the gps heading when above 5kph and the device compass (to make the device compass reading more accurate)
 
 async function initMap() {
 	// Set cycleways style
@@ -52,6 +53,7 @@ async function initMap() {
 		view: new ol.View({
 			center: ol.proj.fromLonLat([-9.142685, 38.736946]), // center in Lisbon
 			zoom: 12,
+			constrainRotation: false,
 		}),
 		controls: [new ol.control.Rotate(), attribution],
 	});
@@ -454,10 +456,16 @@ function startLocationDotRotation() {
 		// Adjust heading with device orientation
 		compassHeading += (Math.PI / 180) * window.screen.orientation.angle;
 
+		// Add the offset
+		compassHeading += deviceHeadingOffset;
+
 		if (!pos) return;
 
 		// Use GPS heading above certain speed (5kph) (testing for more accurate heading)
-		if (gpsHeading && speed >= (5 * 1000) / (60 * 60)) compassHeading = gpsHeading;
+		if (gpsHeading && speed >= (5 * 1000) / (60 * 60)) {
+			deviceHeadingOffset = gpsHeading - compassHeading;
+			compassHeading = gpsHeading;
+		}
 
 		// Get the layer containing the previous current location
 		const currentLocationLayer = map
@@ -469,6 +477,16 @@ function startLocationDotRotation() {
 		if (currentLocationLayer) {
 			currentLocationLayer.getSource().getFeatures()[0].getStyle().getImage().setRotation(compassHeading);
 			currentLocationLayer.getSource().changed();
+		}
+
+		// If using device compass rotation, do smooth update
+		if (
+			!(gpsHeading && speed >= (5 * 1000) / (60 * 60)) &&
+			rotationMode === "compass" &&
+			(navigationActive ||
+				(window.matchMedia("(orientation: landscape)").matches && !tripEnded && rotationMode !== "free"))
+		) {
+			map.getView().setRotation(-compassHeading);
 		}
 	};
 
