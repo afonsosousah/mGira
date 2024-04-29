@@ -176,7 +176,8 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 	document.body.appendChild(card);
 
 	// reserve the bike
-	if (typeof (await reserveBike(bikeObj.serialNumber)) === "undefined") {
+	if (!(await reserveBike(bikeObj.serialNumber))) {
+		card.remove();
 		alert("Ocorreu um erro ao reservar a bicicleta.");
 		return;
 	}
