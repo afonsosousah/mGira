@@ -99,6 +99,13 @@
 			<div id="userInitials"></div>
 		</div>
 
+		<!-- Dev info -->
+		<div id="devInfo">
+			<div id="headingSource"></div>
+			<div id="heading"></div>
+			<div id="headingOffset"></div>
+		</div>
+
 		<!-- Scripts -->
 		<script>
 			// Register the web app service worker
@@ -221,6 +228,13 @@
 				if (menu && name) {
 					hideStationMenu();
 				}
+			});
+
+			// Show dev info on click on logo
+			document.getElementById("logo").addEventListener("click", () => {
+				const devInfo = document.getElementById("devInfo");
+				if (devInfo.style.display !== "none") devInfo.style.display = "none";
+				else devInfo.style.display = "flex";
 			});
 		</script>
 	</body>

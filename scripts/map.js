@@ -347,64 +347,78 @@ function getLocation(zoom = true) {
 		map.addLayer(vectorLayer);
 	}
 
+	// Location update handler
+	const locationUpdateHandler = async position => {
+		// Convert to the OpenLayers format
+		pos = [position.coords.longitude, position.coords.latitude];
+		speed = position.coords.speed ?? 0;
+
+		// Update gps heading
+		gpsHeading = (Math.PI / 180) * position.coords.heading; // adjusted to radians
+
+		// Update speed on landscape
+		const speedKMH = (speed * 60 * 60) / 1000;
+		const speedElem = document.getElementById("speed");
+		if (speedElem) speedElem.innerHTML = speedKMH.toFixed(0); // convert m/s to km/h
+
+		// Update distance to open station
+		if (lastStationObj) {
+			const distanceToStation = distance(pos, [lastStationObj.longitude, lastStationObj.latitude]);
+			for (const elem of document.querySelectorAll("#stationDistance")) {
+				elem.innerHTML = formatDistance(distanceToStation);
+			}
+		}
+
+		// Get an array of all current location layers
+		const locationLayersArray = map
+			.getLayers()
+			.getArray()
+			.filter(layer => layer.get("name") === "currentLocationLayer");
+
+		if (locationLayersArray.length === 0) {
+			// Add the layer
+			map.addLayer(vectorLayer);
+		} else {
+			// Get the layer containing the previous current location
+			const currentLocationLayer = locationLayersArray[0];
+
+			// Refresh the feature
+			let feature = currentLocationLayer.getSource().getFeatures()[0];
+			feature.setStyle(iconStyle);
+			feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
+		}
+
+		if (followLocation) {
+			// Pan to location (if the location update is 5 meters or more)
+			const view = map.getView();
+			if (distance(ol.proj.toLonLat(view.getCenter()), ol.proj.fromLonLat(pos)) > 5) {
+				view.animate({
+					center: ol.proj.fromLonLat(pos),
+					zoom: map.getView().getZoom(), // use the current zoom
+					duration: 500,
+				});
+			}
+			//map.getView().setCenter(ol.proj.fromLonLat(pos));
+		}
+
+		// Update rotation on each location update
+		updateRotation();
+	};
+
 	// HTML5 geolocation
 	if (navigator.geolocation) {
-		// Handle location updates
+		// Initial location request
+		navigator.geolocation.getCurrentPosition(
+			locationUpdateHandler,
+			error => console.log(error ? error : "Error: Your browser doesn't support geolocation."),
+			{
+				enableHighAccuracy: true,
+			}
+		);
+
+		// Watch for location updates
 		navigator.geolocation.watchPosition(
-			async position => {
-				// Convert to the OpenLayers format
-				pos = [position.coords.longitude, position.coords.latitude];
-				speed = position.coords.speed ?? 0;
-
-				// Update gps heading
-				gpsHeading = (Math.PI / 180) * position.coords.heading; // adjusted to radians
-
-				// Update speed on landscape
-				const speedKMH = (speed * 60 * 60) / 1000;
-				const speedElem = document.getElementById("speed");
-				if (speedElem) speedElem.innerHTML = speedKMH.toFixed(0); // convert m/s to km/h
-
-				// Update distance to open station
-				if (lastStationObj) {
-					const distanceToStation = distance(pos, [lastStationObj.longitude, lastStationObj.latitude]);
-					for (const elem of document.querySelectorAll("#stationDistance")) {
-						elem.innerHTML = formatDistance(distanceToStation);
-					}
-				}
-
-				// Get an array of all current location layers
-				const locationLayersArray = map
-					.getLayers()
-					.getArray()
-					.filter(layer => layer.get("name") === "currentLocationLayer");
-
-				if (locationLayersArray.length === 0) {
-					// Add the layer
-					map.addLayer(vectorLayer);
-				} else {
-					// Get the layer containing the previous current location
-					const currentLocationLayer = locationLayersArray[0];
-
-					// Refresh the feature
-					let feature = currentLocationLayer.getSource().getFeatures()[0];
-					feature.setStyle(iconStyle);
-					feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
-				}
-
-				if (followLocation) {
-					// Pan to location
-					const view = map.getView();
-					view.animate({
-						center: ol.proj.fromLonLat(pos),
-						zoom: map.getView().getZoom(), // use the current zoom
-						duration: 500,
-					});
-					//map.getView().setCenter(ol.proj.fromLonLat(pos));
-				}
-
-				// Update rotation on each location update
-				updateRotation();
-			},
+			locationUpdateHandler,
 			error => console.log(error ? error : "Error: Your browser doesn't support geolocation."),
 			{
 				enableHighAccuracy: true,
@@ -461,11 +475,19 @@ function startLocationDotRotation() {
 
 		if (!pos) return;
 
-		// Use GPS heading above certain speed (5kph) (testing for more accurate heading)
-		if (gpsHeading && speed >= (5 * 1000) / (60 * 60)) {
+		// Use GPS heading above certain speed (2m/s or 7.2kph) (testing for more accurate heading)
+		if (gpsHeading && speed >= 2) {
 			deviceHeadingOffset = gpsHeading - compassHeading;
 			compassHeading = gpsHeading;
+			document.getElementById("headingSource").innerHTML = "GPS";
+			document.getElementById("headingSource").style.backgroundColor = "lightgreen";
+		} else {
+			document.getElementById("headingSource").innerHTML = "Compass";
+			document.getElementById("headingSource").style.backgroundColor = "lightblue";
 		}
+
+		document.getElementById("heading").innerHTML = compassHeading.toFixed(2) + "rad";
+		document.getElementById("headingOffset").innerHTML = deviceHeadingOffset.toFixed(2);
 
 		// Get the layer containing the previous current location
 		const currentLocationLayer = map
@@ -481,7 +503,7 @@ function startLocationDotRotation() {
 
 		// If using device compass rotation, do smooth update
 		if (
-			!(gpsHeading && speed >= (5 * 1000) / (60 * 60)) &&
+			!(gpsHeading && speed >= 2) &&
 			rotationMode === "compass" &&
 			(navigationActive ||
 				(window.matchMedia("(orientation: landscape)").matches && !tripEnded && rotationMode !== "free"))
