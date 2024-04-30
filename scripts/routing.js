@@ -559,7 +559,10 @@ async function searchPlace() {
 					[38.805336, -9.091187],
 				],
 				boundary_country: ["PT"],
+				layers: ["venue", "address", "street"],
 			});
+
+			//console.log(response);
 
 			// set the inner HTML after the animation has started
 			placeSearchMenu.innerHTML = `
@@ -603,7 +606,8 @@ async function searchPlace() {
 				let position = result.geometry.coordinates;
 
 				resultElement.innerHTML = `
-                    ${result.properties.name}
+                    <span class="name">${result.properties.name}</span>
+					<span class="detail">${result.properties.street ?? result.properties.neighbourhood}</span>
                 `.trim();
 
 				resultElement.addEventListener("click", () => viewRoute(position));

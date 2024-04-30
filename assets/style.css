@@ -1561,7 +1561,7 @@ input:-webkit-autofill:active{
 	padding: 15px 25px;
 	position: relative;
 	margin-bottom: 10px;
-	color: var(--medium-gray);
+	color: var(--dark-gray);
 	width: calc(95% - 25 * 2px - 2 * 2px);
 	box-shadow: 0px 1px 6px 0px var(--gray);
 }
@@ -1569,6 +1569,11 @@ input:-webkit-autofill:active{
 	background-color: var(--green);
 	color: #ffffff;
 	cursor: pointer;
+}
+.place-search-element .detail {
+	color: var(--medium-gray);
+	font-size: 0.75rem;
+	line-height: 0.75rem;
 }
 .place-search-menu #startNavigationButton {
 	position: absolute;
