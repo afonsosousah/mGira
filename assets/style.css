@@ -420,12 +420,17 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	align-items: center;
 	box-shadow: 0px 1px 6px 0px var(--green);
-	margin-right: env(safe-area-inset-right);	
+	margin-right: env(safe-area-inset-right);
+	font-size: 1.8rem;
+	color: var(--green);
 }
 #navigationButton img {
 	border-radius: 999px;
 	width: 4vh;
 	height: 4vh;
+}
+#navigationButton i {
+	margin-top: 0.4rem;
 }
 /* #endregion */
 
