@@ -391,7 +391,9 @@ function getLocation(zoom = true) {
 		if (followLocation) {
 			// Pan to location (if the location update is 5 meters or more)
 			const view = map.getView();
-			if (distance(ol.proj.toLonLat(view.getCenter()), ol.proj.fromLonLat(pos)) > 5) {
+			const distanceBetweenUpdates = distance(ol.proj.toLonLat(view.getCenter()), pos);
+			document.getElementById("distanceBetweenUpdates").innerHTML = distanceBetweenUpdates.toFixed(2) + "m";
+			if (distanceBetweenUpdates > 5) {
 				view.animate({
 					center: ol.proj.fromLonLat(pos),
 					zoom: map.getView().getZoom(), // use the current zoom

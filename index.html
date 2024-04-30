@@ -104,6 +104,7 @@
 			<div id="headingSource"></div>
 			<div id="heading"></div>
 			<div id="headingOffset"></div>
+			<div id="distanceBetweenUpdates"></div>
 		</div>
 
 		<!-- Scripts -->
@@ -233,7 +234,7 @@
 			// Show dev info on click on logo
 			document.getElementById("logo").addEventListener("click", () => {
 				const devInfo = document.getElementById("devInfo");
-				if (devInfo.style.display !== "none") devInfo.style.display = "none";
+				if (devInfo.style.display && devInfo.style.display !== "none") devInfo.style.display = "none";
 				else devInfo.style.display = "flex";
 			});
 		</script>
