@@ -470,24 +470,28 @@ function startLocationDotRotation() {
 		// Adjust heading with device orientation
 		compassHeading += (Math.PI / 180) * window.screen.orientation.angle;
 
-		// Add the offset
-		compassHeading += deviceHeadingOffset;
-
 		if (!pos) return;
 
-		// Use GPS heading above certain speed (2m/s or 7.2kph) (testing for more accurate heading)
-		if (gpsHeading && speed >= 2) {
+		// Use GPS heading above certain speed (12kph) (testing for more accurate heading)
+		if (gpsHeading && speed >= (12 * 1000) / (60 * 60)) {
 			deviceHeadingOffset = gpsHeading - compassHeading;
-			compassHeading = gpsHeading;
+			//compassHeading = gpsHeading;
+
+			// Dev info
 			document.getElementById("headingSource").innerHTML = "GPS";
 			document.getElementById("headingSource").style.backgroundColor = "lightgreen";
 		} else {
+			// Dev info
 			document.getElementById("headingSource").innerHTML = "Compass";
 			document.getElementById("headingSource").style.backgroundColor = "lightblue";
 		}
 
+		// Dev info
 		document.getElementById("heading").innerHTML = compassHeading.toFixed(2) + "rad";
 		document.getElementById("headingOffset").innerHTML = deviceHeadingOffset.toFixed(2);
+
+		// Add the offset
+		compassHeading += deviceHeadingOffset;
 
 		// Get the layer containing the previous current location
 		const currentLocationLayer = map
@@ -503,7 +507,7 @@ function startLocationDotRotation() {
 
 		// If using device compass rotation, do smooth update
 		if (
-			!(gpsHeading && speed >= 2) &&
+			!(gpsHeading && speed >= (12 * 1000) / (60 * 60)) &&
 			rotationMode === "compass" &&
 			(navigationActive ||
 				(window.matchMedia("(orientation: landscape)").matches && !tripEnded && rotationMode !== "free"))
