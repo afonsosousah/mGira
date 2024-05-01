@@ -82,7 +82,7 @@ function onBikeNavigation() {
 	navInfoPanelElement.innerHTML = `
 	<div id="costAndTimeContainer">
 		<div>
-			<i class="bi bi-currency-euro"></i>
+			<i class="bi bi-cash-coin"></i>
 			<span id="tripCost">0.00€</span>
 		</div>
 		<div>
@@ -490,7 +490,7 @@ async function goIntoLandscapeNavigationUI() {
 	navInfoPanelElement.innerHTML = `
 	<div id="costAndTimeContainer">
 		<div>
-			<i class="bi bi-currency-euro"></i>
+			<i class="bi bi-cash-coin"></i>
 			<span id="tripCost">0.00€</span>
 		</div>
 		<div>

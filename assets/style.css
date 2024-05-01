@@ -1580,6 +1580,9 @@ input:-webkit-autofill:active{
 	font-size: 0.75rem;
 	line-height: 0.75rem;
 }
+.place-search-element .detail:hover {
+	color: var(--gray);
+}
 .place-search-menu #startNavigationButton {
 	position: absolute;
 	top: -8dvh;
