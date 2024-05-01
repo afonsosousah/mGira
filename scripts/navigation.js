@@ -348,13 +348,16 @@ function updateRotation() {
 		// Pan to location
 		if (navigationMode === "bike") view.padding = [mapSize[1] * 0.8, 0, 20, 0];
 		else view.padding = [mapSize[1] * 0.7, 0, 20, 0];
-
+    
+    /*
 		// Update rotation
 		view.animate({
 			duration: 250,
 			rotation: angleRad,
 			center: userPosition,
 		});
+		*/
+		view.setRotation(angleRad);
 
 		// Check if user is near to dropoff station, and prompt them if they reached the dropoff station
 		let distanceToDropoffStation = distance(currentPosition, [dropoffStation.longitude, dropoffStation.latitude]);
@@ -389,12 +392,16 @@ function updateRotation() {
 		// Pan to location
 		view.padding = [mapSize[1] * 0.7, 0, 20, 0];
 
+    /*
 		// Update rotation
 		view.animate({
 			duration: 250,
 			rotation: angleRad,
 			center: userPosition,
 		});
+		*/
+		view.setRotation(angleRad);
+		
 	}
 }
 
