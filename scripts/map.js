@@ -402,9 +402,6 @@ function getLocation(zoom = true) {
 			}
 			//map.getView().setCenter(ol.proj.fromLonLat(pos));
 		}
-
-		// Update rotation on each location update
-		updateRotation();
 	};
 
 	// HTML5 geolocation
@@ -486,14 +483,16 @@ function startLocationDotRotation() {
 			// Dev info
 			document.getElementById("headingSource").innerHTML = "Compass";
 			document.getElementById("headingSource").style.backgroundColor = "lightblue";
+
+			//deviceHeadingOffset = 0;
 		}
+
+		// Add the offset
+		compassHeading += deviceHeadingOffset;
 
 		// Dev info
 		document.getElementById("heading").innerHTML = compassHeading.toFixed(2) + "rad";
 		document.getElementById("headingOffset").innerHTML = deviceHeadingOffset.toFixed(2);
-
-		// Add the offset
-		compassHeading += deviceHeadingOffset;
 
 		// Get the layer containing the previous current location
 		const currentLocationLayer = map
@@ -507,6 +506,7 @@ function startLocationDotRotation() {
 			currentLocationLayer.getSource().changed();
 		}
 
+		/*
 		// If using device compass rotation, do smooth update
 		if (
 			!(gpsHeading && speed >= (12 * 1000) / (60 * 60)) &&
@@ -516,6 +516,10 @@ function startLocationDotRotation() {
 		) {
 			map.getView().setRotation(-compassHeading);
 		}
+		*/
+
+		// Update rotation on each frame
+		updateRotation();
 	};
 
 	if (isIOS) {
