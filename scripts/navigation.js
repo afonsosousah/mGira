@@ -345,11 +345,13 @@ function updateRotation() {
 		// Follow user location
 		followLocation = true;
 
+		/*
 		// Pan to location
 		if (navigationMode === "bike") view.padding = [mapSize[1] * 0.8, 0, 20, 0];
 		else view.padding = [mapSize[1] * 0.7, 0, 20, 0];
-    
-    /*
+		*/
+
+		/*
 		// Update rotation
 		view.animate({
 			duration: 250,
@@ -391,10 +393,12 @@ function updateRotation() {
 			);
 		} else if (distanceToDestination >= 30) promptedDestination = false;
 	} else if (window.matchMedia("(orientation: landscape)").matches && !tripEnded && rotationMode !== "free") {
+		/*
 		// Pan to location
 		view.padding = [mapSize[1] * 0.7, 0, 20, 0];
+		*/
 
-    /*
+		/*
 		// Update rotation
 		view.animate({
 			duration: 250,
@@ -404,7 +408,6 @@ function updateRotation() {
 		*/
 		view.setRotation(angleRad);
 		view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.85]);
-		
 	}
 }
 

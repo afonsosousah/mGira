@@ -388,7 +388,7 @@ function getLocation(zoom = true) {
 			feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
 		}
 
-		if (followLocation) {
+		if (followLocation && !(rotationMode === "compass" || rotationMode === "route")) {
 			// Pan to location (if the location update is 5 meters or more)
 			const view = map.getView();
 			const distanceBetweenUpdates = distance(ol.proj.toLonLat(view.getCenter()), pos);
@@ -473,6 +473,7 @@ function startLocationDotRotation() {
 
 		// Use GPS heading above certain speed (12kph) (testing for more accurate heading)
 		if (gpsHeading && speed >= (12 * 1000) / (60 * 60)) {
+			// Calculate offset between gps heading and compass heading
 			deviceHeadingOffset = gpsHeading - compassHeading;
 			//compassHeading = gpsHeading;
 
@@ -480,11 +481,12 @@ function startLocationDotRotation() {
 			document.getElementById("headingSource").innerHTML = "GPS";
 			document.getElementById("headingSource").style.backgroundColor = "lightgreen";
 		} else {
+			// Reset offset
+			deviceHeadingOffset = 0;
+
 			// Dev info
 			document.getElementById("headingSource").innerHTML = "Compass";
 			document.getElementById("headingSource").style.backgroundColor = "lightblue";
-
-			//deviceHeadingOffset = 0;
 		}
 
 		// Add the offset
