@@ -358,6 +358,8 @@ function updateRotation() {
 		});
 		*/
 		view.setRotation(angleRad);
+		if (navigationMode === "bike") view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.9]);
+		else view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.85]);
 
 		// Check if user is near to dropoff station, and prompt them if they reached the dropoff station
 		let distanceToDropoffStation = distance(currentPosition, [dropoffStation.longitude, dropoffStation.latitude]);
@@ -401,6 +403,7 @@ function updateRotation() {
 		});
 		*/
 		view.setRotation(angleRad);
+		view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.85]);
 		
 	}
 }
