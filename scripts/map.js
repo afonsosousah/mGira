@@ -402,6 +402,16 @@ function getLocation(zoom = true) {
 			}
 			//map.getView().setCenter(ol.proj.fromLonLat(pos));
 		}
+
+		// Use GPS heading above certain speed (12kph) (testing for more accurate heading)
+		if (gpsHeading && speed >= (12 * 1000) / (60 * 60)) {
+			// Calculate offset between gps heading and compass heading
+			deviceHeadingOffset = gpsHeading - compassHeading;
+
+			// Dev info
+			document.getElementById("headingSource").innerHTML = "GPS";
+			document.getElementById("headingSource").style.backgroundColor = "lightgreen";
+		}
 	};
 
 	// HTML5 geolocation
@@ -471,16 +481,8 @@ function startLocationDotRotation() {
 
 		if (!pos) return;
 
-		// Use GPS heading above certain speed (12kph) (testing for more accurate heading)
-		if (gpsHeading && speed >= (12 * 1000) / (60 * 60)) {
-			// Calculate offset between gps heading and compass heading
-			deviceHeadingOffset = gpsHeading - compassHeading;
-			//compassHeading = gpsHeading;
-
-			// Dev info
-			document.getElementById("headingSource").innerHTML = "GPS";
-			document.getElementById("headingSource").style.backgroundColor = "lightgreen";
-		} else {
+		// Reset offset if there is no gps heading
+		if (!gpsHeading) {
 			// Reset offset
 			deviceHeadingOffset = 0;
 
