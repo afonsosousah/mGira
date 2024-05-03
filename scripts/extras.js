@@ -282,3 +282,84 @@ function endFakeTrip() {
 	// If in navigation UI, change to default UI
 	exitLandscapeNavigationUI();
 }
+
+function startFakeRoute() {
+	fetch("../assets/track_points.geojson").then(async response => {
+		const watchInterval = 1000;
+		const geoJSON = await response.json();
+		const points = geoJSON.features.map(point => point.geometry.coordinates);
+		const timestamps = geoJSON.features.map(
+			(point, i, features) =>
+				new Date(point.properties.time).getTime() - new Date(features[0].properties.time).getTime()
+		);
+		const headings = geoJSON.features.map((point, i, features) => {
+			const currentPoint = points[i];
+			const previousPoint = points[Math.max(0, i - 1)];
+			const diffLat = currentPoint[1] - previousPoint[1];
+			const diffLon = currentPoint[0] - previousPoint[0];
+			let heading = -90 * (Math.PI / 180) + Math.atan2(diffLat, diffLon); // (corrected from clockwise east to clockwise north)
+			heading = Math.atan2(Math.sin(heading), Math.cos(heading));
+			return heading;
+		});
+		const speeds = geoJSON.features.map((point, i, features) => {
+			const currentPoint = points[i];
+			const previousPoint = points[Math.max(0, i - 1)];
+			const speed = distance(currentPoint, previousPoint);
+			return speed;
+		});
+		let fakeRouteIndex = 0;
+		console.log(headings);
+
+		// Clear all previous geolocation watches
+		for (const watchPositionID of watchPositionIDs) {
+			navigator.geolocation.clearWatch(watchPositionID);
+		}
+
+		// Create the fake rotation event
+		const event = new Event("deviceorientationabsolute");
+
+		// Create the fake geolocation object
+		navigator.geolocation = navigator.geolocation || {};
+		navigator.geolocation.getCurrentPosition = function (succ, err) {
+			setTimeout((a, b) => {
+				if (fakeRouteIndex >= points.length) fakeRouteIndex = 0;
+
+				const currentPoint = points[fakeRouteIndex];
+
+				const position = {
+					coords: {
+						latitude: currentPoint[1],
+						longitude: currentPoint[0],
+						heading: headings[fakeRouteIndex],
+						speed: speeds[fakeRouteIndex],
+					},
+				};
+
+				// Fire fake rotation event
+				event.alpha = (180 / Math.PI) * headings[fakeRouteIndex];
+				event.alpha += window.screen.orientation.angle;
+				event.beta = event.gamma = 0;
+				window.dispatchEvent(event);
+
+				fakeRouteIndex += 1;
+				succ(position);
+			}, 0);
+		};
+		navigator.geolocation.watchPosition = function (succ, err) {
+			return setInterval(
+				(succ, err) => {
+					navigator.geolocation.getCurrentPosition(succ, err);
+				},
+				watchInterval,
+				succ,
+				err
+			);
+		};
+		navigator.geolocation.clearWatch = function (id) {
+			clearInterval(id);
+		};
+
+		getLocation();
+		startFakeTrip();
+	});
+}

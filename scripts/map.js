@@ -9,6 +9,7 @@ let compassHeading = null; // null by default so that any math will assume 0
 let gpsHeading = null;
 let followLocation = false;
 let deviceHeadingOffset = 0; // offset between the gps heading when above 5kph and the device compass (to make the device compass reading more accurate)
+let watchPositionIDs = [];
 
 async function initMap() {
 	// Set cycleways style
@@ -404,6 +405,7 @@ function getLocation(zoom = true) {
 			//map.getView().setCenter(ol.proj.fromLonLat(pos));
 		}
 
+		/*
 		// Use GPS heading above certain speed (12kph) (testing for more accurate heading)
 		if (gpsHeading && speed >= (12 * 1000) / (60 * 60)) {
 			// Calculate offset between gps heading and compass heading
@@ -413,6 +415,7 @@ function getLocation(zoom = true) {
 			document.getElementById("headingSource").innerHTML = "GPS";
 			document.getElementById("headingSource").style.backgroundColor = "lightgreen";
 		}
+		*/
 	};
 
 	// HTML5 geolocation
@@ -427,13 +430,15 @@ function getLocation(zoom = true) {
 		);
 
 		// Watch for location updates
-		navigator.geolocation.watchPosition(
+		const watchPositionID = navigator.geolocation.watchPosition(
 			locationUpdateHandler,
 			error => console.log(error ? error : "Error: Your browser doesn't support geolocation."),
 			{
 				enableHighAccuracy: true,
 			}
 		);
+
+		watchPositionIDs.push(watchPositionID);
 
 		// Pan to location only once when position has been set
 		if (zoom) {
