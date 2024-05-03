@@ -333,7 +333,7 @@ function updateRotation() {
 		// Update last user position
 		lastUserPosition = currentPosition;
 	} else if (rotationMode === "compass") {
-		angleRad = -compassHeading;
+		angleRad = -heading;
 	}
 
 	// Get values and view (pos object is global and is updated getLocation() in map.js)
@@ -345,20 +345,7 @@ function updateRotation() {
 		// Follow user location
 		followLocation = true;
 
-		/*
-		// Pan to location
-		if (navigationMode === "bike") view.padding = [mapSize[1] * 0.8, 0, 20, 0];
-		else view.padding = [mapSize[1] * 0.7, 0, 20, 0];
-		*/
-
-		/*
-		// Update rotation
-		view.animate({
-			duration: 250,
-			rotation: angleRad,
-			center: userPosition,
-		});
-		*/
+		// Update rotation and pan to location
 		view.setRotation(angleRad);
 		if (navigationMode === "bike") view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.9]);
 		else view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.85]);
@@ -393,19 +380,7 @@ function updateRotation() {
 			);
 		} else if (distanceToDestination >= 30) promptedDestination = false;
 	} else if (window.matchMedia("(orientation: landscape)").matches && !tripEnded && rotationMode !== "free") {
-		/*
-		// Pan to location
-		view.padding = [mapSize[1] * 0.7, 0, 20, 0];
-		*/
-
-		/*
-		// Update rotation
-		view.animate({
-			duration: 250,
-			rotation: angleRad,
-			center: userPosition,
-		});
-		*/
+		// Update rotation and pan to location
 		view.setRotation(angleRad);
 		view.centerOn(userPosition, mapSize, [mapSize[0] / 2, mapSize[1] * 0.85]);
 	}

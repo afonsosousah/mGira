@@ -4,6 +4,7 @@ let currentLocationMarker;
 let previousSelectedMarker;
 let pos;
 let speed;
+let heading = null;
 let compassHeading = null; // null by default so that any math will assume 0
 let gpsHeading = null;
 let followLocation = false;
@@ -321,7 +322,7 @@ function getLocation(zoom = true) {
 			anchorXUnits: "fraction",
 			anchorYUnits: "fraction",
 			src: "assets/images/gps_dot.png",
-			rotation: compassHeading,
+			rotation: heading,
 			rotateWithView: true, // very important
 		}),
 	});
@@ -491,11 +492,11 @@ function startLocationDotRotation() {
 			document.getElementById("headingSource").style.backgroundColor = "lightblue";
 		}
 
-		// Add the offset
-		compassHeading += deviceHeadingOffset;
+		// Calculate final heading
+		heading = compassHeading + deviceHeadingOffset;
 
 		// Dev info
-		document.getElementById("heading").innerHTML = compassHeading.toFixed(2) + "rad";
+		document.getElementById("heading").innerHTML = heading.toFixed(2) + "rad";
 		document.getElementById("headingOffset").innerHTML = deviceHeadingOffset.toFixed(2);
 
 		// Get the layer containing the previous current location
@@ -506,21 +507,9 @@ function startLocationDotRotation() {
 
 		// Set rotation of map dot
 		if (currentLocationLayer) {
-			currentLocationLayer.getSource().getFeatures()[0].getStyle().getImage().setRotation(compassHeading);
+			currentLocationLayer.getSource().getFeatures()[0].getStyle().getImage().setRotation(heading);
 			currentLocationLayer.getSource().changed();
 		}
-
-		/*
-		// If using device compass rotation, do smooth update
-		if (
-			!(gpsHeading && speed >= (12 * 1000) / (60 * 60)) &&
-			rotationMode === "compass" &&
-			(navigationActive ||
-				(window.matchMedia("(orientation: landscape)").matches && !tripEnded && rotationMode !== "free"))
-		) {
-			map.getView().setRotation(-compassHeading);
-		}
-		*/
 
 		// Update rotation on each frame
 		updateRotation();
