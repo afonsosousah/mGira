@@ -274,9 +274,9 @@ async function openUserSettings() {
 			</div>
         </div>
 		<div id="issueButtonContainer">
-			<div id="issueButton" onclick="window.open('https://github.com/afonsosousah/mGira/issues/new')">
+			<div id="issueButton" onclick="window.open('https://github.com/afonsosousah/mGira/issues')">
 				<i class="bi bi-bug"></i>
-				<span>Reportar problema</span>
+				<span>Relatar problema</span>
 			</div>
 		</div>
         <div id="bottom">
