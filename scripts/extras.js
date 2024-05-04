@@ -297,8 +297,8 @@ function startFakeRoute() {
 			const previousPoint = points[Math.max(0, i - 1)];
 			const diffLat = currentPoint[1] - previousPoint[1];
 			const diffLon = currentPoint[0] - previousPoint[0];
-			let heading = -90 * (Math.PI / 180) + Math.atan2(diffLat, diffLon); // (corrected from clockwise east to clockwise north)
-			heading = Math.atan2(Math.sin(heading), Math.cos(heading));
+			let heading = -(Math.PI / 2) + Math.atan2(diffLat, diffLon); // (corrected from clockwise east to clockwise north)
+			heading = (180 / Math.PI) * heading; // convert to deg
 			return heading;
 		});
 		const speeds = geoJSON.features.map((point, i, features) => {
@@ -308,7 +308,6 @@ function startFakeRoute() {
 			return speed;
 		});
 		let fakeRouteIndex = 0;
-		console.log(headings);
 
 		// Clear all previous geolocation watches
 		for (const watchPositionID of watchPositionIDs) {
@@ -325,19 +324,21 @@ function startFakeRoute() {
 				if (fakeRouteIndex >= points.length) fakeRouteIndex = 0;
 
 				const currentPoint = points[fakeRouteIndex];
+				let gpsHeading = -headings[fakeRouteIndex];
+				gpsHeading -= Math.floor(gpsHeading / 360) * 360; // Wrap into range [0,360].
 
 				const position = {
 					coords: {
 						latitude: currentPoint[1],
 						longitude: currentPoint[0],
-						heading: headings[fakeRouteIndex],
+						heading: gpsHeading,
 						speed: speeds[fakeRouteIndex],
 					},
 				};
 
 				// Fire fake rotation event
-				event.alpha = (180 / Math.PI) * headings[fakeRouteIndex];
-				event.alpha += window.screen.orientation.angle;
+				event.alpha = headings[fakeRouteIndex];
+				event.alpha += window.screen.orientation?.angle;
 				event.beta = event.gamma = 0;
 				window.dispatchEvent(event);
 

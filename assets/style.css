@@ -1685,8 +1685,8 @@ input:-webkit-autofill:active{
 /* #region Navigation information panel landscape */
 #navigationInfoPanel {
 	position: absolute;
-	bottom: 2dvh;
-	left: 2vw;
+	bottom: 2vh;
+	left: 2vh;
 	width: fit-content;
 	height: fit-content;
 	color: white;
@@ -1700,9 +1700,9 @@ input:-webkit-autofill:active{
 #navigationInfoPanel #costAndTimeContainer {
 	background-color: var(--green);
 	border-radius: 30px;
-	padding: 2vw;
-	padding-bottom: 15dvh;
-	margin-bottom: -12dvh;
+	padding: 2vh;
+	padding-bottom: 8vh;
+	margin-bottom: -6vh;
 	font-size: 0.9rem;
 }
 #navigationInfoPanel #speedContainer {
@@ -1733,7 +1733,7 @@ input:-webkit-autofill:active{
 	align-items: center;
 	justify-content: center;
 	border-radius: 999px;
-	z-index: 16;
+	z-index: 20;
 	position: absolute;
 	bottom: 2dvh;
 	right: 2dvh;
@@ -1755,7 +1755,7 @@ input:-webkit-autofill:active{
 	align-items: center;
 	justify-content: center;
 	border-radius: 999px;
-	z-index: 16;
+	z-index: 20;
 	position: absolute;
 	bottom: calc(2dvh + 1dvh + 4rem);
 	right: 2dvh;
@@ -1781,49 +1781,17 @@ input:-webkit-autofill:active{
 /* #endregion */
 
 /* #region Navigation information panel portrait */
-#changeRotationModeButtonPortrait {
-	height: 4rem;
-	width: 4rem;
-	background-color: var(--green);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 999px;
-	z-index: 11;
-	position: absolute;
-	bottom: calc(2dvh + 1dvh + 4rem);
-	left: 2dvh;
-	font-size: 2.5rem;
-	line-height: 2rem;
-	color: var(--black);
-}
-#endNavigationButtonPortrait {
-	height: 4rem;
-	width: 4rem;
-	background-color: var(--black);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 999px;
-	z-index: 11;
-	position: absolute;
-	bottom: 2dvh;
-	left: 2dvh;
-	font-size: 2.5rem;
-	line-height: 2rem;
-	color: var(--green);
-}
 #onBikeButton {
-	height: 8%;
+	height: 3.5rem;
 	position: absolute;
-	bottom: 2dvh;
-	right: 2dvh;
+	bottom: 2vh;
+	left: 2vh;
 	background-color: var(--green);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	border-radius: 999px;
-	padding: 0 15px;
+	padding: 0 1.5rem;
 	z-index: 11;
 	color: white;
 }
@@ -3183,4 +3151,15 @@ input:-webkit-autofill:active{
 	}
 	/* #endregion */
 
+	/* #region Navigation information panel landscape */
+	#navigationInfoPanel {
+		bottom: 2dvh;
+		left: 2vw;
+	}
+	#navigationInfoPanel #costAndTimeContainer {
+		padding: 2vw;
+		padding-bottom: 15dvh;
+		margin-bottom: -12dvh;
+	}
+	/* #endregion */
 }

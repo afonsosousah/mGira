@@ -13,7 +13,7 @@ async function startNavigation(walkingOnly = false) {
 	navigationActive = true;
 
 	// Tell the user that there is navigation going, so he needs to rotate the screen to portrait
-	if (window.matchMedia("(orientation: landscape)").matches) showRotationNotice();
+	//if (window.matchMedia("(orientation: landscape)").matches) showRotationNotice();
 
 	// Make the device awake
 	try {
@@ -34,8 +34,8 @@ async function startNavigation(walkingOnly = false) {
 
 	// Append the buttons
 	appendElementToBodyFromHTML(`
-		<div id="changeRotationModeButtonPortrait" onclick="changeRotationMode()"><i class="bi bi-sign-turn-right"></i></div>
-		<div id="endNavigationButtonPortrait" onclick="stopNavigation()"><i class="bi bi-sign-stop"></i></div>
+		<div id="changeRotationModeButton" onclick="changeRotationMode()"><i class="bi bi-sign-turn-right"></i></div>
+		<div id="endNavigationButton" onclick="stopNavigation()"><i class="bi bi-sign-stop"></i></div>
 	`);
 	if (!walkingOnly) {
 		appendElementToBodyFromHTML(`
@@ -74,7 +74,7 @@ function onBikeNavigation() {
 	if (typeof document.body.requestFullscreen === "function") document.body.requestFullscreen();
 
 	// Tell the user that there is navigation going, so he needs to rotate the screen to landscape
-	if (window.matchMedia("(orientation: portrait)").matches) showRotationNotice();
+	//if (window.matchMedia("(orientation: portrait)").matches) showRotationNotice();
 
 	// Add the Navigation Information Panel
 	let navInfoPanelElement = document.createElement("div");
@@ -96,19 +96,6 @@ function onBikeNavigation() {
 	</div>
     `.trim();
 	document.body.appendChild(navInfoPanelElement);
-
-	// Append the end navigation button
-	appendElementToBodyFromHTML(`
-		<div id="changeRotationModeButton" onclick="changeRotationMode()"><i class="bi bi-sign-turn-right"></i></div>
-		<div id="endNavigationButton" onclick="stopNavigation()"><i class="bi bi-sign-stop"></i></div>
-	`);
-
-	// Append the change rotation button
-	if (!document.getElementById("changeRotationModeButton")) {
-		appendElementToBodyFromHTML(`
-			<div id="changeRotationModeButton" onclick="changeRotationMode()"><i class="bi bi-sign-turn-right"></i></div>
-		`);
-	}
 
 	// Set map pixel ratio (fix mobile map not loading at some points)
 	map.pixelRatio_ = 1.5;
@@ -148,7 +135,7 @@ async function finalOnFootNavigation() {
 	mapElement.style.zIndex = "10";
 
 	// Tell the user that there is navigation going, so he needs to rotate the screen to portrait
-	if (window.matchMedia("(orientation: landscape)").matches) showRotationNotice();
+	//if (window.matchMedia("(orientation: landscape)").matches) showRotationNotice();
 
 	// Set map pixel ratio (fix mobile map not loading at some points)
 	map.pixelRatio_ = 2;
@@ -176,7 +163,8 @@ async function stopNavigation() {
 
 	// Remove all the navigation elements
 	const navigationElements = Array.from(document.querySelectorAll("*")).filter(
-		e => getComputedStyle(e).zIndex === "11" || getComputedStyle(e).zIndex === "16"
+		e =>
+			getComputedStyle(e).zIndex === "11" || getComputedStyle(e).zIndex === "16" || getComputedStyle(e).zIndex === "20"
 	);
 	for (element of navigationElements) {
 		element.remove();
@@ -225,32 +213,24 @@ async function stopNavigation() {
 }
 
 function changeRotationMode() {
-	let endNavigationButton = document.getElementById("endNavigationButton");
-	let endNavigationButtonPortrait = document.getElementById("endNavigationButtonPortrait");
-	let changeRotationModeButton = document.getElementById("changeRotationModeButton");
-	let changeRotationModeButtonPortrait = document.getElementById("changeRotationModeButtonPortrait");
+	const endNavigationButton = document.getElementById("endNavigationButton");
+	const changeRotationModeButton = document.getElementById("changeRotationModeButton");
 
 	if (rotationMode === "route") {
 		rotationMode = "compass";
 		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-compass"></i>`;
-		if (changeRotationModeButtonPortrait) changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-compass"></i>`;
 	} else if (rotationMode === "compass") {
-		if (!endNavigationButton && !endNavigationButtonPortrait) {
+		if (!endNavigationButton) {
 			rotationMode = "free";
 			if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-crosshair"></i>`;
-			if (changeRotationModeButtonPortrait)
-				changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-crosshair"></i>`;
 			followLocation = true;
 		} else {
 			rotationMode = "route";
 			if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
-			if (changeRotationModeButtonPortrait)
-				changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-sign-turn-right"></i>`;
 		}
 	} else if (rotationMode === "free") {
 		rotationMode = "compass";
 		if (changeRotationModeButton) changeRotationModeButton.innerHTML = `<i class="bi bi-compass"></i>`;
-		if (changeRotationModeButtonPortrait) changeRotationModeButtonPortrait.innerHTML = `<i class="bi bi-compass"></i>`;
 		followLocation = true;
 	}
 }
@@ -444,7 +424,7 @@ async function orientationChangeHandler(event) {
 		}
 
 		// If user switches to landscape while in trip, put into navigation UI
-		if (!tripEnded) {
+		if (!tripEnded && !navigationActive) {
 			goIntoLandscapeNavigationUI();
 		}
 	}
@@ -504,7 +484,7 @@ function exitLandscapeNavigationUI() {
 	if (document.querySelector("#navigationInfoPanel") && !navigationActive) {
 		// Remove all the on bike navigation elements
 		const navigationElements = Array.from(document.querySelectorAll("*")).filter(
-			e => getComputedStyle(e).zIndex === "16"
+			e => getComputedStyle(e).zIndex === "16" || getComputedStyle(e).zIndex === "20"
 		);
 		for (element of navigationElements) {
 			element.remove();

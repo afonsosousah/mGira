@@ -405,17 +405,15 @@ function getLocation(zoom = true) {
 			//map.getView().setCenter(ol.proj.fromLonLat(pos));
 		}
 
-		/*
 		// Use GPS heading above certain speed (12kph) (testing for more accurate heading)
 		if (gpsHeading && speed >= (12 * 1000) / (60 * 60)) {
 			// Calculate offset between gps heading and compass heading
-			deviceHeadingOffset = gpsHeading - compassHeading;
+			deviceHeadingOffset = Math.PI - Math.abs(Math.abs(gpsHeading - compassHeading) - Math.PI);
 
 			// Dev info
-			document.getElementById("headingSource").innerHTML = "GPS";
+			document.getElementById("headingSource").innerHTML = "GPS+Compass";
 			document.getElementById("headingSource").style.backgroundColor = "lightgreen";
 		}
-		*/
 	};
 
 	// HTML5 geolocation
@@ -429,6 +427,11 @@ function getLocation(zoom = true) {
 			}
 		);
 
+		// Clear all previous geolocation watches
+		for (const watchPositionID of watchPositionIDs) {
+			navigator.geolocation.clearWatch(watchPositionID);
+		}
+
 		// Watch for location updates
 		const watchPositionID = navigator.geolocation.watchPosition(
 			locationUpdateHandler,
@@ -437,7 +440,6 @@ function getLocation(zoom = true) {
 				enableHighAccuracy: true,
 			}
 		);
-
 		watchPositionIDs.push(watchPositionID);
 
 		// Pan to location only once when position has been set

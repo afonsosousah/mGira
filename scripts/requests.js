@@ -261,7 +261,7 @@ function startWSConnection(force = false) {
 								loadStationMarkersFromArray(stationsArray, true);
 
 								// If user is in landscape when the trip starts, put into navigation UI
-								if (window.matchMedia("(orientation: landscape)").matches) {
+								if (window.matchMedia("(orientation: landscape)").matches && !navigationActive) {
 									goIntoLandscapeNavigationUI();
 								}
 
