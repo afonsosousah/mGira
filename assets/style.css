@@ -2105,9 +2105,19 @@ input:-webkit-autofill:active{
 	max-width: 100%;
 }
 
+#alertBox #title {
+	color: var(--green);
+	font-weight: bold;
+	font-size: 1.2rem;
+	display: block;
+	margin-top: 1rem;
+	margin-left: 1.5rem;
+}
+
 #alertBox p {
-	padding: 8%;
+	padding: 0.5rem 1.5rem 1.5rem 1.5rem;
 	margin: 0;
+	font-size: 0.9rem;
 }
 
 #alertBox #customTextPromptInput {

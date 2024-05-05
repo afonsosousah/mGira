@@ -174,9 +174,9 @@
 
 			// define a custom alert box
 			if (document.getElementById) {
-				window.alert = message => {
+				window.alert = (message, title = `<i class="bi bi-exclamation-triangle"></i>`) => {
 					// set timeout so that if the user clicks on the place where the button is, it doesn't get automatically clicked
-					setTimeout(() => createCustomAlert(message), 50);
+					setTimeout(() => createCustomAlert(message, title), 50);
 				};
 			}
 

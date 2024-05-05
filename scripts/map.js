@@ -109,23 +109,8 @@ async function initMap() {
 		user.accessToken = accessTokenCookie;
 	}
 
-	// Start WebSocket connection
-	startWSConnection();
-
-	// Get all user details
-	getUserInformation();
-
-	// Check if update info should be shown
-	showUpdateInfoIfNeeded();
-
-	// Get the user location on app open
-	getLocation();
-
-	// Start rotation of location dot
-	startLocationDotRotation();
-
-	// Get the stations and load them to the map
-	await getStations();
+	/* Run the startup functions */
+	await runStartupFunctions();
 }
 
 function mapDotSVG(ratio, docks = false) {

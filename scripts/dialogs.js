@@ -1,5 +1,5 @@
 // Custom styled alert with OK option
-function createCustomAlert(message) {
+function createCustomAlert(message, title = null) {
 	if (document.getElementById("modalContainer")) return;
 
 	const mObj = document.createElement("div");
@@ -7,6 +7,12 @@ function createCustomAlert(message) {
 
 	const alertObj = mObj.appendChild(document.createElement("div"));
 	alertObj.id = "alertBox";
+
+	if (title) {
+		const titleObj = alertObj.appendChild(document.createElement("span"));
+		titleObj.id = "title";
+		titleObj.innerHTML = title;
+	}
 
 	const msg = alertObj.appendChild(document.createElement("p"));
 	msg.innerHTML = message;

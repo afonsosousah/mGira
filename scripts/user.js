@@ -63,24 +63,7 @@ async function login(event) {
 		user.expiration = response.data.expiration;
 
 		/* Run the startup functions */
-
-		// Start WebSocket connection
-		startWSConnection();
-
-		// Get all user details
-		getUserInformation();
-
-		// Check if update info should be shown
-		showUpdateInfoIfNeeded();
-
-		// Get the stations and load them to the map
-		await getStations();
-
-		// Get the user location on app open
-		getLocation();
-
-		// Start rotation of location dot
-		startLocationDotRotation();
+		await runStartupFunctions();
 
 		// Set the cookie expiry to 1 year after today.
 		const refreshTokenExpiryDate = new Date();
@@ -100,6 +83,48 @@ async function login(event) {
 		tokenRefreshed = true;
 	} else {
 		alert("Login failed!");
+	}
+}
+
+async function runStartupFunctions() {
+	// Start WebSocket connection
+	startWSConnection();
+
+	// Get all user details
+	getUserInformation();
+
+	// Check if update info should be shown
+	showUpdateInfoIfNeeded();
+
+	// Get the user location on app open
+	getLocation();
+
+	// Start rotation of location dot
+	startLocationDotRotation();
+
+	// Get the stations and load them to the map
+	await getStations();
+
+	// Show any messages from EMEL
+	await validateLogin();
+}
+
+async function validateLogin() {
+	const response = await makePostRequest(
+		"https://apigira.emel.pt/graphql",
+		JSON.stringify({
+			query: `mutation { 
+				validateLogin(in: { 
+					language: "pt",
+					userAgent: "Gira/3.3.5 (Android 34)",
+					firebaseToken: "cwEUfibvTHCRZ6z3R1l3B8"
+				}) { messages { code text } } 
+			}`,
+		})
+	);
+
+	for (const message of response?.data?.validateLogin?.messages) {
+		createCustomAlert(message.text, `<i class="bi bi-info-circle"></i>`);
 	}
 }
 

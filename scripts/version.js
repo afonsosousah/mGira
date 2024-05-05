@@ -26,7 +26,7 @@ function showUpdateInfoIfNeeded() {
 		// Check version to show update notes
 		const userVersion = getCookie("version");
 		if (userVersion !== currentVersion) {
-			alert(changelogHTML);
+			alert(changelogHTML, `<i class="bi bi-newspaper"></i>`);
 			createCookie("version", currentVersion, expiryDate);
 		}
 	}, 1500);
