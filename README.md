@@ -26,7 +26,7 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
     3. Andar para baixo na lista, e escolher 'Adicionar ao ecrã principal'
 
         
-    Se a localização não funcionar, verifica que as permissões de localização.
+    Se a localização não funcionar, verifica as permissões de localização.
     Navega até Settings > Privacy & Security > Safari Websites e selectiona "While using the app"
 
 </details>
