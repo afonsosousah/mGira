@@ -514,7 +514,7 @@ async function rateTrip(tripCode, tripCost) {
 			if (success) {
 				ratedTripsList.push(tripCode); // store that this trip was already rated, to not prompt again
 				payTrip(tripCode, tripCost); // Pay the trip after rating it
-				alert("Agradecemos o feedback!"); // Thank the user for the feedback
+				alert("Agradecemos o feedback!", `<i class="bi bi-heart"></i>`); // Thank the user for the feedback
 			} else {
 				alert("Não foi possível avaliar a viagem."); // Error
 			}
@@ -529,7 +529,7 @@ async function rateTrip(tripCode, tripCost) {
 			if (success) {
 				ratedTripsList.push(tripCode); // store that this trip was already rated, to not prompt again
 				payTrip(tripCode, tripCost); // Pay the trip after rating it
-				alert("Agradecemos o feedback!"); // Thank the user for the feedback
+				alert("Agradecemos o feedback!", `<i class="bi bi-heart"></i>`); // Thank the user for the feedback
 			} else {
 				alert("Não foi possível avaliar a viagem."); // Error
 			}
@@ -541,7 +541,7 @@ async function rateTrip(tripCode, tripCost) {
 		if (success) {
 			ratedTripsList.push(tripCode); // store that this trip was already rated, to not prompt again
 			payTrip(tripCode, tripCost); // Pay the trip after rating it
-			alert("Agradecemos o feedback!"); // Thank the user for the feedback
+			alert("Agradecemos o feedback!", `<i class="bi bi-heart"></i>`); // Thank the user for the feedback
 		} else {
 			alert("Não foi possível avaliar a viagem.");
 		}

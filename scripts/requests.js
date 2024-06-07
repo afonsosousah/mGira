@@ -60,7 +60,10 @@ async function makePostRequest(url, body, accessToken = null) {
 			alert("Já tem uma viagem a decorrer.");
 		} else if (responseObject.errors[0].message === "no_bike_found") {
 			alert("Bicicleta não encontrada.");
-		} else if (responseObject.errors[0].message === "bike_on_repair") {
+		} else if (
+			responseObject.errors[0].message === "bike_on_repair" ||
+			responseObject.errors[0].message === "bike_in_repair"
+		) {
 			alert("Bicicleta a ser reparada.");
 		} else if (responseObject.errors[0].message !== "Error executing document.") {
 			// Show general error message for unknown errors

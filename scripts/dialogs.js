@@ -8,11 +8,9 @@ function createCustomAlert(message, title = null) {
 	const alertObj = mObj.appendChild(document.createElement("div"));
 	alertObj.id = "alertBox";
 
-	if (title) {
-		const titleObj = alertObj.appendChild(document.createElement("span"));
-		titleObj.id = "title";
-		titleObj.innerHTML = title;
-	}
+	const titleObj = alertObj.appendChild(document.createElement("span"));
+	titleObj.id = "title";
+	titleObj.innerHTML = title ?? "";
 
 	const msg = alertObj.appendChild(document.createElement("p"));
 	msg.innerHTML = message;

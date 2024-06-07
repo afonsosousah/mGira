@@ -494,13 +494,6 @@ function showSearchBar() {
 	function doneTyping() {
 		searchPlace();
 	}
-
-	// define a custom alert box
-	if (document.getElementById) {
-		window.alert = message =>
-			// set timeout so that if the user clicks on the place where the button is, it doesn't get automatically clicked
-			setTimeout(() => createCustomAlert(message), 50);
-	}
 }
 
 async function searchPlace() {

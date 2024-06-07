@@ -319,7 +319,7 @@ async function openUserSettings() {
 		proxyURL = document.getElementById("proxyUrlInput").value;
 		createCookie("customProxy", encodeURI(proxyURL), expiryDate);
 
-		alert("O proxy foi definido.");
+		alert("O proxy foi definido.", `<i class="bi bi-info-circle"></i>`);
 	});
 
 	document.getElementById("resetProxyButton").addEventListener("click", () => {
@@ -330,7 +330,7 @@ async function openUserSettings() {
 		// Update input
 		document.getElementById("proxyUrlInput").value = proxyURL;
 
-		alert("O proxy foi redefinido.");
+		alert("O proxy foi redefinido.", `<i class="bi bi-info-circle"></i>`);
 	});
 
 	// Handle value change on distance to station selector

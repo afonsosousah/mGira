@@ -130,6 +130,15 @@
 				navigator.storage.persist().then(isPersisted => console.log(`Persisted storage granted: ${isPersisted}`));
 			}
 
+			// Import eruda on eruda flag set to true
+			if (/eruda=true/.test(window.location)) {
+				document.write("<scr" + 'ipt src="//cdn.jsdelivr.net/npm/eruda"></scr' + "ipt>");
+				document.write("<scr" + "ipt>eruda.init();</scr" + "ipt>");
+				//const erudaBtn = document.querySelector(".eruda-entry-btn");
+				//console.log(erudaBtn);
+				//erudaBtn?.style.top = "2vh";
+			}
+
 			// Check if the user has set customProxy. if not, use default proxy
 			const tempCustomProxy = getCookie("customProxy");
 			if (tempCustomProxy) {

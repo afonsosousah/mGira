@@ -2185,15 +2185,6 @@ input:-webkit-autofill:active{
 	margin-top: 0.5rem;
 	font-size: 0.8rem;
 }
-/* For landscape (useful for prompt in navigation) */
-@media screen and (orientation: landscape) {
-	#alertBox {
-		width: 40%;
-		min-height: 10%;
-		border-radius: 20px;
-		background-color: #fff;
-	}
-  }
 /* #endregion */
 
 /* #region Trip history */
@@ -3172,4 +3163,26 @@ input:-webkit-autofill:active{
 		margin-bottom: -12dvh;
 	}
 	/* #endregion */
+	
+	/* #region Custom alert box */
+	#alertBox {
+		width: 40%;
+		min-height: 10%;
+	}
+	#alertBox #title {
+		color: var(--green);
+		font-weight: bold;
+		font-size: 1.2rem;
+		display: block;
+		margin-top: 1rem;
+		margin-left: 1.5rem;
+		margin-bottom: 0.75rem;
+	}
+	#alertBox p {
+		padding: 1.5rem;
+		margin: 0;
+		font-size: 0.9rem;
+	}
+	/* #endregion */
+
 }
