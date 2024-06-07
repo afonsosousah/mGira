@@ -44,8 +44,8 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	let grabStation;
 	let dropoffStationInternal;
 
-	for (stationStart of nearestStationsStart) {
-		for (stationEnd of nearestStationsEnd) {
+	for (const stationStart of nearestStationsStart) {
+		for (const stationEnd of nearestStationsEnd) {
 			const walkingDistanceToStartStation = distance(fromCoordinates, [stationStart.longitude, stationStart.latitude]);
 			const cyclingDistanceFromStartToEnd = distance(
 				[stationStart.longitude, stationStart.latitude],
@@ -227,8 +227,8 @@ async function recalculateFullRoute(fromCoordinates, toCoordinates) {
 	let grabStation;
 	let dropoffStationInternal;
 
-	for (stationStart of nearestStationsStart) {
-		for (stationEnd of nearestStationsEnd) {
+	for (const stationStart of nearestStationsStart) {
+		for (const stationEnd of nearestStationsEnd) {
 			const walkingDistanceToStartStation = distance(fromCoordinates, [stationStart.longitude, stationStart.latitude]);
 			const cyclingDistanceFromStartToEnd = distance(
 				[stationStart.longitude, stationStart.latitude],
@@ -347,7 +347,6 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 			cycling: new ol.style.Style({
 				stroke: new ol.style.Stroke({
 					color: "#79C000",
-					width: 8,
 					width: 4,
 				}),
 				zIndex: 0,
@@ -355,7 +354,6 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 			walking: new ol.style.Style({
 				stroke: new ol.style.Stroke({
 					color: "#231F20",
-					width: 8,
 					lineDash: [3, 9],
 					width: 4,
 				}),
@@ -755,7 +753,7 @@ function viewRoute(toCoordinates) {
 	getLocation(false);
 
 	checkPos = function (toCoordinates) {
-		if (typeof pos === "undefined" || typeof pos === "null") setTimeout(() => checkPos(toCoordinates), 0);
+		if (typeof pos === "undefined") setTimeout(() => checkPos(toCoordinates), 0);
 		else {
 			// Calculate and display the route on the map when we have the user position
 			calculateFullRoute(pos, toCoordinates);

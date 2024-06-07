@@ -10,6 +10,8 @@ let gpsHeading = null;
 let followLocation = false;
 let deviceHeadingOffset = 0; // offset between the gps heading when above 5kph and the device compass (to make the device compass reading more accurate)
 let watchPositionIDs = [];
+let last5PositionsAngles = [];
+let inStraightLine = false;
 
 async function initMap() {
 	// Set cycleways style
@@ -337,16 +339,43 @@ function getLocation(zoom = true) {
 	// Location update handler
 	const locationUpdateHandler = async position => {
 		// Convert to the OpenLayers format
-		pos = [position.coords.longitude, position.coords.latitude];
+		new_pos = [position.coords.longitude, position.coords.latitude];
+
+		// Get the differences between new and old positions
+		if (pos) {
+			const diffLat = new_pos[1] - pos[1];
+			const diffLon = new_pos[0] - pos[0];
+
+			// Get the angle between new and old positions (corrected from clockwise east to clockwise north)
+			last5PositionsAngles.push(-90 * (Math.PI / 180) + Math.atan2(diffLat, diffLon));
+			if (last5PositionsAngles.length > 5) last5PositionsAngles.shift();
+		}
+		arrayStandardDeviation(last5PositionsAngles) < 0.15 ? (inStraightLine = true) : (inStraightLine = false);
+		document.querySelectorAll("#posAngles").forEach(elem => {
+			if (inStraightLine) {
+				elem.innerHTML = "in straight";
+				elem.style.backgroundColor = "green";
+			} else {
+				elem.innerHTML = "not straight";
+				elem.style.backgroundColor = "red";
+			}
+		});
+
+		// Now update to current pos to new pos, since we don't need the old value
+		pos = new_pos;
+
+		// Get speed
 		speed = position.coords.speed ?? 0;
+		if (document.getElementById("speedMS")) document.getElementById("speedMS").innerHTML = speed.toFixed(0) + "m/s";
 
 		// Update gps heading
 		gpsHeading = (Math.PI / 180) * position.coords.heading; // adjusted to radians
 
 		// Update speed on landscape
 		const speedKMH = (speed * 60 * 60) / 1000;
-		const speedElem = document.getElementById("speed");
-		if (speedElem) speedElem.innerHTML = speedKMH.toFixed(0); // convert m/s to km/h
+		for (const speedElem of document.querySelectorAll("#speed")) {
+			speedElem.innerHTML = speedKMH.toFixed(0); // convert m/s to km/h
+		}
 
 		// Update distance to open station
 		if (lastStationObj) {
@@ -390,8 +419,8 @@ function getLocation(zoom = true) {
 			//map.getView().setCenter(ol.proj.fromLonLat(pos));
 		}
 
-		// Use GPS heading above certain speed (12kph) (testing for more accurate heading)
-		if (gpsHeading && speed >= (12 * 1000) / (60 * 60)) {
+		// Use GPS heading if user is ruffly in a straight line for the last 5 seconds
+		if (gpsHeading && inStraightLine) {
 			// Calculate offset between gps heading and compass heading
 			deviceHeadingOffset = Math.PI - Math.abs(Math.abs(gpsHeading - compassHeading) - Math.PI);
 
@@ -474,15 +503,15 @@ function startLocationDotRotation() {
 
 		if (!pos) return;
 
-		// Reset offset if there is no gps heading
-		if (!gpsHeading) {
+		// Reset offset if there is not using gps heading
+		/*if (!(gpsHeading && inStraightLine)) {
 			// Reset offset
 			deviceHeadingOffset = 0;
 
 			// Dev info
 			document.getElementById("headingSource").innerHTML = "Compass";
 			document.getElementById("headingSource").style.backgroundColor = "lightblue";
-		}
+		}*/
 
 		// Calculate final heading
 		heading = compassHeading + deviceHeadingOffset;

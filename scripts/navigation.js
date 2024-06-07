@@ -24,7 +24,7 @@ async function startNavigation(walkingOnly = false) {
 	}
 
 	// Navigation on-foot from user location to nearest station
-	navigationMode === "foot";
+	navigationMode = "foot";
 
 	// Set rotation mode
 	rotationMode = "route";
@@ -123,7 +123,7 @@ async function finalOnFootNavigation() {
 	const navigationElements = Array.from(document.querySelectorAll("*")).filter(
 		e => getComputedStyle(e).zIndex === "16"
 	);
-	for (element of navigationElements) {
+	for (const element of navigationElements) {
 		element.remove();
 	}
 
@@ -166,7 +166,7 @@ async function stopNavigation() {
 		e =>
 			getComputedStyle(e).zIndex === "11" || getComputedStyle(e).zIndex === "16" || getComputedStyle(e).zIndex === "20"
 	);
-	for (element of navigationElements) {
+	for (const element of navigationElements) {
 		element.remove();
 	}
 
@@ -486,7 +486,7 @@ function exitLandscapeNavigationUI() {
 		const navigationElements = Array.from(document.querySelectorAll("*")).filter(
 			e => getComputedStyle(e).zIndex === "16" || getComputedStyle(e).zIndex === "20"
 		);
-		for (element of navigationElements) {
+		for (const element of navigationElements) {
 			element.remove();
 		}
 

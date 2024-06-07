@@ -180,13 +180,6 @@ function toPascalCase(str) {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function convertBbox(bbox) {
-	const minCoords = ol.proj.fromLonLat([bbox[0], bbox[1]]);
-	const maxCoords = ol.proj.fromLonLat([bbox[2], bbox[3]]);
-
-	return [...minCoords, ...maxCoords];
-}
-
 function htmlEncode(str) {
 	return str
 		.replaceAll("&", "&amp;")
@@ -214,6 +207,19 @@ function formatDistance(meters) {
 	if (meters > 1_000) return (meters / 1000).toFixed(2) + "km";
 	return meters.toFixed(0) + "m";
 }
+
+const arrayStandardDeviation = (arr, usePopulation = false) => {
+	// Calculate the mean of the array
+	const mean = arr.reduce((acc, val) => acc + val, 0) / arr.length;
+
+	// Calculate the sum of squared differences from the mean
+	const sumOfSquaredDifferences = arr
+		.reduce((acc, val) => acc.concat((val - mean) ** 2), [])
+		.reduce((acc, val) => acc + val, 0);
+
+	// Calculate the standard deviation
+	return Math.sqrt(sumOfSquaredDifferences / (arr.length - (usePopulation ? 0 : 1)));
+};
 
 // Testing functions
 let onFakeTrip = false;
