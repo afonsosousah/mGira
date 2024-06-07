@@ -87,9 +87,6 @@ async function login(event) {
 }
 
 async function runStartupFunctions() {
-	// Start WebSocket connection
-	startWSConnection();
-
 	// Get all user details
 	getUserInformation();
 
@@ -102,8 +99,11 @@ async function runStartupFunctions() {
 	// Start rotation of location dot
 	startLocationDotRotation();
 
-	// Get the stations and load them to the map
-	await getStations();
+	// Start WebSocket connection and await the stations
+	startWSConnection();
+
+	// Load the stations into the map
+	loadStationMarkersFromArray(stationsArray);
 
 	// Show any messages from EMEL
 	await validateLogin();

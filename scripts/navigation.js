@@ -198,7 +198,7 @@ async function stopNavigation() {
 			.forEach(layer => map.removeLayer(layer));
 
 		// Add back the stations layer (only if user has clicked navigate to stations)
-		getStations();
+		loadStationMarkersFromArray(stationsArray);
 	}
 
 	// Show cycleways layer

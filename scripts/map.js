@@ -171,7 +171,7 @@ async function loadStationMarkersFromArray(stationsArray, showDocks = false) {
 
 		let iconStyle;
 
-		if (station.docks === 0) {
+		if (station.assetStatus === "repair") {
 			// Deactivated station
 
 			iconStyle = new ol.style.Style({

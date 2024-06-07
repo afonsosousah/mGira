@@ -62,10 +62,6 @@ async function getStations() {
 	);
 
 	if (typeof response !== "undefined") {
-		// Load the stations to the map
-		stationsArray = response.data.getStations;
-		loadStationMarkersFromArray(stationsArray);
-
 		return response.data.getStations;
 	}
 }
@@ -115,6 +111,7 @@ async function openStationMenu(stationSerialNumber) {
 	const numDocks = stationObj.dockList.filter(d => d.lockStatus === "unlocked").length - numBikes; // number of free docks
 	const distanceToStation = distance(pos, [lastStationObj.longitude, lastStationObj.latitude]);
 
+	console.log(stationObj);
 	// set the inner HTML after the animation has started
 	if (typeof bikeAndDocks.getBikes !== "undefined" && typeof bikeAndDocks.getDocks !== "undefined") {
 		menu.innerHTML = `
@@ -129,7 +126,7 @@ async function openStationMenu(stationSerialNumber) {
             <div id="docksButton">${numDocks === 1 ? "1 doca" : `${numDocks} docas`}</div>
             <img id="bikesImage" src="assets/images/mGira_bike.png" alt="Gira bike" width="25%">
             <div id="bikesButton${
-							stationObj.docks === 0 ? 'Disabled"' : `" onclick="openBikeList('${stationSerialNumber}')"`
+							stationObj.assetStatus === "repair" ? 'Disabled"' : `" onclick="openBikeList('${stationSerialNumber}')"`
 						} >
 				${numBikes === 1 ? "1 bicicleta" : `${numBikes} bicicletas`}
 			</div>`;
@@ -192,7 +189,7 @@ function hideStationMenu(exitToRight = false) {
 			.setVisible(true);
 
 		// Add back the stations layer (only if user has clicked navigate to stations)
-		getStations();
+		loadStationMarkersFromArray(stationsArray);
 	}
 }
 

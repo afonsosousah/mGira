@@ -772,7 +772,7 @@ function addStationPointToMap(station, start = true) {
 	});
 
 	let iconStyle;
-	if (station.docks !== 0) {
+	if (station.assetStatus === "active") {
 		const bikeRatio = station.bikes / station.docks;
 		const filled =
 			station.bikes === 0
