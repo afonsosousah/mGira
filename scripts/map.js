@@ -419,8 +419,8 @@ function getLocation(zoom = true) {
 			//map.getView().setCenter(ol.proj.fromLonLat(pos));
 		}
 
-		// Use GPS heading if user is ruffly in a straight line for the last 5 seconds
-		if (gpsHeading && inStraightLine) {
+		// Use GPS heading if user is ruffly in a straight line for the last 5 seconds and over 12kph
+		if (gpsHeading && inStraightLine && speed >= (12 * 1000) / (60 * 60)) {
 			// Calculate offset between gps heading and compass heading
 			deviceHeadingOffset = Math.PI - Math.abs(Math.abs(gpsHeading - compassHeading) - Math.PI);
 
@@ -504,14 +504,14 @@ function startLocationDotRotation() {
 		if (!pos) return;
 
 		// Reset offset if there is not using gps heading
-		/*if (!(gpsHeading && inStraightLine)) {
+		if (!(gpsHeading && inStraightLine && speed >= (12 * 1000) / (60 * 60))) {
 			// Reset offset
 			deviceHeadingOffset = 0;
 
 			// Dev info
 			document.getElementById("headingSource").innerHTML = "Compass";
 			document.getElementById("headingSource").style.backgroundColor = "lightblue";
-		}*/
+		}
 
 		// Calculate final heading
 		heading = compassHeading + deviceHeadingOffset;
