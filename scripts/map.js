@@ -504,14 +504,14 @@ function startLocationDotRotation() {
 		if (!pos) return;
 
 		// Reset offset if under 5kph
-		/*if (!(gpsHeading && speed >= (5 * 1000) / (60 * 60))) {
+		if (!gpsHeading || speed = 0) {
 			// Reset offset
 			deviceHeadingOffset = 0;
 
 			// Dev info
 			document.getElementById("headingSource").innerHTML = "Compass";
 			document.getElementById("headingSource").style.backgroundColor = "lightblue";
-		}*/
+		}
 
 		// Calculate final heading
 		heading = compassHeading + deviceHeadingOffset;
