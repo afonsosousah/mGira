@@ -422,7 +422,7 @@ function getLocation(zoom = true) {
 		// Use GPS heading if user is ruffly in a straight line for the last 5 seconds and over 12kph
 		if (gpsHeading && inStraightLine && speed >= (12 * 1000) / (60 * 60)) {
 			// Calculate offset between gps heading and compass heading
-			deviceHeadingOffset = Math.PI - Math.abs(Math.abs(gpsHeading - compassHeading) - Math.PI);
+			deviceHeadingOffset = gpsHeading - compassHeading;
 
 			// Dev info
 			document.getElementById("headingSource").innerHTML = "GPS+Compass";
