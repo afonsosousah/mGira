@@ -350,7 +350,7 @@ function getLocation(zoom = true) {
 			last5PositionsAngles.push(-90 * (Math.PI / 180) + Math.atan2(diffLat, diffLon));
 			if (last5PositionsAngles.length > 5) last5PositionsAngles.shift();
 		}
-		arrayStandardDeviation(last5PositionsAngles) < 0.10 ? (inStraightLine = true) : (inStraightLine = false);
+		arrayStandardDeviation(last5PositionsAngles) < 0.1 ? (inStraightLine = true) : (inStraightLine = false);
 		document.querySelectorAll("#posAngles").forEach(elem => {
 			if (inStraightLine) {
 				elem.innerHTML = "in straight";
@@ -504,7 +504,7 @@ function startLocationDotRotation() {
 		if (!pos) return;
 
 		// Reset offset if under 5kph
-		if (!gpsHeading || speed = 0) {
+		if (!gpsHeading || speed === 0) {
 			// Reset offset
 			deviceHeadingOffset = 0;
 
