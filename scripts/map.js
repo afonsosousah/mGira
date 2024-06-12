@@ -350,7 +350,7 @@ function getLocation(zoom = true) {
 			last5PositionsAngles.push(-90 * (Math.PI / 180) + Math.atan2(diffLat, diffLon));
 			if (last5PositionsAngles.length > 5) last5PositionsAngles.shift();
 		}
-		arrayStandardDeviation(last5PositionsAngles) < 0.15 ? (inStraightLine = true) : (inStraightLine = false);
+		arrayStandardDeviation(last5PositionsAngles) < 0.10 ? (inStraightLine = true) : (inStraightLine = false);
 		document.querySelectorAll("#posAngles").forEach(elem => {
 			if (inStraightLine) {
 				elem.innerHTML = "in straight";
@@ -503,15 +503,15 @@ function startLocationDotRotation() {
 
 		if (!pos) return;
 
-		// Reset offset if there is not using gps heading
-		if (!(gpsHeading && inStraightLine && speed >= (12 * 1000) / (60 * 60))) {
+		// Reset offset if under 5kph
+		/*if (!(gpsHeading && speed >= (5 * 1000) / (60 * 60))) {
 			// Reset offset
 			deviceHeadingOffset = 0;
 
 			// Dev info
 			document.getElementById("headingSource").innerHTML = "Compass";
 			document.getElementById("headingSource").style.backgroundColor = "lightblue";
-		}
+		}*/
 
 		// Calculate final heading
 		heading = compassHeading + deviceHeadingOffset;
