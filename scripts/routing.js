@@ -735,6 +735,13 @@ function hidePlaceSearchMenu() {
 		.filter(layer => ["placesLayer", "routeLayer"].includes(layer.get("name")))
 		.forEach(layer => map.removeLayer(layer));
 
+	// Show cycleways layer (if hidden)
+	map
+		.getLayers()
+		.getArray()
+		.find(layer => layer.get("name") === "cyclewaysLayer")
+		.setVisible(true);
+
 	// Add back the stations layer
 	loadStationMarkersFromArray(stationsArray);
 
