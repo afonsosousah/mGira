@@ -111,12 +111,12 @@ async function runStartupFunctions() {
 
 async function validateLogin() {
 	const response = await makePostRequest(
-		"https://apigira.emel.pt/graphql",
+		"https://egira-proxy-arqetk5clq-ew.a.run.app/api/graphql",
 		JSON.stringify({
 			query: `mutation { 
 				validateLogin(in: { 
 					language: "pt",
-					userAgent: "Gira/3.3.5 (Android 34)",
+					userAgent: "Gira/3.4.0 (Android 34)",
 					firebaseToken: "cwEUfibvTHCRZ6z3R1l3B8"
 				}) { messages { code text } } 
 			}`,
@@ -139,7 +139,7 @@ async function getUserInformation() {
 
 	// Make batch query for Gira client information, activeUserSubscriptions and tripHistory to speed up request
 	response = await makePostRequest(
-		"https://apigira.emel.pt/graphql",
+		"https://egira-proxy-arqetk5clq-ew.a.run.app/api/graphql",
 		JSON.stringify({
 			query: `query {
             client: client { code, type, balance, paypalReference, bonus, numberNavegante }
@@ -160,7 +160,7 @@ async function getUserInformation() {
 // get tripHistory
 async function getTripHistory() {
 	response = await makePostRequest(
-		"https://apigira.emel.pt/graphql",
+		"https://egira-proxy-arqetk5clq-ew.a.run.app/api/graphql",
 		JSON.stringify({
 			operationName: "tripHistory",
 			variables: { in: { _pageNum: 1, _pageSize: 1000 } },

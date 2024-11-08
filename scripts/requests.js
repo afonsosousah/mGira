@@ -1,9 +1,9 @@
 let ws;
 let proxyURL = null;
 let activeTripObj;
-let numberOfRequestTries = 5;
 let currentRequestTry = 0;
 
+const NUMBER_OF_RETRIES = 5;
 const DEFAULT_PROXY = "https://corsproxy.afonsosousah.workers.dev/";
 
 async function makePostRequest(url, body, accessToken = null) {
@@ -13,7 +13,7 @@ async function makePostRequest(url, body, accessToken = null) {
 	const response = await fetch(proxyURL ?? DEFAULT_PROXY, {
 		method: "POST",
 		headers: {
-			"User-Agent": "Gira/3.3.5 (Android 34)",
+			"User-Agent": "Gira/3.4.0 (Android 34)",
 			"X-Proxy-URL": url,
 			"Content-Type": "application/json",
 			"X-Authorization": `Bearer ${accessToken}`,
@@ -71,7 +71,7 @@ async function makePostRequest(url, body, accessToken = null) {
 		} else if (responseObject.errors[0].message === "Error executing document.") {
 			// Common API processing error
 			// try for x times to do the request, otherwise just error out
-			if (currentRequestTry < numberOfRequestTries) {
+			if (currentRequestTry < NUMBER_OF_RETRIES) {
 				// Wait before making next request (reduce error rate)
 				await delay(200);
 				return await makePostRequest(url, body, accessToken);
@@ -110,7 +110,7 @@ async function makePostRequest(url, body, accessToken = null) {
 	} else if (response.status === 403) {
 		// Common API processing error
 		// try for x times to do the request, otherwise just error out
-		if (currentRequestTry < numberOfRequestTries) {
+		if (currentRequestTry < NUMBER_OF_RETRIES) {
 			// Wait before making next request (reduce error rate)
 			await delay(200);
 			return await makePostRequest(url, body, accessToken);
@@ -187,7 +187,7 @@ function startWSConnection(force = false) {
 
 	if (!user.accessToken) return;
 
-	ws = new WebSocket("wss://apigira.emel.pt/graphql", "graphql-ws");
+	ws = new WebSocket("wss://egira-proxy-arqetk5clq-ew.a.run.app/ws/graphql", "graphql-ws");
 
 	ws.onopen = () => {
 		ws.send(JSON.stringify({ type: "connection_init" }));

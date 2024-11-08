@@ -1,7 +1,7 @@
 // returns Date and Time in ISO 8601(?) format
 async function getServerTime() {
 	const response = await makePostRequest(
-		"http://apigira.emel.pt/graphql",
+		"https://egira-proxy-arqetk5clq-ew.a.run.app/api/graphql",
 		JSON.stringify({
 			operationName: "getServerTime",
 			variables: {},
