@@ -9,7 +9,7 @@ const GIRA_AUTH_ENDPOINT = "https://api-auth.emel.pt/auth";
 const GIRA_TOKEN_REFRESH_ENDPOINT = "https://api-auth.emel.pt/token/refresh";
 const GIRA_USER_ENDPOINT = "https://api-auth.emel.pt/user";
 
-const NUMBER_OF_RETRIES = 5;
+const NUMBER_OF_RETRIES = 3;
 const DEFAULT_PROXY = "https://corsproxy.afonsosousah.workers.dev/";
 
 async function makePostRequest(url, body, accessToken = null) {
@@ -27,13 +27,15 @@ async function makePostRequest(url, body, accessToken = null) {
 		body: body,
 	});
 	if (response.status === 401) {
+		// Request unauthorized, retry x times
+
 		// refresh token
 		accessToken = await tokenRefresh();
 
 		// check if token refresh was successful
 		if (typeof accessToken !== "undefined") {
 			// try to make request again
-			return await makePostRequest(url, body, accessToken); // be sure to use latest available token
+			return await retryPostRequest(url, body, accessToken, "Erro da API (401)"); // be sure to use latest available token
 		}
 	} else if (response.ok) {
 		const responseObject = await response.json();
@@ -116,41 +118,43 @@ async function makePostRequest(url, body, accessToken = null) {
 	} else if (response.status === 403) {
 		// Common API processing error
 		// try for x times to do the request, otherwise just error out
-		if (currentRequestTry < NUMBER_OF_RETRIES) {
-			// Wait before making next request (reduce error rate)
-			await delay(200);
-			return await makePostRequest(url, body, accessToken);
-		} else {
-			// Warn user about the API error
-			alert("Erro da API (403)");
+		return await retryPostRequest(url, body, accessToken, "Erro da API (403)");
 
-			// Hide user menu if it is showing
-			hideUserSettings();
+		// if (currentRequestTry < NUMBER_OF_RETRIES) {
+		// 	// Wait before making next request (reduce error rate)
+		// 	await delay(200);
+		// 	return await makePostRequest(url, body, accessToken);
+		// } else {
+		// 	// Warn user about the API error
+		// 	alert("Erro da API (403)");
 
-			// Hide search place menu if it is showing
-			hidePlaceSearchMenu();
+		// 	// Hide user menu if it is showing
+		// 	hideUserSettings();
 
-			// Hide bike list menu if it is showing
-			let bikeListMenu = document.getElementById("bikeMenu");
-			if (bikeListMenu) {
-				bikeListMenu.classList.add("smooth-slide-to-bottom");
-				setTimeout(() => bikeListMenu.remove(), 500); // remove element after animation
-				return; // prevent station card from being hidden if there was a bike list menu
-			}
+		// 	// Hide search place menu if it is showing
+		// 	hidePlaceSearchMenu();
 
-			// Hide station card if it is showing
-			let menu = document.getElementById("stationMenu");
-			if (menu) {
-				menu.classList.add("smooth-slide-to-left");
-				setTimeout(() => menu.remove(), 500); // remove element after animation
-				document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
-			}
+		// 	// Hide bike list menu if it is showing
+		// 	let bikeListMenu = document.getElementById("bikeMenu");
+		// 	if (bikeListMenu) {
+		// 		bikeListMenu.classList.add("smooth-slide-to-bottom");
+		// 		setTimeout(() => bikeListMenu.remove(), 500); // remove element after animation
+		// 		return; // prevent station card from being hidden if there was a bike list menu
+		// 	}
 
-			// Reset currentRequestTry
-			currentRequestTry = 0;
+		// 	// Hide station card if it is showing
+		// 	let menu = document.getElementById("stationMenu");
+		// 	if (menu) {
+		// 		menu.classList.add("smooth-slide-to-left");
+		// 		setTimeout(() => menu.remove(), 500); // remove element after animation
+		// 		document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
+		// 	}
 
-			return;
-		}
+		// 	// Reset currentRequestTry
+		// 	currentRequestTry = 0;
+
+		// 	return;
+		// }
 	}
 }
 
@@ -324,4 +328,36 @@ function startWSConnection(force = false) {
 	ws.onclose = ev => {
 		startWSConnection(); // reconnect automatically if the connection gets closed
 	};
+}
+
+async function retryPostRequest(url, body, accessToken, errorMessage) {
+	if (currentRequestTry < NUMBER_OF_RETRIES) {
+		// Wait before making next request (reduce error rate)
+		await delay(200);
+		return await makePostRequest(url, body, accessToken);
+	} else {
+		// Warn user about the API error
+		alert(errorMessage);
+
+		// Return to app starting state
+		hideUserSettings();
+		hidePlaceSearchMenu();
+		let bikeListMenu = document.getElementById("bikeMenu");
+		if (bikeListMenu) {
+			bikeListMenu.classList.add("smooth-slide-to-bottom");
+			setTimeout(() => bikeListMenu.remove(), 500); // remove element after animation
+			return; // prevent station card from being hidden if there was a bike list menu
+		}
+		let menu = document.getElementById("stationMenu");
+		if (menu) {
+			menu.classList.add("smooth-slide-to-left");
+			setTimeout(() => menu.remove(), 500); // remove element after animation
+			document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
+		}
+
+		// Reset currentRequestTry
+		currentRequestTry = 0;
+
+		return;
+	}
 }
