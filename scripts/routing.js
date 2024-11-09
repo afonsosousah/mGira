@@ -3,6 +3,9 @@ let currentRouteCoordinates;
 let dropoffStation;
 let finalDestination;
 
+const MAPBOX_API_KEY =
+	"pk.eyJ1IjoiYWZvbnNvc291c2FoIiwiYSI6ImNtMzlqemM4dTB6eGoya3M1aTRsZXVodW4ifQ.7AmvKqUqgUHYqBkGBO6Stg";
+
 async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	// Remove any previous loading animations
 	const oldSpinner = document.getElementById("spinner");
@@ -136,24 +139,31 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 	// Hide loading animation
 	loadingElement.remove();
 
-	// Calculate resulting bbox of all the routes
-	const bboxFoot1 = convertBbox(routeSummaryFoot1.bbox);
-	const bboxBike = convertBbox(routeSummaryBike?.bbox ?? routeSummaryFoot1.bbox);
-	const bboxFoot2 = convertBbox(routeSummaryFoot2?.bbox ?? routeSummaryFoot1.bbox);
+	// // Calculate resulting bbox of all the routes
+	// const bboxFoot1 = convertBbox(routeSummaryFoot1.bbox);
+	// const bboxBike = convertBbox(routeSummaryBike?.bbox ?? routeSummaryFoot1.bbox);
+	// const bboxFoot2 = convertBbox(routeSummaryFoot2?.bbox ?? routeSummaryFoot1.bbox);
 
-	const xMin = Math.min(bboxFoot1[0], bboxBike[0], bboxFoot2[0]);
-	const yMin = Math.min(bboxFoot1[1], bboxBike[1], bboxFoot2[1]);
-	const xMax = Math.max(bboxFoot1[2], bboxBike[2], bboxFoot2[2]);
-	const yMax = Math.max(bboxFoot1[3], bboxBike[3], bboxFoot2[3]);
+	// const xMin = Math.min(bboxFoot1[0], bboxBike[0], bboxFoot2[0]);
+	// const yMin = Math.min(bboxFoot1[1], bboxBike[1], bboxFoot2[1]);
+	// const xMax = Math.max(bboxFoot1[2], bboxBike[2], bboxFoot2[2]);
+	// const yMax = Math.max(bboxFoot1[3], bboxBike[3], bboxFoot2[3]);
 
-	const convertedBbox = [xMin, yMin, xMax, yMax];
+	// const convertedBbox = [xMin, yMin, xMax, yMax];
+
+	const routeLayer = map
+		.getLayers()
+		.getArray()
+		.find(layer => layer.get("name") === "routeLayer");
+
+	const extent = routeLayer.getSource().getExtent();
 
 	if (window.matchMedia("(orientation: portrait)").matches) {
 		const offset =
 			document.getElementById("placeSearchMenu")?.clientHeight ??
 			document.getElementById("stationMenu")?.clientHeight + 30 ??
 			0;
-		map.getView().fit(convertedBbox, {
+		map.getView().fit(extent, {
 			padding: [50, 100, 120 + offset, 100],
 			maxZoom: 16.5,
 		});
@@ -162,7 +172,7 @@ async function calculateFullRoute(fromCoordinates, toCoordinates) {
 			document.getElementById("placeSearchMenu")?.clientWidth ??
 			document.getElementById("stationMenu")?.clientWidth ??
 			0;
-		map.getView().fit(convertedBbox, {
+		map.getView().fit(extent, {
 			padding: [50, 100, 50, 100 + offset],
 			maxZoom: 16.5,
 		});
@@ -332,15 +342,24 @@ async function recalculateFullRoute(fromCoordinates, toCoordinates) {
 }
 
 async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
-	let orsDirections = new Openrouteservice.Directions({ api_key: orsApiKey });
-
 	try {
-		let response = await orsDirections.calculate({
-			coordinates: [fromCoordinates, toCoordinates],
-			profile: cycling ? "cycling-regular" : "foot-walking",
-			extra_info: ["waytype", "steepness"],
-			format: "geojson",
-		});
+		// let orsDirections = new Openrouteservice.Directions({ api_key: orsApiKey });
+		// let response = await orsDirections.calculate({
+		// 	coordinates: [fromCoordinates, toCoordinates],
+		// 	profile: cycling ? "cycling-regular" : "foot-walking",
+		// 	extra_info: ["waytype", "steepness"],
+		// 	format: "geojson",
+		// });
+
+		let response = await (
+			await fetch(
+				`https://api.mapbox.com/directions/v5/mapbox/${
+					cycling ? "cycling" : "walking"
+				}/${fromCoordinates};${toCoordinates}?geometries=geojson&access_token=${MAPBOX_API_KEY}`
+			)
+		).json();
+
+		response = { type: "FeatureCollection", features: response.routes.map(r => ({ ...r, type: "Feature" })) };
 
 		// Set styles of map features
 		const styles = {
@@ -396,17 +415,18 @@ async function calculateRoute(fromCoordinates, toCoordinates, cycling = true) {
 		}
 
 		// return useful information
-		let summary = response.features[0].properties.summary;
+		// let summary = response.features[0].properties.summary;
 		return {
-			distance: summary.distance ?? 0,
-			duration: summary.duration ?? 0,
-			bbox: response.bbox,
+			distance: response.features[0].distance ?? 0,
+			duration: response.features[0].duration ?? 0,
+			// bbox: response.bbox,
 			coordinates: response.features[0].geometry.coordinates,
 		};
 	} catch (err) {
 		console.log(err);
 		console.log("An error occurred: " + err.status);
 		console.error(await err.response.json());
+		alert("Erro ao calcular rota");
 	}
 }
 
