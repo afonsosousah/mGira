@@ -21,7 +21,7 @@ async function tokenRefresh() {
 		let currentTry = 0;
 
 		while (currentTry < numberOfTries) {
-			const response = await fetch("https://api-auth.emel.pt/token/refresh", {
+			const response = await fetch(GIRA_TOKEN_REFRESH_ENDPOINT, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

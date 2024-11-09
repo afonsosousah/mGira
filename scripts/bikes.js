@@ -7,7 +7,7 @@ let tripBeingRated = false;
 // reserves the bike and returns a success boolean
 async function reserveBike(serialNumber) {
 	const response = await makePostRequest(
-		"https://egira-proxy-arqetk5clq-ew.a.run.app/api/graphql",
+		"GIRA_GRAPHQL_ENDPOINT",
 		JSON.stringify({
 			operationName: "reserveBike",
 			variables: { input: serialNumber },
@@ -21,7 +21,7 @@ async function reserveBike(serialNumber) {
 // cancels the bike reserve and returns a success boolean
 async function cancelBikeReserve() {
 	const response = await makePostRequest(
-		"https://egira-proxy-arqetk5clq-ew.a.run.app/api/graphql",
+		"GIRA_GRAPHQL_ENDPOINT",
 		JSON.stringify({
 			operationName: "cancelBikeReserve",
 			variables: {},
@@ -35,7 +35,7 @@ async function cancelBikeReserve() {
 // starts a trip and returns a success boolean
 async function startTrip() {
 	const response = await makePostRequest(
-		"https://egira-proxy-arqetk5clq-ew.a.run.app/api/graphql",
+		"GIRA_GRAPHQL_ENDPOINT",
 		JSON.stringify({
 			operationName: "startTrip",
 			variables: {},
@@ -49,7 +49,7 @@ async function startTrip() {
 // returns an int or float of the active trip cost
 async function getActiveTripCost() {
 	const response = await makePostRequest(
-		"https://egira-proxy-arqetk5clq-ew.a.run.app/api/graphql",
+		"GIRA_GRAPHQL_ENDPOINT",
 		JSON.stringify({
 			operationName: "activeTripCost",
 			variables: {},
@@ -63,7 +63,7 @@ async function getActiveTripCost() {
 // returns the activeTrip object
 async function getActiveTrip() {
 	const response = await makePostRequest(
-		"https://egira-proxy-arqetk5clq-ew.a.run.app/api/graphql",
+		"GIRA_GRAPHQL_ENDPOINT",
 		JSON.stringify({
 			operationName: "activeTrip",
 			variables: {},
@@ -77,7 +77,7 @@ async function getActiveTrip() {
 // returns success boolean
 async function rateTripAPI(tripCode, tripRating, tripComment) {
 	const response = await makePostRequest(
-		"https://egira-proxy-arqetk5clq-ew.a.run.app/api/graphql",
+		"GIRA_GRAPHQL_ENDPOINT",
 		JSON.stringify({
 			operationName: "rateTrip",
 			variables: {
@@ -98,7 +98,7 @@ async function rateTripAPI(tripCode, tripRating, tripComment) {
 // returns int? (0 for success)
 async function tripPayWithNoPoints(tripCode) {
 	const response = await makePostRequest(
-		"https://egira-proxy-arqetk5clq-ew.a.run.app/api/graphql",
+		"GIRA_GRAPHQL_ENDPOINT",
 		JSON.stringify({
 			operationName: "tripPayWithNoPoints",
 			variables: { input: tripCode },
@@ -112,7 +112,7 @@ async function tripPayWithNoPoints(tripCode) {
 // returns int? (0 for success)
 async function tripPayWithPoints(tripCode) {
 	const response = await makePostRequest(
-		"https://egira-proxy-arqetk5clq-ew.a.run.app/api/graphql",
+		"GIRA_GRAPHQL_ENDPOINT",
 		JSON.stringify({
 			operationName: "tripPayWithPoints",
 			variables: { input: tripCode },
