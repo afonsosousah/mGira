@@ -418,6 +418,8 @@ function getLocation(zoom = true) {
 			}
 			//map.getView().setCenter(ol.proj.fromLonLat(pos));
 		}
+
+		if (navigationActive && rotationMode === "route") updateRotation();
 	};
 
 	// HTML5 geolocation
@@ -533,7 +535,7 @@ function startLocationDotRotation() {
 		}
 
 		// Update rotation on each frame
-		updateRotation();
+		if (navigationActive && rotationMode === "compass") updateRotation();
 	};
 
 	if (isIOS) {

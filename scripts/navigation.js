@@ -287,17 +287,17 @@ function updateRotation() {
 		const closestRoutePoint = currentRouteCoordinates[closestPointIndex];
 		const nextRoutePoint = currentRouteCoordinates[Math.min(closestPointIndex + 1, currentRouteCoordinates.length - 1)]; // make sure the point doesn't go out of bounds
 
-		const routeDistance = map
-			.getLayers()
-			.getArray()
-			.filter(layer => layer.get("name") === "routeLayer")[0]
-			.getSource()
-			.getFeatures()
-			.reduce((sum, cur) => sum + cur.values_.summary.distance, 0);
+		// const routeDistance = map
+		// 	.getLayers()
+		// 	.getArray()
+		// 	.filter(layer => layer.get("name") === "routeLayer")[0]
+		// 	.getSource()
+		// 	.getFeatures()
+		// 	.reduce((sum, cur) => sum + cur.values_.summary.distance, 0);
 
-		// calculate route progress
-		const routeProgress = travelledDistance / routeDistance;
-		const remainingDistance = routeDistance - travelledDistance;
+		// // calculate route progress
+		// const routeProgress = travelledDistance / routeDistance;
+		// const remainingDistance = routeDistance - travelledDistance;
 
 		// check if the user is off-route
 		// (user is out of the circle containing the closest and next route points + 10 meters of margin of error)
