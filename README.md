@@ -7,7 +7,7 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 ##
 
 <p align="middle" style="height: fit-content; overflow: scroll; display: flex; gap: 5px;">
-	<img src="https://app.mgira.pt/assets/images/screenshot_landing.png?t=0.0.5" width="200" height="444"/>
+	<img src="https://app.mgira.pt/assets/images/screenshot_landing.png?t=0.0.5.1" width="200" height="444"/>
 	<img src="https://app.mgira.pt/assets/images/screenshot_stations.png?t=0.0.5" width="200" height="444"/>
 	<img src="https://app.mgira.pt/assets/images/screenshot_routing.png?t=0.0.5" width="200" height="444"/>
 	<img src="https://app.mgira.pt/assets/images/screenshot_navigation.png?v=0.0.5" width="200" height="444"/>
@@ -76,8 +76,8 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 ## Projetos utilizados
 
 - [OpenLayers](https://openlayers.org/), [OpenStreetMap](https://www.openstreetmap.org) e [CartoCDN](https://carto.com/basemaps) para o mapa
-- [OpenRouteService](https://openrouteservice.org/) para as direções
-- [Serv00](https://www.serv00.com/) para hosteamento <br><br>
+- [Mapbox](https://www.mapbox.com/) para as direções
+- [Serv00](https://www.serv00.com/) para alojamento <br><br>
 
 ## Versões
 
@@ -85,8 +85,9 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 - v0.0.2 - 10/12/2023
 - v0.0.3 - 21/12/2023
 - v0.0.4 - 24/02/2024
-- v0.0.5 - xx/04/2024
+- v0.0.5 - 09/11/2024
 	<ul>
+		<li>Atualização dos endpoints da API</li>
 		<li>Agradecimento especial ao Rodrigo Leitão pelo apoio no projeto</li>
 		<li>Definição de distância necessária até estação (obrigado filipe-maia)</li>
 		<li>Marcadores da estações enchem com percentagem real (obrigado DanielAgostinho)</li>
