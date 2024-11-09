@@ -461,7 +461,11 @@ async function openTripHistory() {
 
 		// Get formatted date. Format: "1 de jan. de 2024"
 		const tripDate = new Date(trip.startDate);
+		tripDate.setTime(tripDate.getTime() + tripDate.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
 		const formattedDate = tripDate.toLocaleDateString("pt", { dateStyle: "medium" }).replaceAll(" de ", " ");
+
+		// Get formatted start time
+		const formattedStartTime = tripDate.toLocaleTimeString("pt");
 
 		// Get formatted time
 		let tripTime = new Date(Date.parse(trip.endDate) - Date.parse(trip.startDate));
@@ -483,7 +487,11 @@ async function openTripHistory() {
 					${formattedDate}
 				</div>
 				<div id="time">
-					<i class="bi bi-clock-history"></i>
+					<i class="bi bi-clock"></i>
+					${formattedStartTime}
+				</div>
+				<div id="time">
+					<i class="bi bi-hourglass"></i>
 					${formattedTime}
 				</div>
 				<div id="cost">

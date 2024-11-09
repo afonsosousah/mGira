@@ -5,6 +5,7 @@ const currentVersion = "0.0.5-alpha";
 const changelogHTML = `
 Notas da versão ${currentVersion}<br>
 <ul>
+	<li>Atualização dos endpoints da API</li>
 	<li>Agradecimento especial ao Rodrigo Leitão pelo apoio no projeto</li>
     <li>Definição de distância necessária até estação (obrigado filipe-maia)</li>
 	<li>Marcadores da estações enchem com percentagem real (obrigado DanielAgostinho)</li>
