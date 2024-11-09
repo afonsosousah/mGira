@@ -60,6 +60,9 @@ async function startNavigation(walkingOnly = false) {
 
 	// reset travelled distance
 	travelledDistance = 0;
+
+	// focus on current location after 3d transform ends
+	setTimeout(() => getLocation(), 1000);
 }
 
 function onBikeNavigation() {
