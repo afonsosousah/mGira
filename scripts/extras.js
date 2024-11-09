@@ -370,3 +370,32 @@ function startFakeRoute() {
 		startFakeTrip();
 	});
 }
+
+function openFakeRateTripMenu() {
+	// Generate random trip time (between 5 and 120 minutes)
+	const tripMs = randomInteger(5, 120) * 60 * 1000;
+
+	// Create fake start date
+	const startDate = new Date(Date.now() - tripMs);
+	const endDate = new Date(Date.now());
+
+	// Create fake trip object
+	const tripObj = {
+		code: "Q1BWYJLB1R",
+		bike: "E0000",
+		startDate: startDate.toISOString(),
+		endDate: endDate.toISOString(),
+		cost: 0,
+		finished: true,
+		canPayWithMoney: null,
+		canUsePoints: null,
+		clientPoints: null,
+		tripPoints: null,
+		canceled: false,
+		period: "other",
+		periodTime: "312",
+		error: 0,
+	};
+
+	openRateTripMenu(tripObj);
+}

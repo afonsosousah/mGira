@@ -419,7 +419,7 @@ async function tripTimer(startTime) {
 function openRateTripMenu(tripObj) {
 	// Calculate the trip time
 	const elapsedTime = Date.parse(tripObj.endDate) - Date.parse(tripObj.startDate);
-	const formattedTime = parseMillisecondsIntoTripTime(elapsedTime, false);
+	const formattedTime = parseMillisecondsIntoTripTime(elapsedTime, true);
 
 	// Don't rate trips under 90 seconds
 	if (elapsedTime < 90 * 1000) return;
