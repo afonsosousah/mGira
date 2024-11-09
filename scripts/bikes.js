@@ -274,7 +274,13 @@ function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 	appendElementToBodyFromHTML(
 		`
         <div id="takeUnregisteredBike">
-            <input type="text" id="unregisteredBikeNameInput" placeholder="Insira o código da bicicleta (ex. E1234)">
+			<div id="unregisteredBikeNameInputContainer">
+				<select id="unregisteredBikeNameSelect">
+					<option value="E">E</option>
+					<option value="C">C</option>
+				</select>
+				<input type="number" id="unregisteredBikeNameInput" placeholder="Insira o código da bicicleta" min="0" max="9999">
+			</div>
             <div id="cancelButton" onclick="document.getElementById('takeUnregisteredBike').remove()">Cancelar</div>
             <div id="takeUnregisteredBikeButton" onclick="takeUnregisteredBike()">Tentar retirar bicicleta</div>
         </div>
@@ -287,7 +293,9 @@ function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 
 function takeUnregisteredBike() {
 	// Get the bike object from the name written on the input element
-	const bikeName = document.getElementById("unregisteredBikeNameInput").value.toUpperCase();
+	const bikeName =
+		document.getElementById("unregisteredBikeNameSelect").value +
+		document.getElementById("unregisteredBikeNameInput").value.toUpperCase();
 	const bikeSerialNum = bikeSerialNumberMapping[bikeName];
 
 	// Try to open the unlock bike card, to take bike

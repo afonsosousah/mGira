@@ -2027,9 +2027,9 @@ input:-webkit-autofill:active{
 	border-radius: 20px;
 	box-shadow: 5px 5px 15px 0px var(--shadow-black);
 }
-#takeUnregisteredBike #unregisteredBikeNameInput {
+#takeUnregisteredBike #unregisteredBikeNameInputContainer {
 	background-color: rgb(255, 255, 255);
-	width: 85%;
+	width: 90%;
 	height: 30%;
 	position: absolute;
 	z-index: 2;
@@ -2039,10 +2039,43 @@ input:-webkit-autofill:active{
 	border-radius: 999px;
 	display: flex;
 	align-items: center;
-	padding-left: 5%;
 	color: var(--green);
 	border: none;
 	font-size: 0.9rem;
+}
+#takeUnregisteredBike #unregisteredBikeNameSelect {
+	background-color: rgb(255, 255, 255);
+	display: flex;
+	color: var(--green);
+	border: none;
+	font-size: 0.9rem;
+	padding-left: 5%;
+}
+/* Hide Arrows */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+#takeUnregisteredBike #unregisteredBikeNameInput {
+	background-color: rgb(255, 255, 255);
+	width: 100%;
+	height: 100%;
+	border-radius: 999px;
+	display: flex;
+	align-items: center;
+	padding-left: 0.5rem;
+	color: var(--green);
+	border: none;
+	font-size: 0.9rem;
+}
+#takeUnregisteredBike #unregisteredBikeNameInput:focus {
+	outline: none;
 }
 #takeUnregisteredBike #cancelButton {
 	background-color: var(--black);
