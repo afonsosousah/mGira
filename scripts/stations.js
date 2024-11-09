@@ -5,7 +5,7 @@ let userClickedNavigateToStation = false;
 // returns an array with all the bikes in a station
 async function getBikes(stationID) {
 	const response = await makePostRequest(
-		"GIRA_GRAPHQL_ENDPOINT",
+		GIRA_GRAPHQL_ENDPOINT,
 		JSON.stringify({
 			operationName: "getBikes",
 			variables: { input: stationID },
@@ -20,7 +20,7 @@ async function getBikes(stationID) {
 // returns an array with all the docks in a station
 async function getDocks(stationID) {
 	const response = await makePostRequest(
-		"GIRA_GRAPHQL_ENDPOINT",
+		GIRA_GRAPHQL_ENDPOINT,
 		JSON.stringify({
 			operationName: "getDocks",
 			variables: { input: stationID },
@@ -36,7 +36,7 @@ async function getDocks(stationID) {
 // returns an object with both getBikes and getDocks properties
 async function getBikesAndDocks(stationID) {
 	const response = await makePostRequest(
-		"GIRA_GRAPHQL_ENDPOINT",
+		GIRA_GRAPHQL_ENDPOINT,
 		JSON.stringify({
 			query: `query { 
             getBikes(input: "${stationID}") { battery, code, name, kms, serialNumber, type, parent }
@@ -51,7 +51,7 @@ async function getBikesAndDocks(stationID) {
 // sets the global array stationArray
 async function getStations() {
 	const response = await makePostRequest(
-		"GIRA_GRAPHQL_ENDPOINT",
+		GIRA_GRAPHQL_ENDPOINT,
 		JSON.stringify({
 			operationName: "getStations",
 			variables: {},
@@ -304,7 +304,7 @@ async function updateBikeList() {
 	queryString += "}";
 
 	const response = await makePostRequest(
-		"GIRA_GRAPHQL_ENDPOINT",
+		GIRA_GRAPHQL_ENDPOINT,
 		JSON.stringify({
 			query: queryString,
 		}),
