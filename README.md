@@ -27,7 +27,8 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 
 
     Se a localização não funcionar, verifica as permissões de localização.
-    Navega até Settings > Privacy & Security > Safari Websites e selectiona "While using the app"
+    Navega até Settings > Privacy & Security > Location Services > Safari Websites e seleciona "While using the app".
+    Garante também que a opção "Precise Location" está ativada.
 
 </details>
 
