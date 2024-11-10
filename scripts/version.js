@@ -1,5 +1,5 @@
 // Current version number
-const currentVersion = "0.0.5-alpha";
+const currentVersion = "0.0.5";
 
 // Changelog HTML
 const changelogHTML = `

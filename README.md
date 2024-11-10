@@ -25,7 +25,7 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
     2. Carregar no botão de partilhar, na barra do menu
     3. Andar para baixo na lista, e escolher 'Adicionar ao ecrã principal'
 
-        
+
     Se a localização não funcionar, verifica as permissões de localização.
     Navega até Settings > Privacy & Security > Safari Websites e selectiona "While using the app"
 
@@ -85,19 +85,19 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 - v0.0.2 - 10/12/2023
 - v0.0.3 - 21/12/2023
 - v0.0.4 - 24/02/2024
-- v0.0.5 - 09/11/2024
-	<ul>
-		<li>Atualização dos endpoints da API</li>
-		<li>Agradecimento especial ao Rodrigo Leitão pelo apoio no projeto</li>
-		<li>Definição de distância necessária até estação (obrigado filipe-maia)</li>
-		<li>Marcadores da estações enchem com percentagem real (obrigado DanielAgostinho)</li>
-		<li>Novo ecrã landscape em viagem</li>
-		<li>Marcadores das estações atualizam automaticamente</li>
-		<li>Modo landscape</li>
-		<li>Reroteamento automático</li>
-		<li>Novo ícone para PWA</li>
-		<li>Pequenas melhorias visuais</li>
-	</ul>
+- v0.0.5 - 10/11/2024
+<ul>
+	<li>Atualização dos endpoints da API (obrigado Rod e ttmx)</li>
+	<li>Agradecimento especial ao Rodrigo Leitão pelo apoio no projeto</li>
+	<li>Definição de distância necessária até estação (obrigado filipe-maia)</li>
+	<li>Marcadores da estações enchem com percentagem real (obrigado DanielAgostinho)</li>
+	<li>Novo ecrã landscape em viagem</li>
+	<li>Marcadores das estações atualizam automaticamente</li>
+	<li>Modo landscape</li>
+	<li>Reroteamento automático</li>
+	<li>Novo ícone para PWA</li>
+	<li>Pequenas melhorias visuais</li>
+</ul>
 
 ## Licença
 
