@@ -99,11 +99,8 @@ async function runStartupFunctions() {
 	// Start rotation of location dot
 	startLocationDotRotation();
 
-	// Start WebSocket connection and await the stations
+	// Start WebSocket connection. This also loads the stations once they're sent
 	startWSConnection();
-
-	// Load the stations into the map
-	loadStationMarkersFromArray(stationsArray);
 
 	// Show any messages from EMEL
 	await validateLogin();
