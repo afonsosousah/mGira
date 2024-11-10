@@ -5,66 +5,66 @@
 	"scope": "./",
 	"icons": [
 		{
-			"src": "assets/icons/48.png",
+			"src": "assets/icons/android/48.png",
 			"sizes": "48x48",
 			"purpose": "maskable"
 		},
 		{
-			"src": "assets/icons/72.png",
+			"src": "assets/icons/android/72.png",
 			"sizes": "72x72",
 			"purpose": "maskable"
 		},
 		{
-			"src": "assets/icons/96.png",
+			"src": "assets/icons/android/96.png",
 			"sizes": "96x96",
 			"purpose": "maskable"
 		},
 		{
-			"src": "assets/icons/128.png",
+			"src": "assets/icons/android/128.png",
 			"sizes": "128x128",
 			"purpose": "maskable"
 		},
 		{
-			"src": "assets/icons/192.png",
+			"src": "assets/icons/android/192.png",
 			"sizes": "192x192",
 			"purpose": "maskable"
 		},
 		{
-			"src": "assets/icons/384.png",
+			"src": "assets/icons/android/384.png",
 			"sizes": "384x384",
 			"purpose": "maskable"
 		},
 		{
-			"src": "assets/icons/512.png",
+			"src": "assets/icons/android/512.png",
 			"sizes": "512x512",
 			"purpose": "maskable"
 		},
 		{
-			"src": "assets/icons/48.png",
+			"src": "assets/icons/ios/48.png",
 			"sizes": "48x48"
 		},
 		{
-			"src": "assets/icons/72.png",
+			"src": "assets/icons/ios/72.png",
 			"sizes": "72x72"
 		},
 		{
-			"src": "assets/icons/96.png",
+			"src": "assets/icons/ios/96.png",
 			"sizes": "96x96"
 		},
 		{
-			"src": "assets/icons/128.png",
+			"src": "assets/icons/ios/128.png",
 			"sizes": "128x128"
 		},
 		{
-			"src": "assets/icons/192.png",
+			"src": "assets/icons/ios/192.png",
 			"sizes": "192x192"
 		},
 		{
-			"src": "assets/icons/384.png",
+			"src": "assets/icons/ios/384.png",
 			"sizes": "384x384"
 		},
 		{
-			"src": "assets/icons/512.png",
+			"src": "assets/icons/ios/512.png",
 			"sizes": "512x512"
 		}
 	],
