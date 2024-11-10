@@ -279,7 +279,7 @@ function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 					<option value="E">E</option>
 					<option value="C">C</option>
 				</select>
-				<input type="number" id="unregisteredBikeNameInput" placeholder="Insira o código da bicicleta" min="0" max="9999">
+				<input type="number" id="unregisteredBikeNameInput" placeholder="Insira o código da bicicleta" min="1" max="9999" oninput="formatBikeNumber()">
 			</div>
             <div id="cancelButton" onclick="document.getElementById('takeUnregisteredBike').remove()">Cancelar</div>
             <div id="takeUnregisteredBikeButton" onclick="takeUnregisteredBike()">Tentar retirar bicicleta</div>
@@ -291,11 +291,20 @@ function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 	if (navigationActive) document.getElementById("takeUnregisteredBike").style.zIndex = 99;
 }
 
+function formatBikeNumber() {
+	const input = document.getElementById("numberInput");
+	let value = input.value.replace(/\D/g, "");
+
+	if (!Number(value)) input.value = "";
+	// Pad the value with leading zeros to make it 4 digits
+	else input.value = value.slice(-4).padStart(4, "0");
+}
+
 function takeUnregisteredBike() {
 	// Get the bike object from the name written on the input element
 	const bikeName =
 		document.getElementById("unregisteredBikeNameSelect").value +
-		document.getElementById("unregisteredBikeNameInput").value.toUpperCase();
+		document.getElementById("unregisteredBikeNameInput").value;
 	const bikeSerialNum = bikeSerialNumberMapping[bikeName];
 
 	// Try to open the unlock bike card, to take bike
