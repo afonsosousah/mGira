@@ -451,13 +451,16 @@ async function openTripHistory() {
 	addTripsToDOM(tripHistory);
 
 	const tripList = document.getElementById("tripList");
-	tripList.addEventListener("scroll", async () => {
+	tripList.addEventListener("scroll", async event => {
 		if (isScrolledToBottom(tripList)) {
 			const newPageNum = tripList.childElementCount / TRIP_HISTORY_PAGE_SIZE + 1;
 			if (newPageNum % 1 === 0) {
 				console.log("Loading trip history page " + newPageNum);
-				// TODO add spinner while loading and remove it after?
+				const spinner = createElementFromHTML(`<img src="assets/images/mGira_spinning.gif" id="tripHistorySpinner">`);
+				tripList.appendChild(spinner);
+				tripList.scrollTo({ top: tripList.scrollHeight, behavior: "smooth" });
 				const newTripHistory = await getTripHistory(newPageNum);
+				spinner.remove();
 				addTripsToDOM(newTripHistory);
 			}
 			// If the new page number is decimal it means the last history request didn't return TRIP_HISTORY_PAGE_SIZE trips
@@ -473,7 +476,7 @@ function downloadTripHistory() {
 	createCustomYesNoPrompt(
 		"Deseja descarregar o seu histórico de viagens completo?\n⚠️ Nota: isto pode demorar algum tempo.",
 		async () => {
-			// TODO add spinner while loading and remove it after?
+			document.getElementById("alertBox").innerHTML = `<img src="assets/images/mGira_spinning.gif" id="spinner">`; // Show spinner
 			downloadObjectAsJson(await getTripHistory(1, 10_000), "tripHistory");
 		},
 		() => null
@@ -482,7 +485,7 @@ function downloadTripHistory() {
 
 // Used to check whether a scrollable element has been scrolled to the very bottom
 function isScrolledToBottom(element) {
-	return element.scrollHeight - element.scrollTop === element.clientHeight;
+	return element.scrollHeight - element.scrollTop - element.clientHeight < 1;
 }
 
 function addTripsToDOM(tripHistory) {
