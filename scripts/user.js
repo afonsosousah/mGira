@@ -150,9 +150,6 @@ async function getUserInformation() {
 	user = { ...user, ...response.data.client[0] };
 	user.activeUserSubscriptions = response.data.activeUserSubscriptions;
 
-	// Get user's trip history asynchronously
-	getTripHistory();
-
 	return user;
 }
 
