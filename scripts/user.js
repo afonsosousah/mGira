@@ -117,10 +117,11 @@ async function validateLogin() {
 					firebaseToken: "cwEUfibvTHCRZ6z3R1l3B8"
 				}) { messages { code text } } 
 			}`,
-		})
+		}),
+		user.accessToken
 	);
 
-	for (const message of response?.data?.validateLogin?.messages) {
+	for (const message of response?.data?.validateLogin?.messages ?? []) {
 		createCustomAlert(message.text, `<i class="bi bi-info-circle"></i>`);
 	}
 }
