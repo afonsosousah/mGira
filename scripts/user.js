@@ -483,11 +483,6 @@ function downloadTripHistory() {
 	);
 }
 
-// Used to check whether a scrollable element has been scrolled to the very bottom
-function isScrolledToBottom(element) {
-	return element.scrollHeight - element.scrollTop - element.clientHeight < 1;
-}
-
 function addTripsToDOM(tripHistory) {
 	for (let trip of tripHistory) {
 		// create the list element

@@ -37,7 +37,7 @@ function appendElementToElementFromHTML(htmlString, parentElement) {
 }
 
 function createElementFromHTML(htmlString) {
-	var div = document.createElement("div");
+	const div = document.createElement("div");
 	div.innerHTML = htmlString.trim();
 
 	// Change this to div.childNodes to support multiple top-level nodes.
@@ -58,6 +58,11 @@ function getCookie(cname) {
 		}
 	}
 	return "";
+}
+
+// Used to check whether a scrollable element has been scrolled to the very bottom
+function isScrolledToBottom(element) {
+	return element.scrollHeight - element.scrollTop - element.clientHeight < 1;
 }
 
 function parseMillisecondsIntoReadableTime(milliseconds) {
