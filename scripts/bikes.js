@@ -461,40 +461,20 @@ function openRateTripMenu(tripObj) {
             </div>
             <img src="assets/images/mGira_station.png" alt="station" id="stationImg">
             <div id="ratingLabel">Como foi a viagem?</div>
-            <div id="ratingFormContainer">
-                <form class="rating">
-                    <label>
-                    <input type="radio" name="stars" value="1" />
-                    <span class="icon">★</span>
-                    </label>
-                    <label>
-                    <input type="radio" name="stars" value="2" />
-                    <span class="icon">★</span>
-                    <span class="icon">★</span>
-                    </label>
-                    <label>
-                    <input type="radio" name="stars" value="3" />
-                    <span class="icon">★</span>
-                    <span class="icon">★</span>
-                    <span class="icon">★</span>   
-                    </label>
-                    <label>
-                    <input type="radio" name="stars" value="4" />
-                    <span class="icon">★</span>
-                    <span class="icon">★</span>
-                    <span class="icon">★</span>
-                    <span class="icon">★</span>
-                    </label>
-                    <label>
-                    <input type="radio" name="stars" value="5" />
-                    <span class="icon">★</span>
-                    <span class="icon">★</span>
-                    <span class="icon">★</span>
-                    <span class="icon">★</span>
-                    <span class="icon">★</span>
-                    </label>
-                </form>
-            </div>
+            <div class="ratingFormContainer">
+				<form id="rating" class="rating">
+					<input type="radio" id="star5" name="rating" value="5" />
+					<label for="star5" class="star">&#9733;</label>
+					<input type="radio" id="star4" name="rating" value="4" />
+					<label for="star4" class="star">&#9733;</label>
+					<input type="radio" id="star3" name="rating" value="3" />
+					<label for="star3" class="star">&#9733;</label>
+					<input type="radio" id="star2" name="rating" value="2" />
+					<label for="star2" class="star">&#9733;</label>
+					<input type="radio" id="star1" name="rating" value="1" />
+					<label for="star1" class="star">&#9733;</label>
+				</form>
+			</div>
             <div id="sendButton" onclick="rateTrip('${tripObj.code}',${tripObj.cost})">Enviar</div>
         </div>
     </div>

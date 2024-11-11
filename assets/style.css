@@ -1868,58 +1868,30 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	align-items: center;
 }
-#rateTripMenuCard #ratingFormContainer .rating {
-	display: block;
+#rateTripMenuCard .ratingFormContainer {
+    display: flex;
+    justify-content: center;
+}
+#rateTripMenuCard .rating {
+    display: flex;
+    flex-direction: row-reverse;
 	line-height: 15vw;
-	font-size: 15vw;
+	font-size: 4vw;
 	position: relative;
 }
-#rateTripMenuCard #ratingFormContainer .rating label {
-	position: absolute;
-	top: 0;
-	left: 0;
-	height: 100%;
-	cursor: pointer;
-	white-space: nowrap;
+#rateTripMenuCard .rating .star {
+    font-size: 2em;
+    color: black;
+    cursor: pointer;
+    transition: color 0.3s;
 }
-#rateTripMenuCard #ratingFormContainer .rating label:last-child {
-	position: static;
+/* Change color up to the selected star */
+#rateTripMenuCard .rating input[type="radio"]:checked ~ .star {
+    color: var(--green);
 }
-#rateTripMenuCard #ratingFormContainer .rating label:nth-child(1) {
-	z-index: 5;
-}
-#rateTripMenuCard #ratingFormContainer .rating label:nth-child(2) {
-	z-index: 4;
-}
-#rateTripMenuCard #ratingFormContainer .rating label:nth-child(3) {
-	z-index: 3;
-}
-#rateTripMenuCard #ratingFormContainer .rating label:nth-child(4) {
-	z-index: 2;
-}
-#rateTripMenuCard #ratingFormContainer .rating label:nth-child(5) {
-	z-index: 1;
-}
-#rateTripMenuCard #ratingFormContainer .rating label input {
-	position: absolute;
-	top: 0;
-	left: 0;
-	opacity: 0;
-}
-#rateTripMenuCard #ratingFormContainer .rating label .icon {
-	float: left;
-	color: transparent;
-}
-#rateTripMenuCard #ratingFormContainer .rating label:last-child .icon {
-	color: var(--black);
-}
-#rateTripMenuCard #ratingFormContainer .rating:not(:hover) label input:checked ~ .icon,
-#rateTripMenuCard #ratingFormContainer .rating:hover label:hover input ~ .icon {
-	color: var(--green);
-}
-#rateTripMenuCard #ratingFormContainer .rating label input:focus:not(:checked) ~ .icon:last-child {
-	color: var(--black);
-	text-shadow: 0 0 5px var(--green);
+/* Hide the radio buttons */
+#rateTripMenuCard .rating input[type="radio"] {
+    display: none;
 }
 #rateTripMenuCard #sendButton {
 	background-color: var(--green);
