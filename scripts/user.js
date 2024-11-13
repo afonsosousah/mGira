@@ -458,7 +458,7 @@ async function openTripHistory() {
 				console.log("Loading trip history page " + newPageNum);
 				const spinner = createElementFromHTML(`<img src="assets/images/mGira_spinning.gif" id="tripHistorySpinner">`);
 				tripList.appendChild(spinner);
-				tripList.scrollTo({ top: tripList.scrollHeight, behavior: "smooth" });
+				tripList.scrollTo({ top: tripList.scrollHeight, behavior: "auto" });
 				const newTripHistory = await getTripHistory(newPageNum);
 				spinner.remove();
 				addTripsToDOM(newTripHistory);
