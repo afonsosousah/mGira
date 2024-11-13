@@ -234,8 +234,8 @@ async function openUserSettings() {
 	const subscriptionExpiration = new Date(userObj.activeUserSubscriptions[0].expirationDate);
 
 	// Get user initials
-	let allNames = userObj.name.split(" "); // separate all names
-	let initials = allNames[0][0] + allNames.at(-1)[0]; // first letter of first name + first letter of last name
+	let allNames = userObj.name.trim().split(" "); // separate all names
+	let initials = allNames.length === 1 ? allNames[0][0] : allNames[0][0] + allNames.at(-1)[0]; // first letter of first name + first letter of last name
 
 	// Populate the element
 	settingsElement.innerHTML = `
