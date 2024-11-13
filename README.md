@@ -87,18 +87,12 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 - v0.0.3 - 21/12/2023
 - v0.0.4 - 24/02/2024
 - v0.0.5 - 10/11/2024
-	<ul>
-		<li>Atualização dos endpoints da API (obrigado Rod e ttmx)</li>
-		<li>Agradecimento especial ao Rodrigo Leitão pelo apoio no projeto</li>
-		<li>Definição de distância necessária até estação (obrigado filipe-maia)</li>
-		<li>Marcadores da estações enchem com percentagem real (obrigado DanielAgostinho)</li>
-		<li>Novo ecrã landscape em viagem</li>
-		<li>Marcadores das estações atualizam automaticamente</li>
-		<li>Modo landscape</li>
-		<li>Reroteamento automático</li>
-		<li>Novo ícone para PWA</li>
-		<li>Pequenas melhorias visuais</li>
-	</ul>
+- v0.1.0 - 13/11/2024
+  - Menu de histórico de viagens agora carrega gradualmente (obrigado Rodrigo Leitão)
+  - Melhoria no estilo das classificações das viagens (obrigado Rodrigo Leitão)
+  - Correção de um erro 401 ao fazer login (obrigado Rodrigo Leitão)
+  - Adotado o sistema de versões semver para atualizações futuras (obrigado Rodrigo Leitão)
+  - Corrigido bug do Jundefined (obrigado Roda)
 
 ## Licença
 

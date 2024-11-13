@@ -1,20 +1,15 @@
 // Current version number
-const currentVersion = "0.0.5";
+const currentVersion = "0.1.0";
 
 // Changelog HTML
 const changelogHTML = `
 Notas da versão ${currentVersion}<br>
 <ul>
-	<li>Atualização dos endpoints da API (obrigado Rod e ttmx)</li>
-	<li>Agradecimento especial ao Rodrigo Leitão pelo apoio no projeto</li>
-    <li>Definição de distância necessária até estação (obrigado filipe-maia)</li>
-	<li>Marcadores da estações enchem com percentagem real (obrigado DanielAgostinho)</li>
-	<li>Novo ecrã landscape em viagem</li>
-	<li>Marcadores das estações atualizam automaticamente</li>
-	<li>Modo landscape</li>
-	<li>Reroteamento automático</li>
-	<li>Novo ícone para PWA</li>
-	<li>Pequenas melhorias visuais</li>
+	<li>Menu de histórico de viagens agora carrega gradualmente (obrigado Rodrigo Leitão)</li>
+	<li>Melhoria no estilo das classificações das viagens (obrigado Rodrigo Leitão)</li>
+	<li>Correção de um erro 401 ao fazer login (obrigado Rodrigo Leitão)</li>
+	<li>Adotado o sistema de versões semver para atualizações futuras (obrigado Rodrigo Leitão)</li>
+	<li>Corrigido bug do Jundefined (obrigado Roda)</li>
 </ul>
 `;
 
