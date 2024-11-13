@@ -62,7 +62,8 @@ function getCookie(cname) {
 
 // Used to check whether a scrollable element has been scrolled to the very bottom
 function isScrolledToBottom(element) {
-	return element.scrollHeight - element.scrollTop - element.clientHeight < 1;
+	const PIXELS_ERROR_MARGIN = 1;
+	return element.scrollHeight - element.scrollTop <= element.clientHeight + PIXELS_ERROR_MARGIN;
 }
 
 function parseMillisecondsIntoReadableTime(milliseconds) {
