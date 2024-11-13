@@ -2117,8 +2117,8 @@ input[type=number] {
 	font-weight: bold;
 	font-size: 1.2rem;
 	display: block;
-	margin-top: 1rem;
-	margin-left: 1.5rem;
+	margin-top: 0.5rem;
+	margin-left: 0.5rem;
 }
 
 #alertBox p {
