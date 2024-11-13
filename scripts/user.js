@@ -1,6 +1,7 @@
 const TRIP_HISTORY_PAGE_SIZE = 10;
 let tokenRefreshed = false;
 let minimumDistanceToStation = 50;
+let tripHistory = null;
 
 // Define the global user, where the variables will be stored
 let user = {};
@@ -574,6 +575,8 @@ async function openStatisticsMenu() {
 
 	// set background to white
 	menu.style.backgroundColor = "var(--white)";
+	menu.style.height = "100dvh";
+	menu.style.width = "100vw";
 
 	// show loading animation
 	menu.innerHTML = `
@@ -582,7 +585,7 @@ async function openStatisticsMenu() {
 		`;
 
 	// Get user's trip history
-	const tripHistory = await getTripHistory(1, 10_000);
+	tripHistory = await getTripHistory(1, 10_000);
 
 	if (document.querySelectorAll("#statisticsMenu").length === 0) hideStatisticsMenu();
 
@@ -644,7 +647,7 @@ async function openStatisticsMenu() {
 	document.body.appendChild(menu);
 
 	// Populate chart
-	updateStatisticsChart(tripHistory);
+	updateStatisticsChart();
 }
 
 function hideStatisticsMenu() {
@@ -660,7 +663,7 @@ function hideStatisticsMenu() {
 	changeThemeColor("#79c000");
 }
 
-function updateStatisticsChart(tripHistory) {
+function updateStatisticsChart() {
 	// Get the selected options
 	let period = document.getElementById("periodControl").value;
 	let groupBy = document.getElementById("groupControl").value;
