@@ -37,21 +37,21 @@ function createCustomYesNoPrompt(message, yesHandler, noHandler, yesText = "Sim"
 	alertObj.id = "alertBox";
 
 	const msg = alertObj.appendChild(document.createElement("p"));
-	msg.innerHTML = message;
+	msg.innerText = message;
 
 	const yesBtn = alertObj.appendChild(document.createElement("div"));
 	yesBtn.id = "yesBtn";
 	yesBtn.appendChild(document.createTextNode(yesText));
-	yesBtn.addEventListener("click", () => {
-		yesHandler();
+	yesBtn.addEventListener("click", async () => {
+		await yesHandler();
 		document.getElementById("modalContainer").remove();
 	});
 
 	const noBtn = alertObj.appendChild(document.createElement("div"));
 	noBtn.id = "noBtn";
 	noBtn.appendChild(document.createTextNode(noText));
-	noBtn.addEventListener("click", () => {
-		noHandler();
+	noBtn.addEventListener("click", async () => {
+		await noHandler();
 		document.getElementById("modalContainer").remove();
 	});
 

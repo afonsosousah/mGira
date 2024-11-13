@@ -1,3 +1,4 @@
+const TRIP_HISTORY_PAGE_SIZE = 10;
 let tokenRefreshed = false;
 let minimumDistanceToStation = 50;
 
@@ -149,25 +150,22 @@ async function getUserInformation() {
 	user = { ...user, ...response.data.client[0] };
 	user.activeUserSubscriptions = response.data.activeUserSubscriptions;
 
-	// Get user's trip history asynchronously
-	getTripHistory();
-
 	return user;
 }
 
 // get tripHistory
-async function getTripHistory() {
+async function getTripHistory(pageNum = 1, pageSize = TRIP_HISTORY_PAGE_SIZE) {
 	response = await makePostRequest(
 		GIRA_GRAPHQL_ENDPOINT,
 		JSON.stringify({
 			operationName: "tripHistory",
-			variables: { in: { _pageNum: 1, _pageSize: 1000 } },
+			variables: { in: { _pageNum: pageNum, _pageSize: pageSize } },
 			query:
 				"query tripHistory($in: PageInput) { tripHistory(pageInput: $in) { bikeName bikeType bonus code cost endDate endLocation rating startDate startLocation usedPoints }}",
 		}),
 		user.accessToken
 	);
-	user.tripHistory = response.data.tripHistory;
+	return response.data.tripHistory;
 }
 
 // Open the login menu element and populate it
@@ -425,18 +423,16 @@ async function openTripHistory() {
 	// Set status bar color in PWA
 	changeThemeColor("#ffffff");
 
-	if (!user.tripHistory) {
-		// show loading animation
-		menu.innerHTML = `
+	// show loading animation
+	menu.innerHTML = `
 		<img src="assets/images/mGira_spinning.gif" id="spinner">
 		<div id="backButton" onclick="hideTripHistory();"><i class="bi bi-arrow-90deg-left"></i></div>
 		`;
 
-		// Get user's trip history
-		await getTripHistory();
+	// Get user's trip history
+	const tripHistory = await getTripHistory();
 
-		if (document.querySelectorAll("#tripHistory").length === 0) hideTripHistory();
-	}
+	if (document.querySelectorAll("#tripHistory").length === 0) hideTripHistory();
 
 	// Create element
 	menu.innerHTML = `
@@ -446,13 +442,49 @@ async function openTripHistory() {
         <ul id="tripList">
             <!-- Populate with the list here -->
         </ul>
-		<div id="downloadTripHistoryButton" onclick="downloadObjectAsJson(user.tripHistory, 'tripHistory');">
+		<div id="downloadTripHistoryButton" onclick="downloadTripHistory();">
 			<i class="bi bi-cloud-download"></i>
 		</div>
     `.trim();
 
 	// populate the trip list
-	for (let trip of user.tripHistory) {
+	addTripsToDOM(tripHistory);
+
+	const tripList = document.getElementById("tripList");
+	tripList.addEventListener("scroll", async event => {
+		if (isScrolledToBottom(tripList)) {
+			const newPageNum = tripList.childElementCount / TRIP_HISTORY_PAGE_SIZE + 1;
+			if (newPageNum % 1 === 0) {
+				console.log("Loading trip history page " + newPageNum);
+				const spinner = createElementFromHTML(`<img src="assets/images/mGira_spinning.gif" id="tripHistorySpinner">`);
+				tripList.appendChild(spinner);
+				tripList.scrollTo({ top: tripList.scrollHeight, behavior: "auto" });
+				const newTripHistory = await getTripHistory(newPageNum);
+				spinner.remove();
+				addTripsToDOM(newTripHistory);
+			}
+			// If the new page number is decimal it means the last history request didn't return TRIP_HISTORY_PAGE_SIZE trips
+			// Therefore there are no more trips to load
+		}
+	});
+
+	// if there are no trips, put a message saying that
+	if (tripList.childElementCount === 0) tripList.innerHTML = "Não realizou nenhuma viagem";
+}
+
+function downloadTripHistory() {
+	createCustomYesNoPrompt(
+		"Deseja descarregar o seu histórico de viagens completo?\n⚠️ Nota: isto pode demorar algum tempo.",
+		async () => {
+			document.getElementById("alertBox").innerHTML = `<img src="assets/images/mGira_spinning.gif" id="spinner">`; // Show spinner
+			downloadObjectAsJson(await getTripHistory(1, 10_000), "tripHistory");
+		},
+		() => null
+	);
+}
+
+function addTripsToDOM(tripHistory) {
+	for (let trip of tripHistory) {
 		// create the list element
 		const tripListElement = document.createElement("li");
 		tripListElement.className = "trip-list-element";
@@ -509,10 +541,6 @@ async function openTripHistory() {
         `.trim();
 		document.getElementById("tripList").appendChild(tripListElement);
 	}
-
-	// if there are no trips, put a message saying that
-	if (document.getElementById("tripList").childElementCount === 0)
-		document.getElementById("tripList").innerHTML = "Não realizou nenhuma viagem";
 }
 
 function hideTripHistory() {
@@ -544,24 +572,22 @@ async function openStatisticsMenu() {
 		document.body.scrollTop = document.documentElement.scrollTop = 0; // scroll to top of the page
 	}
 
-	if (!user.tripHistory) {
-		// set background to white
-		menu.style.backgroundColor = "var(--white)";
+	// set background to white
+	menu.style.backgroundColor = "var(--white)";
 
-		// show loading animation
-		menu.innerHTML = `
+	// show loading animation
+	menu.innerHTML = `
 		<img src="assets/images/mGira_spinning.gif" id="spinner">
 		<div id="backButton" onclick="hideStatisticsMenu();"><i class="bi bi-arrow-90deg-left"></i></div>
 		`;
 
-		// Get user's trip history
-		await getTripHistory();
+	// Get user's trip history
+	const tripHistory = await getTripHistory(1, 10_000);
 
-		if (document.querySelectorAll("#statisticsMenu").length === 0) hideStatisticsMenu();
+	if (document.querySelectorAll("#statisticsMenu").length === 0) hideStatisticsMenu();
 
-		// set background back to black
-		menu.style.backgroundColor = "var(--black)";
-	}
+	// set background back to black
+	menu.style.backgroundColor = "var(--black)";
 
 	// Set status bar color in PWA
 	changeThemeColor("#231f20");
@@ -618,7 +644,7 @@ async function openStatisticsMenu() {
 	document.body.appendChild(menu);
 
 	// Populate chart
-	updateStatisticsChart();
+	updateStatisticsChart(tripHistory);
 }
 
 function hideStatisticsMenu() {
@@ -634,7 +660,7 @@ function hideStatisticsMenu() {
 	changeThemeColor("#79c000");
 }
 
-function updateStatisticsChart() {
+function updateStatisticsChart(tripHistory) {
 	// Get the selected options
 	let period = document.getElementById("periodControl").value;
 	let groupBy = document.getElementById("groupControl").value;
@@ -682,7 +708,7 @@ function updateStatisticsChart() {
 				: `${dayDate.getDate()}/${dayDate.getMonth() + 1}`;
 
 		// Get the trips of the day
-		const dayTrips = user.tripHistory.filter(trip => {
+		const dayTrips = tripHistory.filter(trip => {
 			const startDate = new Date(trip.startDate);
 			return (
 				startDate.getDate() === dayDate.getDate() && // Same day

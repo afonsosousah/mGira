@@ -22,8 +22,8 @@
 	width: 100px;
 	height: 100px;
 	position: absolute;
-	top: calc(50% - 40px);
-	left: calc(50% - 40px);
+	top: calc(50% - 50px);
+	left: calc(50% - 50px);
 	object-fit: contain;
 	/*animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;*/
 }
@@ -2101,6 +2101,7 @@ input[type=number] {
 	min-height: 10%;
 	border-radius: 20px;
 	background-color: #fff;
+	padding: 1rem;
 }
 
 #modalContainer > #alertBox {
@@ -2121,7 +2122,7 @@ input[type=number] {
 }
 
 #alertBox p {
-	padding: 0.5rem 1.5rem 1.5rem 1.5rem;
+	padding: 0.5rem;
 	margin: 0;
 	font-size: 0.9rem;
 }
@@ -2144,7 +2145,6 @@ input[type=number] {
 #alertBox #closeBtn {
 	display: block;
 	position: relative;
-	padding: 7px;
 	width: 20%;
 	text-transform: uppercase;
 	text-align: center;
@@ -2155,34 +2155,31 @@ input[type=number] {
 	margin-bottom: 10px;
 	margin-right: 10px;
 	padding: 10px 40px;
+	margin-top: 1rem;
 }
 #alertBox #yesBtn {
 	display: block;
 	position: relative;
-	padding: 7px;
 	width: 30%;
 	text-align: center;
 	color: #fff;
 	background-color: var(--green);
 	border-radius: 999px;
 	float: left;
-	margin-bottom: 10px;
-	margin-left: 10px;
 	padding: 10px 20px;
+	margin-top: 1rem;
 }
 #alertBox #noBtn {
 	display: block;
 	position: relative;
-	padding: 7px;
 	width: 30%;
 	text-align: center;
 	color: #fff;
 	background-color: var(--black);
 	border-radius: 999px;
 	float: right;
-	margin-bottom: 10px;
-	margin-right: 10px;
 	padding: 10px 20px;
+	margin-top: 1rem;
 }
 #alertBox ul {
 	padding-left: 20px;
@@ -2352,6 +2349,12 @@ input[type=number] {
 	font-size: 0.7rem;
   	width: 80%;
 	text-align: right;
+}
+#tripHistorySpinner {
+	display: inline-block;
+	width: 100px;
+	height: 100px;
+	object-fit: contain;
 }
 /* #endregion */
 

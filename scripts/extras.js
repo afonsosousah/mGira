@@ -36,6 +36,14 @@ function appendElementToElementFromHTML(htmlString, parentElement) {
 	parentElement.appendChild(element);
 }
 
+function createElementFromHTML(htmlString) {
+	const div = document.createElement("div");
+	div.innerHTML = htmlString.trim();
+
+	// Change this to div.childNodes to support multiple top-level nodes.
+	return div.firstChild;
+}
+
 function getCookie(cname) {
 	let name = cname + "=";
 	let decodedCookie = decodeURIComponent(document.cookie);
@@ -50,6 +58,12 @@ function getCookie(cname) {
 		}
 	}
 	return "";
+}
+
+// Used to check whether a scrollable element has been scrolled to the very bottom
+function isScrolledToBottom(element) {
+	const PIXELS_ERROR_MARGIN = 1;
+	return element.scrollHeight - element.scrollTop <= element.clientHeight + PIXELS_ERROR_MARGIN;
 }
 
 function parseMillisecondsIntoReadableTime(milliseconds) {
