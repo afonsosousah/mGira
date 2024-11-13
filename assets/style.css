@@ -1880,7 +1880,7 @@ input:-webkit-autofill:active{
 	position: relative;
 }
 #rateTripMenuCard .rating .star {
-    font-size: 2em;
+    font-size: 3.5rem;
     color: black;
     cursor: pointer;
     transition: color 0.3s;
