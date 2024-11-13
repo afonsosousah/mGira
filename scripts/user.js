@@ -135,7 +135,7 @@ async function getUserInformation() {
 	if (typeof response !== "undefined") user = { ...user, ...response.data };
 
 	// Update user image based on user details
-	setUserImageInitials(user.name);
+	document.getElementById("userInitials").innerText = getUserInitials(user.name);
 
 	// Make batch query for Gira client information, activeUserSubscriptions and tripHistory to speed up request
 	response = await makePostRequest(
@@ -234,10 +234,6 @@ async function openUserSettings() {
 	// Get subscription expiration
 	const subscriptionExpiration = new Date(userObj.activeUserSubscriptions[0].expirationDate);
 
-	// Get user initials
-	let allNames = userObj.name.trim().split(" "); // separate all names
-	let initials = allNames.length === 1 ? allNames[0][0] : allNames[0][0] + allNames.at(-1)[0]; // first letter of first name + first letter of last name
-
 	// Populate the element
 	settingsElement.innerHTML = `
         <div id="topUserContainer">
@@ -246,7 +242,7 @@ async function openUserSettings() {
             <img id="footer" src="assets/images/gira_footer_white.svg" alt="backImage">
 			<div id="bottomCard"></div>
             <div id="userImage">
-				<div id="userInitialsSettings">${initials}</div>
+				<div id="userInitialsSettings">${getUserInitials(userObj.name)}</div>
 			</div>
         </div>
         <div id="userName">${userObj.name}</div>
@@ -394,17 +390,11 @@ function openSetProxyPrompt() {
 	);
 }
 
-function setUserImageInitials(username) {
-	// Set the initials of the user name to act like picture
-	// (removes dependency on ui-avatars.com)
-
+function getUserInitials(username) {
 	// Get the initials
-	let allNames = username.split(" "); // separate all names
-	let initials = allNames[0][0] + allNames.at(-1)[0]; // first letter of first name + first letter of last name
-
-	// User picture (main screen)
-	let userInitialsElement = document.getElementById("userInitials");
-	userInitialsElement.innerHTML = initials;
+	const allNames = username.trim().split(" "); // separate all names
+	// first letter of first name + first letter of last name when present
+	return allNames.length === 1 ? allNames[0][0] : allNames[0][0] + allNames.at(-1)[0];
 }
 
 async function openTripHistory() {
