@@ -279,7 +279,7 @@ function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 					<option value="E">E</option>
 					<option value="C">C</option>
 				</select>
-				<input type="number" id="unregisteredBikeNameInput" placeholder="Insira o código da bicicleta" min="1" max="9999" oninput="formatBikeNumber()">
+				<input type="number" id="unregisteredBikeNameInput" placeholder="Insira o código da bicicleta" min="1" max="9999" oninput="formatBikeNumber(this)">
 			</div>
             <div id="cancelButton" onclick="document.getElementById('takeUnregisteredBike').remove()">Cancelar</div>
             <div id="takeUnregisteredBikeButton" onclick="takeUnregisteredBike()">Tentar retirar bicicleta</div>
@@ -291,13 +291,12 @@ function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 	if (navigationActive) document.getElementById("takeUnregisteredBike").style.zIndex = 99;
 }
 
-function formatBikeNumber() {
-	const input = document.getElementById("numberInput");
-	let value = input.value.replace(/\D/g, "");
+function formatBikeNumber(element) {
+	let value = element.value.replace(/\D/g, "");
 
-	if (!Number(value)) input.value = "";
+	if (!Number(value)) element.value = "";
 	// Pad the value with leading zeros to make it 4 digits
-	else input.value = value.slice(-4).padStart(4, "0");
+	else element.value = value.slice(-4).padStart(4, "0");
 }
 
 function takeUnregisteredBike() {
