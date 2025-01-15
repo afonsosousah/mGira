@@ -215,6 +215,7 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 	timerCircle.style.strokeDashoffset = 1;
 
 	let countdownHandler = async function () {
+		if (!document.getElementById("unlockBikeCard")) clearInterval(countdownTimer);
 		let isTimeLeft = timeLeft > -1;
 		if (isTimeLeft) {
 			const timeRemaining = timeLeft--;
