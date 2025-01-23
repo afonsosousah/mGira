@@ -219,7 +219,7 @@ async function openBikeList(stationSerialNumber) {
 			<div id="stationID">Estação ${stationObj.name.split("-")[0].trim()}</div>
 			<div id="stationDistance">${formatDistance(distanceToStation)}</div>
 		</div>
-		<div id="stationName">${stationObj.name.split("-")[1].trim()}</div>
+		<div id="stationName">${stationObj.name.split("-")[1]?.trim() ?? ""}</div>
 		<div id="listGradient"></div>
         <ul id="bikeList">
             <!-- Populate with the list here -->
