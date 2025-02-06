@@ -30,7 +30,7 @@ async function initMap() {
 	});
 
 	const cyclewaysSource = new ol.source.Vector({
-		url: "https://opendata.arcgis.com/api/v3/datasets/440b7424a6284e0b9bf11179b95bf8d1_0/downloads/data?format=geojson&spatialRefId=4326",
+		url: "https://services.arcgis.com/1dSrzEWVQn5kHHyK/arcgis/rest/services/Ciclovias/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson",
 		format: new ol.format.GeoJSON(),
 	});
 
