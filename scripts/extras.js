@@ -263,6 +263,8 @@ function startFakeTrip() {
 		error: 0,
 	};
 
+	const oldTrip = document.getElementById("tripOverlay");
+	if (oldTrip) oldTrip.remove(); // remove the trip overlay if it is showing
 	// Append the trip overlay
 	appendElementToBodyFromHTML(
 		`
@@ -289,7 +291,7 @@ function startFakeTrip() {
 	// Set the trip ended flag and start timer
 	onFakeTrip = true;
 	tripEnded = false;
-	tripTimer(Date.parse(activeTripObj.startDate));
+	tripTimer(Date.parse(activeTripObj.startDate), true);
 }
 
 function endFakeTrip() {

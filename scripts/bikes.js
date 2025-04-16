@@ -1,5 +1,5 @@
 let tripEnded = true;
-let tripTimerRunning = false;
+let tripTimerCode = null;
 let ratedTripsList = [];
 let finishedTripsList = [];
 let tripBeingRated = false;
@@ -351,6 +351,8 @@ async function startBikeTrip(event, bikeName) {
 			// hide bike list if it is showing
 			if (document.querySelector("#bikeMenu")) document.querySelector("#bikeMenu").remove();
 
+			const oldTrip = document.getElementById("tripOverlay");
+			if (oldTrip) oldTrip.remove(); // remove the trip overlay if it is showing
 			// show the trip overlay
 			appendElementToBodyFromHTML(
 				`
@@ -371,12 +373,17 @@ async function startBikeTrip(event, bikeName) {
 
 			// start the trip timer
 			tripEnded = false;
-			tripTimer(Date.now());
+			tripTimer(Date.now(), true);
 		}, 3000);
 	}
 }
 
-async function tripTimer(startTime) {
+async function tripTimer(startTime, isStarting) {
+	// Only need to clear the previous trip if this trip is starting
+	if (tripTimerCode && isStarting) {
+		clearTimeout(tripTimerCode); // clear the previous timer if it exists
+		tripTimerCode = null;
+	}
 	// Update only is trip has not ended, and websocket is connected
 	if (!tripEnded && ws?.readyState === WebSocket.OPEN) {
 		// Calculate elapsed time
@@ -405,14 +412,13 @@ async function tripTimer(startTime) {
 				}
 			}
 		}
-		tripTimerRunning = true;
-		setTimeout(() => tripTimer(startTime), 1000);
+		tripTimerCode = setTimeout(() => tripTimer(startTime), 1000);
 	} else if (ws?.readyState !== WebSocket.OPEN) {
 		console.log("WebSocket has disconnected...");
 		setTimeout(() => tripTimer(startTime), 1000);
 	} else {
 		console.log("Trip has ended...");
-		tripTimerRunning = false;
+		tripTimerCode = null;
 
 		// Hide trip overlay if it is showing
 		if (document.querySelector("#tripOverlay")) document.querySelector("#tripOverlay").remove();
