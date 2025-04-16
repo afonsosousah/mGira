@@ -482,7 +482,6 @@ function addTripsToDOM(tripHistory) {
 
 		// Get formatted date. Format: "1 de jan. de 2024"
 		const tripDate = new Date(trip.startDate);
-		tripDate.setTime(tripDate.getTime() + tripDate.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
 		const formattedDate = tripDate.toLocaleDateString("pt", { dateStyle: "medium" }).replaceAll(" de ", " ");
 
 		// Get formatted start time
@@ -490,7 +489,6 @@ function addTripsToDOM(tripHistory) {
 
 		// Get formatted time
 		let tripTime = new Date(Date.parse(trip.endDate) - Date.parse(trip.startDate));
-		tripTime.setTime(tripTime.getTime() + tripTime.getTimezoneOffset() * 60 * 1000); // Correct because of Daylight Saving Time
 		const formattedTime = tripTime.getHours() + "h" + tripTime.getMinutes().toString().padStart(2, "0") + "m";
 
 		// Get formatted cost
