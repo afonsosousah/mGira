@@ -24,7 +24,7 @@ async function makePostRequest(url, body, accessToken = null) {
 			"X-Proxy-URL": url,
 			"Content-Type": "application/json",
 			"X-Authorization": `Bearer ${accessToken}`,
-			"X-Firebase-Token": encryptFirebaseToken(user.firebaseToken, user.accessToken),
+			"X-Firebase-Token": await encryptFirebaseToken(user.firebaseToken, user.accessToken),
 		},
 		body: body,
 	});
@@ -171,17 +171,50 @@ async function makePostRequest(url, body, accessToken = null) {
 }
 
 // source: trust me bro
-function encryptFirebaseToken(firebaseToken, authToken) {
-	let { sub, jti } = getJWTPayload(authToken);
+async function encryptFirebaseToken(firebaseToken, authToken) {
+	const { sub, jti } = getJWTPayload(authToken);
 
-	const key = sub.replaceAll("-", "");
-	const iv = jti.slice(0, 16);
+	// 1. Create key from sub (hex string)
+	const keyHex = sub.replaceAll("-", "");
 
-	let cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+	if (keyHex.length !== 32 && keyHex.length !== 64) {
+		throw new Error("Key must be 32 or 64 hex characters (16 or 32 bytes)");
+	}
 
-	let encrypted = cipher.update(firebaseToken, "utf8", "base64");
+	// Padding if needed (this is how Node treats 16-byte keys for AES-256)
+	let keyBytes = hexStringToBytes(keyHex);
+	if (keyBytes.length === 16) {
+		// Extend to 32 bytes by padding with zeros
+		let padded = new Uint8Array(32);
+		padded.set(keyBytes);
+		keyBytes = padded;
+	}
 
-	return encrypted + cipher.final("base64");
+	// 2. IV from jti.slice(0, 16) using UTF-8 encoding
+	const iv = new TextEncoder().encode(jti.slice(0, 16));
+
+	// 3. Import key
+	const cryptoKey = await crypto.subtle.importKey("raw", keyBytes, { name: "AES-CBC" }, false, ["encrypt"]);
+
+	// 4. Encrypt
+	const plaintext = new TextEncoder().encode(firebaseToken);
+	const encryptedBuffer = await crypto.subtle.encrypt({ name: "AES-CBC", iv }, cryptoKey, plaintext);
+
+	// 5. Convert to base64
+	return bufferToBase64(encryptedBuffer);
+}
+
+function hexStringToBytes(hex) {
+	const bytes = new Uint8Array(hex.length / 2);
+	for (let i = 0; i < bytes.length; i++) {
+		bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+	}
+	return bytes;
+}
+
+function bufferToBase64(buffer) {
+	const binary = String.fromCharCode(...new Uint8Array(buffer));
+	return btoa(binary);
 }
 
 async function makeGetRequest(url, accessToken = null) {
