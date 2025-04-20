@@ -1163,7 +1163,7 @@ input:-webkit-autofill:active{
 	height: 6vh;
 	font-size: calc(0.35 * 6vh);
 	margin-bottom: 1vh;
-	color: var(--white);
+	color: var(--black);
 	display: flex;
 	justify-content: center;
 	align-items: center;
