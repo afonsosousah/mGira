@@ -175,7 +175,7 @@ async function encryptFirebaseToken(firebaseToken, authToken) {
 	const { sub, jti } = getJWTPayload(authToken);
 
 	// 1. Create key from sub (hex string)
-	const key = sub.replaceAll("-", "");
+	const key = new TextEncoder().encode(sub.replaceAll("-", ""));
 
 	// 2. IV from jti.slice(0, 16) using UTF-8 encoding
 	const iv = new TextEncoder().encode(jti.slice(0, 16));
@@ -184,8 +184,8 @@ async function encryptFirebaseToken(firebaseToken, authToken) {
 	const cryptoKey = await crypto.subtle.importKey("raw", key, { name: "AES-CBC" }, false, ["encrypt"]);
 
 	// 4. Encrypt
-	const plaintext = new TextEncoder().encode(firebaseToken);
-	const encryptedBuffer = await crypto.subtle.encrypt({ name: "AES-CBC", iv }, cryptoKey, plaintext);
+	const tokenEncoded = new TextEncoder().encode(firebaseToken);
+	const encryptedBuffer = await crypto.subtle.encrypt({ name: "AES-CBC", iv }, cryptoKey, tokenEncoded);
 
 	// 5. Convert to base64
 	return bufferToBase64(encryptedBuffer);
