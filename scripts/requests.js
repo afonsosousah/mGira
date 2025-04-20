@@ -13,15 +13,24 @@ const FIREBASE_TOKEN_URL = "https://luk.moe/girabot_tokens/exchange";
 const NUMBER_OF_RETRIES = 3;
 const DEFAULT_PROXY = "https://corsproxy.afonsosousah.workers.dev/";
 
+async function makeProxyRequest(url, init) {
+	return fetch(proxyURL ?? DEFAULT_PROXY, {
+		...init,
+		headers: {
+			...init.headers,
+			"X-Proxy-URL": url,
+		},
+	});
+}
+
 async function makePostRequest(url, body, accessToken = null) {
 	// Increment current request try
 	currentRequestTry += 1;
 
-	const response = await fetch(proxyURL ?? DEFAULT_PROXY, {
+	const response = await makeProxyRequest(url, {
 		method: "POST",
 		headers: {
 			"User-Agent": "Gira/3.4.3 (Android 34)",
-			"X-Proxy-URL": url,
 			"Content-Type": "application/json",
 			"X-Authorization": `Bearer ${accessToken}`,
 			"X-Firebase-Token": await encryptFirebaseToken(user.firebaseToken, user.accessToken),
@@ -35,7 +44,7 @@ async function makePostRequest(url, body, accessToken = null) {
 		accessToken = await tokenRefresh();
 		// se o token tiver expirado
 		if (!getCookie("firebaseToken")) {
-			const firebaseToken = await fetchFirebaseToken();
+			const firebaseToken = await fetchFirebaseToken(user.accessToken);
 			const { exp } = getJWTPayload(user.firebaseToken);
 			if (firebaseToken) {
 				// Store firebaseToken cookie (for quick refreshes)
@@ -168,6 +177,7 @@ async function makePostRequest(url, body, accessToken = null) {
 		// 	return;
 		// }
 	}
+	returnToDefaultState();
 }
 
 // source: trust me bro
@@ -385,25 +395,27 @@ async function retryPostRequest(url, body, accessToken, errorMessage) {
 		// Warn user about the API error
 		alert(errorMessage);
 
-		// Return to app starting state
-		hideUserSettings();
-		hidePlaceSearchMenu();
-		let bikeListMenu = document.getElementById("bikeMenu");
-		if (bikeListMenu) {
-			bikeListMenu.classList.add("smooth-slide-to-bottom");
-			setTimeout(() => bikeListMenu.remove(), 500); // remove element after animation
-			return; // prevent station card from being hidden if there was a bike list menu
-		}
-		let menu = document.getElementById("stationMenu");
-		if (menu) {
-			menu.classList.add("smooth-slide-to-left");
-			setTimeout(() => menu.remove(), 500); // remove element after animation
-			document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
-		}
+		returnToDefaultState();
 
 		// Reset currentRequestTry
 		currentRequestTry = 0;
+	}
+}
 
-		return;
+function returnToDefaultState() {
+	// Return to app starting state
+	hideUserSettings();
+	hidePlaceSearchMenu();
+	let bikeListMenu = document.getElementById("bikeMenu");
+	if (bikeListMenu) {
+		bikeListMenu.classList.add("smooth-slide-to-bottom");
+		setTimeout(() => bikeListMenu.remove(), 500); // remove element after animation
+		return; // prevent station card from being hidden if there was a bike list menu
+	}
+	let menu = document.getElementById("stationMenu");
+	if (menu) {
+		menu.classList.add("smooth-slide-to-left");
+		setTimeout(() => menu.remove(), 500); // remove element after animation
+		document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
 	}
 }

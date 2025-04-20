@@ -95,9 +95,11 @@ async function login(event) {
 }
 
 async function fetchFirebaseToken(accessToken) {
-	const res = await fetch(FIREBASE_TOKEN_URL, {
-			headers: `mGira ${currentVersion}`,
-			"X-Gira-Token": accessToken,
+	const res = await makeProxyRequest(FIREBASE_TOKEN_URL, {
+			headers: {
+				"User-Agent": `mGira ${currentVersion}`,
+				"X-Gira-Token": accessToken,
+			},
 		}),
 		token = await res.text();
 	if (!res.ok) {
