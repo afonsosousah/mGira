@@ -175,26 +175,13 @@ async function encryptFirebaseToken(firebaseToken, authToken) {
 	const { sub, jti } = getJWTPayload(authToken);
 
 	// 1. Create key from sub (hex string)
-	const keyHex = sub.replaceAll("-", "");
-
-	if (keyHex.length !== 32 && keyHex.length !== 64) {
-		throw new Error("Key must be 32 or 64 hex characters (16 or 32 bytes)");
-	}
-
-	// Padding if needed (this is how Node treats 16-byte keys for AES-256)
-	let keyBytes = hexStringToBytes(keyHex);
-	if (keyBytes.length === 16) {
-		// Extend to 32 bytes by padding with zeros
-		let padded = new Uint8Array(32);
-		padded.set(keyBytes);
-		keyBytes = padded;
-	}
+	const key = sub.replaceAll("-", "");
 
 	// 2. IV from jti.slice(0, 16) using UTF-8 encoding
 	const iv = new TextEncoder().encode(jti.slice(0, 16));
 
 	// 3. Import key
-	const cryptoKey = await crypto.subtle.importKey("raw", keyBytes, { name: "AES-CBC" }, false, ["encrypt"]);
+	const cryptoKey = await crypto.subtle.importKey("raw", key, { name: "AES-CBC" }, false, ["encrypt"]);
 
 	// 4. Encrypt
 	const plaintext = new TextEncoder().encode(firebaseToken);
