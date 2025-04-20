@@ -63,6 +63,9 @@ async function login(event) {
 		user.accessToken = response.data.accessToken;
 		user.refreshToken = response.data.refreshToken;
 		user.expiration = response.data.expiration;
+		const firebaseToken = await fetchFirebaseToken(user.accessToken);
+		if (firebaseToken) user.firebaseToken = encryptFirebaseToken(firebaseToken, user.accessToken);
+		else alert("Erro ao obter o token de verificação do dispositivo. A app não vai funcionar corretamente.");
 
 		/* Run the startup functions */
 		await runStartupFunctions();
@@ -81,11 +84,34 @@ async function login(event) {
 		// Store accessToken cookie (for quick refreshes)
 		createCookie("accessToken", user.accessToken, accessTokenExpiryDate);
 
+		const { exp: firebaseExpiryDate } = getJWTPayload(user.firebaseToken);
+		createCookie("firebaseToken", user.firebaseToken, new Date(firebaseExpiryDate * 1000));
+
 		document.getElementById("loginMenu")?.remove();
 		tokenRefreshed = true;
 	} else {
 		alert("Login failed!");
 	}
+}
+
+async function fetchFirebaseToken(accessToken) {
+	const res = await fetch(FIREBASE_TOKEN_URL, {
+			headers: `mGira ${currentVersion}`,
+			"X-Gira-Token": accessToken,
+		}),
+		token = await res.text();
+	if (!res.ok) {
+		console.error("Error fetching encrypted token: ", token);
+		return null;
+	}
+	return token;
+}
+
+function getJWTPayload(token) {
+	// Decode the JWT token and get the payload
+	const payload = token.split(".")[1];
+	const decodedPayload = atob(payload);
+	return JSON.parse(decodedPayload);
 }
 
 async function runStartupFunctions() {
@@ -115,7 +141,7 @@ async function validateLogin() {
 			query: `mutation { 
 				validateLogin(in: { 
 					language: "pt",
-					userAgent: "Gira/3.4.0 (Android 34)",
+					userAgent: "Gira/3.4.3 (Android 34)",
 					firebaseToken: "cwEUfibvTHCRZ6z3R1l3B8"
 				}) { messages { code text } } 
 			}`,

@@ -112,6 +112,12 @@ async function initMap() {
 		user.accessToken = accessTokenCookie;
 	}
 
+	// Check if the user has a stored firebase token
+	const firebaseTokenCookie = getCookie("firebaseToken");
+	if (firebaseTokenCookie) {
+		user.firebaseToken = firebaseTokenCookie;
+	}
+
 	/* Run the startup functions */
 	await runStartupFunctions();
 }

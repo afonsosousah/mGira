@@ -146,7 +146,7 @@ function createCookie(name, value, expiryDate) {
 		"=" +
 		value +
 		"; expires=" +
-		expiryDate.toGMTString() +
+		expiryDate.toUTCString() +
 		"; SameSite=strict" +
 		"; Domain=" +
 		getTLD() +

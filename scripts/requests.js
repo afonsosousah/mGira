@@ -8,6 +8,7 @@ const GIRA_GRAPHQL_WS_ENDPOINT = "wss://c2g091p01.emel.pt/ws/graphql";
 const GIRA_AUTH_ENDPOINT = "https://api-auth.emel.pt/auth";
 const GIRA_TOKEN_REFRESH_ENDPOINT = "https://api-auth.emel.pt/token/refresh";
 const GIRA_USER_ENDPOINT = "https://api-auth.emel.pt/user";
+const FIREBASE_TOKEN_URL = "https://luk.moe/girabot_tokens/exchange";
 
 const NUMBER_OF_RETRIES = 3;
 const DEFAULT_PROXY = "https://corsproxy.afonsosousah.workers.dev/";
@@ -19,10 +20,11 @@ async function makePostRequest(url, body, accessToken = null) {
 	const response = await fetch(proxyURL ?? DEFAULT_PROXY, {
 		method: "POST",
 		headers: {
-			"User-Agent": "Gira/3.4.0 (Android 34)",
+			"User-Agent": "Gira/3.4.3 (Android 34)",
 			"X-Proxy-URL": url,
 			"Content-Type": "application/json",
 			"X-Authorization": `Bearer ${accessToken}`,
+			"X-Firebase-Token": encryptFirebaseToken(user.firebaseToken, user.accessToken),
 		},
 		body: body,
 	});
@@ -31,9 +33,19 @@ async function makePostRequest(url, body, accessToken = null) {
 
 		// refresh token
 		accessToken = await tokenRefresh();
+		// se o token tiver expirado
+		if (!getCookiie("firebaseToken")) {
+			const firebaseToken = await fetchFirebaseToken();
+			const { exp } = getJWTPayload(user.firebaseToken);
+			if (firebaseToken) {
+				// Store firebaseToken cookie (for quick refreshes)
+				createCookie("firebaseToken", firebaseToken, new Date(exp * 1000)); // 30 days
+				user.firebaseToken = firebaseToken;
+			} else delete user.firebaseToken;
+		}
 
-		// check if token refresh was successful
-		if (typeof accessToken !== "undefined") {
+		// check if token refresh was successful and there's a firebase token
+		if (typeof accessToken !== "undefined" && user.firebaseToken) {
 			// try to make request again
 			return await retryPostRequest(url, body, accessToken, "Erro da API (401)"); // be sure to use latest available token
 		}
@@ -156,6 +168,20 @@ async function makePostRequest(url, body, accessToken = null) {
 		// 	return;
 		// }
 	}
+}
+
+// source: trust me bro
+function encryptFirebaseToken(firebaseToken, authToken) {
+	let { sub, jti } = getJWTPayload(authToken);
+
+	const key = sub.replaceAll("-", "");
+	const iv = jti.slice(0, 16);
+
+	let cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+
+	let encrypted = cipher.update(firebaseToken, "utf8", "base64");
+
+	return encrypted + cipher.final("base64");
 }
 
 async function makeGetRequest(url, accessToken = null) {
