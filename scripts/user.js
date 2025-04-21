@@ -100,6 +100,7 @@ async function fetchFirebaseToken(accessToken) {
 				"User-Agent": `mGira ${currentVersion}`,
 				"X-Gira-Token": accessToken,
 			},
+			method: "POST",
 		}),
 		token = await res.text();
 	if (!res.ok) {
