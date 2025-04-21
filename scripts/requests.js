@@ -45,8 +45,8 @@ async function makePostRequest(url, body, accessToken = null) {
 		// se o token tiver expirado
 		if (!getCookie("firebaseToken")) {
 			const firebaseToken = await fetchFirebaseToken(user.accessToken);
-			const { exp } = getJWTPayload(user.firebaseToken);
 			if (firebaseToken) {
+				const { exp } = getJWTPayload(user.firebaseToken);
 				// Store firebaseToken cookie (for quick refreshes)
 				createCookie("firebaseToken", firebaseToken, new Date(exp * 1000)); // 30 days
 				user.firebaseToken = firebaseToken;
