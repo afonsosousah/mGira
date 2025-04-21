@@ -3,8 +3,9 @@ let proxyURL = null;
 let activeTripObj;
 let currentRequestTry = 0;
 
-const GIRA_GRAPHQL_ENDPOINT = "https://c2g091p01.emel.pt/api/graphql";
+// const GIRA_GRAPHQL_ENDPOINT = "https://c2g091p01.emel.pt/api/graphql";
 const GIRA_GRAPHQL_WS_ENDPOINT = "wss://c2g091p01.emel.pt/ws/graphql";
+const GIRA_GRAPHQL_ENDPOINT = GIRA_GRAPHQL_WS_ENDPOINT.replace("wss://", "https://");
 const GIRA_AUTH_ENDPOINT = "https://api-auth.emel.pt/auth";
 const GIRA_TOKEN_REFRESH_ENDPOINT = "https://api-auth.emel.pt/token/refresh";
 const GIRA_USER_ENDPOINT = "https://api-auth.emel.pt/user";
