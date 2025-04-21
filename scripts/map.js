@@ -12,6 +12,7 @@ let deviceHeadingOffset = 0; // offset between the gps heading when above 5kph a
 let watchPositionIDs = [];
 let last5PositionsAngles = [];
 let inStraightLine = false;
+let isRotationEnabled = false;
 
 async function initMap() {
 	// Set cycleways style
@@ -309,9 +310,9 @@ function getLocation(zoom = true) {
 			anchor: [0.5, 0.5],
 			anchorXUnits: "fraction",
 			anchorYUnits: "fraction",
-			src: "assets/images/gps_dot.png",
+			src: `assets/images/gps_dot${isRotationEnabled ? "" : "_no_arrow"}.png`,
 			rotation: heading,
-			rotateWithView: true, // very important
+			rotateWithView: isRotationEnabled, // very important
 		}),
 	});
 	iconFeature.setStyle(iconStyle);
@@ -477,6 +478,7 @@ function getLocation(zoom = true) {
 }
 
 function startLocationDotRotation() {
+	if (isRotationEnabled) return;
 	let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 	let handler = e => {
@@ -578,4 +580,5 @@ function startLocationDotRotation() {
 	} else {
 		window.addEventListener("deviceorientationabsolute", e => requestAnimationFrame(() => handler(e)), true);
 	}
+	isRotationEnabled = true;
 }

@@ -99,7 +99,7 @@ async function runStartupFunctions() {
 	getLocation();
 
 	// Start rotation of location dot
-	startLocationDotRotation();
+	// startLocationDotRotation();
 
 	// Start WebSocket connection. This also loads the stations once they're sent
 	startWSConnection();

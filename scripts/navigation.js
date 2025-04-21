@@ -11,6 +11,7 @@ let lastUserPosition = null;
 
 async function startNavigation(walkingOnly = false) {
 	navigationActive = true;
+	startLocationDotRotation();
 
 	// Tell the user that there is navigation going, so he needs to rotate the screen to portrait
 	//if (window.matchMedia("(orientation: landscape)").matches) showRotationNotice();
@@ -434,6 +435,7 @@ async function orientationChangeHandler(event) {
 }
 
 async function goIntoLandscapeNavigationUI() {
+	startLocationDotRotation();
 	// Make the device awake
 	try {
 		wakeLock = await navigator.wakeLock.request("screen");
