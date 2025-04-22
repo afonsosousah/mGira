@@ -88,10 +88,11 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 - v0.0.4 - 24/02/2024
 - v0.0.5 - 10/11/2024
 - v0.1.0 - 13/11/2024
-- v0.1.1 - 16/04/2025
+- v0.1.1 - 22/04/2025
   - Pequenas correções gerais
   - Ciclovias atualizadas
   - Atualização dos endpoints
+  - Adicionado um modo de programador nas definições
 
 ## Licença
 

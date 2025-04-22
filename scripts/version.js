@@ -8,6 +8,7 @@ Notas da versão ${currentVersion}<br>
 	<li>Pequenas correções gerais</li>
 	<li>Ciclovias atualizadas</li>
 	<li>Atualização dos endpoints</li>
+	<li>Adicionado um modo de programador nas definições</li>
 </ul>
 `;
 
