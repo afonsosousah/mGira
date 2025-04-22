@@ -254,6 +254,7 @@ async function openBikeList(stationSerialNumber) {
 				<div id="bikeInfo">
 					<div id="bikeName">${bike.name}</div>
 					<div id="bikeDock">Doca ${dockObj.name}</div>
+					${devMode ? `<div id="serialNum">Número de série: ${bike.serialNumber}</div>` : ""}
 				</div>
                 <i id="reserveBikeIcon" class="bi bi-arrow-bar-right"></i></div>
             </div>
