@@ -436,6 +436,7 @@ async function orientationChangeHandler(event) {
 
 async function goIntoLandscapeNavigationUI() {
 	startLocationDotRotation();
+	getLocation();
 	// Make the device awake
 	try {
 		wakeLock = await navigator.wakeLock.request("screen");

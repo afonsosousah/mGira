@@ -12,7 +12,7 @@ let deviceHeadingOffset = 0; // offset between the gps heading when above 5kph a
 let watchPositionIDs = [];
 let last5PositionsAngles = [];
 let inStraightLine = false;
-let isRotationEnabled = false;
+let isRotationEnabled;
 
 async function initMap() {
 	// Set cycleways style
@@ -463,6 +463,8 @@ function getLocation(zoom = true, followLocationOverride) {
 
 function startLocationDotRotation() {
 	if (isRotationEnabled) return;
+	isRotationEnabled = true;
+	console.log("Enabling rotation");
 	let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
 	let handler = e => {
@@ -531,18 +533,25 @@ function startLocationDotRotation() {
 				"Nos dispositivos Apple, é necessária permissão do utilizador para aceder à bússola do dispositivo.",
 				() => {
 					// User clicked OK
-					DeviceOrientationEvent.requestPermission()
+					DeviceOrientationEvent.requestPermission?.()
 						.then(response => {
 							if (response === "granted") {
 								window.addEventListener("deviceorientation", e => requestAnimationFrame(() => handler(e)), true);
 							} else {
+								isRotationEnabled = false;
 								alert("A orientação não irá funcionar corretamente!");
 							}
 						})
-						.catch(() => alert("Bússola não suportada"));
+						.catch(() => {
+							isRotationEnabled = false;
+							alert("Bússola não suportada");
+						});
 				},
 				// User clicked Ignore
-				() => alert("A orientação não irá funcionar corretamente!"),
+				() => {
+					isRotationEnabled = false;
+					alert("A orientação não irá funcionar corretamente!");
+				},
 				"Ok",
 				"Ignorar"
 			);
@@ -564,5 +573,4 @@ function startLocationDotRotation() {
 	} else {
 		window.addEventListener("deviceorientationabsolute", e => requestAnimationFrame(() => handler(e)), true);
 	}
-	isRotationEnabled = true;
 }
