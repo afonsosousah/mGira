@@ -8,21 +8,32 @@ const GIRA_GRAPHQL_WS_ENDPOINT = "wss://c2g091p01.emel.pt/ws/graphql";
 const GIRA_AUTH_ENDPOINT = "https://api-auth.emel.pt/auth";
 const GIRA_TOKEN_REFRESH_ENDPOINT = "https://api-auth.emel.pt/token/refresh";
 const GIRA_USER_ENDPOINT = "https://api-auth.emel.pt/user";
+const FIREBASE_TOKEN_URL = "https://luk.moe/girabot_tokens/exchange";
 
 const NUMBER_OF_RETRIES = 3;
 const DEFAULT_PROXY = "https://corsproxy.afonsosousah.workers.dev/";
+
+async function makeProxyRequest(url, init) {
+	return fetch(proxyURL ?? DEFAULT_PROXY, {
+		...init,
+		headers: {
+			...init.headers,
+			"X-Proxy-URL": url,
+		},
+	});
+}
 
 async function makePostRequest(url, body, accessToken = null) {
 	// Increment current request try
 	currentRequestTry += 1;
 
-	const response = await fetch(proxyURL ?? DEFAULT_PROXY, {
+	const response = await makeProxyRequest(url, {
 		method: "POST",
 		headers: {
-			"User-Agent": "Gira/3.4.0 (Android 34)",
-			"X-Proxy-URL": url,
+			"User-Agent": "Gira/3.4.3 (Android 34)",
 			"Content-Type": "application/json",
 			"X-Authorization": `Bearer ${accessToken}`,
+			"X-Firebase-Token": await encryptFirebaseToken(user.firebaseToken, user.accessToken),
 		},
 		body: body,
 	});
@@ -31,9 +42,14 @@ async function makePostRequest(url, body, accessToken = null) {
 
 		// refresh token
 		accessToken = await tokenRefresh();
+		// se o token tiver expirado
+		if (!getCookie("firebaseToken")) {
+			const firebaseToken = await fetchFirebaseToken(user.accessToken);
+			if (!firebaseToken) delete user.firebaseToken;
+		}
 
-		// check if token refresh was successful
-		if (typeof accessToken !== "undefined") {
+		// check if token refresh was successful and there's a firebase token
+		if (typeof accessToken !== "undefined" && user.firebaseToken) {
 			// try to make request again
 			return await retryPostRequest(url, body, accessToken, "Erro da API (401)"); // be sure to use latest available token
 		}
@@ -156,6 +172,41 @@ async function makePostRequest(url, body, accessToken = null) {
 		// 	return;
 		// }
 	}
+	returnToDefaultState();
+}
+
+// source: trust me bro
+async function encryptFirebaseToken(firebaseToken, authToken) {
+	const { sub, jti } = getJWTPayload(authToken);
+
+	// 1. Create key from sub (hex string)
+	const key = new TextEncoder().encode(sub.replaceAll("-", ""));
+
+	// 2. IV from jti.slice(0, 16) using UTF-8 encoding
+	const iv = new TextEncoder().encode(jti.slice(0, 16));
+
+	// 3. Import key
+	const cryptoKey = await crypto.subtle.importKey("raw", key, { name: "AES-CBC" }, false, ["encrypt"]);
+
+	// 4. Encrypt
+	const tokenEncoded = new TextEncoder().encode(firebaseToken);
+	const encryptedBuffer = await crypto.subtle.encrypt({ name: "AES-CBC", iv }, cryptoKey, tokenEncoded);
+
+	// 5. Convert to base64
+	return bufferToBase64(encryptedBuffer);
+}
+
+function hexStringToBytes(hex) {
+	const bytes = new Uint8Array(hex.length / 2);
+	for (let i = 0; i < bytes.length; i++) {
+		bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+	}
+	return bytes;
+}
+
+function bufferToBase64(buffer) {
+	const binary = String.fromCharCode(...new Uint8Array(buffer));
+	return btoa(binary);
 }
 
 async function makeGetRequest(url, accessToken = null) {
@@ -339,25 +390,27 @@ async function retryPostRequest(url, body, accessToken, errorMessage) {
 		// Warn user about the API error
 		alert(errorMessage);
 
-		// Return to app starting state
-		hideUserSettings();
-		hidePlaceSearchMenu();
-		let bikeListMenu = document.getElementById("bikeMenu");
-		if (bikeListMenu) {
-			bikeListMenu.classList.add("smooth-slide-to-bottom");
-			setTimeout(() => bikeListMenu.remove(), 500); // remove element after animation
-			return; // prevent station card from being hidden if there was a bike list menu
-		}
-		let menu = document.getElementById("stationMenu");
-		if (menu) {
-			menu.classList.add("smooth-slide-to-left");
-			setTimeout(() => menu.remove(), 500); // remove element after animation
-			document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
-		}
+		returnToDefaultState();
 
 		// Reset currentRequestTry
 		currentRequestTry = 0;
+	}
+}
 
-		return;
+function returnToDefaultState() {
+	// Return to app starting state
+	hideUserSettings();
+	hidePlaceSearchMenu();
+	let bikeListMenu = document.getElementById("bikeMenu");
+	if (bikeListMenu) {
+		bikeListMenu.classList.add("smooth-slide-to-bottom");
+		setTimeout(() => bikeListMenu.remove(), 500); // remove element after animation
+		return; // prevent station card from being hidden if there was a bike list menu
+	}
+	let menu = document.getElementById("stationMenu");
+	if (menu) {
+		menu.classList.add("smooth-slide-to-left");
+		setTimeout(() => menu.remove(), 500); // remove element after animation
+		document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
 	}
 }
