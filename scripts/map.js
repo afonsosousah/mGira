@@ -116,7 +116,7 @@ async function initMap() {
 	const firebaseTokenCookie = getCookie("firebaseToken");
 	if (firebaseTokenCookie) {
 		user.firebaseToken = firebaseTokenCookie;
-	}
+	} else await fetchFirebaseToken(user.accessToken);
 
 	/* Run the startup functions */
 	await runStartupFunctions();

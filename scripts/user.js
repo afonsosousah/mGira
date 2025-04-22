@@ -63,9 +63,7 @@ async function login(event) {
 		user.accessToken = response.data.accessToken;
 		user.refreshToken = response.data.refreshToken;
 		user.expiration = response.data.expiration;
-		const firebaseToken = await fetchFirebaseToken(user.accessToken);
-		if (firebaseToken) user.firebaseToken = encryptFirebaseToken(firebaseToken, user.accessToken);
-		else alert("Erro ao obter o token de verificação do dispositivo. A app não vai funcionar corretamente.");
+		await fetchFirebaseToken(user.accessToken);
 
 		/* Run the startup functions */
 		await runStartupFunctions();
@@ -83,9 +81,6 @@ async function login(event) {
 
 		// Store accessToken cookie (for quick refreshes)
 		createCookie("accessToken", user.accessToken, accessTokenExpiryDate);
-
-		const { exp: firebaseExpiryDate } = getJWTPayload(user.firebaseToken);
-		createCookie("firebaseToken", user.firebaseToken, new Date(firebaseExpiryDate * 1000));
 
 		document.getElementById("loginMenu")?.remove();
 		tokenRefreshed = true;
@@ -105,8 +100,12 @@ async function fetchFirebaseToken(accessToken) {
 		token = await res.text();
 	if (!res.ok) {
 		console.error("Error fetching encrypted token: ", token);
+		alert("Erro ao obter o token de verificação do dispositivo. A app não vai funcionar corretamente.");
 		return null;
 	}
+	const { exp } = getJWTPayload(token);
+	createCookie("firebaseToken", token, new Date(exp * 1000)); // 30 days
+	user.firebaseToken = token;
 	return token;
 }
 
