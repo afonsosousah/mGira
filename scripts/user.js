@@ -370,8 +370,15 @@ async function openUserSettings() {
 		console.log(`Minimum distance to station was set to ${minimumDistanceToStation}m`);
 	});
 	const devModeInput = document.getElementById("devModeCheckbox");
+	let devModeCounter = 0;
 	devModeInput.addEventListener("change", () => {
 		devMode = devModeInput.checked;
+		if (devMode) devModeCounter++;
+		if (devModeCounter === 3) {
+			minimumDistanceToStation = Infinity; // cookie is not updated intentionally
+			console.log("Easter egg activated, disabled minimum distance requirement");
+			alert("Se chegaste aqui, provavelmente sabes o que acabaste de fazer. Parabéns!");
+		}
 		customCreateCookie("devMode", devMode);
 
 		console.log(`Dev mode was set to ${devMode}`);
