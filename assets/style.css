@@ -3041,6 +3041,11 @@ input[type=number] {
 		width: calc(50vw + 2vw);
 		height: 16vw;
 	}
+	.user-settings #settingsContainer #devMode {
+		padding: 2vh;
+		width: calc(50vw - 2vw);
+		padding: 2vw;
+	}
 	#bottom {
 		margin-top: 3vw;
 		display: flex;
