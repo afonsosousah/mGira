@@ -23,8 +23,11 @@ function createCustomAlert(message, title = null) {
 
 	document.body.appendChild(mObj);
 
-	if (document.getElementById("userSettings"))
+	if (document.getElementById("userSettings")) {
 		mObj.style.height = document.getElementById("userSettings").clientHeight + "px";
+		mObj.style.alignItems = "flex-start";
+		alertObj.style.marginTop = (document.body.clientHeight - alertObj.clientHeight) / 2 + "px";
+	}
 }
 
 function createCustomYesNoPrompt(message, yesHandler, noHandler, yesText = "Sim", noText = "Não") {
