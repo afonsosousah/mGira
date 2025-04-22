@@ -200,6 +200,7 @@ async function getTripHistory(pageNum = 1, pageSize = TRIP_HISTORY_PAGE_SIZE) {
 // Open the login menu element and populate it
 function openLoginMenu() {
 	console.log("login menu was opened");
+	changeThemeColor("#ffffff");
 
 	// delete cookies
 	deleteCookie("refreshToken");
