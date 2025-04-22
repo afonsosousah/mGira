@@ -2,6 +2,7 @@ const TRIP_HISTORY_PAGE_SIZE = 10;
 let tokenRefreshed = false;
 let minimumDistanceToStation = 50;
 let tripHistory = null;
+let bikeSerialNumberMapping;
 
 // Define the global user, where the variables will be stored
 let user = {};
@@ -118,7 +119,7 @@ function getJWTPayload(token) {
 
 async function runStartupFunctions() {
 	// Get all user details
-	getUserInformation();
+	await getUserInformation();
 
 	// Check if update info should be shown
 	showUpdateInfoIfNeeded();
@@ -131,6 +132,17 @@ async function runStartupFunctions() {
 
 	// Start WebSocket connection. This also loads the stations once they're sent
 	startWSConnection();
+
+	// Attempt to fetch bikes from github
+	let bikeMappingRes = await fetch(
+		"https://raw.githubusercontent.com/afonsosousah/mGira/refs/heads/main/assets/bikeSerialNumberMapping.json"
+	).catch(() => null);
+	// If it fails, fallback to local file
+	if (!bikeMappingRes?.ok) {
+		console.warn("Failed to fetch bike serial number mapping from github, using local file instead.", bikeMappingRes);
+		bikeMappingRes = await fetch("assets/bikeSerialNumberMapping.json");
+	}
+	bikeSerialNumberMapping = await bikeMappingRes.json();
 
 	// Show any messages from EMEL
 	await validateLogin();
