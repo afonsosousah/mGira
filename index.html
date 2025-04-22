@@ -177,6 +177,14 @@
 				console.log("Using default minimum distance to station");
 				minimumDistanceToStation = 50;
 			}
+			const devModeCookie = getCookie("devMode");
+			if (devModeCookie) {
+				console.log("Using user defined dev mode");
+				devMode = devModeCookie === "true";
+			} else {
+				console.log("Using default dev mode");
+				devMode = false;
+			}
 
 			// Prevent resize on keyboard open
 			let initialWindowHeight = window.innerHeight;

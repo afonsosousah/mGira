@@ -137,7 +137,7 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 			return;
 		}
 
-		// check if the user is close to the station (less than 50 meters)
+		// check if the user is close to the station
 		if (!(distance(pos, [stationObj.longitude, stationObj.latitude]) < minimumDistanceToStation)) {
 			alert("Não está próximo da estação!");
 			return;

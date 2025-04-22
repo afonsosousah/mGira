@@ -1,6 +1,7 @@
 const TRIP_HISTORY_PAGE_SIZE = 10;
 let tokenRefreshed = false;
 let minimumDistanceToStation = 50;
+let devMode = false;
 let tripHistory = null;
 let bikeSerialNumberMapping;
 
@@ -331,6 +332,10 @@ async function openUserSettings() {
 					<option value="100" ${minimumDistanceToStation === 100 ? `selected="selected"` : ""}>100m</option>
 				</select>
 			</div>
+			<div id="devMode">
+				<div>Modo de programador</div>
+				<input id="devModeCheckbox" type="checkbox" ${devMode ? `checked="checked"` : ""}"/>
+			</div>
         </div>
 		<div id="issueButtonContainer">
 			<div id="issueButton" onclick="window.open('https://github.com/afonsosousah/mGira/issues')">
@@ -373,19 +378,37 @@ async function openUserSettings() {
 		const newDistance = Number(distanceToStationSelector.value); // convert to int
 		minimumDistanceToStation = newDistance; // Set the value
 
-		// Set the cookie expiry to 1 year after today.
-		const expiryDate = new Date();
-		expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-
-		// Store minimum distance to station cookie
-		createCookie("minimumDistanceToStation", minimumDistanceToStation, expiryDate);
+		customCreateCookie("minimumDistanceToStation", newDistance); // Store the value in a cookie
 
 		console.log(`Minimum distance to station was set to ${minimumDistanceToStation}m`);
+	});
+	const devModeInput = document.getElementById("devModeCheckbox");
+	let devModeCounter = 0;
+	devModeInput.addEventListener("change", () => {
+		devMode = devModeInput.checked;
+		if (devMode) devModeCounter++;
+		if (devModeCounter === 3) {
+			minimumDistanceToStation = Infinity; // cookie is not updated intentionally
+			console.log("Easter egg activated, disabled minimum distance requirement");
+			alert("Se chegaste aqui, provavelmente sabes o que acabaste de fazer. Parabéns!");
+		}
+		customCreateCookie("devMode", devMode);
+
+		console.log(`Dev mode was set to ${devMode}`);
 	});
 
 	// Set status bar color in PWA
 	// Set notification bar color in Progressive Web App (installable website)
 	changeThemeColor("#79c000");
+}
+
+function customCreateCookie(name, value) {
+	// Set the cookie expiry to 1 year after today.
+	const expiryDate = new Date();
+	expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+
+	// Store cookie
+	createCookie(name, value, expiryDate);
 }
 
 function hideUserSettings(animate = true) {
