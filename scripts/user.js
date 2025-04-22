@@ -125,7 +125,7 @@ async function runStartupFunctions() {
 	showUpdateInfoIfNeeded();
 
 	// Get the user location on app open
-	getLocation();
+	getLocation(true, true);
 
 	// Start rotation of location dot
 	// startLocationDotRotation();

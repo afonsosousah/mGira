@@ -303,7 +303,8 @@ function zoomOut() {
 	});
 }
 
-function getLocation(zoom = true) {
+function getLocation(zoom = true, followLocationOverride) {
+	if (typeof followLocationOverride === "boolean") followLocation = followLocationOverride;
 	// Create the current position icon feature
 	const iconFeature = new ol.Feature({
 		geometry: new ol.geom.Point(ol.proj.fromLonLat(pos ?? [0, 0])),
@@ -416,14 +417,14 @@ function getLocation(zoom = true) {
 			const view = map.getView();
 			const distanceBetweenUpdates = distance(ol.proj.toLonLat(view.getCenter()), pos);
 			document.getElementById("distanceBetweenUpdates").innerHTML = distanceBetweenUpdates.toFixed(2) + "m";
+			const currentZoom = view.getZoom();
 			if (distanceBetweenUpdates > 5) {
 				view.animate({
 					center: ol.proj.fromLonLat(pos),
-					zoom: map.getView().getZoom(), // use the current zoom
+					zoom: zoom && currentZoom < 13.5 ? 16 : currentZoom, // use the current zoom
 					duration: 500,
 				});
-			}
-			//map.getView().setCenter(ol.proj.fromLonLat(pos));
+			} else if (zoom) view.setZoom(currentZoom < 13.5 ? 16 : currentZoom);
 		}
 
 		if (navigationActive && rotationMode === "route") updateRotation();
@@ -454,29 +455,6 @@ function getLocation(zoom = true) {
 			}
 		);
 		watchPositionIDs.push(watchPositionID);
-
-		// Pan to location only once when position has been set
-		if (zoom) {
-			const locationPromise = new Promise((resolve, reject) => {
-				const loop = () => (pos ? resolve(pos) : setTimeout(loop));
-				loop();
-			});
-
-			locationPromise.then(pos => {
-				// Pan to location
-				const currentZoom = map.getView().getZoom();
-
-				const view = map.getView();
-				view.animate({
-					center: ol.proj.fromLonLat(pos),
-					zoom: currentZoom < 13.5 ? 16 : currentZoom,
-					duration: 100,
-				});
-
-				// Only set the follow location at the end, so that the one time zoom works
-				if (!followLocation) followLocation = true;
-			});
-		}
 	} else {
 		// Browser doesn't support Geolocation
 		console.log("Error: Your browser doesn't support geolocation.");
