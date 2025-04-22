@@ -9,6 +9,8 @@ Notas da versão ${currentVersion}<br>
 	<li>Ciclovias atualizadas</li>
 	<li>Atualização dos endpoints</li>
 	<li>Adicionado um modo de programador nas definições</li>
+	<li>Pedido de orientação em iOS movido para ser menos intrusivo</li>
+	<li>Problemas de zoom ao iniciar a app corrigidos</li>
 </ul>
 `;
 

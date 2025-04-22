@@ -93,6 +93,8 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
   - Ciclovias atualizadas
   - Atualização dos endpoints
   - Adicionado um modo de programador nas definições
+  - Pedido de orientação em iOS movido para ser menos intrusivo
+  - Problemas de zoom ao iniciar a app corrigidos
 
 ## Licença
 
