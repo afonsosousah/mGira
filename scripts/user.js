@@ -102,7 +102,7 @@ async function fetchFirebaseToken(accessToken) {
 		token = await res.text();
 	if (!res.ok) {
 		console.error("Error fetching encrypted token: ", token);
-		alert("Erro ao obter o token de verificação do dispositivo. A app não vai funcionar corretamente.");
+		alert("Erro ao obter o token de verificação do dispositivo. A app pode não funcionar corretamente.");
 		return null;
 	}
 	const { exp } = getJWTPayload(token);
@@ -218,6 +218,7 @@ function openLoginMenu() {
 	// delete cookies
 	deleteCookie("refreshToken");
 	deleteCookie("accessToken");
+	deleteCookie("firebaseToken");
 
 	// delete user object
 	user = {};
