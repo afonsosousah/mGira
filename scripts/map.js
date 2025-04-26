@@ -110,7 +110,7 @@ async function initMap() {
 	const accessTokenCookie = getCookie("accessToken");
 	if (accessTokenCookie) {
 		user.accessToken = accessTokenCookie;
-	}
+	} else await tokenRefresh();
 
 	// Check if the user has a stored firebase token
 	const firebaseTokenCookie = getCookie("firebaseToken");
