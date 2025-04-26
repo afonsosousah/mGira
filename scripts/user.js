@@ -387,11 +387,13 @@ async function openUserSettings() {
 	let devModeCounter = 0;
 	devModeInput.addEventListener("change", () => {
 		devMode = devModeInput.checked;
-		if (devMode) devModeCounter++;
-		if (devModeCounter === 3) {
-			minimumDistanceToStation = Infinity; // cookie is not updated intentionally
-			console.log("Easter egg activated, disabled minimum distance requirement");
-			alert("Se chegaste aqui, provavelmente sabes o que acabaste de fazer. Parabéns!");
+		if (devMode) {
+			devModeCounter++;
+			if (devModeCounter === 3) {
+				minimumDistanceToStation = Infinity; // cookie is not updated intentionally
+				console.log("Easter egg activated, disabled minimum distance requirement");
+				alert("Se chegaste aqui, provavelmente sabes o que acabaste de fazer. Parabéns!");
+			}
 		}
 		customCreateCookie("devMode", devMode);
 
