@@ -505,6 +505,8 @@ async function openTripHistory() {
 		</div>
     `.trim();
 
+	console.log(tripHistory);
+
 	// populate the trip list
 	addTripsToDOM(tripHistory);
 
@@ -555,8 +557,13 @@ function addTripsToDOM(tripHistory) {
 		const formattedStartTime = tripDate.toLocaleTimeString("pt");
 
 		// Get formatted time
-		let tripTime = new Date(Date.parse(trip.endDate) - Date.parse(trip.startDate));
-		const formattedTime = tripTime.getHours() + "h" + tripTime.getMinutes().toString().padStart(2, "0") + "m";
+		const ms = Date.parse(trip.endDate) - Date.parse(trip.startDate);
+		const formattedTime =
+			(ms >= 1000 * 60 * 60 ? Math.floor(ms / (1000 * 60 * 60)) + "h" : "") +
+			(Math.floor(ms / (1000 * 60)) % 60) +
+			"m" +
+			(Math.floor(ms / 1000) % 60) +
+			"s";
 
 		// Get formatted cost
 		let formattedCost = parseFloat(trip.cost).toFixed(2);
