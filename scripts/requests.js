@@ -23,6 +23,20 @@ async function makeProxyRequest(url, init) {
 	});
 }
 
+const errorTranslations = {
+	trip_interval_limit: "Tem de esperar 5 minutos entre viagens.",
+	already_active_trip: "Já tem uma viagem a decorrer!",
+	unable_to_start_trip: "Não foi possível iniciar a viagem.",
+	trip_not_found: "Viagem não encontrada.",
+	invalid_arguments: "Argumentos inválidos.",
+	bike_already_in_trip: "Bicicleta já em viagem.",
+	bike_already_reserved: "Bicicleta já reservada.",
+	already_has_active_trip: "Já tem uma viagem a decorrer.",
+	no_bike_found: "Bicicleta não encontrada.",
+	bike_on_repair: "Bicicleta a ser reparada.",
+	bike_in_repair: "Bicicleta a ser reparada.",
+};
+
 async function makePostRequest(url, body, accessToken = null) {
 	// Increment current request try
 	currentRequestTry += 1;
@@ -67,32 +81,18 @@ async function makePostRequest(url, body, accessToken = null) {
 
 		return responseObject;
 	} else if (response.status === 400) {
-		const responseObject = await response.json();
-		if (responseObject.errors[0].message === "trip_interval_limit") {
-			alert("Tem de esperar 5 minutos entre viagens.");
-		} else if (responseObject.errors[0].message === "already_active_trip") {
-			alert("Já tem uma viagem a decorrer!");
-		} else if (responseObject.errors[0].message === "unable_to_start_trip") {
-			alert("Não foi possível iniciar a viagem.");
-		} else if (responseObject.errors[0].message === "trip_not_found") {
-			alert("Viagem não encontrada.");
-		} else if (responseObject.errors[0].message === "invalid_arguments") {
-			alert("Argumentos inválidos.");
-		} else if (responseObject.errors[0].message === "bike_already_in_trip") {
-			alert("Bicicleta já em viagem.");
-		} else if (responseObject.errors[0].message === "already_has_active_trip") {
-			alert("Já tem uma viagem a decorrer.");
-		} else if (responseObject.errors[0].message === "no_bike_found") {
-			alert("Bicicleta não encontrada.");
-		} else if (
-			responseObject.errors[0].message === "bike_on_repair" ||
-			responseObject.errors[0].message === "bike_in_repair"
-		) {
-			alert("Bicicleta a ser reparada.");
-		} else if (responseObject.errors[0].message !== "Error executing document.") {
+		const responseObject = await response.json(),
+			errorTranslation = errorTranslations[responseObject.errors[0].message];
+		if (errorTranslation) {
+			alert(errorTranslation);
+			return;
+		}
+
+		if (responseObject.errors[0].message !== "Error executing document.") {
 			// Show general error message for unknown errors
 			alert(responseObject.errors[0].message);
-		} else if (responseObject.errors[0].message === "Error executing document.") {
+			return;
+		} else {
 			// Common API processing error
 			// try for x times to do the request, otherwise just error out
 			if (currentRequestTry < NUMBER_OF_RETRIES) {
@@ -102,34 +102,8 @@ async function makePostRequest(url, body, accessToken = null) {
 			} else {
 				// Warn user about the API error
 				alert("Erro da API");
-
-				// Hide user menu if it is showing
-				hideUserSettings();
-
-				// Hide search place menu if it is showing
-				hidePlaceSearchMenu();
-
-				// Hide bike list menu if it is showing
-				let bikeListMenu = document.getElementById("bikeMenu");
-				if (bikeListMenu) {
-					bikeListMenu.classList.add("smooth-slide-to-bottom");
-					setTimeout(() => bikeListMenu.remove(), 500); // remove element after animation
-					return; // prevent station card from being hidden if there was a bike list menu
-				}
-
-				// Hide station card if it is showing
-				let menu = document.getElementById("stationMenu");
-				if (menu) {
-					menu.classList.add("smooth-slide-to-left");
-					setTimeout(() => menu.remove(), 500); // remove element after animation
-					document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
-				}
-
-				// Reset currentRequestTry
-				currentRequestTry = 0;
-
-				return;
 			}
+			// Do not return, this will return the app to its default state
 		}
 	} else if (response.status === 403) {
 		// Common API processing error
