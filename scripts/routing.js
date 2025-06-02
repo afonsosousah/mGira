@@ -801,18 +801,6 @@ function addStationPointToMap(station, start = true) {
 	let iconStyle;
 	if (station.assetStatus === "active") {
 		const bikeRatio = station.bikes / station.docks;
-		const filled =
-			station.bikes === 0
-				? 0
-				: bikeRatio <= 0.15
-				? 15
-				: bikeRatio <= 0.3
-				? 30
-				: bikeRatio <= 0.5
-				? 50
-				: bikeRatio < 1
-				? 80
-				: 100;
 
 		iconStyle = new ol.style.Style({
 			image: new ol.style.Icon({
@@ -821,7 +809,7 @@ function addStationPointToMap(station, start = true) {
 				anchor: [0.5, 1],
 				anchorXUnits: "fraction",
 				anchorYUnits: "fraction",
-				src: `assets/images/mapDot_${filled}.png`,
+				src: mapDotSVG(bikeRatio),
 			}),
 			text: new ol.style.Text({
 				text: station.bikes.toString(),
