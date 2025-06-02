@@ -65,7 +65,10 @@ async function initMap() {
 
 	// display popup on click
 	map.on("click", evt => {
-		const result = map.forEachFeatureAtPixel(evt.pixel, (feature, layer) => ({ feature: feature, layer: layer }));
+		const result = map.forEachFeatureAtPixel(evt.pixel, (feature, layer) => {
+			if (layer.get("name") === "currentLocationLayer") return undefined;
+			return { feature: feature, layer: layer };
+		});
 		if (!result) return;
 
 		let feature = result.feature;
