@@ -35,6 +35,8 @@ const errorTranslations = {
 	no_bike_found: "Bicicleta não encontrada.",
 	bike_on_repair: "Bicicleta a ser reparada.",
 	bike_in_repair: "Bicicleta a ser reparada.",
+	not_enough_balance:
+		'Saldo negativo. Se isto se deve a uma viagem mal terminada, por favor contacte <a href="mailto:gira@emel.pt">gira@emel.pt</a>',
 };
 
 async function makePostRequest(url, body, accessToken = null) {
