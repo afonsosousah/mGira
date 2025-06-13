@@ -257,6 +257,7 @@ async function closeUnlockBikeCard() {
 }
 
 function openTakeUnregisteredBikeMenu(stationSerialNumber) {
+	if (document.getElementById("takeUnregisteredBike")) return;
 	// get station object
 	const stationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
 
@@ -312,7 +313,7 @@ function takeUnregisteredBike() {
 		openUnlockBikeCard(null, JSON.stringify({ name: bikeName, serialNumber: bikeSerialNum }), null, true);
 		document.getElementById("takeUnregisteredBike")?.remove();
 	} else {
-		alert("A bicicleta não foi encontrada...");
+		alert(`A bicicleta ${bikeName} não foi encontrada...`);
 		document.getElementById("takeUnregisteredBike")?.remove();
 	}
 }
