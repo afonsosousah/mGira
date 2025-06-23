@@ -169,7 +169,8 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 	card.className = "bike-reserve";
 	card.id = "unlockBikeCard";
 	card.innerHTML = `
-		<div id="bikeReserveCard">	
+		<div id="bikeReserveCard">
+			<div id="backButton" onclick="closeUnlockBikeCard()"><i class="bi bi-arrow-90deg-left"></i></div>
 			<img src="assets/images/mGira_spinning.gif" id="spinner">
 		</div>
 	`.trim();
