@@ -502,8 +502,6 @@ async function openTripHistory() {
 		</div>
     `.trim();
 
-	console.log(tripHistory);
-
 	// populate the trip list
 	addTripsToDOM(tripHistory);
 

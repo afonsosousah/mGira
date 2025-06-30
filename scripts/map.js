@@ -128,7 +128,8 @@ async function initMap() {
 function mapDotSVG(ratio, docks = false) {
 	// Calculate the Y coordinate at which the top of the "fill" rectangle will be
 	// (the filled area is only visible from y=18 to y=430)
-	const y = (18 + (1 - ratio) * (430 - 18)).toFixed(0);
+	const effectiveRatio = docks ? 1 - ratio : ratio;
+	const y = (18 + (1 - effectiveRatio) * (430 - 18)).toFixed(0);
 
 	// Create the SVG itself
 	const svgString = `
@@ -171,7 +172,7 @@ async function loadStationMarkersFromArray(stationsArray, showDocks = false) {
 
 	let featuresArray = [];
 
-	for (const [featureID, station] of stationsArray.entries()) {
+	for (const [featureID, station] of stationsArray.sort((a, b) => b.latitude - a.latitude).entries()) {
 		let position = [station.longitude, station.latitude];
 
 		const iconFeature = new ol.Feature({
@@ -268,7 +269,7 @@ async function loadStationMarkersFromArray(stationsArray, showDocks = false) {
 			className: "stationsLayer",
 			name: "stationsLayer",
 			source: vectorSource,
-			zIndex: 0,
+			zIndex: 2,
 			//declutter: true
 		});
 
@@ -332,7 +333,7 @@ function getLocation(zoom = true, followLocationOverride) {
 	const vectorLayer = new ol.layer.Vector({
 		name: "currentLocationLayer",
 		source: vectorSource,
-		zIndex: 99,
+		zIndex: 1,
 		updateWhileInteracting: true,
 	});
 
