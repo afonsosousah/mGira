@@ -414,6 +414,17 @@ function getLocation(zoom = true, followLocationOverride) {
 			let feature = currentLocationLayer.getSource().getFeatures()[0];
 			feature.setStyle(iconStyle);
 			feature.getGeometry().setCoordinates(ol.proj.fromLonLat(pos));
+
+			// Update the zIndex based on zoom level
+			const currentZoom = map.getView().getZoom();
+			const animating = map.getView().getAnimating();
+			if (currentZoom < 13.5 && !animating) {
+				currentLocationLayer.setZIndex(99);
+			} else {
+				currentLocationLayer.setZIndex(1);
+			}
+			console.log("currentZoom: " + currentZoom);
+			console.log("currentLocationLayer zIndex: " + currentLocationLayer.getZIndex());
 		}
 
 		if (followLocation && !(rotationMode === "compass" || rotationMode === "route")) {
