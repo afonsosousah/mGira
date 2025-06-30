@@ -39,7 +39,8 @@ const errorTranslations = {
 		'Saldo negativo. Se isto se deve a uma viagem mal terminada, por favor contacte <a href="mailto:gira@emel.pt">gira@emel.pt</a>',
 };
 
-async function makePostRequest(url, body, accessToken = null) {
+async function makePostRequest(body, accessToken = null) {
+	const url = user.firebaseToken ? GIRA_GRAPHQL_ENDPOINT : GIRA_GRAPHQL_WS_ENDPOINT.replace("wss", "https");
 	// Increment current request try
 	currentRequestTry += 1;
 
@@ -49,7 +50,9 @@ async function makePostRequest(url, body, accessToken = null) {
 			"User-Agent": "Gira/3.4.3 (Android 34)",
 			"Content-Type": "application/json",
 			"X-Authorization": `Bearer ${accessToken}`,
-			"X-Firebase-Token": await encryptFirebaseToken(user.firebaseToken, user.accessToken),
+			...(user.firebaseToken
+				? { "X-Firebase-Token": await encryptFirebaseToken(user.firebaseToken, user.accessToken) }
+				: {}),
 		},
 		body: body,
 	});
@@ -67,7 +70,7 @@ async function makePostRequest(url, body, accessToken = null) {
 		// check if token refresh was successful and there's a firebase token
 		if (typeof accessToken !== "undefined" && user.firebaseToken) {
 			// try to make request again
-			return await retryPostRequest(url, body, accessToken, "Erro da API (401)"); // be sure to use latest available token
+			return await retryPostRequest(body, accessToken, "Erro da API (401)"); // be sure to use latest available token
 		}
 	} else if (response.ok) {
 		const responseObject = await response.json();
@@ -100,7 +103,7 @@ async function makePostRequest(url, body, accessToken = null) {
 			if (currentRequestTry < NUMBER_OF_RETRIES) {
 				// Wait before making next request (reduce error rate)
 				await delay(200);
-				return await makePostRequest(url, body, accessToken);
+				return await makePostRequest(body, accessToken);
 			} else {
 				// Warn user about the API error
 				alert("Erro da API");
@@ -110,12 +113,12 @@ async function makePostRequest(url, body, accessToken = null) {
 	} else if (response.status === 403) {
 		// Common API processing error
 		// try for x times to do the request, otherwise just error out
-		return await retryPostRequest(url, body, accessToken, "Erro da API (403)");
+		return await retryPostRequest(body, accessToken, "Erro da API (403)");
 
 		// if (currentRequestTry < NUMBER_OF_RETRIES) {
 		// 	// Wait before making next request (reduce error rate)
 		// 	await delay(200);
-		// 	return await makePostRequest(url, body, accessToken);
+		// 	return await makePostRequest(body, accessToken);
 		// } else {
 		// 	// Warn user about the API error
 		// 	alert("Erro da API (403)");
@@ -357,11 +360,11 @@ function startWSConnection(force = false) {
 	};
 }
 
-async function retryPostRequest(url, body, accessToken, errorMessage) {
+async function retryPostRequest(body, accessToken, errorMessage) {
 	if (currentRequestTry < NUMBER_OF_RETRIES) {
 		// Wait before making next request (reduce error rate)
 		await delay(200);
-		return await makePostRequest(url, body, accessToken);
+		return await makePostRequest(body, accessToken);
 	} else {
 		// Warn user about the API error
 		alert(errorMessage);

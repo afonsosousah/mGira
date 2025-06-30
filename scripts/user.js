@@ -102,7 +102,7 @@ async function fetchFirebaseToken(accessToken) {
 		token = await res.text();
 	if (!res.ok) {
 		console.error("Error fetching encrypted token: ", token);
-		alert("Erro ao obter o token de verificação do dispositivo. A app pode não funcionar corretamente.");
+		// alert("Erro ao obter o token de verificação do dispositivo. A app pode não funcionar corretamente.");
 		return null;
 	}
 	const { exp } = getJWTPayload(token);
@@ -119,9 +119,6 @@ function getJWTPayload(token) {
 }
 
 async function runStartupFunctions() {
-	// Get all user details
-	await getUserInformation();
-
 	// Check if update info should be shown
 	showUpdateInfoIfNeeded();
 
@@ -147,11 +144,13 @@ async function runStartupFunctions() {
 
 	// Show any messages from EMEL
 	await validateLogin();
+
+	// Get all user details
+	await getUserInformation();
 }
 
 async function validateLogin() {
 	const response = await makePostRequest(
-		GIRA_GRAPHQL_ENDPOINT,
 		JSON.stringify({
 			query: `mutation { 
 				validateLogin(in: { 
@@ -180,7 +179,6 @@ async function getUserInformation() {
 
 	// Make batch query for Gira client information, activeUserSubscriptions and tripHistory to speed up request
 	response = await makePostRequest(
-		GIRA_GRAPHQL_ENDPOINT,
 		JSON.stringify({
 			query: `query {
             client: client { code, type, balance, paypalReference, bonus, numberNavegante }
@@ -198,7 +196,6 @@ async function getUserInformation() {
 // get tripHistory
 async function getTripHistory(pageNum = 1, pageSize = TRIP_HISTORY_PAGE_SIZE) {
 	response = await makePostRequest(
-		GIRA_GRAPHQL_ENDPOINT,
 		JSON.stringify({
 			operationName: "tripHistory",
 			variables: { in: { _pageNum: pageNum, _pageSize: pageSize } },
