@@ -89,12 +89,11 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 - v0.0.5 - 10/11/2024
 - v0.1.0 - 13/11/2024
 - v0.1.1 - 22/04/2025
-  - Pequenas correções gerais
-  - Ciclovias atualizadas
-  - Atualização dos endpoints
-  - Adicionado um modo de programador nas definições
-  - Pedido de orientação em iOS movido para ser menos intrusivo
-  - Problemas de zoom ao iniciar a app corrigidos
+- v0.1.2 - 30/06/2025
+	- Correções de autenticação com Firebase e tokens de sessão
+	- Melhorias na experiência de localização e zoom no mapa
+	- Atualização do mapa para refletir alterações mais recentes
+	- Correção de problemas de visualização de estações e reservas
 
 ## Licença
 
