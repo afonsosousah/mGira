@@ -1,16 +1,14 @@
 // Current version number
-const currentVersion = "0.1.1";
+const currentVersion = "0.1.2";
 
 // Changelog HTML
 const changelogHTML = `
 Notas da versão ${currentVersion}<br>
 <ul>
-	<li>Pequenas correções gerais</li>
-	<li>Ciclovias atualizadas</li>
-	<li>Atualização dos endpoints</li>
-	<li>Adicionado um modo de programador nas definições</li>
-	<li>Pedido de orientação em iOS movido para ser menos intrusivo</li>
-	<li>Problemas de zoom ao iniciar a app corrigidos</li>
+	<li>Correções de autenticação com Firebase e tokens de sessão</li>
+	<li>Melhorias na experiência de localização e zoom no mapa</li>
+	<li>Atualização do mapa para refletir alterações mais recentes</li>
+	<li>Correção de problemas de visualização de estações e reservas</li>
 </ul>
 `;
 
