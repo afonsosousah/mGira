@@ -423,8 +423,6 @@ function getLocation(zoom = true, followLocationOverride) {
 			} else {
 				currentLocationLayer.setZIndex(1);
 			}
-			console.log("currentZoom: " + currentZoom);
-			console.log("currentLocationLayer zIndex: " + currentLocationLayer.getZIndex());
 		}
 
 		if (followLocation && !(rotationMode === "compass" || rotationMode === "route")) {
