@@ -37,6 +37,7 @@ const errorTranslations = {
 	bike_in_repair: "Bicicleta a ser reparada.",
 	not_enough_balance:
 		'Saldo negativo. Se isto se deve a uma viagem mal terminada, por favor contacte <a href="mailto:gira@emel.pt">gira@emel.pt</a>',
+	has_no_active_subscriptions: "Não tem um passe ativo.",
 };
 
 async function makePostRequest(body, accessToken = null) {

@@ -272,7 +272,7 @@ async function openUserSettings() {
 	if (!userObj.activeUserSubscriptions) userObj = await getUserInformation();
 
 	// Get subscription expiration
-	const subscriptionExpiration = new Date(userObj.activeUserSubscriptions[0].expirationDate);
+	const subscriptionExpiration = new Date(userObj.activeUserSubscriptions?.[0]?.expirationDate ?? 0);
 
 	// Populate the element
 	settingsElement.innerHTML = `
@@ -299,8 +299,16 @@ async function openUserSettings() {
         <div id="subscriptionContainer">
             <div>
                 <i class="bi bi-credit-card" id="cardSVG"></i>
-                <div id="subscriptionName">Passe ${toPascalCase(userObj.activeUserSubscriptions[0].type)}</div>
-                <div id="subscriptionValidity">Válido até ${subscriptionExpiration.toLocaleDateString("pt")}</div>
+				${
+					userObj.activeUserSubscriptions?.length > 0
+						? `
+							<div id="subscriptionName">Passe ${toPascalCase(userObj.activeUserSubscriptions[0].type)}</div>
+							<div id="subscriptionValidity">Válido até ${subscriptionExpiration.toLocaleDateString("pt")}</div>
+						`
+						: `
+							<div id="subscriptionValidity">Nenhum passe ativo</div>
+						`
+				}
             </div>
         </div>
 		<div id="statisticsMenuButtonContainer">
