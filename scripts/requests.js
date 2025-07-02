@@ -68,8 +68,8 @@ async function makePostRequest(body, accessToken = null) {
 			if (!firebaseToken) delete user.firebaseToken;
 		}
 
-		// check if token refresh was successful and there's a firebase token
-		if (typeof accessToken !== "undefined" && user.firebaseToken) {
+		// check if token refresh was successful
+		if (typeof accessToken !== "undefined") {
 			// try to make request again
 			return await retryPostRequest(body, accessToken, "Erro da API (401)"); // be sure to use latest available token
 		}
