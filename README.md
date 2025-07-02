@@ -90,10 +90,8 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 - v0.1.0 - 13/11/2024
 - v0.1.1 - 22/04/2025
 - v0.1.2 - 30/06/2025
-	- Correções de autenticação com Firebase e tokens de sessão
-	- Melhorias na experiência de localização e zoom no mapa
-	- Atualização do mapa para refletir alterações mais recentes
-	- Correção de problemas de visualização de estações e reservas
+- v0.1.3 - 02/07/2025
+  - Corrigido um problema que prevenia a app de continuar em alguns casos depois de renovar a autenticação
 
 ## Licença
 
