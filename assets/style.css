@@ -2584,13 +2584,47 @@ input[type=number] {
 	position: absolute;
 	top: 1vh;
 	right: 1vh;
-	background-color: var(--green);
+	bottom: unset;
+	left: unset;
+	z-index: unset;
+	/* background-color: var(--green);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	border-radius: 999px;
 	padding: 0.5rem 1rem;
-	color: white;
+	color: white; */
+}
+
+/* .timer {
+    position: absolute;
+	bottom: 13dvh;
+	left: calc(50vw - 8dvh);
+	z-index: 1;
+} */
+#countdown > svg {
+    width: 8dvh;
+    height: 8dvh;
+}
+#countdown > svg > circle {
+    fill: none;
+    stroke-opacity: 0.3;
+    stroke: var(--green);
+    stroke-width: 8;
+    transform-origin: center center;
+    transform: rotate(-90deg);
+}
+#countdown > svg > circle + circle {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    stroke-linecap: round;
+    stroke-opacity: 1;
+}
+#countdown.animatable > svg > circle + circle {
+    transition: stroke-dashoffset 0.3s ease;
+}
+#countdown > svg > text {
+    font-size: 1.25rem;
 }
 
 /* #endregion */

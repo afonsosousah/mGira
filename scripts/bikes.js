@@ -570,39 +570,48 @@ async function payTrip(tripCode, tripCost) {
 }
 
 async function startCountdownBetweenTrips(lastTripEndDate) {
-	// // Remove the overlay
-	// document.getElementById("countdown")?.remove();
-
+	// Wait 5 minutes before starting the next trip
 	const timeForStartingNextTrip = lastTripEndDate + 5 * 60 * 1000;
-	let timeUntilNextTrip = (timeForStartingNextTrip - Date.now()) / 1000; // Wait 5 minutes before starting the next trip
+	let timeUntilNextTrip = (timeForStartingNextTrip - Date.now()) / 1000;
 	if (timeUntilNextTrip < 0) return;
-
-	// Add countdown overlay to the page
-	appendElementToBodyFromHTML(`<div id="countdown"></div>`);
 
 	// Format time
 	const formatTime = time => `${Math.floor(time / 60)}:${("0" + Math.floor(time % 60)).slice(-2)}`;
 
-	// Update the countdown text
-	let countdown = document.getElementById("countdown");
-	countdown.innerHTML = formatTime(timeUntilNextTrip);
+	// Populate card element
+	appendElementToBodyFromHTML(
+		`
+			<div class="timer animatable" id="countdown">
+				<svg>
+					<circle cx="50%" cy="50%" r="3.5dvh"/>
+					<circle cx="50%" cy="50%" r="3.5dvh" pathLength="1" />
+					<text x="50%" y="60%" text-anchor="middle"><tspan id="timeLeft"></tspan></text>
+				</svg>
+			</div>
+    `.trim()
+	);
 
-	// Update the countdown every second
-	let countdownTimer = setInterval(() => {
-		timeUntilNextTrip = (timeForStartingNextTrip - Date.now()) / 1000;
-		countdown.innerHTML = formatTime(timeUntilNextTrip);
-		if (timeUntilNextTrip <= 0) {
+	// Run the timer (5 minutes)
+	let timeLeft = 300;
+	let timerText = document.getElementById("timeLeft");
+	let timerElement = document.querySelector("#countdown");
+	const timerCircle = timerElement.querySelector("svg > circle + circle");
+	timerElement.classList.add("animatable");
+	timerCircle.style.strokeDashoffset = 1;
+
+	let countdownHandler = async function () {
+		let isTimeLeft = timeLeft >= 0;
+		if (isTimeLeft) {
+			const timeRemaining = timeLeft--;
+			const normalizedTime = (timeRemaining - 300) / 300;
+			timerCircle.style.strokeDashoffset = normalizedTime;
+			timerText.innerHTML = formatTime(timeRemaining);
+		} else {
 			clearInterval(countdownTimer);
-			document.getElementById("countdown").remove();
+			timerElement.classList.remove("animatable");
 		}
-	}, 1000);
+	};
 
-	// // Wait for the trip to end
-	// await new Promise(resolve => setTimeout(resolve, timeUntilNextTrip * 1000));
-
-	// // Stop the countdown timer
-	// clearInterval(countdownTimer);
-
-	// // Remove the overlay
-	// document.getElementById("countdown").remove();
+	countdownHandler(); // call once to start the timer immediately
+	let countdownTimer = setInterval(countdownHandler, 1000);
 }
