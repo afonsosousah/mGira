@@ -568,3 +568,41 @@ async function payTrip(tripCode, tripCost) {
 		if ((await tripPayWithNoPoints(tripCode)) !== 0) alert("Não foi possível pagar a viagem.");
 	}
 }
+
+async function startCountdownBetweenTrips(lastTripEndDate) {
+	// // Remove the overlay
+	// document.getElementById("countdown")?.remove();
+
+	const timeForStartingNextTrip = lastTripEndDate + 5 * 60 * 1000;
+	let timeUntilNextTrip = (timeForStartingNextTrip - Date.now()) / 1000; // Wait 5 minutes before starting the next trip
+	if (timeUntilNextTrip < 0) return;
+
+	// Add countdown overlay to the page
+	appendElementToBodyFromHTML(`<div id="countdown"></div>`);
+
+	// Format time
+	const formatTime = time => `${Math.floor(time / 60)}:${("0" + Math.floor(time % 60)).slice(-2)}`;
+
+	// Update the countdown text
+	let countdown = document.getElementById("countdown");
+	countdown.innerHTML = formatTime(timeUntilNextTrip);
+
+	// Update the countdown every second
+	let countdownTimer = setInterval(() => {
+		timeUntilNextTrip = (timeForStartingNextTrip - Date.now()) / 1000;
+		countdown.innerHTML = formatTime(timeUntilNextTrip);
+		if (timeUntilNextTrip <= 0) {
+			clearInterval(countdownTimer);
+			document.getElementById("countdown").remove();
+		}
+	}, 1000);
+
+	// // Wait for the trip to end
+	// await new Promise(resolve => setTimeout(resolve, timeUntilNextTrip * 1000));
+
+	// // Stop the countdown timer
+	// clearInterval(countdownTimer);
+
+	// // Remove the overlay
+	// document.getElementById("countdown").remove();
+}

@@ -2578,6 +2578,23 @@ input[type=number] {
 }
 /* #endregion */
 
+/* #region Countdown between trips */
+
+#countdown {
+	position: absolute;
+	top: 1vh;
+	right: 1vh;
+	background-color: var(--green);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	padding: 0.5rem 1rem;
+	color: white;
+}
+
+/* #endregion */
+
 @media (orientation: landscape) {
 
 	/* #region Animations and Transitions */
