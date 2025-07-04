@@ -570,9 +570,14 @@ async function payTrip(tripCode, tripCost) {
 }
 
 async function startCountdownBetweenTrips(lastTripEndDate) {
+	// Remove previous countdown if it exists
+	document.querySelector("#countdown")?.remove();
+
 	// Wait 5 minutes before starting the next trip
-	const timeForStartingNextTrip = lastTripEndDate + 5 * 60 * 1000;
-	let timeUntilNextTrip = (timeForStartingNextTrip - Date.now()) / 1000;
+	const fiveMinutesMs = 5 * 60 * 1000;
+	const fiveMinutesSeconds = 5 * 60;
+	const timeForStartingNextTrip = lastTripEndDate + fiveMinutesMs;
+	const timeUntilNextTrip = (timeForStartingNextTrip - Date.now()) / 1000;
 	if (timeUntilNextTrip < 0) return;
 
 	// Format time
@@ -591,10 +596,10 @@ async function startCountdownBetweenTrips(lastTripEndDate) {
     `.trim()
 	);
 
-	// Run the timer (5 minutes)
-	let timeLeft = 300;
-	let timerText = document.getElementById("timeLeft");
-	let timerElement = document.querySelector("#countdown");
+	// Run the timer
+	let timeLeft = timeUntilNextTrip;
+	const timerText = document.getElementById("timeLeft");
+	const timerElement = document.querySelector("#countdown");
 	const timerCircle = timerElement.querySelector("svg > circle + circle");
 	timerElement.classList.add("animatable");
 	timerCircle.style.strokeDashoffset = 1;
@@ -603,12 +608,13 @@ async function startCountdownBetweenTrips(lastTripEndDate) {
 		let isTimeLeft = timeLeft >= 0;
 		if (isTimeLeft) {
 			const timeRemaining = timeLeft--;
-			const normalizedTime = (timeRemaining - 300) / 300;
+			const normalizedTime = (timeRemaining - fiveMinutesSeconds) / fiveMinutesSeconds;
 			timerCircle.style.strokeDashoffset = normalizedTime;
 			timerText.innerHTML = formatTime(timeRemaining);
 		} else {
 			clearInterval(countdownTimer);
 			timerElement.classList.remove("animatable");
+			timerElement.remove();
 		}
 	};
 
