@@ -569,19 +569,22 @@ async function payTrip(tripCode, tripCost) {
 	}
 }
 
-async function startCountdownBetweenTrips(lastTripEndDate) {
+function startCountdownBetweenTrips(lastTripEndDate) {
 	// Remove previous countdown if it exists
 	document.querySelector("#countdown")?.remove();
 
 	// Wait 5 minutes before starting the next trip
-	const fiveMinutesMs = 5 * 60 * 1000;
 	const fiveMinutesSeconds = 5 * 60;
-	const timeForStartingNextTrip = lastTripEndDate + fiveMinutesMs;
+	const timeForStartingNextTrip = lastTripEndDate + 5 * 60_000;
 	const timeUntilNextTrip = (timeForStartingNextTrip - Date.now()) / 1000;
 	if (timeUntilNextTrip < 0) return;
 
-	// Format time
-	const formatTime = time => `${Math.floor(time / 60)}:${("0" + Math.floor(time % 60)).slice(-2)}`;
+	/**
+	 * Formats the time in MM:SS format
+	 * @param {number} time The time in seconds
+	 * @returns The formatted time in M:SS format
+	 */
+	const formatTime = time => `${Math.floor(time / 60)}:${(time % 60).toString().padStart(2, "0")}`;
 
 	// Populate card element
 	appendElementToBodyFromHTML(
@@ -605,20 +608,21 @@ async function startCountdownBetweenTrips(lastTripEndDate) {
 	timerElement.classList.add("animatable");
 	timerCircle.style.strokeDashoffset = 1;
 
-	let countdownHandler = async function () {
-		let isTimeLeft = timeLeft >= 0;
-		if (isTimeLeft) {
+	const countdownHandler = function () {
+		// stop the countdown if the element is removed
+		if (!document.body.contains(timerElement)) return;
+
+		if (timeUntilNextTrip >= 0) {
 			const timeRemaining = timeLeft--;
 			const normalizedTime = (timeRemaining - fiveMinutesSeconds) / fiveMinutesSeconds;
 			timerCircle.style.strokeDashoffset = normalizedTime;
 			timerText.innerHTML = formatTime(timeRemaining);
+			setTimeout(countdownHandler, 1000);
 		} else {
-			clearInterval(countdownTimer);
 			timerElement.classList.remove("animatable");
 			timerElement.remove();
 		}
 	};
 
-	countdownHandler(); // call once to start the timer immediately
-	let countdownTimer = setInterval(countdownHandler, 1000);
+	countdownHandler();
 }
