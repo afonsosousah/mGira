@@ -29,9 +29,10 @@ async function tokenRefresh() {
 				body: JSON.stringify({
 					token: user.refreshToken,
 				}),
-			});
+				// In case of an internal server error, CORS aren't sent, thus fetch fails
+			}).catch(() => null);
 
-			if (response.status === 200) {
+			if (response?.ok) {
 				const responseObject = await response.json();
 
 				if (Object.hasOwn(responseObject, "data")) {
