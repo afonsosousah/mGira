@@ -588,8 +588,9 @@ async function startCountdownBetweenTrips(lastTripEndDate) {
 		`
 			<div class="timer animatable" id="countdown">
 				<svg>
-					<circle cx="50%" cy="50%" r="3.5dvh"/>
-					<circle cx="50%" cy="50%" r="3.5dvh" pathLength="1" />
+					<circle class="bg" cx="50%" cy="50%" r="3.5dvh"/>
+					<circle class="base" cx="50%" cy="50%" r="3.5dvh"/>
+					<circle class="progress" cx="50%" cy="50%" r="3.5dvh" pathLength="1" />
 					<text x="50%" y="60%" text-anchor="middle"><tspan id="timeLeft"></tspan></text>
 				</svg>
 			</div>
@@ -600,7 +601,7 @@ async function startCountdownBetweenTrips(lastTripEndDate) {
 	let timeLeft = timeUntilNextTrip;
 	const timerText = document.getElementById("timeLeft");
 	const timerElement = document.querySelector("#countdown");
-	const timerCircle = timerElement.querySelector("svg > circle + circle");
+	const timerCircle = timerElement.querySelector("svg > circle.progress");
 	timerElement.classList.add("animatable");
 	timerCircle.style.strokeDashoffset = 1;
 

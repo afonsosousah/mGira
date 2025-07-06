@@ -2606,7 +2606,11 @@ input[type=number] {
     width: 8dvh;
     height: 8dvh;
 }
-#countdown > svg > circle {
+#countdown > svg > circle.bg {
+    fill: white;
+    stroke: none;
+}
+#countdown > svg > circle.base {
     fill: none;
     stroke-opacity: 0.3;
     stroke: var(--green);
@@ -2614,13 +2618,13 @@ input[type=number] {
     transform-origin: center center;
     transform: rotate(-90deg);
 }
-#countdown > svg > circle + circle {
+#countdown > svg > circle.progress {
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
     stroke-linecap: round;
     stroke-opacity: 1;
 }
-#countdown.animatable > svg > circle + circle {
+#countdown.animatable > svg > circle.progress {
     transition: stroke-dashoffset 0.3s ease;
 }
 #countdown > svg > text {
