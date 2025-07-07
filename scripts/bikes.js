@@ -428,12 +428,12 @@ async function tripTimer(startTime, isStarting) {
 function openRateTripMenu(tripObj) {
 	// Calculate the trip time
 	const endDate = Date.parse(tripObj.endDate);
-	startCountdownBetweenTrips(endDate);
 	const elapsedTime = endDate - Date.parse(tripObj.startDate);
 	const formattedTime = parseMillisecondsIntoTripTime(elapsedTime, true);
 
 	// Don't rate trips under 90 seconds
 	if (elapsedTime < 90 * 1000) return;
+	startCountdownBetweenTrips(endDate);
 
 	// Set that there is a trip being rated (don't show any new ratings while this is true)
 	tripBeingRated = true;
