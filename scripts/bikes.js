@@ -614,7 +614,7 @@ function startCountdownBetweenTrips(lastTripEndDate) {
 		// stop the countdown if the element is removed
 		if (!document.body.contains(timerElement)) return;
 
-		if (timeUntilNextTrip >= 0) {
+		if (timeLeft >= 0) {
 			const timeRemaining = timeLeft--;
 			const normalizedTime = (timeRemaining - fiveMinutesSeconds) / fiveMinutesSeconds;
 			timerCircle.style.strokeDashoffset = normalizedTime;
