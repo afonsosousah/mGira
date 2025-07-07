@@ -2587,24 +2587,19 @@ input[type=number] {
 	bottom: unset;
 	left: unset;
 	z-index: unset;
-	/* background-color: var(--green);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 999px;
-	padding: 0.5rem 1rem;
-	color: white; */
 }
-
-/* .timer {
-    position: absolute;
-	bottom: 13dvh;
-	left: calc(50vw - 8dvh);
-	z-index: 1;
-} */
 #countdown > svg {
-    width: 8dvh;
-    height: 8dvh;
+	width: 8dvh;
+	height: 8dvh;
+}
+#countdown > svg > circle {
+	transform: rotate(-90deg);
+}
+/* Applies to iOS Safari as stroke rotations are done differently */
+@supports (-webkit-touch-callout: none) {
+	#countdown > svg > circle {
+		transform: rotate(90deg) scale(-1, 1);
+	}
 }
 #countdown > svg > circle.bg {
     fill: white;
@@ -2616,7 +2611,6 @@ input[type=number] {
     stroke: var(--green);
     stroke-width: 8;
     transform-origin: center center;
-    transform: rotate(-90deg);
 }
 #countdown > svg > circle.progress {
     stroke-dasharray: 1;
@@ -2628,7 +2622,7 @@ input[type=number] {
     transition: stroke-dashoffset 0.3s ease;
 }
 #countdown > svg > text {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
 }
 
 /* #endregion */

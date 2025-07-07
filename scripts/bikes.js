@@ -592,11 +592,11 @@ function startCountdownBetweenTrips(lastTripEndDate) {
 	appendElementToBodyFromHTML(
 		`
 			<div class="timer animatable" id="countdown">
-				<svg>
-					<circle class="bg" cx="50%" cy="50%" r="3.5dvh"/>
-					<circle class="base" cx="50%" cy="50%" r="3.5dvh"/>
-					<circle class="progress" cx="50%" cy="50%" r="3.5dvh" pathLength="1" />
-					<text x="50%" y="60%" text-anchor="middle"><tspan id="timeLeft"></tspan></text>
+				<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+					<circle class="bg" cx="50" cy="50" r="45"/>
+					<circle class="base" cx="50" cy="50" r="45"/>
+					<circle class="progress" cx="50" cy="50" r="45" pathLength="1" />
+					<text x="50" y="57" text-anchor="middle"><tspan id="timeLeft"></tspan></text>
 				</svg>
 			</div>
     `.trim()
@@ -608,7 +608,12 @@ function startCountdownBetweenTrips(lastTripEndDate) {
 	const timerElement = document.querySelector("#countdown");
 	const timerCircle = timerElement.querySelector("svg > circle.progress");
 	timerElement.classList.add("animatable");
-	timerCircle.style.strokeDashoffset = 1;
+
+	const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+	const isSafari = navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome");
+	// Initialize differently for iOS Safari
+	if (isIOS && isSafari) timerCircle.style.strokeDashoffset = 0;
+	else timerCircle.style.strokeDashoffset = 1;
 
 	const countdownHandler = function () {
 		// stop the countdown if the element is removed
@@ -617,7 +622,7 @@ function startCountdownBetweenTrips(lastTripEndDate) {
 		if (timeLeft >= 0) {
 			const timeRemaining = timeLeft--;
 			const normalizedTime = (timeRemaining - fiveMinutesSeconds) / fiveMinutesSeconds;
-			timerCircle.style.strokeDashoffset = normalizedTime;
+			timerCircle.style.strokeDashoffset = isIOS && isSafari ? -normalizedTime : normalizedTime;
 			timerText.innerHTML = formatTime(timeRemaining);
 			setTimeout(countdownHandler, 1000);
 		} else {
