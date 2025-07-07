@@ -294,7 +294,7 @@ async function updateBikeList() {
 	let i = 0;
 
 	for (const station of stationsArray) {
-		queryString += ` station_${i}: getBikes(input: "${station.serialNumber}") { battery, code, name, kms, serialNumber, type, parent } `;
+		queryString += ` station_${station.serialNumber}: getBikes(input: "${station.serialNumber}") { battery, code, name, kms, serialNumber, type, parent } `;
 		i += 1;
 	}
 
@@ -312,12 +312,11 @@ async function updateBikeList() {
 		const allBikesList = Object.values(response.data).flat(1);
 
 		// get the bikes not in the bikeSerialNumberMapping
-		let missingBikes = allBikesList.filter(({ name }) => !bikeSerialNumberMapping[name]);
+		const missingBikes = allBikesList.map(bike => [bike.name, bike.serialNumber]);
 
 		// compact the missing bikes list
 		const newList = Object.fromEntries(
-			Object.entries(bikeSerialNumberMapping)
-				.concat(missingBikes.map(bike => [bike.name, bike.serialNumber]))
+			[...Object.entries(bikeSerialNumberMapping), ...missingBikes]
 				// Keep only the electric bikes and the classic bikes that don't have an electric one with the same number
 				.filter(([name], _, self) => name.startsWith("E") || !self.find(([b]) => b === name.replace("C", "E")))
 				.sort(([a], [b]) => Number(a.slice(1)) - Number(b.slice(1)))
