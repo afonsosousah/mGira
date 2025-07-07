@@ -184,7 +184,7 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 				<div id="bikeDock">Doca ${dockObj.name}</div>
 				<div id="bikeBattery">${bikeObj.name[0] === "E" ? `${bikeObj.battery}%` : ``}</div>
 			</div>
-			<div class="timer animatable">
+			<div class="timer animatable" id="reserveDuration">
 				<svg>
 					<circle cx="50%" cy="50%" r="7dvh"/>
 					<circle cx="50%" cy="50%" r="7dvh" pathLength="1" />
@@ -201,8 +201,8 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 
 	// Run the timer (30 seconds)
 	let timeLeft = 30;
-	let timerText = document.getElementById("timeLeft");
-	let timerElement = document.querySelector(".timer");
+	const timerElement = document.getElementById("reserveDuration");
+	const timerText = timerElement.querySelector("#timeLeft");
 	const timerCircle = timerElement.querySelector("svg > circle + circle");
 	timerElement.classList.add("animatable");
 	timerCircle.style.strokeDashoffset = 1;
