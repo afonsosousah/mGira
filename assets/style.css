@@ -799,7 +799,7 @@ input:-webkit-autofill:active{
 	color: var(--dark-gray);
 }
 .bike-list #stationName {
-	width: calc(100% - 7vh - 10px - 5%);
+	width: calc(100% - 7vh - 10px - 5% - 8dvh);
 	position: absolute;
 	left: calc(10px + 7vh);
 	top: calc(3vh + 1rem + 0.2rem);
@@ -912,7 +912,7 @@ input:-webkit-autofill:active{
 	position: absolute;
 	top: 0;
 	left: 0;
-	z-index: 3;
+	z-index: 4;
 }
 #bikeReserveCard {
 	background-color: white;
@@ -2586,7 +2586,7 @@ input[type=number] {
 	right: 1vh;
 	bottom: unset;
 	left: unset;
-	z-index: unset;
+	z-index: 3;
 }
 #countdown > svg {
 	width: 8dvh;
