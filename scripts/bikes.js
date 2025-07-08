@@ -78,7 +78,7 @@ async function rateTripAPI(tripCode, tripRating, tripComment) {
 				in: {
 					code: tripCode,
 					rating: tripRating,
-					description: "",
+					description: tripComment,
 					attachment: { bytes: null, fileName: `img_${tripCode}.png`, mimeType: "image/png" },
 				},
 			},
