@@ -591,7 +591,7 @@ function startCountdownBetweenTrips(lastTripEndDate) {
 	// Populate card element
 	appendElementToBodyFromHTML(
 		`
-			<div class="timer animatable" id="countdown">
+			<div class="timer animatable" id="countdown" onclick="alert('Este é o tempo que falta até poderes iniciar uma nova viagem', '<i class=\\'bi bi-hourglass\\'></i>')">
 				<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
 					<circle class="bg" cx="50" cy="50" r="45"/>
 					<circle class="base" cx="50" cy="50" r="45"/>
