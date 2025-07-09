@@ -191,12 +191,30 @@ async function getUserInformation() {
 	user = { ...user, ...response.data.client[0] };
 	user.activeUserSubscriptions = response.data.activeUserSubscriptions;
 
-	const lastTrip = response.data.tripHistory[0],
-		lastTripEndDate = Date.parse(lastTrip.endDate);
+	countdownFromLatestTrip(response.data.tripHistory[0]);
+
+	return user;
+}
+
+async function countdownFromLatestTrip(lastTrip) {
+	// If the countdown is already active, do nothing
+	if (document.getElementById("countdown")) return;
+	// Get the latest trip from the trip history if not given
+	lastTrip ??= await makePostRequest(
+		JSON.stringify({
+			operationName: "tripHistory",
+			variables: { in: { _pageNum: 1, _pageSize: 1 } },
+			query:
+				"tripHistory(pageInput: { _pageNum: 1, _pageSize: 1 }) { bikeName bikeType bonus code cost endDate endLocation rating startDate startLocation usedPoints }",
+		}),
+		user.accessToken
+	).then(r => r.data.tripHistory[0]);
+
+	const lastTripEndDate = Date.parse(lastTrip.endDate);
 	// The timer only matters if the trip was longer than 90s
 	if (lastTripEndDate - Date.parse(lastTrip.startDate) > 90_000) startCountdownBetweenTrips(lastTripEndDate);
 
-	return user;
+	return lastTrip;
 }
 
 // get tripHistory

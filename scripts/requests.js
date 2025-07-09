@@ -89,6 +89,8 @@ async function makePostRequest(body, accessToken = null) {
 	} else if (response.status === 400) {
 		const responseObject = await response.json(),
 			errorTranslation = errorTranslations[responseObject.errors[0].message];
+		// Try to display the countdown if not set already
+		if (responseObject.errors[0].message === "trip_interval_limit") countdownFromLatestTrip();
 		if (errorTranslation) {
 			alert(errorTranslation);
 			return;

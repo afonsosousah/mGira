@@ -575,7 +575,6 @@ function startCountdownBetweenTrips(lastTripEndDate) {
 	// Remove previous countdown if it exists
 	document.querySelector("#countdown")?.remove();
 
-	// Wait 5 minutes before starting the next trip
 	const fiveMinutesSeconds = 5 * 60;
 	const timeForStartingNextTrip = lastTripEndDate + 5 * 60_000;
 	const timeUntilNextTrip = Math.round((timeForStartingNextTrip - Date.now()) / 1000);
