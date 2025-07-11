@@ -735,7 +735,7 @@ input:-webkit-autofill:active{
 	width: 100%;
 	height: 100%;
 	position: absolute;
-	z-index: 3;
+	z-index: 2;
 	left: 0;
 	top: 0;
 	border-radius: 0;
@@ -1024,17 +1024,28 @@ input:-webkit-autofill:active{
 	z-index: 0;
 	opacity: 0.05;
 }
-.timer {
+#reserveDuration {
     position: absolute;
 	bottom: 13dvh;
 	left: calc(50vw - 8dvh);
 	z-index: 1;
 }
-.timer > svg {
+#reserveDuration > svg {
     width: 16dvh;
     height: 16dvh;
 }
 .timer > svg > circle {
+	transform: rotate(-90deg);
+	transform-origin: center center;
+}
+/* Applies to iOS Safari as stroke rotations are done differently */
+@supports (-webkit-touch-callout: none) {
+	.timer > svg > circle {
+		transform: rotate(90deg) scale(-1, 1);
+		transform-origin: center center;
+	}
+}
+.timer > svg > circle.base {
     fill: none;
     stroke-opacity: 0.3;
     stroke: var(--green);
@@ -1042,19 +1053,22 @@ input:-webkit-autofill:active{
     transform-origin: center center;
     transform: rotate(-90deg);
 }
-.timer > svg > circle + circle {
+.timer > svg > circle.progress {
+    fill: none;
+    stroke: var(--green);
+    stroke-width: 8;
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
     stroke-linecap: round;
     stroke-opacity: 1;
 }
-.timer.animatable > svg > circle + circle {
+.timer.animatable > svg > circle.progress {
     transition: stroke-dashoffset 0.3s ease;
 }
-.timer > svg > text {
+#reserveDuration > svg > text {
     font-size: 1.5rem;
 }
-.timer > svg > text + text {
+#reserveDuration > svg > text + text {
     font-size: 0.8rem;
 }
 #bikeReserveCard #bikeLeavingDock {
@@ -2589,37 +2603,12 @@ input[type=number] {
 	z-index: 3;
 }
 #countdown > svg {
-	width: 8dvh;
-	height: 8dvh;
-}
-#countdown > svg > circle {
-	transform: rotate(-90deg);
-}
-/* Applies to iOS Safari as stroke rotations are done differently */
-@supports (-webkit-touch-callout: none) {
-	#countdown > svg > circle {
-		transform: rotate(90deg) scale(-1, 1);
-	}
+	width: max(8dvw, 8dvh);
+	height: max(8dvw, 8dvh);
 }
 #countdown > svg > circle.bg {
     fill: white;
     stroke: none;
-}
-#countdown > svg > circle.base {
-    fill: none;
-    stroke-opacity: 0.3;
-    stroke: var(--green);
-    stroke-width: 8;
-    transform-origin: center center;
-}
-#countdown > svg > circle.progress {
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-    stroke-linecap: round;
-    stroke-opacity: 1;
-}
-#countdown.animatable > svg > circle.progress {
-    transition: stroke-dashoffset 0.3s ease;
 }
 #countdown > svg > text {
     font-size: 1.5rem;
@@ -2944,15 +2933,15 @@ input[type=number] {
 		height: 14dvw;
 		object-position: center top;
 	}
-	.timer {
+	#reserveDuration {
 		bottom: 13dvw;
 		left: calc(50vw - 8vw);
 	}
-	.timer > svg {
+	#reserveDuration > svg {
 		width: 16vw;
 		height: 16vw;
 	}
-	.timer > svg > circle {
+	#reserveDuration > svg > circle {
 		stroke-width: 1.5vw;
 		r: 7.25vw;
 	}

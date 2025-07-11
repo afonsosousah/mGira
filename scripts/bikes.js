@@ -186,8 +186,8 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 			</div>
 			<div class="timer animatable" id="reserveDuration">
 				<svg>
-					<circle cx="50%" cy="50%" r="7dvh"/>
-					<circle cx="50%" cy="50%" r="7dvh" pathLength="1" />
+					<circle class="base" cx="50%" cy="50%" r="7dvh"/>
+					<circle class="progress" cx="50%" cy="50%" r="7dvh" pathLength="1" />
 					<text x="50%" y="50%" text-anchor="middle"><tspan id="timeLeft"></tspan></text>
 					<text x="50%" y="65%" text-anchor="middle">segundos</text>
 				</svg>
@@ -203,8 +203,7 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 	let timeLeft = 30;
 	const timerElement = document.getElementById("reserveDuration");
 	const timerText = timerElement.querySelector("#timeLeft");
-	const timerCircle = timerElement.querySelector("svg > circle + circle");
-	timerElement.classList.add("animatable");
+	const timerCircle = timerElement.querySelector("svg > circle.progress");
 	timerCircle.style.strokeDashoffset = 1;
 
 	let countdownHandler = async function () {
@@ -606,13 +605,11 @@ function startCountdownBetweenTrips(lastTripEndDate) {
 	const timerText = document.getElementById("timeLeft");
 	const timerElement = document.querySelector("#countdown");
 	const timerCircle = timerElement.querySelector("svg > circle.progress");
-	timerElement.classList.add("animatable");
 
 	const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 	const isSafari = navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome");
 	// Initialize differently for iOS Safari
-	if (isIOS && isSafari) timerCircle.style.strokeDashoffset = 0;
-	else timerCircle.style.strokeDashoffset = 1;
+	timerCircle.style.strokeDashoffset = isIOS && isSafari ? 0 : 1;
 
 	const countdownHandler = function () {
 		// stop the countdown if the element is removed
@@ -625,7 +622,6 @@ function startCountdownBetweenTrips(lastTripEndDate) {
 			timerText.innerHTML = formatTime(timeRemaining);
 			setTimeout(countdownHandler, 1000);
 		} else {
-			timerElement.classList.remove("animatable");
 			timerElement.remove();
 		}
 	};
