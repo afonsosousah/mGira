@@ -2594,6 +2594,13 @@ input[type=number] {
 
 /* #region Countdown between trips */
 
+body > #countdown {
+    display: none;
+}
+
+#bikeMenu > #countdown {
+	display: block;
+}
 #countdown {
 	position: absolute;
 	top: 1vh;
