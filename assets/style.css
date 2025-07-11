@@ -1063,7 +1063,7 @@ input:-webkit-autofill:active{
     stroke-opacity: 1;
 }
 .timer.animatable > svg > circle.progress {
-    transition: stroke-dashoffset 0.3s ease;
+    transition: stroke-dashoffset 1s linear;
 }
 #reserveDuration > svg > text {
     font-size: 1.5rem;
