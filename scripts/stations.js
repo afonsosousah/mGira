@@ -289,7 +289,7 @@ function hideBikeList() {
 		bikeListMenu.classList.add("smooth-slide-to-bottom");
 		setTimeout(() => {
 			if (nextTripCountdown) document.body.appendChild(nextTripCountdown);
-			bikeListMenu.remove();
+			bikeListMenu?.remove();
 		}, 500); // remove element after animation
 	}
 }
