@@ -285,7 +285,7 @@ async function openBikeList(stationSerialNumber) {
 function hideBikeList() {
 	const bikeListMenu = document.getElementById("bikeMenu");
 	if (bikeListMenu) {
-		const nextTripCountdown = bikeListMenu.getElementById("countdown");
+		const nextTripCountdown = bikeListMenu.querySelector("#countdown");
 		bikeListMenu.classList.add("smooth-slide-to-bottom");
 		setTimeout(() => {
 			if (nextTripCountdown) document.body.appendChild(nextTripCountdown);
