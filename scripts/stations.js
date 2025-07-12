@@ -222,6 +222,8 @@ async function openBikeList(stationSerialNumber) {
         </ul>
     `.trim();
 	document.body.appendChild(menu);
+	const nextTripCountdown = document.getElementById("countdown");
+	if (nextTripCountdown) menu.appendChild(nextTripCountdown);
 
 	// If there is navigation going, make the menu still appear
 	if (navigationActive) menu.style.zIndex = 99;
@@ -281,10 +283,14 @@ async function openBikeList(stationSerialNumber) {
 }
 
 function hideBikeList() {
-	let bikeListMenu = document.getElementById("bikeMenu");
+	const bikeListMenu = document.getElementById("bikeMenu");
 	if (bikeListMenu) {
+		const nextTripCountdown = bikeListMenu.getElementById("countdown");
 		bikeListMenu.classList.add("smooth-slide-to-bottom");
-		setTimeout(() => bikeListMenu.remove(), 500); // remove element after animation
+		setTimeout(() => {
+			if (nextTripCountdown) document.body.appendChild(nextTripCountdown);
+			bikeListMenu.remove();
+		}, 500); // remove element after animation
 	}
 }
 

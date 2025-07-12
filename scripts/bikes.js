@@ -184,10 +184,10 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 				<div id="bikeDock">Doca ${dockObj.name}</div>
 				<div id="bikeBattery">${bikeObj.name[0] === "E" ? `${bikeObj.battery}%` : ``}</div>
 			</div>
-			<div class="timer animatable">
+			<div class="timer animatable" id="reserveDuration">
 				<svg>
-					<circle cx="50%" cy="50%" r="7dvh"/>
-					<circle cx="50%" cy="50%" r="7dvh" pathLength="1" />
+					<circle class="base" cx="50%" cy="50%" r="7dvh"/>
+					<circle class="progress" cx="50%" cy="50%" r="7dvh" pathLength="1" />
 					<text x="50%" y="50%" text-anchor="middle"><tspan id="timeLeft"></tspan></text>
 					<text x="50%" y="65%" text-anchor="middle">segundos</text>
 				</svg>
@@ -201,10 +201,9 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 
 	// Run the timer (30 seconds)
 	let timeLeft = 30;
-	let timerText = document.getElementById("timeLeft");
-	let timerElement = document.querySelector(".timer");
-	const timerCircle = timerElement.querySelector("svg > circle + circle");
-	timerElement.classList.add("animatable");
+	const timerElement = document.getElementById("reserveDuration");
+	const timerText = timerElement.querySelector("#timeLeft");
+	const timerCircle = timerElement.querySelector("svg > circle.progress");
 	timerCircle.style.strokeDashoffset = 1;
 
 	let countdownHandler = async function () {
@@ -427,11 +426,13 @@ async function tripTimer(startTime, isStarting) {
 
 function openRateTripMenu(tripObj) {
 	// Calculate the trip time
-	const elapsedTime = Date.parse(tripObj.endDate) - Date.parse(tripObj.startDate);
+	const endDate = Date.parse(tripObj.endDate);
+	const elapsedTime = endDate - Date.parse(tripObj.startDate);
 	const formattedTime = parseMillisecondsIntoTripTime(elapsedTime, true);
 
 	// Don't rate trips under 90 seconds
 	if (elapsedTime < 90 * 1000) return;
+	startCountdownBetweenTrips(endDate);
 
 	// Set that there is a trip being rated (don't show any new ratings while this is true)
 	tripBeingRated = true;
@@ -567,4 +568,65 @@ async function payTrip(tripCode, tripCost) {
 		// If the trip cost 0, then just pay with no points
 		if ((await tripPayWithNoPoints(tripCode)) !== 0) alert("Não foi possível pagar a viagem.");
 	}
+}
+
+/**
+ * Starts a 5 minute countdown until the user can start a new trip.
+ * @param {number} lastTripEndDate Time at which the last trip ended
+ */
+function startCountdownBetweenTrips(lastTripEndDate) {
+	const timeForStartingNextTrip = lastTripEndDate + 5 * 60_000;
+	if (timeForStartingNextTrip < Date.now()) return;
+
+	// Remove previous countdown if it exists
+	document.querySelector("#countdown")?.remove();
+
+	/**
+	 * Formats the time in MM:SS format
+	 * @param {number} time The time in seconds
+	 * @returns The formatted time in M:SS format
+	 */
+	const formatTime = time => `${Math.floor(time / 60)}:${(time % 60).toString().padStart(2, "0")}`;
+
+	// Populate card element
+	(document.getElementById("bikeMenu") ?? document.body).insertAdjacentHTML(
+		"beforeend",
+		`
+			<div class="timer animatable" id="countdown" onclick="alert('Este é o tempo que falta até poderes iniciar uma nova viagem', '<i class=\\'bi bi-hourglass\\'></i>')">
+				<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+					<circle class="bg" cx="50" cy="50" r="45"/>
+					<circle class="base" cx="50" cy="50" r="45"/>
+					<circle class="progress" cx="50" cy="50" r="45" pathLength="1" />
+					<text x="50" y="57" text-anchor="middle"><tspan id="timeLeft"></tspan></text>
+				</svg>
+			</div>
+    `.trim()
+	);
+
+	// Run the timer
+	const timerText = document.getElementById("timeLeft");
+	const timerElement = document.querySelector("#countdown");
+	const timerCircle = timerElement.querySelector("svg > circle.progress");
+
+	const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+	const isSafari = navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome");
+	// Initialize differently for iOS Safari
+	timerCircle.style.strokeDashoffset = isIOS && isSafari ? 0 : 1;
+
+	const countdownHandler = function () {
+		// stop the countdown if the element is removed
+		if (!document.body.contains(timerElement)) return;
+
+		const timeRemaining = Math.round((timeForStartingNextTrip - Date.now()) / 1000);
+		if (timeRemaining >= 0) {
+			const normalizedTime = (timeRemaining - 300) / 300;
+			timerCircle.style.strokeDashoffset = isIOS && isSafari ? -normalizedTime : normalizedTime;
+			timerText.innerHTML = formatTime(timeRemaining);
+			setTimeout(countdownHandler, 1000);
+		} else {
+			timerElement.remove();
+		}
+	};
+
+	countdownHandler();
 }
