@@ -570,14 +570,16 @@ async function payTrip(tripCode, tripCost) {
 	}
 }
 
+/**
+ * Starts a 5 minute countdown until the user can start a new trip.
+ * @param {number} lastTripEndDate Time at which the last trip ended
+ */
 function startCountdownBetweenTrips(lastTripEndDate) {
+	const timeForStartingNextTrip = lastTripEndDate + 5 * 60_000;
+	if (timeForStartingNextTrip < Date.now()) return;
+
 	// Remove previous countdown if it exists
 	document.querySelector("#countdown")?.remove();
-
-	const fiveMinutesSeconds = 5 * 60;
-	const timeForStartingNextTrip = lastTripEndDate + 5 * 60_000;
-	const timeUntilNextTrip = Math.round((timeForStartingNextTrip - Date.now()) / 1000);
-	if (timeUntilNextTrip < 0) return;
 
 	/**
 	 * Formats the time in MM:SS format
@@ -601,7 +603,6 @@ function startCountdownBetweenTrips(lastTripEndDate) {
 	);
 
 	// Run the timer
-	let timeLeft = timeUntilNextTrip;
 	const timerText = document.getElementById("timeLeft");
 	const timerElement = document.querySelector("#countdown");
 	const timerCircle = timerElement.querySelector("svg > circle.progress");
@@ -615,9 +616,9 @@ function startCountdownBetweenTrips(lastTripEndDate) {
 		// stop the countdown if the element is removed
 		if (!document.body.contains(timerElement)) return;
 
-		if (timeLeft >= 0) {
-			const timeRemaining = timeLeft--;
-			const normalizedTime = (timeRemaining - fiveMinutesSeconds) / fiveMinutesSeconds;
+		const timeRemaining = Math.round((timeForStartingNextTrip - Date.now()) / 1000);
+		if (timeRemaining >= 0) {
+			const normalizedTime = (timeRemaining - 300) / 300;
 			timerCircle.style.strokeDashoffset = isIOS && isSafari ? -normalizedTime : normalizedTime;
 			timerText.innerHTML = formatTime(timeRemaining);
 			setTimeout(countdownHandler, 1000);
