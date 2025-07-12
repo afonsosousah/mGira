@@ -1090,7 +1090,7 @@ input:-webkit-autofill:active{
 	top: 2dvh;
 	left: 2dvh;
 	border-radius: 30px;
-	z-index: 3;
+	z-index: 2;
 }
 .trip-overlay #onTripText {
 	position: absolute;
