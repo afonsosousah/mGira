@@ -2914,7 +2914,7 @@ body > #countdown {
 	}
 	#bikeReserveCard #unlockSlider::-webkit-slider-thumb {
 		-webkit-appearance: none;
-		height: calc(0.2 * 35vh);
+		height: calc(0.185 * 35vw);
 		width: 45vw;
 		border-radius: 999px;
 		background-color: var(--green);
