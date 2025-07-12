@@ -229,7 +229,8 @@ body {
 	margin: 0;
 	padding: 0;
 	position: relative;
-	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+		"Helvetica Neue", sans-serif;
 	font-weight: normal;
 	user-select: none;
 	overflow-y: scroll;
@@ -256,8 +257,8 @@ body {
 	touch-action: none;
 }
 .ol-attribution {
-	top: .5em;
-	left: .5em;
+	top: 0.5em;
+	left: 0.5em;
 	bottom: unset !important;
 	right: unset !important;
 	border-radius: 999px !important;
@@ -268,7 +269,7 @@ body {
 	all: unset;
 	height: 1.375em;
 	width: 1.375em;
-	line-height: .4em;
+	line-height: 0.4em;
 	border-radius: 999px;
 	background-color: var(--glass-white);
 	color: var(--green);
@@ -276,10 +277,11 @@ body {
 	font-family: Roboto, Arial, sans-serif;
 	font-weight: bold;
 }
-.ol-attribution button:focus, .ol-attribution button:hover {
+.ol-attribution button:focus,
+.ol-attribution button:hover {
 	outline: 1px solid var(--green);
 	color: var(--green);
-	line-height: .4em;
+	line-height: 0.4em;
 }
 /* #endregion */
 
@@ -289,7 +291,7 @@ body {
 	position: absolute;
 	left: 2vh;
 	bottom: 2vh;
-	margin-left: env(safe-area-inset-left);	
+	margin-left: env(safe-area-inset-left);
 }
 /* #endregion */
 
@@ -304,7 +306,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	gap: 1vh;
-	margin-right: env(safe-area-inset-right);	
+	margin-right: env(safe-area-inset-right);
 }
 #zoomControls div {
 	background-color: var(--green);
@@ -391,16 +393,16 @@ input[type="search"]::-webkit-search-results-decoration {
 	-webkit-appearance: none;
 }
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active{
-    -webkit-box-shadow: 0 0 0 30px white inset !important;
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+	-webkit-box-shadow: 0 0 0 30px white inset !important;
 }
 #searchBar:-webkit-autofill,
-#searchBar:-webkit-autofill:hover, 
-#searchBar:-webkit-autofill:focus, 
-#searchBar:-webkit-autofill:active{
-    -webkit-box-shadow: 0 0 0 30px white inset !important;
+#searchBar:-webkit-autofill:hover,
+#searchBar:-webkit-autofill:focus,
+#searchBar:-webkit-autofill:active {
+	-webkit-box-shadow: 0 0 0 30px white inset !important;
 }
 
 /* #endregion */
@@ -560,19 +562,19 @@ input:-webkit-autofill:active{
 	box-shadow: 0px 1px 6px 0px var(--green);
 }
 .station-card #bikesButtonDisabled {
-    /* Same as above, but with gray instead of green */
-    background-color: var(--white);
-    width: 42.5%;
-    height: 2.5rem;
-    position: absolute;
-    right: 5vw;
-    bottom: 5vw;
-    border-radius: 999px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--gray);
-    box-shadow: 0px 1px 6px 0px var(--gray);
+	/* Same as above, but with gray instead of green */
+	background-color: var(--white);
+	width: 42.5%;
+	height: 2.5rem;
+	position: absolute;
+	right: 5vw;
+	bottom: 5vw;
+	border-radius: 999px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: var(--gray);
+	box-shadow: 0px 1px 6px 0px var(--gray);
 }
 .station-card #availableBikesNumber {
 	width: 90%;
@@ -603,7 +605,7 @@ input:-webkit-autofill:active{
 	right: 5vw;
 	top: 5vw;
 	font-size: 1.2rem;
-	color: var(--dark-gray)
+	color: var(--dark-gray);
 }
 .station-card #startNavigationButton {
 	position: absolute;
@@ -1025,14 +1027,14 @@ input:-webkit-autofill:active{
 	opacity: 0.05;
 }
 #reserveDuration {
-    position: absolute;
+	position: absolute;
 	bottom: 13dvh;
 	left: calc(50vw - 8dvh);
 	z-index: 1;
 }
 #reserveDuration > svg {
-    width: 16dvh;
-    height: 16dvh;
+	width: 16dvh;
+	height: 16dvh;
 }
 .timer > svg > circle {
 	transform: rotate(-90deg);
@@ -1046,30 +1048,30 @@ input:-webkit-autofill:active{
 	}
 }
 .timer > svg > circle.base {
-    fill: none;
-    stroke-opacity: 0.3;
-    stroke: var(--green);
-    stroke-width: 10;
-    transform-origin: center center;
-    transform: rotate(-90deg);
+	fill: none;
+	stroke-opacity: 0.3;
+	stroke: var(--green);
+	stroke-width: 10;
+	transform-origin: center center;
+	transform: rotate(-90deg);
 }
 .timer > svg > circle.progress {
-    fill: none;
-    stroke: var(--green);
-    stroke-width: 8;
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-    stroke-linecap: round;
-    stroke-opacity: 1;
+	fill: none;
+	stroke: var(--green);
+	stroke-width: 8;
+	stroke-dasharray: 1;
+	stroke-dashoffset: 1;
+	stroke-linecap: round;
+	stroke-opacity: 1;
 }
 .timer.animatable > svg > circle.progress {
-    transition: stroke-dashoffset 1s linear;
+	transition: stroke-dashoffset 1s linear;
 }
 #reserveDuration > svg > text {
-    font-size: 1.5rem;
+	font-size: 1.5rem;
 }
 #reserveDuration > svg > text + text {
-    font-size: 0.8rem;
+	font-size: 0.8rem;
 }
 #bikeReserveCard #bikeLeavingDock {
 	width: 70%;
@@ -1299,9 +1301,7 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	position: relative;
 	/*outline: 1px solid var(--green);*/
-	box-shadow:
-		0px 1px 6px 0px var(--green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-shadow: 0px 1px 6px 0px var(--green), 0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #balanceAndBonusContainer #balanceContainer #balanceLabel,
 .user-settings #balanceAndBonusContainer #bonusContainer #bonusLabel {
@@ -1330,16 +1330,14 @@ input:-webkit-autofill:active{
 	display: flex;
 	position: relative;
 	/*outline: 1px solid var(--green);*/
-	box-shadow:
-		0px 1px 6px 0px var(--green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-shadow: 0px 1px 6px 0px var(--green), 0px 0px 5px 0px var(--shadow-green) inset;
 }
 .user-settings #subscriptionContainer div #cardSVG {
 	position: absolute;
 	height: 6vh;
 	width: 6vh;
 	font-size: 6vh;
-	top: calc((100% - 6vh - 1.5rem)/2);
+	top: calc((100% - 6vh - 1.5rem) / 2);
 	left: calc(25% - 3vh);
 }
 .user-settings #subscriptionContainer div #subscriptionName {
@@ -1378,7 +1376,7 @@ input:-webkit-autofill:active{
 	display: flex;
 	align-items: center;
 	gap: 1dvh;
-	box-shadow: 0px 1px 6px 0px var(--green),
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 .user-settings #issueButton {
 	background-color: var(--dark-gray);
@@ -1407,9 +1405,7 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	position: relative;
 	/*outline: 1px solid var(--green);*/
-	box-shadow:
-		0px 1px 6px 0px var(--green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-shadow: 0px 1px 6px 0px var(--green), 0px 0px 5px 0px var(--shadow-green) inset;
 }
 
 .user-settings #settingsContainer #proxy > div:first-child {
@@ -1481,9 +1477,7 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	position: relative;
 	/*outline: 1px solid var(--green);*/
-	box-shadow:
-		0px 1px 6px 0px var(--green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-shadow: 0px 1px 6px 0px var(--green), 0px 0px 5px 0px var(--shadow-green) inset;
 }
 
 .user-settings #settingsContainer #distanceToStation > div:first-child {
@@ -1525,9 +1519,7 @@ input:-webkit-autofill:active{
 	justify-content: center;
 	position: relative;
 	/*outline: 1px solid var(--green);*/
-	box-shadow:
-		0px 1px 6px 0px var(--green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-shadow: 0px 1px 6px 0px var(--green), 0px 0px 5px 0px var(--shadow-green) inset;
 	justify-content: space-between;
 }
 
@@ -1540,18 +1532,18 @@ input:-webkit-autofill:active{
 	background-color: var(--form-background);
 	/* Not removed via appearance */
 	margin: 0;
-  
+
 	font: inherit;
 	color: currentColor;
 	width: 1.5em;
 	height: 1.5em;
 	border: 0.15em solid currentColor;
 	border-radius: 0.15em;
-  
+
 	display: grid;
 	place-content: center;
 }
-  
+
 .user-settings #settingsContainer #devMode input[type="checkbox"]::before {
 	content: "";
 	width: 0.65em;
@@ -1616,7 +1608,7 @@ input:-webkit-autofill:active{
 	position: absolute;
 	z-index: 1;
 	left: 5%;
-	bottom: calc(2vh + 7vh/2);
+	bottom: calc(2vh + 7vh / 2);
 	border-radius: 30px 30px 0 0;
 	animation: smooth-appear 0.5s ease forwards;
 	margin-left: env(safe-area-inset-left);
@@ -1802,7 +1794,7 @@ input:-webkit-autofill:active{
 }
 #navigationInfoPanel #speedContainer #speedLabel {
 	font-size: 0.75rem;
- 	margin-top: -0.5rem;
+	margin-top: -0.5rem;
 }
 #changeRotationModeButton {
 	height: 4rem;
@@ -1901,7 +1893,7 @@ input:-webkit-autofill:active{
 	top: 2dvh;
 	left: 2dvh;
 	font-size: calc(2dvh);
-	color: var(--green)
+	color: var(--green);
 }
 #rateTripMenuCard #tripInfo {
 	display: flex;
@@ -1948,29 +1940,29 @@ input:-webkit-autofill:active{
 	align-items: center;
 }
 #rateTripMenuCard .ratingFormContainer {
-    display: flex;
-    justify-content: center;
+	display: flex;
+	justify-content: center;
 }
 #rateTripMenuCard .rating {
-    display: flex;
-    flex-direction: row-reverse;
+	display: flex;
+	flex-direction: row-reverse;
 	line-height: 15vw;
 	font-size: 4vw;
 	position: relative;
 }
 #rateTripMenuCard .rating .star {
-    font-size: 3.5rem;
-    color: black;
-    cursor: pointer;
-    transition: color 0.3s;
+	font-size: 3.5rem;
+	color: black;
+	cursor: pointer;
+	transition: color 0.3s;
 }
 /* Change color up to the selected star */
 #rateTripMenuCard .rating input[type="radio"]:checked ~ .star {
-    color: var(--green);
+	color: var(--green);
 }
 /* Hide the radio buttons */
 #rateTripMenuCard .rating input[type="radio"] {
-    display: none;
+	display: none;
 }
 #rateTripMenuCard #sendButton {
 	background-color: var(--green);
@@ -2006,7 +1998,7 @@ input:-webkit-autofill:active{
 	font-weight: bold;
 }
 #rateTripMenuCard #commentTextarea {
-	width: calc(100vw - 2*3dvh - 2*2dvh);
+	width: calc(100vw - 2 * 3dvh - 2 * 2dvh);
 	height: 10dvh;
 	outline: 1px solid var(--green);
 	border: none;
@@ -2016,7 +2008,7 @@ input:-webkit-autofill:active{
 	color: var(--black);
 	resize: none;
 	font-family: inherit;
-   	font-size: inherit;
+	font-size: inherit;
 	margin-left: -4dvh;
 	margin-bottom: 1dvh;
 	margin-top: 1dvh;
@@ -2107,12 +2099,12 @@ input:-webkit-autofill:active{
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+	-webkit-appearance: none;
+	margin: 0;
 }
 /* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
+input[type="number"] {
+	-moz-appearance: textfield;
 }
 #takeUnregisteredBike #unregisteredBikeNameInput {
 	background-color: rgb(255, 255, 255);
@@ -2368,9 +2360,7 @@ input[type=number] {
 	position: relative;
 	margin-bottom: 2vh;
 	/*border: 1px solid var(--green);*/
-	box-shadow:
-		0px 1px 6px 0px var(--green),
-		0px 0px 5px 0px var(--shadow-green) inset;
+	box-shadow: 0px 1px 6px 0px var(--green), 0px 0px 5px 0px var(--shadow-green) inset;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -2426,7 +2416,7 @@ input[type=number] {
 	bottom: 0;
 	right: 0;
 	font-size: 0.7rem;
-  	width: 80%;
+	width: 80%;
 	text-align: right;
 }
 #tripHistorySpinner {
@@ -2541,7 +2531,7 @@ input[type=number] {
 	height: calc(6dvh + 1rem);
 	display: flex;
 	gap: 1dvh;
-  	justify-content: center;
+	justify-content: center;
 }
 #statisticsMenu #statsTotals .stats-totals-element {
 	width: 30vw;
@@ -2595,7 +2585,7 @@ input[type=number] {
 /* #region Countdown between trips */
 
 body > #countdown {
-    display: none;
+	display: none;
 }
 
 #bikeMenu > #countdown {
@@ -2614,17 +2604,16 @@ body > #countdown {
 	height: max(8dvw, 8dvh);
 }
 #countdown > svg > circle.bg {
-    fill: white;
-    stroke: none;
+	fill: white;
+	stroke: none;
 }
 #countdown > svg > text {
-    font-size: 1.5rem;
+	font-size: 1.5rem;
 }
 
 /* #endregion */
 
 @media (orientation: landscape) {
-
 	/* #region Animations and Transitions */
 
 	/* appear from bottom animations */
@@ -2980,7 +2969,7 @@ body > #countdown {
 		font-size: 1rem;
 	}
 	.trip-overlay #tripTime {
-		bottom: calc(2vw +  1rem + .2rem);
+		bottom: calc(2vw + 1rem + 0.2rem);
 		left: 2.5vw;
 		font-size: 1rem;
 	}
@@ -3000,7 +2989,8 @@ body > #countdown {
 		object-fit: cover;
 		object-position: top center;
 	}
-	.user-settings #backButton, .user-settings #topUserContainer #backButton {
+	.user-settings #backButton,
+	.user-settings #topUserContainer #backButton {
 		width: 6vw;
 		height: 6vw;
 		font-size: calc(0.35 * 6vw);
@@ -3015,7 +3005,6 @@ body > #countdown {
 		font-size: 8vw;
 	}
 	.user-settings #topUserContainer #bottomCard {
-
 		height: 3vw;
 		border-radius: 3vw 3vw 0 0;
 	}
@@ -3118,7 +3107,7 @@ body > #countdown {
 		max-height: calc(100vh - 4rem);
 		position: absolute;
 		left: 2vw;
-		bottom: calc(2vw + 7vw/2);
+		bottom: calc(2vw + 7vw / 2);
 	}
 	.place-search-menu #placeList {
 		width: 100%;
@@ -3206,7 +3195,7 @@ body > #countdown {
 		height: 40%;
 	}
 	/* #endregion */
-	
+
 	/* #region Trip history */
 	#tripHistory #backButton {
 		top: 1vw;
@@ -3287,7 +3276,7 @@ body > #countdown {
 		margin-bottom: -12dvh;
 	}
 	/* #endregion */
-	
+
 	/* #region Custom alert box */
 	#alertBox {
 		width: 40%;
@@ -3308,5 +3297,4 @@ body > #countdown {
 		font-size: 0.9rem;
 	}
 	/* #endregion */
-
 }
