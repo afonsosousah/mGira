@@ -589,7 +589,8 @@ function startCountdownBetweenTrips(lastTripEndDate) {
 	const formatTime = time => `${Math.floor(time / 60)}:${(time % 60).toString().padStart(2, "0")}`;
 
 	// Populate card element
-	appendElementToBodyFromHTML(
+	(document.getElementById("bikeMenu") ?? document.body).insertAdjacentHTML(
+		"beforeend",
 		`
 			<div class="timer animatable" id="countdown" onclick="alert('Este é o tempo que falta até poderes iniciar uma nova viagem', '<i class=\\'bi bi-hourglass\\'></i>')">
 				<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
