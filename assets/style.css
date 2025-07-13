@@ -1037,15 +1037,8 @@ input:-webkit-autofill:active {
 	height: 16dvh;
 }
 .timer > svg > circle {
-	transform: rotate(-90deg);
+	transform: rotate(90deg) scale(-1, 1);
 	transform-origin: center center;
-}
-/* Applies to iOS Safari as stroke rotations are done differently */
-@supports (-webkit-touch-callout: none) {
-	.timer > svg > circle {
-		transform: rotate(90deg) scale(-1, 1);
-		transform-origin: center center;
-	}
 }
 .timer > svg > circle.base {
 	fill: none;

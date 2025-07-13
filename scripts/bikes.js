@@ -174,6 +174,8 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 		alert("Ocorreu um erro ao reservar a bicicleta.");
 		return;
 	}
+	const reserveTimerDurationMs = 30_000,
+		endReserveTime = Date.now() + reserveTimerDurationMs;
 
 	// Populate card element
 	card.innerHTML = `
@@ -200,19 +202,17 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
     `.trim();
 
 	// Run the timer (30 seconds)
-	let timeLeft = 30;
 	const timerElement = document.getElementById("reserveDuration");
 	const timerText = timerElement.querySelector("#timeLeft");
 	const timerCircle = timerElement.querySelector("svg > circle.progress");
-	timerCircle.style.strokeDashoffset = 1;
+	timerCircle.style.strokeDashoffset = getCurrentTimerProgress(endReserveTime, reserveTimerDurationMs);
 
 	let countdownHandler = async function () {
 		if (!document.getElementById("unlockBikeCard")) clearInterval(countdownTimer);
-		let isTimeLeft = timeLeft > -1;
-		if (isTimeLeft) {
-			const timeRemaining = timeLeft--;
-			const normalizedTime = (timeRemaining - 30) / 30;
-			timerCircle.style.strokeDashoffset = normalizedTime;
+		const currentProgress = getCurrentTimerProgress(endReserveTime, reserveTimerDurationMs),
+			timeRemaining = Math.round(((1 - Math.abs(currentProgress)) * reserveTimerDurationMs) / 1000);
+		if (timeRemaining >= 0) {
+			timerCircle.style.strokeDashoffset = currentProgress;
 			timerText.innerHTML = timeRemaining;
 		} else {
 			clearInterval(countdownTimer);
@@ -575,7 +575,8 @@ async function payTrip(tripCode, tripCost) {
  * @param {number} lastTripEndDate Time at which the last trip ended
  */
 function startCountdownBetweenTrips(lastTripEndDate) {
-	const timeForStartingNextTrip = lastTripEndDate + 5 * 60_000;
+	const timerDurationMs = 5 * 60_000; // 5 minutes in milliseconds
+	const timeForStartingNextTrip = lastTripEndDate + timerDurationMs;
 	if (timeForStartingNextTrip < Date.now()) return;
 
 	// Remove previous countdown if it exists
@@ -608,19 +609,17 @@ function startCountdownBetweenTrips(lastTripEndDate) {
 	const timerElement = document.querySelector("#countdown");
 	const timerCircle = timerElement.querySelector("svg > circle.progress");
 
-	const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-	const isSafari = navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome");
 	// Initialize differently for iOS Safari
-	timerCircle.style.strokeDashoffset = isIOS && isSafari ? 0 : 1;
+	timerCircle.style.strokeDashoffset = getCurrentTimerProgress(timeForStartingNextTrip, timerDurationMs);
 
 	const countdownHandler = function () {
 		// stop the countdown if the element is removed
 		if (!document.body.contains(timerElement)) return;
 
-		const timeRemaining = Math.round((timeForStartingNextTrip - Date.now()) / 1000);
+		const currentProgress = getCurrentTimerProgress(timeForStartingNextTrip, timerDurationMs);
+		const timeRemaining = Math.round(((1 - Math.abs(currentProgress)) * timerDurationMs) / 1000);
 		if (timeRemaining >= 0) {
-			const normalizedTime = (timeRemaining - 300) / 300;
-			timerCircle.style.strokeDashoffset = isIOS && isSafari ? -normalizedTime : normalizedTime;
+			timerCircle.style.strokeDashoffset = currentProgress;
 			timerText.innerHTML = formatTime(timeRemaining);
 			setTimeout(countdownHandler, 1000);
 		} else {
@@ -629,4 +628,15 @@ function startCountdownBetweenTrips(lastTripEndDate) {
 	};
 
 	countdownHandler();
+}
+
+/**
+ * Returns the current progress of a timer based on the end date, current and total time.
+ * @param {number} endDate The timestamp, in ms, when this timer is supposed to end
+ * @param {number} totalTimeMs The total length of the timer in ms
+ */
+function getCurrentTimerProgress(endDate, totalTimeMs) {
+	const start = endDate - totalTimeMs;
+	const normalizedTime = (Date.now() - start) / totalTimeMs;
+	return normalizedTime;
 }
