@@ -202,10 +202,8 @@ async function countdownFromLatestTrip(lastTrip) {
 	// Get the latest trip from the trip history if not given
 	lastTrip ??= await makePostRequest(
 		JSON.stringify({
-			operationName: "tripHistory",
-			variables: { in: { _pageNum: 1, _pageSize: 1 } },
 			query:
-				"tripHistory(pageInput: { _pageNum: 1, _pageSize: 1 }) { bikeName bikeType bonus code cost endDate endLocation rating startDate startLocation usedPoints }",
+				"query { tripHistory(pageInput: { _pageNum: 1, _pageSize: 1 }) { bikeName bikeType bonus code cost endDate endLocation rating startDate startLocation usedPoints } }",
 		}),
 		user.accessToken
 	).then(r => r.data.tripHistory[0]);
