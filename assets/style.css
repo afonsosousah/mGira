@@ -995,7 +995,7 @@ input:-webkit-autofill:active {
 #bikeReserveCard #unlockSlider::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	height: calc(0.2 * 35vh);
-	width: 45vw;
+	width: 50%;
 	border-radius: 999px;
 	background-color: var(--green);
 	background-image: url("images/unlockSlider_PT.png");
@@ -2890,40 +2890,9 @@ body > #countdown {
 		display: flex;
 		flex-direction: column;
 	}
-	#bikeReserveCard #unlockSlider {
-		appearance: none;
-		background-color: var(--black);
-		width: 90%;
-		height: 20%;
-		position: absolute;
-		left: 5%;
-		bottom: 10%;
-		border-radius: 999px;
-		z-index: 4;
-	}
 	#bikeReserveCard #unlockSlider::-webkit-slider-thumb {
-		-webkit-appearance: none;
 		height: calc(0.185 * 35vw);
-		width: 45vw;
-		border-radius: 999px;
-		background-color: var(--green);
-		background-image: url("images/unlockSlider_PT.png");
-		background-size: contain;
-		background-repeat: no-repeat;
-		background-position: center;
-		cursor: pointer;
-	}
-	#bikeReserveCard #unlockSlider::-moz-range-thumb {
-		height: 100%;
-		width: 50%;
-		background-color: var(--green);
-		cursor: pointer;
-		border-radius: 999px;
-		border: none;
-		background-image: url("images/unlockSlider_PT.png");
-		background-size: contain;
-		background-repeat: no-repeat;
-		background-position: center;
+		width: 25%;
 	}
 	#bikeReserveCard #footer {
 		height: 14dvw;
