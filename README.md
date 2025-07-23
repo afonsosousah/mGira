@@ -91,7 +91,12 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
 - v0.1.1 - 22/04/2025
 - v0.1.2 - 30/06/2025
 - v0.1.3 - 02/07/2025
-  - Corrigido um problema que prevenia a app de continuar em alguns casos depois de renovar a autenticação
+- v0.2.0 - 23/07/2025
+  - Adicionado um timer de 5 minutos na lista de bicicletas até poder ser iniciada uma nova viagem
+  - Corrigido um bug que não enviava os comentários de avaliação de uma viagem à EMEL
+  - Melhorada a aparência do menu de desbloqueio de bicicleta no modo landscape
+  - Corrigido um bug que fazia o timer de desbloqueio de uma bicicleta animar no sentido contrário em Safari
+  - Corrigidos alguns erros relacionados com autenticação
 
 ## Licença
 

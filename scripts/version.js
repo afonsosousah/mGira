@@ -1,11 +1,15 @@
 // Current version number
-const currentVersion = "0.1.3";
+const currentVersion = "0.2.0";
 
 // Changelog HTML
 const changelogHTML = `
 Notas da versão ${currentVersion}<br>
 <ul>
-	<li>Corrigido um problema que prevenia a app de continuar em alguns casos depois de renovar a autenticação</li>
+	<li>Adicionado um timer de 5 minutos na lista de bicicletas até poder ser iniciada uma nova viagem</li>
+	<li>Corrigido um bug que não enviava os comentários de avaliação de uma viagem à EMEL</li>
+	<li>Melhorada a aparência do menu de desbloqueio de bicicleta no modo landscape</li>
+	<li>Corrigido um bug que fazia o timer de desbloqueio de uma bicicleta animar no sentido contrário em Safari</li>
+	<li>Corrigidos alguns erros relacionados com autenticação</li>
 </ul>
 `;
 
