@@ -122,7 +122,9 @@ async function openStationMenu(stationSerialNumber) {
             <div id="docksButton">${numDocks === 1 ? "1 doca" : `${numDocks} docas`}</div>
             <img id="bikesImage" src="assets/images/mGira_bike.png" alt="Gira bike" width="25%">
             <div id="bikesButton${
-							stationObj.assetStatus === "repair" ? 'Disabled"' : `" onclick="openBikeList('${stationSerialNumber}')"`
+							stationObj.assetStatus === "repair" && !devMode
+								? 'Disabled"'
+								: `" onclick="openBikeList('${stationSerialNumber}')"`
 						} >
 				${numBikes === 1 ? "1 bicicleta" : `${numBikes} bicicletas`}
 			</div>`;
@@ -280,6 +282,12 @@ async function openBikeList(stationSerialNumber) {
     `,
 		document.getElementById("bikeList")
 	);
+
+	if (devMode)
+		createCustomAlert(
+			"Esta funcionalidade só está disponível no modo de desenvolvimento.\nPor esse motivo, não podemos garantir que funcione corretamente.\nA partir deste momento, não nos responsabilizamos por quaisquer problemas que possam surgir.",
+			"⚠️ ATENÇÃO ⚠️"
+		);
 }
 
 function hideBikeList() {
