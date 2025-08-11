@@ -10,7 +10,7 @@ function createCustomAlert(message, title = null) {
 
 	const titleObj = alertObj.appendChild(document.createElement("span"));
 	titleObj.id = "title";
-	titleObj.innerText = title ?? "";
+	titleObj.innerHTML = title ?? "";
 
 	const msg = alertObj.appendChild(document.createElement("p"));
 	msg.innerText = message;
