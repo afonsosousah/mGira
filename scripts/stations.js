@@ -283,7 +283,7 @@ async function openBikeList(stationSerialNumber) {
 		document.getElementById("bikeList")
 	);
 
-	if (devMode)
+	if (devMode && stationObj.assetStatus !== "active")
 		createCustomAlert(
 			"Esta funcionalidade só está disponível no modo de desenvolvimento.\nPor esse motivo, não podemos garantir que funcione corretamente.\nA partir deste momento, não nos responsabilizamos por quaisquer problemas que possam surgir.",
 			"⚠️ ATENÇÃO ⚠️"
