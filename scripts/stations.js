@@ -331,8 +331,11 @@ async function updateBikeList() {
 		// compact the missing bikes list
 		const newList = Object.fromEntries(
 			[...Object.entries(bikeSerialNumberMapping), ...missingBikes]
-				// Keep only the electric bikes and the classic bikes that don't have an electric one with the same number
-				.filter(([name], _, self) => name.startsWith("E") || !self.find(([b]) => b === name.replace("C", "E")))
+				// Keep only the electric bikes and the classic bikes that don't have an electric one with the same number, and a secret third option
+				.filter(
+					([name], _, self) =>
+						name.startsWith("E") || !self.find(([b]) => b === name.replace("C", "E")) || !["E", "C"].includes(name[0])
+				)
 				.sort(([a], [b]) => Number(a.slice(1)) - Number(b.slice(1)))
 		);
 
