@@ -449,7 +449,16 @@ function hideUserSettings(animate = true) {
 	} else if (userSettings) {
 		userSettings.remove();
 	}
-	changeThemeColor("#ffffff"); // Set status bar color in PWA
+	changeThemeColor("#ffffff", "#000000"); // Set status bar color in PWA
+}
+
+function refreshUserInformation() {
+	// Set this to null to force refresh on settings page open
+	user.activeUserSubscriptions = null;
+
+	// Close and reopen settings page
+	hideUserSettings(false);
+	openUserSettings();
 }
 
 function refreshUserInformation() {
@@ -735,6 +744,9 @@ async function openStatisticsMenu() {
 
 	// Populate chart
 	updateStatisticsChart();
+
+	// Set status bar color in PWA
+	changeThemeColor("#231f20", "#1a1517");
 }
 
 function hideStatisticsMenu() {
