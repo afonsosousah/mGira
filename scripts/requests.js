@@ -113,47 +113,8 @@ async function makePostRequest(body, accessToken = null) {
 			}
 			// Do not return, this will return the app to its default state
 		}
-	} else if (response.status === 403) {
-		// Common API processing error
-		// try for x times to do the request, otherwise just error out
-		return await retryPostRequest(body, accessToken, "Erro da API (403)");
-
-		// if (currentRequestTry < NUMBER_OF_RETRIES) {
-		// 	// Wait before making next request (reduce error rate)
-		// 	await delay(200);
-		// 	return await makePostRequest(body, accessToken);
-		// } else {
-		// 	// Warn user about the API error
-		// 	alert("Erro da API (403)");
-
-		// 	// Hide user menu if it is showing
-		// 	hideUserSettings();
-
-		// 	// Hide search place menu if it is showing
-		// 	hidePlaceSearchMenu();
-
-		// 	// Hide bike list menu if it is showing
-		// 	let bikeListMenu = document.getElementById("bikeMenu");
-		// 	if (bikeListMenu) {
-		// 		bikeListMenu.classList.add("smooth-slide-to-bottom");
-		// 		setTimeout(() => bikeListMenu.remove(), 500); // remove element after animation
-		// 		return; // prevent station card from being hidden if there was a bike list menu
-		// 	}
-
-		// 	// Hide station card if it is showing
-		// 	let menu = document.getElementById("stationMenu");
-		// 	if (menu) {
-		// 		menu.classList.add("smooth-slide-to-left");
-		// 		setTimeout(() => menu.remove(), 500); // remove element after animation
-		// 		document.getElementById("zoomControls").classList.add("smooth-slide-down-zoom-controls"); // move zoom controls back down
-		// 	}
-
-		// 	// Reset currentRequestTry
-		// 	currentRequestTry = 0;
-
-		// 	return;
-		// }
 	}
+	currentRequestTry = 0;
 	returnToDefaultState();
 }
 
