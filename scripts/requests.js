@@ -10,7 +10,7 @@ const GIRA_TOKEN_REFRESH_ENDPOINT = "https://api-auth.emel.pt/token/refresh";
 const GIRA_USER_ENDPOINT = "https://api-auth.emel.pt/user";
 const FIREBASE_TOKEN_URL = "https://luk.moe/girabot_tokens/exchange";
 
-const NUMBER_OF_RETRIES = 3;
+const NUMBER_OF_RETRIES = 10;
 const DEFAULT_PROXY = "https://corsproxy.afonsosousah.workers.dev/";
 
 async function makeProxyRequest(url, init) {
@@ -88,30 +88,24 @@ async function makePostRequest(body, accessToken = null) {
 		return responseObject;
 	} else if (response.status === 400) {
 		const responseObject = await response.json(),
-			errorTranslation = errorTranslations[responseObject.errors[0].message];
+			rawError = responseObject.errors[0].message;
+			errorTranslation = errorTranslations[rawError];
 		// Try to display the countdown if not set already
-		if (responseObject.errors[0].message === "trip_interval_limit") countdownFromLatestTrip();
+		if (rawError === "trip_interval_limit") countdownFromLatestTrip();
 		if (errorTranslation) {
 			alert(errorTranslation);
 			return;
 		}
 
-		if (responseObject.errors[0].message !== "Error executing document.") {
+		if (rawError !== "Error executing document.") {
 			// Show general error message for unknown errors
-			alert(responseObject.errors[0].message);
+			if (rawError.startsWith("Error trying to resolve field")) {
+				return retryPostRequest(body, accessToken, rawError);
+			}
+			alert(rawError);
 			return;
 		} else {
-			// Common API processing error
-			// try for x times to do the request, otherwise just error out
-			if (currentRequestTry < NUMBER_OF_RETRIES) {
-				// Wait before making next request (reduce error rate)
-				await delay(200);
-				return await makePostRequest(body, accessToken);
-			} else {
-				// Warn user about the API error
-				alert("Erro da API");
-			}
-			// Do not return, this will return the app to its default state
+			retryPostRequest(body, accessToken, "Erro da API (400)");
 		}
 	}
 	currentRequestTry = 0;
@@ -326,8 +320,9 @@ function startWSConnection(force = false) {
 
 async function retryPostRequest(body, accessToken, errorMessage) {
 	if (currentRequestTry < NUMBER_OF_RETRIES) {
+		console.log("Retrying request... Attempt " + currentRequestTry + " of " + NUMBER_OF_RETRIES);
 		// Wait before making next request (reduce error rate)
-		await delay(200);
+		await delay(1000);
 		return await makePostRequest(body, accessToken);
 	} else {
 		// Warn user about the API error
