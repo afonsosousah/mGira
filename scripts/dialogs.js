@@ -13,7 +13,7 @@ function createCustomAlert(message, title = null) {
 	titleObj.innerHTML = title ?? "";
 
 	const msg = alertObj.appendChild(document.createElement("p"));
-	msg.innerText = message;
+	msg.innerHTML = message;
 
 	const btn = alertObj.appendChild(document.createElement("div"));
 	btn.id = "closeBtn";
