@@ -1,31 +1,29 @@
 /* #region CSS Variables */
 :root {
 	--green: #79c000;
-	--black: #231f20;
+	--black: #1a1517;
 	--white: #ffffff;
-	--medium-gray: #57565d;
 	--gray: #d9d9da;
-	--medium-gray: #57565d;
-	--dark-gray: #454449;
+	--pure-black: #231f20;
 	--shadow-black: rgba(35, 31, 32, 0.2);
 	--shadow-green: rgba(121, 192, 0, 0.2);
-	--glass-white: rgba(255, 255, 255, 0.7);
+	--shadow-white: rgba(255, 255, 255, 0.2);
+	--glass-white: rgba(255, 255, 255, 0.9);
 	--glass-green: rgba(121, 192, 0, 0.9);
-	--glass-black: rgba(35, 31, 32, 0.7);
-	--glass-gray: rgba(217, 217, 218, 0.7);
+	--glass-black: rgba(26, 21, 23, 0.9);
 }
 /* #endregion */
 
 /* #region Loading animation */
 #spinner {
 	display: inline-block;
-	width: 100px;
-	height: 100px;
+	width: 80px;
+	height: 80px;
 	position: absolute;
-	top: calc(50% - 50px);
-	left: calc(50% - 50px);
+	top: calc(50% - 40px);
+	left: calc(50% - 40px);
 	object-fit: contain;
-	/*animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;*/
+	animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 }
 .lds-ring {
 	display: inline-block;
@@ -89,6 +87,7 @@
 		opacity: 0;
 	}
 	to {
+		bottom: 0px;
 		opacity: 1;
 	}
 }
@@ -143,12 +142,12 @@
 /* Zoom controls animations */
 @keyframes smooth-slide-up-zoom-controls {
 	to {
-		bottom: calc(2vh + 7vh + 2vh + 50vw + 2vh);
+		bottom: calc(2vh + 7vh + 2vh + 55vw + 2vh);
 	}
 }
 @keyframes smooth-slide-down-zoom-controls {
 	from {
-		bottom: calc(2vh + 7vh + 2vh + 50vw + 2vh);
+		bottom: calc(2vh + 7vh + 2vh + 55vw + 2vh);
 	}
 	to {
 		bottom: calc(2vh + 7vh + 2vh);
@@ -222,6 +221,16 @@
 /* #endregion */
 
 /* #region Fill the window and set font */
+
+@font-face {
+	font-family: 'Inter';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url(https://fonts.gstatic.com/s/inter/v13/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2) format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 html,
 body {
 	height: 100dvh;
@@ -229,12 +238,12 @@ body {
 	margin: 0;
 	padding: 0;
 	position: relative;
-	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
-		"Helvetica Neue", sans-serif;
+	font-family: 'Inter', 'Roboto', Arial, sans-serif;
 	font-weight: normal;
 	user-select: none;
 	overflow-y: scroll;
 	overflow-x: hidden;
+	background-color: rgb(8,8,8);
 }
 /* #endregion */
 
@@ -252,36 +261,37 @@ body {
 	position: absolute;
 	top: 0;
 	left: 0;
-	background: linear-gradient(0deg, var(--white) 5%, transparent 40%);
+	background: linear-gradient(0deg, #080808 5%, transparent 40%);
 	pointer-events: none;
 	touch-action: none;
 }
 .ol-attribution {
-	top: 0.5em;
-	left: 0.5em;
+	top: .5em;
+	left: .5em;
 	bottom: unset !important;
 	right: unset !important;
 	border-radius: 999px !important;
-	margin-left: env(safe-area-inset-left);
-	margin-top: env(safe-area-inset-top);
+	background-color: rgba(8, 8, 8, 0.7) !important;
 }
 .ol-attribution button {
 	all: unset;
 	height: 1.375em;
 	width: 1.375em;
-	line-height: 0.4em;
+	line-height: .4em;
 	border-radius: 999px;
-	background-color: var(--glass-white);
+	background-color: rgba(8, 8, 8, 0.7);
 	color: var(--green);
 	text-align: center;
 	font-family: Roboto, Arial, sans-serif;
 	font-weight: bold;
 }
-.ol-attribution button:focus,
-.ol-attribution button:hover {
+.ol-attribution button:focus, .ol-attribution button:hover {
 	outline: 1px solid var(--green);
 	color: var(--green);
-	line-height: 0.4em;
+	line-height: .4em;
+}
+.ol-attribution ul {
+	text-shadow: none !important;
 }
 /* #endregion */
 
@@ -291,7 +301,7 @@ body {
 	position: absolute;
 	left: 2vh;
 	bottom: 2vh;
-	margin-left: env(safe-area-inset-left);
+	filter: drop-shadow(0px 4px 6px 0px var(--shadow-green)),
 }
 /* #endregion */
 
@@ -301,12 +311,11 @@ body {
 	width: fit-content;
 	height: fit-content;
 	position: absolute;
-	right: calc(2vh);
+	right: 2vh;
 	bottom: calc(2vh + 7vh + 2vh);
 	display: flex;
 	flex-direction: column;
 	gap: 1vh;
-	margin-right: env(safe-area-inset-right);
 }
 #zoomControls div {
 	background-color: var(--green);
@@ -314,10 +323,13 @@ body {
 	height: 6vh;
 	font-size: calc(0.2 * 20vh);
 	border-radius: 999px;
-	color: white;
+	color: var(--black);
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 #zoomControls div i {
 	width: 32px;
@@ -330,56 +342,50 @@ body {
 
 /* #region Search bar */
 #searchBarDiv {
-	width: calc(100% - 4vh);
-	height: 7vh;
+	border-radius: 999px;
+	width: 100%;
 	position: absolute;
-	bottom: 2vh;
-	left: 2vh;
+	bottom: 0;
+	left: 0;
 	z-index: 2;
 	animation: slide-fwd-top 0.5s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-	margin-left: env(safe-area-inset-left);
-	box-shadow: 0px 1px 6px 0px var(--gray);
-	border-radius: 999px;
 }
 #searchBarCancelButton {
-	background-color: var(--white);
+	background-color: var(--black);
 	border-radius: 999px 0 0 999px;
 	color: var(--green);
-	/*border: 1px solid var(--green);*/
-	border-right: none;
+	outline: 1px solid var(--green);
 	position: absolute;
-	left: 0;
-	bottom: 0;
-	width: 6vh;
+	left: 2vh;
+	bottom: 2vh;
+	width: 7vh;
 	height: 7vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-}
-#searchBarCancelButton i {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 1.4rem;
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
+
 }
 #searchBar {
-	background-color: rgb(255, 255, 255);
-	width: calc(100vw - 4vh - 6vh);
+	background-color: var(--black);
+	width: calc(100vw - 4vh - 7vh);
 	height: 7vh;
 	position: absolute;
-	left: 6vh;
-	bottom: 0;
-	outline: none;
-	border: none;
-	/*border: 1px solid var(--green);*/
-	border-left: none;
+	left: calc(2vh + 7vh);
+	bottom: 2vh;
+	outline: 1px solid var(--green);
 	border-radius: 0 999px 999px 0;
 	display: flex;
 	align-items: center;
-	padding: 0;
+	padding-left: 5%;
 	color: var(--green);
+	border: none;
 	font-size: medium;
-	box-sizing: content-box;
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 #searchBar::-webkit-input-placeholder {
 	color: var(--green);
@@ -392,24 +398,11 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
 	-webkit-appearance: none;
 }
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-	-webkit-box-shadow: 0 0 0 30px white inset !important;
-}
-#searchBar:-webkit-autofill,
-#searchBar:-webkit-autofill:hover,
-#searchBar:-webkit-autofill:focus,
-#searchBar:-webkit-autofill:active {
-	-webkit-box-shadow: 0 0 0 30px white inset !important;
-}
-
 /* #endregion */
 
 /* #region Navigation Button */
 #navigationButton {
-	background-color: var(--glass-white);
+	background-color: rgba(8, 8, 8, 0.7);
 	width: 7vh;
 	height: 7vh;
 	position: absolute;
@@ -417,28 +410,24 @@ input:-webkit-autofill:active {
 	right: calc(2vh + 7vh + 2vh);
 	bottom: 2vh;
 	border-radius: 999px;
-	/*outline: 1px solid var(--green);*/
+	outline: 1px solid var(--green);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow: 0px 1px 6px 0px var(--green);
-	margin-right: env(safe-area-inset-right);
-	font-size: 1.8rem;
-	color: var(--green);
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 #navigationButton img {
 	border-radius: 999px;
 	width: 4vh;
 	height: 4vh;
 }
-#navigationButton i {
-	margin-top: 0.4rem;
-}
 /* #endregion */
 
 /* #region User picture */
 #userPicture {
-	background-color: var(--glass-white);
+	background-color: rgba(8, 8, 8, 0.7);
 	width: 7vh;
 	height: 7vh;
 	position: absolute;
@@ -446,34 +435,113 @@ input:-webkit-autofill:active {
 	right: 2vh;
 	bottom: 2vh;
 	border-radius: 999px;
-	/*outline: 1px solid var(--green);*/
+	outline: 1px solid var(--green);
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	box-shadow: 0px 1px 6px 0px var(--green);
-	margin-right: env(safe-area-inset-right);
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
+/*#userPicture img {
+	border-radius: 999px;
+	width: 7vh;
+	height: 7vh;
+}
+#userPicture i {
+	font-size: calc(0.2 * 25vh);
+}*/
 #userPicture #userInitials {
 	font-size: 3dvh;
 	color: var(--green);
 }
 /* #endregion */
 
+/* #region Station menu */
+.station-menu {
+	background-color: var(--black);
+	width: 100%;
+	height: 45%;
+	position: absolute;
+	z-index: 1;
+	left: 0;
+	bottom: -45%;
+	border-radius: 20px 20px 0 0;
+	animation: smooth-appear 0.5s ease forwards;
+}
+.station-menu #stationName {
+	width: 55%;
+	height: 25%;
+	position: absolute;
+	z-index: 2;
+	left: 5%;
+	top: 5%;
+	display: flex;
+	align-items: center;
+	text-align: center;
+}
+.station-menu #stationImage {
+	width: 30%;
+	position: absolute;
+	z-index: 2;
+	right: 5%;
+	top: 5%;
+}
+.station-menu #availableBikesNumber {
+	width: 90%;
+	height: 10%;
+	position: absolute;
+	z-index: 2;
+	left: 5%;
+	top: 35%;
+	text-align: center;
+}
+.station-menu #cancelButton {
+	background-color: var(--green);
+	width: 42.5%;
+	height: 15%;
+	position: absolute;
+	z-index: 2;
+	left: 5%;
+	top: 52%;
+	border-radius: 999px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-weight: bold;
+}
+.station-menu #seeBikesButton {
+	background-color: var(--green);
+	width: 42.5%;
+	height: 15%;
+	position: absolute;
+	z-index: 2;
+	left: 52.5%;
+	top: 52%;
+	border-radius: 999px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	font-weight: bold;
+}
+/* #endregion */
+
 /* #region Station card */
 .station-card {
-	background-color: transparent;
+	background-color: #181818;
 	width: 90vw;
-	height: 50vw;
+	height: 55vw;
 	position: absolute;
 	z-index: 1;
 	left: 5vw;
 	bottom: calc(2vh + 7vh + 2vh);
 	border-radius: 20px;
 	box-shadow: 5px 5px 15px 0px var(--shadow-black);
+	opacity: 95%;
 	animation: smooth-slide-from-left 0.5s ease forwards;
-	-webkit-backdrop-filter: blur(1rem);
-	backdrop-filter: blur(1rem);
-	margin-left: env(safe-area-inset-left);
+	color: var(--gray);
 }
 .station-card #graphics {
 	height: 50%;
@@ -481,55 +549,31 @@ input:-webkit-autofill:active {
 	object-fit: cover;
 	rotate: 180deg;
 	opacity: 5%;
-	display: none;
-}
-.station-card #stationIDandDistanceContainer {
-	width: calc(100% - 17.5vw);
-	position: absolute;
-	left: 5vw;
-	top: 4vw;
-	display: flex;
-	align-items: center;
-	justify-content: left;
-	flex-direction: row;
-	gap: 0.5rem;
-}
-.station-card #stationID {
-	width: fit-content;
-	text-align: left;
-	font-size: 0.9rem;
-	font-weight: 600;
-	color: var(--dark-gray);
-}
-.station-card #stationDistance {
-	width: fit-content;
-	font-size: 0.65rem;
-	padding: 0.1rem 0.25rem;
-	background-color: var(--glass-gray);
-	border-radius: 0.3rem;
-	color: var(--dark-gray);
 }
 .station-card #stationName {
-	width: calc(100% - 17.5vw);
+	width: calc(100% - 25vw);
 	position: absolute;
-	left: 5vw;
-	top: calc(4vw + 1rem + 0.2rem);
-	text-align: left;
-	font-size: 0.7rem;
-	line-height: 0.7rem;
-	color: var(--medium-gray);
+	left: 12.5vw;
+	top: 5vw;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	font-size: 0.9rem;
 }
 .station-card #docksImage {
 	width: 42.5%;
-	height: 26%;
+	height: 25%;
 	object-fit: contain;
 	position: absolute;
 	left: 5vw;
-	bottom: calc(5vw + 2.5rem + 2vw);
+	bottom: calc(5vw + 20% + 2vw);
 }
 .station-card #docksButton {
+	background-color: transparent;
+	outline: 2px solid var(--white);
 	width: 42.5%;
-	height: 2.5rem;
+	height: 20%;
 	position: absolute;
 	left: 5vw;
 	bottom: 5vw;
@@ -537,20 +581,24 @@ input:-webkit-autofill:active {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: var(--black);
-	box-shadow: 0px 1px 6px 0px var(--black);
+	color: var(--gray);
+	box-shadow:
+		5px 5px 8px 0px var(--shadow-white),
+		0px 0px 5px 0px var(--shadow-white) inset;
 }
 .station-card #bikesImage {
 	width: 42.5%;
-	height: 24%;
+	height: 25%;
 	object-fit: contain;
 	position: absolute;
 	right: 5vw;
-	bottom: calc(5vw + 2.5rem + 2vw);
+	bottom: calc(5vw + 20% + 2vw);
 }
 .station-card #bikesButton {
+	background-color: transparent;
+	outline: 2px solid var(--green);
 	width: 42.5%;
-	height: 2.5rem;
+	height: 20%;
 	position: absolute;
 	right: 5vw;
 	bottom: 5vw;
@@ -559,22 +607,25 @@ input:-webkit-autofill:active {
 	justify-content: center;
 	align-items: center;
 	color: var(--green);
-	box-shadow: 0px 1px 6px 0px var(--green);
+	box-shadow:
+		5px 5px 8px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .station-card #bikesButtonDisabled {
-	/* Same as above, but with gray instead of green */
-	background-color: var(--white);
-	width: 42.5%;
-	height: 2.5rem;
-	position: absolute;
-	right: 5vw;
-	bottom: 5vw;
-	border-radius: 999px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: var(--gray);
-	box-shadow: 0px 1px 6px 0px var(--gray);
+    /* Same as above, but with gray instead of green */
+    background-color: var(--black);
+    outline: 2px solid var(--gray);
+    width: 42.5%;
+    height: 20%;
+    position: absolute;
+    right: 5vw;
+    bottom: 5vw;
+    border-radius: 999px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--gray);
+    box-shadow: 5px 5px 15px 0px var(--shadow-gray), 0px 0px 5px 0px var(--shadow-gray) inset;
 }
 .station-card #availableBikesNumber {
 	width: 90%;
@@ -605,13 +656,12 @@ input:-webkit-autofill:active {
 	right: 5vw;
 	top: 5vw;
 	font-size: 1.2rem;
-	color: var(--dark-gray);
 }
 .station-card #startNavigationButton {
 	position: absolute;
 	top: -8vh;
 	right: 7vh;
-	background-color: var(--glass-black);
+	background-color: var(--pure-black);
 	border-radius: 999px;
 	color: white;
 	display: flex;
@@ -619,7 +669,7 @@ input:-webkit-autofill:active {
 	align-items: center;
 	height: 6vh;
 	width: 6vh;
-	box-shadow: 0px 4px 6px 0px var(--shadow-black);
+	box-shadow: 0px 4px 6px 0px var(--shadow-black), 0px 0px 5px 0px var(--shadow-black) inset;
 }
 .station-card #startNavigationButton:hover {
 	cursor: pointer;
@@ -636,7 +686,7 @@ input:-webkit-autofill:active {
 	position: absolute;
 	top: -8vh;
 	left: 0;
-	background-color: var(--glass-black);
+	background-color: var(--pure-black);
 	border-radius: 999px;
 	color: white;
 	display: flex;
@@ -645,13 +695,13 @@ input:-webkit-autofill:active {
 	height: 6vh;
 	padding: 0 2dvh;
 	font-size: 0.8rem;
-	box-shadow: 0px 4px 6px 0px var(--shadow-black);
+	box-shadow: 0px 4px 6px 0px var(--shadow-black), 0px 0px 5px 0px var(--shadow-black) inset;
 }
 /* #endregion */
 
 /* #region Login menu */
 .login-menu {
-	background-color: rgba(35, 31, 32, 0.9);
+	background-color: var(--glass-black);
 	width: 100%;
 	height: 100%;
 	position: absolute;
@@ -666,7 +716,7 @@ input:-webkit-autofill:active {
 	left: 25%;
 }
 #loginCard {
-	background-color: white;
+	background-color: var(--black);
 	width: 100%;
 	height: 30dvh;
 	position: absolute;
@@ -687,13 +737,14 @@ input:-webkit-autofill:active {
 	outline: 1px solid var(--green);
 	padding: 5px 15px;
 	border-radius: 999px;
-	background-color: var(--glass-white);
+	background-color: var(--glass-black);
 	background-image: url("images/envelope-at.svg");
 	background-repeat: no-repeat;
 	background-position-x: calc(100% - 10px);
 	background-position-y: calc(100% - 14px);
 	padding-right: 35px;
 	z-index: 1;
+	color: var(--gray);
 }
 #loginCard input[name="password"] {
 	top: calc(10% + 5.25dvh + 10px + 2dvh);
@@ -702,7 +753,7 @@ input:-webkit-autofill:active {
 #registerButton,
 #loginButton {
 	background-color: var(--green);
-	color: var(--white);
+	color: var(--black);
 	width: 37.5%;
 	height: 6dvh;
 	position: absolute;
@@ -733,15 +784,16 @@ input:-webkit-autofill:active {
 
 /* #region Bike list */
 .bike-list {
-	background-color: var(--white);
+	background-color: var(--black);
 	width: 100%;
 	height: 100%;
 	position: absolute;
-	z-index: 2;
+	z-index: 3;
 	left: 0;
 	top: 0;
 	border-radius: 0;
 	animation: smooth-slide-from-bottom 0.5s ease forwards;
+	color: var(--gray);
 }
 .bike-list #graphics {
 	height: 25vw;
@@ -763,8 +815,6 @@ input:-webkit-autofill:active {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-left: env(safe-area-inset-left);
-	margin-top: env(safe-area-inset-top);
 }
 .bike-list #backButton i {
 	width: 32px;
@@ -773,81 +823,47 @@ input:-webkit-autofill:active {
 	justify-content: center;
 	align-items: center;
 }
-.bike-list #stationIDandDistanceContainer {
-	width: calc(100% - 7vh - 10px - 5%);
+.bike-list #stationName {
+	width: 50%;
+	height: 10%;
 	position: absolute;
-	left: calc(10px + 7vh);
-	top: 3vh;
+	z-index: 2;
+	left: 20%;
+	top: 2%;
 	display: flex;
 	align-items: center;
-	justify-content: left;
-	flex-direction: row;
-	gap: 0.5rem;
-	margin-left: env(safe-area-inset-left);
-	margin-top: env(safe-area-inset-top);
+	text-align: center;
+	word-break: normal;
+	white-space: pre-wrap;
 }
-.bike-list #stationID {
-	text-align: left;
-	font-size: 0.9rem;
-	font-weight: 600;
-	color: var(--dark-gray);
-	z-index: 2;
-}
-.bike-list #stationDistance {
-	font-size: 0.65rem;
-	padding: 0.1rem 0.25rem;
-	background-color: var(--glass-gray);
-	border-radius: 0.3rem;
-	color: var(--dark-gray);
-}
-.bike-list #stationName {
-	width: calc(100% - 7vh - 10px - 5% - 8dvh);
+.bike-list #stationImage {
+	width: 20%;
 	position: absolute;
-	left: calc(10px + 7vh);
-	top: calc(3vh + 1rem + 0.2rem);
-	text-align: left;
-	font-size: 0.7rem;
-	line-height: 0.7rem;
-	color: var(--medium-gray);
-	margin-left: env(safe-area-inset-left);
-	margin-top: env(safe-area-inset-top);
 	z-index: 2;
-}
-.bike-list #listGradient {
-	position: absolute;
-	top: 17.5vw;
-	left: 0;
-	width: 100%;
-	height: 1.2vh;
-	background: linear-gradient(180deg, #fff 0%, transparent 100%);
-	z-index: 2;
+	right: 5%;
+	top: 4%;
 }
 .bike-list #bikeList {
 	position: absolute;
-	width: calc(100% - env(safe-area-inset-left) - env(safe-area-inset-right));
-	left: 0;
-	top: 17.5vw;
+	width: 90%;
+	left: 5%;
+	top: 15%;
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	max-height: calc(100dvh - 17.5vw - 2vh);
+	max-height: 85%;
 	overflow: scroll;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding-top: 2vh;
-	margin-left: env(safe-area-inset-left);
-	margin-right: env(safe-area-inset-right);
 }
 .bike-list-element {
-	background-color: var(--white);
+	background-color: var(--black);
 	border-radius: 999px;
 	position: relative;
 	height: 7vh;
-	width: 90%;
 	margin-bottom: 10px;
-	box-shadow: 0px 1px 6px 0px var(--green);
-	flex-shrink: 0;
+	border: 1px solid var(--green);
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 }
 .bike-list-element #battery {
 	position: absolute;
@@ -886,11 +902,6 @@ input:-webkit-autofill:active {
 	font-weight: normal;
 	font-size: 0.7rem;
 }
-.bike-list-element #content #bikeInfo #serialNum {
-	color: var(--black);
-	font-weight: normal;
-	font-size: 0.7rem;
-}
 .bike-list-element #content #reserveBikeIcon {
 	margin-left: auto;
 	margin-right: 20px;
@@ -908,22 +919,23 @@ input:-webkit-autofill:active {
 
 /* #region Bike reserve */
 .bike-reserve {
-	background-color: rgba(35, 31, 32, 0.9);
+	background-color: var(--glass-black);
 	width: 100%;
 	height: 100%;
 	position: absolute;
 	top: 0;
 	left: 0;
-	z-index: 4;
+	z-index: 3;
 }
 #bikeReserveCard {
-	background-color: white;
+	background-color: var(--black);
 	width: 100%;
 	height: 35%;
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	border-radius: 30px 30px 0 0;
+	color: var(--white)
 }
 #bikeReserveCard #backButton {
 	position: absolute;
@@ -935,7 +947,6 @@ input:-webkit-autofill:active {
 	font-size: calc(0.35 * 8vh);
 	margin-bottom: 1vh;
 	border-radius: 999px;
-	color: white;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -983,7 +994,7 @@ input:-webkit-autofill:active {
 }
 #bikeReserveCard #unlockSlider {
 	appearance: none;
-	background-color: var(--black);
+	background-color: var(--pure-black);
 	width: 90%;
 	height: 20%;
 	position: absolute;
@@ -995,7 +1006,7 @@ input:-webkit-autofill:active {
 #bikeReserveCard #unlockSlider::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	height: calc(0.2 * 35vh);
-	width: 50%;
+	width: 45vw;
 	border-radius: 999px;
 	background-color: var(--green);
 	background-image: url("images/unlockSlider_PT.png");
@@ -1026,45 +1037,40 @@ input:-webkit-autofill:active {
 	z-index: 0;
 	opacity: 0.05;
 }
-#reserveDuration {
-	position: absolute;
+.timer {
+    position: absolute;
 	bottom: 13dvh;
 	left: calc(50vw - 8dvh);
 	z-index: 1;
 }
-#reserveDuration > svg {
-	width: 16dvh;
-	height: 16dvh;
+.timer > svg {
+    width: 16dvh;
+    height: 16dvh;
 }
 .timer > svg > circle {
-	transform: rotate(90deg) scale(-1, 1);
-	transform-origin: center center;
+    fill: none;
+    stroke-opacity: 0.3;
+    stroke: var(--green);
+    stroke-width: 10;
+    transform-origin: center center;
+    transform: rotate(-90deg);
 }
-.timer > svg > circle.base {
-	fill: none;
-	stroke-opacity: 0.3;
-	stroke: var(--green);
-	stroke-width: 10;
-	transform-origin: center center;
-	transform: rotate(-90deg);
+.timer > svg > circle + circle {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    stroke-linecap: round;
+    stroke-opacity: 1;
 }
-.timer > svg > circle.progress {
-	fill: none;
-	stroke: var(--green);
-	stroke-width: 8;
-	stroke-dasharray: 1;
-	stroke-dashoffset: 1;
-	stroke-linecap: round;
-	stroke-opacity: 1;
+.timer.animatable > svg > circle + circle {
+    transition: stroke-dashoffset 0.3s ease;
 }
-.timer.animatable > svg > circle.progress {
-	transition: stroke-dashoffset 1s linear;
+.timer > svg > text {
+    font-size: 1.5rem;
+	fill: var(--white);
 }
-#reserveDuration > svg > text {
-	font-size: 1.5rem;
-}
-#reserveDuration > svg > text + text {
-	font-size: 0.8rem;
+.timer > svg > text + text {
+    font-size: 0.8rem;
+	fill: var(--white);
 }
 #bikeReserveCard #bikeLeavingDock {
 	width: 70%;
@@ -1085,11 +1091,11 @@ input:-webkit-autofill:active {
 	top: 2dvh;
 	left: 2dvh;
 	border-radius: 30px;
-	z-index: 2;
+	z-index: 3;
 }
 .trip-overlay #onTripText {
 	position: absolute;
-	top: 2dvh;
+	top: 2.5dvh;
 	left: 2.5dvh;
 	font-size: 2rem;
 	color: var(--black);
@@ -1105,27 +1111,16 @@ input:-webkit-autofill:active {
 .trip-overlay #tripCost {
 	position: absolute;
 	bottom: 2dvh;
-	left: 2.5dvh;
+	left: 3dvh;
 	font-size: 1.2rem;
-	line-height: 1.2rem;
 	color: var(--black);
 	z-index: 4;
 }
 .trip-overlay #tripTime {
 	position: absolute;
-	bottom: calc(2dvh + 1.2rem + 1dvh);
-	left: 2.5dvh;
+	bottom: 6dvh;
+	left: 3dvh;
 	font-size: 1.2rem;
-	line-height: 1.2rem;
-	color: var(--black);
-	z-index: 4;
-}
-.trip-overlay #tripBike {
-	position: absolute;
-	bottom: calc(2dvh + 2.4rem + 2dvh);
-	left: 2.5dvh;
-	font-size: 1.2rem;
-	line-height: 1.2rem;
 	color: var(--black);
 	z-index: 4;
 }
@@ -1156,7 +1151,7 @@ input:-webkit-autofill:active {
 
 /* #region User menu */
 .user-settings {
-	background-color: var(--white);
+	background-color: var(--black);
 	width: 100%;
 	min-height: 100%;
 	position: absolute;
@@ -1167,38 +1162,7 @@ input:-webkit-autofill:active {
 	display: flex;
 	flex-direction: column;
 	animation: smooth-slide-from-bottom 0.3s ease forwards;
-}
-.user-settings #backButton {
-	position: absolute;
-	top: 10px;
-	left: 10px;
-	background-color: transparent;
-	width: 6vh;
-	height: 6vh;
-	font-size: calc(0.35 * 6vh);
-	margin-bottom: 1vh;
-	color: var(--black);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-top: env(safe-area-inset-top);
-	margin-left: env(safe-area-inset-left);
-}
-.user-settings #refreshButton {
-	position: absolute;
-	top: 10px;
-	right: 10px;
-	background-color: transparent;
-	width: 6vh;
-	height: 6vh;
-	font-size: calc(0.4 * 6vh);
-	margin-bottom: 1vh;
-	color: var(--white);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-top: env(safe-area-inset-top);
-	margin-right: env(safe-area-inset-right);
+	color: var(--gray);
 }
 .user-settings i {
 	width: 32px;
@@ -1212,7 +1176,6 @@ input:-webkit-autofill:active {
 	width: 100vw;
 	height: 24vh;
 	background-color: var(--green);
-	padding-top: env(safe-area-inset-top);
 }
 .user-settings #topUserContainer #footer {
 	position: absolute;
@@ -1222,6 +1185,7 @@ input:-webkit-autofill:active {
 	height: 12vh;
 	object-fit: cover;
 	opacity: 70%;
+	content:url("images/gira_footer.svg")
 }
 .user-settings #topUserContainer #backButton {
 	position: absolute;
@@ -1232,7 +1196,7 @@ input:-webkit-autofill:active {
 	font-size: calc(0.35 * 6vh);
 	margin-bottom: 1vh;
 	border-radius: 999px;
-	color: white;
+	color: var(--black);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -1245,7 +1209,7 @@ input:-webkit-autofill:active {
 	align-items: center;
 }
 .user-settings #topUserContainer #userImage {
-	background-color: var(--black);
+	background-color: var(--pure-black);
 	border-radius: 999px;
 	width: 22vh;
 	height: 22vh;
@@ -1258,7 +1222,7 @@ input:-webkit-autofill:active {
 }
 .user-settings #topUserContainer #userImage #userInitialsSettings {
 	font-size: 8vh;
-	color: var(--white);
+	color: var(--gray);
 }
 .user-settings #topUserContainer #bottomCard {
 	position: absolute;
@@ -1266,14 +1230,16 @@ input:-webkit-autofill:active {
 	left: 0;
 	width: 100%;
 	height: 3dvh;
-	background-color: var(--white);
+	background-color: var(--black);
 	border-radius: 3dvh 3dvh 0 0;
 }
 .user-settings #userName {
 	width: 100%;
 	text-align: center;
 	font-size: larger;
+	font-weight: bold;
 	margin-top: 5vh;
+	color: var(--green);
 }
 .user-settings #balanceAndBonusContainer {
 	width: 100vw;
@@ -1293,8 +1259,8 @@ input:-webkit-autofill:active {
 	display: flex;
 	justify-content: center;
 	position: relative;
-	/*outline: 1px solid var(--green);*/
-	box-shadow: 0px 1px 6px 0px var(--green), 0px 0px 5px 0px var(--shadow-green) inset;
+	outline: none;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 .user-settings #balanceAndBonusContainer #balanceContainer #balanceLabel,
 .user-settings #balanceAndBonusContainer #bonusContainer #bonusLabel {
@@ -1322,22 +1288,22 @@ input:-webkit-autofill:active {
 	border-radius: 25px;
 	display: flex;
 	position: relative;
-	/*outline: 1px solid var(--green);*/
-	box-shadow: 0px 1px 6px 0px var(--green), 0px 0px 5px 0px var(--shadow-green) inset;
+	outline: none;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 .user-settings #subscriptionContainer div #cardSVG {
 	position: absolute;
 	height: 6vh;
 	width: 6vh;
 	font-size: 6vh;
-	top: calc((100% - 6vh - 1.5rem) / 2);
+	top: 10px;
 	left: calc(25% - 3vh);
 }
 .user-settings #subscriptionContainer div #subscriptionName {
 	position: absolute;
 	left: 5%;
 	width: 40%;
-	top: calc(6vh + 0.75rem);
+	top: 7vh;
 	text-align: center;
 }
 .user-settings #subscriptionContainer div #subscriptionValidity {
@@ -1350,8 +1316,7 @@ input:-webkit-autofill:active {
 	font-size: 1.2rem;
 }
 .user-settings #statisticsMenuButtonContainer,
-.user-settings #tripHistoryButtonContainer,
-.user-settings #issueButtonContainer {
+.user-settings #tripHistoryButtonContainer {
 	width: 100vw;
 	display: flex;
 	align-items: center;
@@ -1359,46 +1324,38 @@ input:-webkit-autofill:active {
 	margin-top: 3vh;
 }
 .user-settings #statisticsMenuButton,
-.user-settings #tripHistoryButton,
-.user-settings #issueButton {
+.user-settings #tripHistoryButton {
 	width: calc(85vw + 2vh - 5dvh);
 	padding: 2dvh 3dvh;
 	background-color: var(--green);
 	border-radius: 999px;
-	color: var(--white);
+	color: var(--black);
 	display: flex;
 	align-items: center;
 	gap: 1dvh;
-	box-shadow: 0px 1px 6px 0px var(--green);
-}
-.user-settings #issueButton {
-	background-color: var(--dark-gray);
 }
 .user-settings #statisticsMenuButton i,
-.user-settings #tripHistoryButton i,
-.user-settings #issueButton i {
+.user-settings #tripHistoryButton i {
 	font-size: 1.5rem;
 }
 .user-settings #settingsContainer {
 	width: 100vw;
-	height: fit-content;
+	height: 16vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	flex-direction: column;
-	gap: 3vh;
 	margin-top: 3vh;
 }
 .user-settings #settingsContainer #proxy {
 	width: calc(85vw + 2vh);
-	height: 16vh;
+	height: 100%;
 	color: var(--green);
 	border-radius: 25px;
 	display: flex;
 	justify-content: center;
 	position: relative;
-	/*outline: 1px solid var(--green);*/
-	box-shadow: 0px 1px 6px 0px var(--green), 0px 0px 5px 0px var(--shadow-green) inset;
+	outline: none;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 
 .user-settings #settingsContainer #proxy > div:first-child {
@@ -1411,13 +1368,13 @@ input:-webkit-autofill:active {
 }
 
 .user-settings #settingsContainer #proxy #proxyUrlInput {
-	background-color: rgb(255, 255, 255);
+	background-color: var(--black);
 	width: 85%;
 	height: 40%;
 	position: absolute;
 	left: 5%;
 	top: 35%;
-	outline: 1px solid var(--green);
+	outline: none;
 	border-radius: 999px;
 	display: flex;
 	align-items: center;
@@ -1426,10 +1383,11 @@ input:-webkit-autofill:active {
 	color: var(--green);
 	border: none;
 	font-size: medium;
+	box-shadow: 0px 1px 6px 0px var(--green);
 }
 
 .user-settings #settingsContainer #proxy #resetProxyButton {
-	background-color: var(--black);
+	background-color: var(--pure-black);
 	position: absolute;
 	right: 13%;
 	top: 35%;
@@ -1438,7 +1396,7 @@ input:-webkit-autofill:active {
 	padding-left: 5%;
 	text-align: center;
 	border-radius: 999px 0 0 999px;
-	color: white;
+	color: var(--gray);
 	font-size: large;
 	display: flex;
 	justify-content: left;
@@ -1454,113 +1412,12 @@ input:-webkit-autofill:active {
 	aspect-ratio: 1/1;
 	text-align: center;
 	border-radius: 999px;
-	color: white;
+	color: var(--black);
 	font-size: large;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
-
-.user-settings #settingsContainer #distanceToStation {
-	width: calc(85vw + 2vh);
-	height: 16vh;
-	color: var(--green);
-	border-radius: 25px;
-	display: flex;
-	justify-content: center;
-	position: relative;
-	/*outline: 1px solid var(--green);*/
-	box-shadow: 0px 1px 6px 0px var(--green), 0px 0px 5px 0px var(--shadow-green) inset;
-}
-
-.user-settings #settingsContainer #distanceToStation > div:first-child {
-	width: 100%;
-	position: absolute;
-	z-index: 2;
-	left: 0;
-	top: 8%;
-	text-align: center;
-}
-
-.user-settings #settingsContainer #distanceToStation #distanceToStationSelector {
-	appearance: none;
-	-webkit-appearance: none;
-	width: 90%;
-	height: 40%;
-	font-size: 1rem;
-	padding: 0.675em 6em 0.675em 1em;
-	background-color: var(--white);
-	border: 1px solid var(--green);
-	border-radius: 999px;
-	color: var(--green);
-	cursor: pointer;
-	background-image: url("images/caret-down.svg");
-	background-repeat: no-repeat;
-	background-position-x: calc(100% - 10px);
-	background-position-y: calc(100% - 14px);
-	position: absolute;
-	left: 5%;
-	top: 35%;
-}
-
-.user-settings #settingsContainer #devMode {
-	width: calc(85vw - 2vh);
-	padding: 2vh;
-	color: var(--green);
-	border-radius: 25px;
-	display: flex;
-	justify-content: center;
-	position: relative;
-	/*outline: 1px solid var(--green);*/
-	box-shadow: 0px 1px 6px 0px var(--green), 0px 0px 5px 0px var(--shadow-green) inset;
-	justify-content: space-between;
-}
-
-.user-settings #settingsContainer #devMode input[type="checkbox"] {
-	/* Add if not using autoprefixer */
-	-webkit-appearance: none;
-	/* Remove most all native input styles */
-	appearance: none;
-	/* For iOS < 15 */
-	background-color: var(--form-background);
-	/* Not removed via appearance */
-	margin: 0;
-
-	font: inherit;
-	color: currentColor;
-	width: 1.5em;
-	height: 1.5em;
-	border: 0.15em solid currentColor;
-	border-radius: 0.15em;
-
-	display: grid;
-	place-content: center;
-}
-
-.user-settings #settingsContainer #devMode input[type="checkbox"]::before {
-	content: "";
-	width: 0.65em;
-	height: 0.65em;
-	clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-	transform: scale(0);
-	transform-origin: bottom left;
-	transition: 120ms transform ease-in-out;
-	box-shadow: inset 1em 1em var(--green);
-	/* Windows High Contrast Mode */
-	background-color: CanvasText;
-}
-
-.user-settings #settingsContainer #devMode input[type="checkbox"]:checked::before {
-	transform: scale(1);
-}
-
-.user-settings #settingsContainer #devMode input[type="checkbox"]:disabled {
-	--form-control-color: var(--gray);
-
-	color: var(--gray);
-	cursor: not-allowed;
-}
-
 #bottom {
 	margin-top: 3vh;
 	display: flex;
@@ -1569,15 +1426,15 @@ input:-webkit-autofill:active {
 }
 .user-settings #versionNumber {
 	padding: 10px 10px;
-	color: var(--black);
+	color: var(--gray);
 	font-size: large;
 	margin-left: 5vw;
 }
 .user-settings #logoutButton {
 	padding: 10px 40px;
-	background-color: var(--black);
+	background-color: var(--pure-black);
 	border-radius: 999px;
-	color: white;
+	color: var(--gray);
 	font-size: large;
 	margin-left: auto;
 	margin-right: 5vw;
@@ -1594,74 +1451,58 @@ input:-webkit-autofill:active {
 
 /* #region Place search menu */
 .place-search-menu {
-	background-color: transparent;
-	width: 90%;
-	min-height: 15vh;
-	max-height: 45vh;
+	background: linear-gradient(0deg, var(--black) 50%, transparent 100%);
+	width: 100%;
+	min-height: 20%;
+	max-height: 45%;
 	position: absolute;
 	z-index: 1;
-	left: 5%;
-	bottom: calc(2vh + 7vh / 2);
-	border-radius: 30px 30px 0 0;
+	left: 0;
+	bottom: 0;
+	border-radius: 20px 20px 0 0;
 	animation: smooth-appear 0.5s ease forwards;
-	margin-left: env(safe-area-inset-left);
-	-webkit-backdrop-filter: blur(1rem);
-	backdrop-filter: blur(1rem);
-	box-shadow: 0px 1px 6px 0px var(--gray);
 }
 .place-search-menu #placeList {
 	position: relative;
 	padding: 0;
-	width: 100%;
+	width: calc(100% - 4vh);
 	margin-top: 0;
+	margin-bottom: calc(2vh + 7vh);
+	margin-left: 2vh;
 	list-style-type: none;
-	max-height: calc(45vh - 2rem - 0.6rem);
+	max-height: 25vh;
 	overflow: scroll;
 	display: flex;
-	align-items: center;
+	align-items: end;
 	flex-direction: column;
-	margin-top: 0.6rem;
-	padding-top: 0;
-	padding-bottom: 2rem;
 }
 .place-search-element {
-	background-color: var(--white);
+	background-color: var(--glass-black);
 	border-radius: 999px;
 	padding: 15px 25px;
 	position: relative;
 	margin-bottom: 10px;
-	color: var(--dark-gray);
-	width: calc(95% - 25 * 2px - 2 * 2px);
-	box-shadow: 0px 1px 6px 0px var(--gray);
+	border: 2px solid var(--green);
+	color: var(--green);
+	width: calc(100% - 25 * 2px - 2 * 2px);
 }
 .place-search-element:hover {
 	background-color: var(--green);
-	color: #ffffff;
-	cursor: pointer;
-}
-.place-search-element .detail {
-	color: var(--medium-gray);
-	font-size: 0.75rem;
-	line-height: 0.75rem;
-}
-.place-search-element:hover .detail {
 	color: var(--gray);
+	cursor: pointer;
 }
 .place-search-menu #startNavigationButton {
 	position: absolute;
-	top: -8dvh;
-	right: 0;
-	background-color: var(--glass-black);
+	top: -10dvh;
+	right: 2dvh;
+	background-color: var(--pure-black);
 	border-radius: 999px;
-	color: var(--white);
+	color: white;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 6dvh;
-	width: 6dvh;
-	box-shadow: 0px 4px 6px 0px var(--shadow-black);
-	backdrop-filter: blur(1rem);
-	-webkit-backdrop-filter: blur(1rem);
+	height: 8dvh;
+	width: 8dvh;
 }
 .place-search-menu #startNavigationButton:hover {
 	cursor: pointer;
@@ -1676,27 +1517,16 @@ input:-webkit-autofill:active {
 }
 .place-search-menu #routeDetails {
 	position: absolute;
-	top: -8dvh;
-	left: 0;
-	background-color: var(--glass-black);
+	top: -10dvh;
+	left: 2dvh;
+	background-color: var(--pure-black);
 	border-radius: 999px;
-	color: var(--white);
+	color: white;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 6vh;
-	padding: 0 2dvh;
-	font-size: 0.8rem;
-	box-shadow: 0px 4px 6px 0px var(--shadow-black);
-	backdrop-filter: blur(1rem);
-	-webkit-backdrop-filter: blur(1rem);
-}
-.place-search-menu #spinner {
-	position: absolute;
-	top: 0;
-	left: 37.5%;
-	width: 25%;
-	object-fit: contain;
+	height: 8dvh;
+	padding: 0 15px;
 }
 /* #endregion */
 
@@ -1749,8 +1579,8 @@ input:-webkit-autofill:active {
 /* #region Navigation information panel landscape */
 #navigationInfoPanel {
 	position: absolute;
-	bottom: 2vh;
-	left: 2vh;
+	bottom: 2dvh;
+	left: 2vw;
 	width: fit-content;
 	height: fit-content;
 	color: white;
@@ -1759,19 +1589,18 @@ input:-webkit-autofill:active {
 	align-items: center;
 	justify-content: right;
 	flex-direction: column;
-	margin-left: env(safe-area-inset-left);
 }
 #navigationInfoPanel #costAndTimeContainer {
 	background-color: var(--green);
 	border-radius: 30px;
-	padding: 2vh;
-	padding-bottom: 8vh;
-	margin-bottom: -6vh;
+	padding: 2vw;
+	padding-bottom: 15dvh;
+	margin-bottom: -12dvh;
 	font-size: 0.9rem;
 }
 #navigationInfoPanel #speedContainer {
-	background-color: var(--white);
-	color: var(--black);
+	background-color: var(--black);
+	color: var(--gray);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -1787,7 +1616,7 @@ input:-webkit-autofill:active {
 }
 #navigationInfoPanel #speedContainer #speedLabel {
 	font-size: 0.75rem;
-	margin-top: -0.5rem;
+ 	margin-top: -0.5rem;
 }
 #changeRotationModeButton {
 	height: 4rem;
@@ -1797,19 +1626,13 @@ input:-webkit-autofill:active {
 	align-items: center;
 	justify-content: center;
 	border-radius: 999px;
-	z-index: 20;
+	z-index: 16;
 	position: absolute;
-	bottom: 2dvh;
+	bottom: calc(2dvh + 1dvh + 4rem);
 	right: 2dvh;
 	font-size: 2.5rem;
 	line-height: 2rem;
 	color: var(--black);
-	margin-right: env(safe-area-inset-right);
-}
-#changeRotationModeButton img {
-	height: 2.5rem;
-	width: 2.5rem;
-	object-fit: contain;
 }
 #endNavigationButton {
 	height: 4rem;
@@ -1819,14 +1642,13 @@ input:-webkit-autofill:active {
 	align-items: center;
 	justify-content: center;
 	border-radius: 999px;
-	z-index: 20;
+	z-index: 16;
 	position: absolute;
-	bottom: calc(2dvh + 1dvh + 4rem);
+	bottom: 2dvh;
 	right: 2dvh;
 	font-size: 2.5rem;
 	line-height: 2rem;
 	color: var(--green);
-	margin-right: env(safe-area-inset-right);
 }
 #reachedFinalStation {
 	height: 8%;
@@ -1845,17 +1667,49 @@ input:-webkit-autofill:active {
 /* #endregion */
 
 /* #region Navigation information panel portrait */
-#onBikeButton {
-	height: 3.5rem;
-	position: absolute;
-	bottom: 2vh;
-	left: 2vh;
+#changeRotationModeButtonPortrait {
+	height: 4rem;
+	width: 4rem;
 	background-color: var(--green);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	border-radius: 999px;
-	padding: 0 1.5rem;
+	z-index: 11;
+	position: absolute;
+	bottom: calc(2dvh + 1dvh + 4rem);
+	left: 2dvh;
+	font-size: 2.5rem;
+	line-height: 2rem;
+	color: var(--black);
+}
+#endNavigationButtonPortrait {
+	height: 4rem;
+	width: 4rem;
+	background-color: var(--black);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	z-index: 11;
+	position: absolute;
+	bottom: 2dvh;
+	left: 2dvh;
+	font-size: 2.5rem;
+	line-height: 2rem;
+	color: var(--green);
+}
+#onBikeButton {
+	height: 8%;
+	position: absolute;
+	bottom: 2dvh;
+	right: 2dvh;
+	background-color: var(--green);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	padding: 0 15px;
 	z-index: 11;
 	color: white;
 }
@@ -1863,7 +1717,7 @@ input:-webkit-autofill:active {
 
 /* #region Rate trip menu */
 .rate-trip-menu {
-	background-color: rgba(35, 31, 32, 0.9);
+	background-color: var(--glass-black);
 	width: 100%;
 	height: 100%;
 	position: absolute;
@@ -1872,7 +1726,7 @@ input:-webkit-autofill:active {
 	z-index: 3;
 }
 #rateTripMenuCard {
-	background-color: white;
+	background-color: var(--black);
 	width: calc(100% - 14dvh);
 	height: fit-content;
 	position: absolute;
@@ -1880,13 +1734,14 @@ input:-webkit-autofill:active {
 	left: 0;
 	border-radius: 20px 20px 0 0;
 	padding: 2dvh 7dvh 10dvh 7dvh;
+	color: var(--gray);
 }
 #rateTripMenuCard #backButton {
 	position: absolute;
 	top: 2dvh;
 	left: 2dvh;
 	font-size: calc(2dvh);
-	color: var(--green);
+	color: var(--green)
 }
 #rateTripMenuCard #tripInfo {
 	display: flex;
@@ -1898,7 +1753,7 @@ input:-webkit-autofill:active {
 #rateTripMenuCard #tripInfo #time,
 #rateTripMenuCard #tripInfo #cost,
 #rateTripMenuCard #tripInfo #points {
-	color: var(--black);
+	color: var(--gray);
 	font-size: 1rem;
 	display: flex;
 	flex-direction: row;
@@ -1924,38 +1779,65 @@ input:-webkit-autofill:active {
 	text-align: center;
 }
 #rateTripMenuCard #ratingFormContainer {
-	margin-top: 1dvh;
+	margin-top: 3dvh;
 	margin-bottom: 3dvh;
 	width: 100%;
-	height: 15vw;
+	height: 1.5rem;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
-#rateTripMenuCard .ratingFormContainer {
-	display: flex;
-	justify-content: center;
-}
-#rateTripMenuCard .rating {
-	display: flex;
-	flex-direction: row-reverse;
-	line-height: 15vw;
-	font-size: 4vw;
+#rateTripMenuCard #ratingFormContainer .rating {
+	display: block;
+	line-height: 7vh;
+	font-size: 7vh;
 	position: relative;
 }
-#rateTripMenuCard .rating .star {
-	font-size: 3.5rem;
-	color: black;
+#rateTripMenuCard #ratingFormContainer .rating label {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
 	cursor: pointer;
-	transition: color 0.3s;
 }
-/* Change color up to the selected star */
-#rateTripMenuCard .rating input[type="radio"]:checked ~ .star {
+#rateTripMenuCard #ratingFormContainer .rating label:last-child {
+	position: static;
+}
+#rateTripMenuCard #ratingFormContainer .rating label:nth-child(1) {
+	z-index: 5;
+}
+#rateTripMenuCard #ratingFormContainer .rating label:nth-child(2) {
+	z-index: 4;
+}
+#rateTripMenuCard #ratingFormContainer .rating label:nth-child(3) {
+	z-index: 3;
+}
+#rateTripMenuCard #ratingFormContainer .rating label:nth-child(4) {
+	z-index: 2;
+}
+#rateTripMenuCard #ratingFormContainer .rating label:nth-child(5) {
+	z-index: 1;
+}
+#rateTripMenuCard #ratingFormContainer .rating label input {
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0;
+}
+#rateTripMenuCard #ratingFormContainer .rating label .icon {
+	float: left;
+	color: transparent;
+}
+#rateTripMenuCard #ratingFormContainer .rating label:last-child .icon {
+	color: var(--gray);
+}
+#rateTripMenuCard #ratingFormContainer .rating:not(:hover) label input:checked ~ .icon,
+#rateTripMenuCard #ratingFormContainer .rating:hover label:hover input ~ .icon {
 	color: var(--green);
 }
-/* Hide the radio buttons */
-#rateTripMenuCard .rating input[type="radio"] {
-	display: none;
+#rateTripMenuCard #ratingFormContainer .rating label input:focus:not(:checked) ~ .icon:last-child {
+	color: var(--gray);
+	text-shadow: 0 0 5px var(--green);
 }
 #rateTripMenuCard #sendButton {
 	background-color: var(--green);
@@ -1975,49 +1857,12 @@ input:-webkit-autofill:active {
 #rateTripMenuCard #sendButton:focus {
 	cursor: pointer;
 }
-#rateTripMenuCard #ignoreButton {
-	background-color: var(--black);
-	width: 30vw;
-	height: 6dvh;
-	position: absolute;
-	z-index: 2;
-	left: 3dvh;
-	bottom: 3dvh;
-	border-radius: 999px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: white;
-	font-weight: bold;
-}
-#rateTripMenuCard #commentTextarea {
-	width: calc(100vw - 2 * 3dvh - 2 * 2dvh);
-	height: 10dvh;
-	outline: 1px solid var(--green);
-	border: none;
-	border-radius: 15px;
-	display: block;
-	padding: 1dvh 2dvh;
-	color: var(--black);
-	resize: none;
-	font-family: inherit;
-	font-size: inherit;
-	margin-left: -4dvh;
-	margin-bottom: 1dvh;
-	margin-top: 1dvh;
-}
-#rateTripMenuCard #title {
-	color: var(--green);
-	font-weight: 600;
-	margin-left: -4dvh;
-	font-size: 1.1rem;
-}
 /* #endregion */
 
 /* #region Take unregistered bike */
 #openTakeUnregisteredBikeButton {
-	background-color: var(--black);
-	color: var(--white);
+	background-color: var(--pure-black);
+	color: var(--gray);
 	border-radius: 30px;
 	padding: 2vh;
 	position: relative;
@@ -2026,11 +1871,6 @@ input:-webkit-autofill:active {
 	text-align: center;
 	height: 15vh;
 	margin: 2vh 0;
-	flex-shrink: 0;
-	width: calc(90vw - 4vh - env(safe-area-inset-left) - env(safe-area-inset-right));
-	box-shadow: 0px 1px 6px 0px var(--black);
-	margin-left: env(safe-area-inset-left);
-	margin-right: env(safe-area-inset-right);
 }
 #openTakeUnregisteredBikeButton #upperText {
 	position: absolute;
@@ -2060,13 +1900,13 @@ input:-webkit-autofill:active {
 	left: 5%;
 	width: 90%;
 	height: 20%;
-	background-color: var(--white);
+	background-color: var(--black);
 	border-radius: 20px;
 	box-shadow: 5px 5px 15px 0px var(--shadow-black);
 }
-#takeUnregisteredBike #unregisteredBikeNameInputContainer {
+#takeUnregisteredBike #unregisteredBikeNameInput {
 	background-color: rgb(255, 255, 255);
-	width: 90%;
+	width: 85%;
 	height: 30%;
 	position: absolute;
 	z-index: 2;
@@ -2076,46 +1916,13 @@ input:-webkit-autofill:active {
 	border-radius: 999px;
 	display: flex;
 	align-items: center;
-	color: var(--green);
-	border: none;
-	font-size: 0.9rem;
-}
-#takeUnregisteredBike #unregisteredBikeNameSelect {
-	background-color: rgb(255, 255, 255);
-	display: flex;
-	color: var(--green);
-	border: none;
-	font-size: 0.9rem;
 	padding-left: 5%;
-}
-/* Hide Arrows */
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-	-webkit-appearance: none;
-	margin: 0;
-}
-/* Firefox */
-input[type="number"] {
-	-moz-appearance: textfield;
-}
-#takeUnregisteredBike #unregisteredBikeNameInput {
-	background-color: rgb(255, 255, 255);
-	width: 100%;
-	height: 100%;
-	border-radius: 999px;
-	display: flex;
-	align-items: center;
-	padding-left: 0.5rem;
 	color: var(--green);
 	border: none;
 	font-size: 0.9rem;
-}
-#takeUnregisteredBike #unregisteredBikeNameInput:focus {
-	outline: none;
 }
 #takeUnregisteredBike #cancelButton {
-	background-color: var(--black);
+	background-color: var(--pure-black);
 	width: 30%;
 	height: 28%;
 	position: absolute;
@@ -2148,7 +1955,7 @@ input[type="number"] {
 
 /* #region Custom alert box */
 #modalContainer {
-	background-color: rgba(0, 0, 0, 0.3);
+	background-color: var(--glass-black);
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -2164,8 +1971,8 @@ input[type="number"] {
 	width: 80%;
 	min-height: 10%;
 	border-radius: 20px;
-	background-color: #fff;
-	padding: 1rem;
+	background-color: var(--black);
+	color: var(--gray);
 }
 
 #modalContainer > #alertBox {
@@ -2176,19 +1983,8 @@ input[type="number"] {
 	max-width: 100%;
 }
 
-#alertBox #title {
-	color: var(--green);
-	font-weight: bold;
-	font-size: 1.2rem;
-	display: block;
-	margin-top: 0.5rem;
-	margin-left: 0.5rem;
-}
-
 #alertBox p {
-	padding: 0.5rem;
-	margin: 0;
-	font-size: 0.9rem;
+	padding: 8%;
 }
 
 #alertBox #customTextPromptInput {
@@ -2209,54 +2005,66 @@ input[type="number"] {
 #alertBox #closeBtn {
 	display: block;
 	position: relative;
-	width: 20%;
+	padding: 7px;
+	width: 30%;
 	text-transform: uppercase;
 	text-align: center;
-	color: #fff;
+	color: var(--gray);
 	background-color: var(--green);
 	border-radius: 999px;
 	float: right;
 	margin-bottom: 10px;
 	margin-right: 10px;
 	padding: 10px 40px;
-	margin-top: 1rem;
 }
 #alertBox #yesBtn {
 	display: block;
 	position: relative;
+	padding: 7px;
 	width: 30%;
 	text-align: center;
-	color: #fff;
+	color: var(--gray);
 	background-color: var(--green);
 	border-radius: 999px;
 	float: left;
+	margin-bottom: 10px;
+	margin-left: 10px;
 	padding: 10px 20px;
-	margin-top: 1rem;
 }
 #alertBox #noBtn {
 	display: block;
 	position: relative;
+	padding: 7px;
 	width: 30%;
 	text-align: center;
-	color: #fff;
-	background-color: var(--black);
+	color: var(--gray);
+	background-color: var(--pure-black);
 	border-radius: 999px;
 	float: right;
+	margin-bottom: 10px;
+	margin-right: 10px;
 	padding: 10px 20px;
-	margin-top: 1rem;
 }
 #alertBox ul {
 	padding-left: 20px;
 }
 #alertBox li {
-	margin-top: 0.5rem;
-	font-size: 0.8rem;
+	margin-top: 10px;
 }
+/* For landscape (useful for prompt in navigation) */
+@media screen and (orientation: landscape) {
+	#alertBox {
+		width: 40%;
+		min-height: 10%;
+		border-radius: 20px;
+		background-color: var(--black);
+	}
+  }
 /* #endregion */
 
 /* #region Trip history */
 #tripHistory {
-	background-color: var(--white);
+	background-color: var(--black);
 	width: 100%;
 	height: 100%;
 	position: absolute;
@@ -2265,6 +2073,7 @@ input[type="number"] {
 	top: 0;
 	border-radius: 0;
 	/*animation: smooth-slide-from-bottom 1s ease forwards;*/
+	color: var(--gray);
 }
 #tripHistory #graphics {
 	height: 25vw;
@@ -2284,8 +2093,6 @@ input[type="number"] {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-top: env(safe-area-inset-top);
-	margin-left: env(safe-area-inset-left);
 }
 #tripHistory #backButton i {
 	width: 32px;
@@ -2301,7 +2108,6 @@ input[type="number"] {
 	font-size: 1.3rem;
 	font-weight: bold;
 	color: var(--green);
-	margin-top: env(safe-area-inset-top);
 }
 #tripHistory #downloadTripHistoryButton {
 	position: absolute;
@@ -2312,7 +2118,7 @@ input[type="number"] {
 	background-color: var(--green);
 	font-size: 1.75rem;
 	border-radius: 999px;
-	color: var(--white);
+	color: var(--gray);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -2321,44 +2127,32 @@ input[type="number"] {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-}
-#tripHistory #listGradient {
-	position: absolute;
-	top: 8vh;
-	left: 0;
-	width: 100%;
-	height: 1.2vh;
-	background: linear-gradient(180deg, #fff 0%, transparent 100%);
-	z-index: 2;
+	color: var(--black);
 }
 #tripHistory #tripList {
 	position: absolute;
-	width: 100%;
-	left: 0;
+	width: 90%;
+	left: 5%;
 	bottom: 0;
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
-	max-height: calc(90% - env(safe-area-inset-top));
+	max-height: 90%;
 	overflow: scroll;
-	padding-top: 2vh;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: flex-start;
 }
 .trip-list-element {
-	background-color: var(--white);
+	background-color: var(--black);
 	border-radius: 30px;
 	position: relative;
-	margin-bottom: 2vh;
-	/*border: 1px solid var(--green);*/
-	box-shadow: 0px 1px 6px 0px var(--green), 0px 0px 5px 0px var(--shadow-green) inset;
+	margin-bottom: 10px;
+	border: 1px solid var(--green);
+	box-shadow:
+		0px 4px 6px 0px var(--shadow-green),
+		0px 0px 5px 0px var(--shadow-green) inset;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	padding: 2.5dvh 2dvh;
-	width: calc(90% - 4dvh);
 }
 .trip-list-element #tripInfo {
 	width: fit-content;
@@ -2371,7 +2165,7 @@ input[type="number"] {
 .trip-list-element #tripInfo #time,
 .trip-list-element #tripInfo #cost,
 .trip-list-element #tripInfo #points {
-	color: var(--black);
+	color: var(--gray);
 	font-size: 0.9rem;
 	display: flex;
 	flex-direction: row;
@@ -2409,35 +2203,24 @@ input[type="number"] {
 	bottom: 0;
 	right: 0;
 	font-size: 0.7rem;
-	width: 80%;
+  	width: 80%;
 	text-align: right;
-}
-#tripHistorySpinner {
-	display: inline-block;
-	width: 100px;
-	height: 100px;
-	object-fit: contain;
 }
 /* #endregion */
 
 /* #region Statistics menu */
 #statisticsMenu {
 	background-color: var(--black);
-	width: calc(100% - env(safe-area-inset-left) - env(safe-area-inset-right));
-	height: fit-content;
+	width: 100%;
+	height: 100%;
 	position: absolute;
 	z-index: 4;
 	left: 0;
 	top: 0;
 	border-radius: 0;
 	/*animation: smooth-slide-from-bottom 1s ease forwards;*/
-	padding-left: env(safe-area-inset-left);
-	padding-right: env(safe-area-inset-right);
 }
 #statisticsMenu #graphics {
-	position: absolute;
-	top: 0;
-	left: 0;
 	height: 25vw;
 	width: 100%;
 	object-fit: cover;
@@ -2455,8 +2238,6 @@ input[type="number"] {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-top: env(safe-area-inset-top);
-	margin-left: env(safe-area-inset-left);
 }
 #statisticsMenu #backButton i {
 	width: 32px;
@@ -2472,26 +2253,26 @@ input[type="number"] {
 	font-size: 1.3rem;
 	font-weight: bold;
 	color: var(--green);
-	margin-top: env(safe-area-inset-top);
-	margin-right: env(safe-area-inset-right);
 }
 #statisticsMenu #usableArea {
-	width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));
-	min-height: calc(100dvh - 8dvh);
+	position: absolute;
+	top: 8dvh;
+	left: 0;
+	width: 100vw;
+	height: 92dvh;
 	display: flex;
 	flex-direction: column;
 	gap: 2dvh;
-	margin-top: calc(8dvh + env(safe-area-inset-top));
 }
 #statisticsMenu .chart-container {
 	position: relative;
-	width: 100%;
+	width: 100vw;
 	flex-grow: 1;
 }
 #statisticsMenu #statsControls {
-	width: 100%;
+	width: 100vw;
 	height: fit-content;
-	background-color: var(--white);
+	background-color: var(--pure-black);
 	border-radius: 30px 30px 0 0;
 	padding-bottom: 4dvh;
 }
@@ -2502,7 +2283,7 @@ input[type="number"] {
 	margin-left: 5%;
 	font-size: 1rem;
 	padding: 0.675em 6em 0.675em 1em;
-	background-color: var(--white);
+	background-color: var(--pure-black);
 	border: 1px solid var(--green);
 	border-radius: 999px;
 	color: var(--green);
@@ -2520,11 +2301,11 @@ input[type="number"] {
 	margin-top: 3dvh;
 }
 #statisticsMenu #statsTotals {
-	width: 100%;
+	width: 100vw;
 	height: calc(6dvh + 1rem);
 	display: flex;
 	gap: 1dvh;
-	justify-content: center;
+  	justify-content: center;
 }
 #statisticsMenu #statsTotals .stats-totals-element {
 	width: 30vw;
@@ -2535,7 +2316,7 @@ input[type="number"] {
 	height: 6dvh;
 	border-radius: 999px;
 	background-color: var(--green);
-	color: var(--white);
+	color: var(--black);
 	font-size: 1rem;
 	display: flex;
 	align-items: center;
@@ -2549,714 +2330,3 @@ input[type="number"] {
 	text-align: center;
 }
 /* #endregion */
-
-/* #region Dev Info */
-#devInfo {
-	position: absolute;
-	top: 0;
-	left: 0;
-	height: 2rem;
-	width: 100%;
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-	z-index: 99;
-	background-color: var(--white);
-	color: var(--black);
-	display: none;
-}
-#devInfo div {
-	flex: 1;
-	height: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-/* #endregion */
-
-/* #region Countdown between trips */
-
-body > #countdown {
-	display: none;
-}
-
-#bikeMenu > #countdown {
-	display: block;
-}
-#countdown {
-	position: absolute;
-	top: 1vh;
-	right: 1vh;
-	bottom: unset;
-	left: unset;
-	z-index: 3;
-}
-#countdown > svg {
-	width: max(8dvw, 8dvh);
-	height: max(8dvw, 8dvh);
-}
-#countdown > svg > circle.bg {
-	fill: white;
-	stroke: none;
-}
-#countdown > svg > text {
-	font-size: 1.5rem;
-}
-
-/* #endregion */
-
-@media (orientation: landscape) {
-	/* #region Animations and Transitions */
-
-	/* appear from bottom animations */
-	@keyframes smooth-appear {
-		from {
-			bottom: -35%;
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-
-	/* Zoom controls animations */
-	@keyframes smooth-slide-up-zoom-controls {
-		to {
-			bottom: calc(100vh - 22vw);
-		}
-	}
-	@keyframes smooth-slide-down-zoom-controls {
-		from {
-			bottom: calc(100vh - 22vw);
-		}
-		to {
-			bottom: calc(2vw + 7vw + 2vw);
-		}
-	}
-
-	@keyframes smooth-slide-top-zoom-controls {
-		to {
-			bottom: calc(100vh - 22vw);
-		}
-	}
-	@keyframes smooth-slide-bottom-zoom-controls {
-		from {
-			bottom: calc(100vh - 22vw);
-		}
-		to {
-			bottom: calc(2vw + 7vw + 2vw);
-		}
-	}
-
-	/* Search bar appear animations */
-	@keyframes slide-fwd-top {
-		from {
-			-webkit-transform: translateZ(-12dvw) translateY(10dvw);
-			transform: translateZ(-12dvw) translateY(10dvw);
-		}
-		to {
-			-webkit-transform: translateZ(0) translateY(0);
-			transform: translateZ(0) translateY(0);
-		}
-	}
-	@keyframes slide-back-top {
-		from {
-			-webkit-transform: translateZ(0) translateY(0);
-			transform: translateZ(0) translateY(0);
-		}
-		to {
-			-webkit-transform: translateZ(-12dvw) translateY(10dvw);
-			transform: translateZ(-12dvw) translateY(10dvw);
-		}
-	}
-
-	/* #endregion */
-
-	/* #region Logo */
-	#logo {
-		width: 18%;
-		left: 2vw;
-		bottom: 2vw;
-	}
-	/* #endregion */
-
-	/* #region Zoom controls */
-	#zoomControls {
-		right: 2vw;
-		bottom: calc(2vw + 7vw + 2vw);
-		gap: 1vw;
-	}
-	#zoomControls div {
-		background-color: var(--green);
-		width: 6vw;
-		height: 6vw;
-		font-size: calc(0.2 * 20vw);
-		border-radius: 999px;
-		color: white;
-		display: inline-flex;
-		justify-content: center;
-		align-items: center;
-	}
-	#zoomControls div i {
-		width: 32px;
-		height: 32px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-	/* #endregion */
-
-	/* #region Search bar */
-	#searchBarDiv {
-		width: 40vw;
-		height: 7vw;
-		bottom: 2vw;
-		left: 2vw;
-	}
-	#searchBarCancelButton {
-		left: 0;
-		bottom: 0;
-		width: 6vw;
-		height: 7vw;
-	}
-	#searchBar {
-		width: calc(40vw - 6vw);
-		height: 7vw;
-		left: 6vw;
-		bottom: 0;
-	}
-	/* #endregion */
-
-	/* #region Navigation Button */
-	#navigationButton {
-		width: 7vw;
-		height: 7vw;
-		right: calc(2vw + 7vw + 2vw);
-		bottom: 2vw;
-	}
-	#navigationButton img {
-		width: 4vw;
-		height: 4vw;
-	}
-	/* #endregion */
-
-	/* #region User picture */
-	#userPicture {
-		width: 7vw;
-		height: 7vw;
-		right: 2vw;
-		bottom: 2vw;
-	}
-	#userPicture #userInitials {
-		font-size: 3dvw;
-		color: var(--green);
-	}
-	/* #endregion */
-
-	/* #region Station card */
-	.station-card {
-		width: 90vh;
-		height: 55vh;
-		left: 2vw;
-		bottom: 2vw;
-	}
-	.station-card #stationIDandDistanceContainer {
-		width: calc(100% - 17.5vh);
-		left: 5vh;
-		top: 4vh;
-	}
-	.station-card #stationName {
-		width: calc(100% - 17.5vh);
-		left: 5vh;
-		top: calc(4vh + 1rem + 0.2rem);
-	}
-	.station-card #docksImage {
-		left: 5vh;
-		bottom: calc(5vh + 20% + 2vh);
-	}
-	.station-card #docksButton {
-		left: 5vh;
-		bottom: 5vh;
-	}
-	.station-card #bikesImage {
-		right: 5vh;
-		bottom: calc(5vh + 20% + 2vh);
-	}
-	.station-card #bikesButton {
-		right: 5vh;
-		bottom: 5vh;
-	}
-	.station-card #bikesButtonDisabled {
-		right: 5vh;
-		bottom: 5vh;
-	}
-	.station-card #navigateToButton {
-		right: 5vh;
-		top: 5vh;
-	}
-	.station-card #startNavigationButton {
-		top: -8vw;
-		right: 0;
-		height: 6vw;
-		width: 6vw;
-	}
-	.station-card #routeDetails {
-		top: -8vw;
-		left: 0;
-		height: 6vw;
-		padding: 0 2dvw;
-	}
-	/* #endregion */
-
-	/* #region Login menu */
-	#loginCard #logo {
-		position: absolute;
-		top: calc(-15.625% - 14vh); /* the -15.625 is calculated using the aspect ratio of the logo (800x250) */
-		width: 30%;
-		left: 35%;
-	}
-	#loginCard {
-		height: 50vh;
-	}
-	#loginCard input {
-		height: 10vh;
-	}
-	#loginCard input[name="password"] {
-		top: calc(10% + 10vh + 10px + 2dvh);
-	}
-	#registerButton,
-	#loginButton {
-		height: 10vh;
-	}
-	/* #endregion */
-
-	/* #region Bike list */
-	.bike-list #backButton {
-		width: 7vw;
-		height: 7vw;
-		font-size: calc(0.35 * 7vw);
-	}
-	.bike-list #stationIDandDistanceContainer {
-		width: calc(100% - 7vw - 10px - 5%);
-		left: calc(10px + 7vw);
-		top: 3vw;
-	}
-	.bike-list #stationName {
-		width: calc(100% - 7vw - 10px - 5%);
-		left: calc(10px + 7vw);
-		top: calc(3vw + 1rem + 0.2rem);
-	}
-	.bike-list #listGradient {
-		top: 20vh;
-	}
-	.bike-list #bikeList {
-		top: 20vh;
-		max-height: calc(100dvh - 20vh - 2vh);
-	}
-	.bike-list-element {
-		height: 7vw;
-	}
-	.bike-list-element #content #bikeIcon {
-		height: 4vw;
-	}
-	.bike-list-element #content #reserveBikeIcon {
-		font-size: 3dvw;
-	}
-	/* #endregion */
-
-	/* #region Bike reserve */
-	#bikeReserveCard {
-		height: 70%;
-	}
-	#bikeReserveCard #backButton {
-		width: 6vw;
-		height: 6vw;
-		font-size: calc(0.35 * 8vw);
-		margin-bottom: 1vw;
-	}
-	#bikeReserveCard #textContent {
-		position: absolute;
-		top: 20px;
-		left: calc(6vw + 20px);
-		width: calc(80% - 20px - 20px);
-		display: flex;
-		flex-direction: column;
-	}
-	#bikeReserveCard #unlockSlider::-webkit-slider-thumb {
-		height: calc(0.185 * 35vw);
-		width: 25%;
-	}
-	#bikeReserveCard #footer {
-		height: 14dvw;
-		object-position: center top;
-	}
-	#reserveDuration {
-		bottom: 13dvw;
-		left: calc(50vw - 8vw);
-	}
-	#reserveDuration > svg {
-		width: 16vw;
-		height: 16vw;
-	}
-	#reserveDuration > svg > circle {
-		stroke-width: 1.5vw;
-		r: 7.25vw;
-	}
-	#bikeReserveCard #bikeLeavingDock {
-		width: 60%;
-		aspect-ratio: 1/1;
-		object-fit: contain;
-		position: absolute;
-		left: 40%;
-		bottom: -40%;
-	}
-	/* #endregion */
-
-	/* #region Trip overlay */
-	.trip-overlay {
-		width: calc(35% - 4vw);
-		height: 20dvw;
-		top: 2vw;
-		left: 2vw;
-	}
-	.trip-overlay #onTripText {
-		top: 2vw;
-		left: 2vw;
-		font-size: 1.75rem;
-	}
-	.trip-overlay #tripCost {
-		bottom: 2vw;
-		left: 2.5vw;
-		font-size: 1rem;
-	}
-	.trip-overlay #tripTime {
-		bottom: calc(2vw + 1rem + 0.2rem);
-		left: 2.5vw;
-		font-size: 1rem;
-	}
-	.trip-overlay #callAssistance {
-		bottom: 1.5vw;
-		right: 1.5vw;
-		padding: 1.5vw;
-	}
-	/* #endregion */
-
-	/* #region User menu */
-	.user-settings #topUserContainer {
-		height: 24vw;
-	}
-	.user-settings #topUserContainer #footer {
-		height: 12vw;
-		object-fit: cover;
-		object-position: top center;
-	}
-	.user-settings #backButton,
-	.user-settings #topUserContainer #backButton {
-		width: 6vw;
-		height: 6vw;
-		font-size: calc(0.35 * 6vw);
-	}
-	.user-settings #topUserContainer #userImage {
-		width: 22vw;
-		height: 22vw;
-		top: calc(65% - (22vw / 2));
-		left: calc(50% - (22vw / 2));
-	}
-	.user-settings #topUserContainer #userImage #userInitialsSettings {
-		font-size: 8vw;
-	}
-	.user-settings #topUserContainer #bottomCard {
-		height: 3vw;
-		border-radius: 3vw 3vw 0 0;
-	}
-	.user-settings #userName {
-		margin-top: 5vw;
-	}
-	.user-settings #balanceAndBonusContainer {
-		width: 100vw;
-		height: 12vw;
-		gap: 2vw;
-		margin-top: 5vw;
-	}
-	.user-settings #balanceAndBonusContainer #balanceContainer,
-	.user-settings #balanceAndBonusContainer #bonusContainer {
-		width: 25%;
-	}
-	.user-settings #subscriptionContainer {
-		height: 12vw;
-		margin-top: 3vw;
-	}
-	.user-settings #subscriptionContainer div:first-child {
-		width: calc(50vw + 2vw);
-	}
-	.user-settings #subscriptionContainer div #cardSVG {
-		position: absolute;
-		height: 6vw;
-		width: 6vw;
-		font-size: 6vw;
-		top: 10px;
-		left: calc(25% - 3vw);
-	}
-	.user-settings #subscriptionContainer div #subscriptionName {
-		top: 7vw;
-	}
-	.user-settings #statisticsMenuButtonContainer,
-	.user-settings #tripHistoryButtonContainer,
-	.user-settings #issueButtonContainer {
-		margin-top: 3vw;
-	}
-	.user-settings #statisticsMenuButton,
-	.user-settings #tripHistoryButton,
-	.user-settings #issueButton {
-		width: calc(50vw + 2vw - 5vw);
-		padding: 2vw 3vw;
-		gap: 1vw;
-	}
-	.user-settings #settingsContainer {
-		width: 100vw;
-		height: fit-content;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		flex-direction: column;
-		gap: 3vw;
-		margin-top: 3vw;
-	}
-	.user-settings #settingsContainer #proxy {
-		width: calc(50vw + 2vw);
-		height: 16vw;
-	}
-	.user-settings #settingsContainer #proxy #resetProxyButton {
-		right: 10%;
-		height: 40%;
-		width: 15%;
-		padding-left: 3%;
-	}
-	.user-settings #settingsContainer #distanceToStation {
-		width: calc(50vw + 2vw);
-		height: 16vw;
-	}
-	.user-settings #settingsContainer #devMode {
-		padding: 2vh;
-		width: calc(50vw - 2vw);
-		padding: 2vw;
-	}
-	#bottom {
-		margin-top: 3vw;
-		display: flex;
-		width: 50vw;
-		margin-bottom: 5vh;
-		margin-left: 25vw;
-	}
-	.user-settings #versionNumber {
-		margin-left: 0;
-	}
-	.user-settings #logoutButton {
-		margin-right: 0;
-	}
-
-	.user-settings #proxyNotWorking {
-		bottom: 5vh;
-		right: 5vh;
-	}
-	/* #endregion */
-
-	/* #region Place search menu */
-	.place-search-menu {
-		width: 40vw;
-		min-height: 30vh;
-		max-height: calc(100vh - 4rem);
-		position: absolute;
-		left: 2vw;
-		bottom: calc(2vw + 7vw / 2);
-	}
-	.place-search-menu #placeList {
-		width: 100%;
-		margin-left: 0;
-		max-height: 50vh;
-	}
-	.place-search-menu #startNavigationButton {
-		top: -15vh;
-		right: 0;
-		height: 6vw;
-		width: 6vw;
-	}
-	.place-search-menu #routeDetails {
-		top: -15vh;
-		left: 0;
-		height: 6vw;
-	}
-	/* #endregion */
-
-	/* #region Rate trip menu */
-	#rateTripMenuCard {
-		height: 25%;
-	}
-	#rateTripMenuCard #backButton {
-		top: 2vw;
-		left: 2vw;
-		width: 6vw;
-		height: 6vw;
-		font-size: calc(0.35 * 6vw);
-		margin-bottom: 1vw;
-	}
-	#rateTripMenuCard #tripInfo {
-		position: absolute;
-		top: 5vh;
-		left: calc(2vw + 6vw);
-	}
-	#rateTripMenuCard #stationImg {
-		top: 3vw;
-		right: 3vw;
-		width: 10%;
-	}
-	#rateTripMenuCard #ratingLabel {
-		position: absolute;
-		bottom: calc(4vw + 7vw);
-		left: 0;
-	}
-	#rateTripMenuCard #ratingFormContainer {
-		position: absolute;
-		bottom: 4vw;
-		left: 0;
-	}
-	#rateTripMenuCard #ratingFormContainer .rating {
-		line-height: 7vw;
-		font-size: 7vw;
-	}
-	#rateTripMenuCard #sendButton {
-		width: 40vh;
-		height: 6vw;
-		right: 1.5vw;
-		bottom: 1.5vw;
-	}
-	/* #endregion */
-
-	/* #region Take unregistered bike */
-	#openTakeUnregisteredBikeButton {
-		padding: 2vw;
-		height: 15vw;
-		margin: 2vw 0;
-		/*width: calc(90vw - 4vw);*/
-	}
-	#openTakeUnregisteredBikeButton #upperText {
-		top: 2vw;
-		left: 3vw;
-	}
-	#openTakeUnregisteredBikeButton #lowerText {
-		bottom: 2vw;
-		left: 3vw;
-	}
-	#openTakeUnregisteredBikeButton img {
-		bottom: 2vw;
-		right: 2vw;
-		height: 13vw;
-	}
-	#takeUnregisteredBike {
-		height: 40%;
-	}
-	/* #endregion */
-
-	/* #region Trip history */
-	#tripHistory #backButton {
-		top: 1vw;
-		left: 2vw;
-		width: 6vw;
-		height: 6vw;
-		font-size: calc(0.35 * 6vw);
-		margin-bottom: 1vw;
-	}
-	#tripHistory #title {
-		top: 3vw;
-		right: 2vw;
-	}
-	#tripHistory #downloadTripHistoryButton {
-		bottom: 2.5vw;
-		right: 2.5vw;
-		width: 8vw;
-		height: 8vw;
-	}
-	#tripHistory #listGradient {
-		top: 8vw;
-	}
-	#tripHistory #tripList {
-		max-height: 80%;
-	}
-	.trip-list-element {
-		margin-bottom: 2vw;
-		padding: 2.5vw 2vw;
-		width: calc(50% - 4vw);
-	}
-	.trip-list-element #tripStations img {
-		max-width: 50vh;
-	}
-	/* #endregion */
-
-	/* #region Statistics menu */
-	#statisticsMenu #backButton {
-		top: 1vw;
-		left: 2vw;
-		width: 6vw;
-		height: 6vw;
-		font-size: calc(0.35 * 6vw);
-		margin-bottom: 1vw;
-	}
-	#statisticsMenu #title {
-		top: 3vw;
-	}
-	#statisticsMenu #usableArea {
-		margin-top: calc(8vw + env(safe-area-inset-top));
-	}
-	#statisticsMenu .chart-container {
-		height: 55vh;
-	}
-	#statisticsMenu #statsControls {
-		padding-bottom: 4vw;
-		padding-top: 2vw;
-	}
-	#statisticsMenu #statsTotals {
-		height: calc(6vw + 1rem);
-		gap: 1.5vw;
-	}
-	#statisticsMenu #statsTotals .stats-totals-element {
-		height: calc(6vw + 1rem);
-	}
-	#statisticsMenu #statsTotals .stats-totals-element div:first-child {
-		height: 6vw;
-	}
-	/* #endregion */
-
-	/* #region Navigation information panel landscape */
-	#navigationInfoPanel {
-		bottom: 2dvh;
-		left: 2vw;
-	}
-	#navigationInfoPanel #costAndTimeContainer {
-		padding: 2vw;
-		padding-bottom: 15dvh;
-		margin-bottom: -12dvh;
-	}
-	/* #endregion */
-
-	/* #region Custom alert box */
-	#alertBox {
-		width: 40%;
-		min-height: 10%;
-	}
-	#alertBox #title {
-		color: var(--green);
-		font-weight: bold;
-		font-size: 1.2rem;
-		display: block;
-		margin-top: 1rem;
-		margin-left: 1.5rem;
-		margin-bottom: 0.75rem;
-	}
-	#alertBox p {
-		padding: 1.5rem;
-		margin: 0;
-		font-size: 0.9rem;
-	}
-	/* #endregion */
-}
