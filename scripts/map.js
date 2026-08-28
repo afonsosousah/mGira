@@ -25,7 +25,7 @@ async function initMap() {
 
 	// Styled map
 	const source = new ol.source.XYZ({
-		url: "https://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+		url: "https://{a-c}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png?key=cb1_2hs0_1_02523cfa0150e1bd65a668df",
 		maxZoom: 20,
 		attributions: ['<a href="https://openstreetmap.org/"><em>© OpenStreetMap contributors</em></a>'],
 	});
