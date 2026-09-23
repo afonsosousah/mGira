@@ -60,24 +60,23 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
   - Se há bicicletas disponíveis na estação
   - Rota otimizada para bicicleta
 
-- Tentar retirar bicicleta que aparenta estar disponível na estação mas não aparece na aplicação
-
 - Ver estatísticas de uso, como:
   - Número de viagens realizadas
   - Tempo total de utilização
-  - Estimativa de quilómetros percorridos\*
-  - Estimativa de CO2 poupado\*\* <br><br>
+  - Quilómetros percorridos
+  - Estimativa de CO2 poupado\* <br><br>
 
 ## Limitações
 
 - Não é possível registar uma nova conta da EMEL
-- Não é possível pagar tarifários
-- Não é possível pagar uma viagem com o saldo, apenas pontos <br><br>
+- Não é possível pagar tarifários <br><br>
 
 ## Projetos utilizados
 
 - [OpenLayers](https://openlayers.org/), [OpenStreetMap](https://www.openstreetmap.org) e [CartoCDN](https://carto.com/basemaps) para o mapa
 - [Mapbox](https://www.mapbox.com/) para as direções
+- [Firebase](https://firebase.google.com/) para obter as estações e bicicletas em tempo real
+- [Gira+](https://github.com/rt-evil-inc/gira-mais) como referência para a integração com o novo sistema da GIRA (VAIMOO)
 - [Serv00](https://www.serv00.com/) para alojamento <br><br>
 
 ## Versões
@@ -97,6 +96,12 @@ Uma melhor aplicação para o sistema de bicicletas partilhadas GIRA
   - Melhorada a aparência do menu de desbloqueio de bicicleta no modo landscape
   - Corrigido um bug que fazia o timer de desbloqueio de uma bicicleta animar no sentido contrário em Safari
   - Corrigidos alguns erros relacionados com autenticação
+- v0.3.0
+  - A mGira passou a usar o novo sistema da GIRA (VAIMOO). É necessário iniciar sessão novamente
+  - As bicicletas deixaram de ser reservadas: basta deslizar para desbloquear
+  - O sistema de pontos deixou de existir
+  - O histórico e as estatísticas passam a mostrar a distância real de cada viagem
+  - As estações e as bicicletas são atualizadas em tempo real
 
 ## Licença
 
@@ -107,6 +112,6 @@ Este software é source-available, ou seja, não é permitida a sua comercializa
 <details>
 <summary>Notas</summary>
 
-\*assume-se uma velocidade média de 15km/h<br>\*\*assume-se uma poupança de 54g/km obrigado <a href="https://github.com/temospena">temospena</a>
+\*assume-se uma poupança de 54g/km obrigado <a href="https://github.com/temospena">temospena</a>
 
 </details>

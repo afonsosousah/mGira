@@ -100,10 +100,13 @@ async function initMap() {
 
 	/* Run the startup functions */
 
-	// Check if the user is logged in, if not, prompt to login
+	// Check if the user is logged in, if not, prompt to login.
+	// Sessions from before the move to VAIMOO have no userId cookie and need a new login.
 	const refreshTokenCookie = getCookie("refreshToken");
-	if (refreshTokenCookie) {
+	const userIdCookie = getCookie("userId");
+	if (refreshTokenCookie && userIdCookie) {
 		user.refreshToken = refreshTokenCookie;
+		user.userId = Number(userIdCookie);
 	} else {
 		openLoginMenu();
 		return;
@@ -113,13 +116,21 @@ async function initMap() {
 	const accessTokenCookie = getCookie("accessToken");
 	if (accessTokenCookie) {
 		user.accessToken = accessTokenCookie;
-	} else await tokenRefresh();
-
-	// Check if the user has a stored firebase token
-	const firebaseTokenCookie = getCookie("firebaseToken");
-	if (firebaseTokenCookie) {
-		user.firebaseToken = firebaseTokenCookie;
-	} else await fetchFirebaseToken(user.accessToken);
+		user.expiration = (getJWTPayload(accessTokenCookie).exp ?? 0) * 1000;
+		scheduleTokenRefresh();
+	} else {
+		try {
+			await tokenRefresh();
+		} catch (error) {
+			// If the session was rejected, tokenRefresh already opened the login menu.
+			// Otherwise it keeps retrying, and loads the app once it succeeds.
+			if (!isRejectedRefreshToken(error)) {
+				alert("Não foi possível comunicar com a EMEL. Verifique a sua ligação ou o proxy.");
+			}
+			return;
+		}
+		if (!user.accessToken) return;
+	}
 
 	/* Run the startup functions */
 	await runStartupFunctions();
@@ -199,7 +210,7 @@ async function loadStationMarkersFromArray(stationsArray, showDocks = false) {
 		} else if (showDocks) {
 			// Show number of available docks
 
-			const dockRatio = (station.docks - station.bikes) / station.docks;
+			const dockRatio = station.docks ? station.freeDocks / station.docks : 0;
 
 			iconStyle = new ol.style.Style({
 				image: new ol.style.Icon({
@@ -211,7 +222,7 @@ async function loadStationMarkersFromArray(stationsArray, showDocks = false) {
 					src: mapDotSVG(dockRatio, true),
 				}),
 				text: new ol.style.Text({
-					text: (station.docks - station.bikes).toString(),
+					text: station.freeDocks.toString(),
 					font: "bold 15px sans-serif",
 					offsetX: 0,
 					offsetY: -28,
@@ -225,7 +236,7 @@ async function loadStationMarkersFromArray(stationsArray, showDocks = false) {
 		} else {
 			// Show number of available bikes
 
-			const bikeRatio = station.bikes / station.docks;
+			const bikeRatio = station.docks ? station.bikes / station.docks : 0;
 
 			iconStyle = new ol.style.Style({
 				image: new ol.style.Icon({

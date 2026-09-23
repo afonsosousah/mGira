@@ -1,66 +1,7 @@
 let stationsArray;
 let lastStationObj;
 let userClickedNavigateToStation = false;
-
-// returns an array with all the bikes in a station
-async function getBikes(stationID) {
-	const response = await makePostRequest(
-		JSON.stringify({
-			operationName: "getBikes",
-			variables: { input: stationID },
-			query:
-				"query getBikes($input: String) {getBikes(input: $input) { battery, code, name, kms, serialNumber, type, parent }}",
-		}),
-		user.accessToken
-	);
-	if (typeof response !== "undefined") return response.data.getBikes;
-}
-
-// returns an array with all the docks in a station
-async function getDocks(stationID) {
-	const response = await makePostRequest(
-		JSON.stringify({
-			operationName: "getDocks",
-			variables: { input: stationID },
-			query:
-				"query getDocks($input: String) {getDocks(input: $input) { ledStatus, lockStatus, serialNumber, code, name }}",
-		}),
-		user.accessToken
-	);
-	if (typeof response !== "undefined") return response.data.getDocks;
-}
-
-// using batch querying to get bikes and docks faster
-// returns an object with both getBikes and getDocks properties
-async function getBikesAndDocks(stationID) {
-	const response = await makePostRequest(
-		JSON.stringify({
-			query: `query { 
-            getBikes(input: "${stationID}") { battery, code, name, kms, serialNumber, type, parent }
-            getDocks(input: "${stationID}") { ledStatus, lockStatus, serialNumber, code, name }
-        }`,
-		}),
-		user.accessToken
-	);
-	if (typeof response !== "undefined") return response.data;
-}
-
-// sets the global array stationArray
-async function getStations() {
-	const response = await makePostRequest(
-		JSON.stringify({
-			operationName: "getStations",
-			variables: {},
-			query:
-				"query getStations {getStations { code, description, latitude, longitude, name, bikes, docks, serialNumber }}",
-		}),
-		user.accessToken
-	);
-
-	if (typeof response !== "undefined") {
-		return response.data.getStations;
-	}
-}
+let stopBikeListListener = null;
 
 // Open the station menu element and populate it
 async function openStationMenu(stationSerialNumber) {
@@ -99,17 +40,29 @@ async function openStationMenu(stationSerialNumber) {
 	// show loading animation
 	menu.innerHTML = `<img src="assets/images/mGira_spinning.gif" id="spinner">`;
 
-	// get list of available bikes and docks
-	const bikeAndDocks = await getBikesAndDocks(stationSerialNumber);
-	stationObj.bikeList = bikeAndDocks.getBikes;
-	stationObj.dockList = bikeAndDocks.getDocks;
-	const numBikes = stationObj.bikeList.length;
-	const numDocks = stationObj.dockList.filter(d => d.lockStatus === "unlocked").length - numBikes; // number of free docks
+	// get list of available bikes
+	let bikeList;
+	try {
+		bikeList = await getStationBikes(stationSerialNumber);
+	} catch (error) {
+		console.error("Could not get the bikes of the station", error);
+	}
+
+	// The menu may have been closed or replaced in the meantime
+	if (!document.body.contains(menu)) return;
+
+	if (bikeList) {
+		stationObj.bikeList = bikeList;
+		// The station counter includes bikes that can't be unlocked, so use the observed count
+		if (recordObservedBikeCount(stationSerialNumber, bikeList.length) && !document.getElementById("placeSearchMenu"))
+			loadStationMarkersFromArray(stationsArray, !tripEnded);
+	}
+	const numBikes = bikeList?.length ?? 0;
+	const numDocks = stationObj.freeDocks; // number of free docks
 	const distanceToStation = distance(pos, [lastStationObj.longitude, lastStationObj.latitude]);
 
-	console.log(stationObj);
 	// set the inner HTML after the animation has started
-	if (typeof bikeAndDocks.getBikes !== "undefined" && typeof bikeAndDocks.getDocks !== "undefined") {
+	if (bikeList) {
 		menu.innerHTML = `
             <img src="assets/images/gira_footer.svg" alt="footer" id="graphics">
 			<div id="stationIDandDistanceContainer">
@@ -230,42 +183,69 @@ async function openBikeList(stationSerialNumber) {
 	// If there is navigation going, make the menu still appear
 	if (navigationActive) menu.style.zIndex = 99;
 
-	if (!stationObj.bikeList) {
-		// get list of available bikes and docks
-		const bikeAndDocks = await getBikesAndDocks(stationSerialNumber);
-		stationObj.bikeList = bikeAndDocks.getBikes;
-		stationObj.dockList = bikeAndDocks.getDocks;
+	// Keep the bike list live while it is open
+	stopBikeListListener?.();
+	stopBikeListListener = null;
+	renderBikeList(stationSerialNumber, stationObj.bikeList);
+	const firestore = await waitForFirestore();
+	if (!document.body.contains(menu)) return;
+	stopBikeListListener = firestore.subscribeStationBikes(
+		Number(stationSerialNumber),
+		bikes => {
+			const bikeList = mapAvailableBikes(bikes);
+			stationObj.bikeList = bikeList;
+			if (recordObservedBikeCount(stationSerialNumber, bikeList.length) && !document.getElementById("placeSearchMenu"))
+				loadStationMarkersFromArray(stationsArray, !tripEnded);
+			if (document.body.contains(menu)) renderBikeList(stationSerialNumber, bikeList);
+		},
+		error => console.error("Station bikes listener failed", error)
+	);
+
+	if (devMode && stationObj.assetStatus !== "active")
+		createCustomAlert(
+			"Esta funcionalidade só está disponível no modo de desenvolvimento.\nPor esse motivo, não podemos garantir que funcione corretamente.\nA partir deste momento, não nos responsabilizamos por quaisquer problemas que possam surgir.",
+			"⚠️ ATENÇÃO ⚠️"
+		);
+}
+
+function renderBikeList(stationSerialNumber, bikeList) {
+	const bikeListElement = document.getElementById("bikeList");
+	if (!bikeListElement) return;
+
+	// Still loading
+	if (!bikeList) {
+		bikeListElement.innerHTML = `<img src="assets/images/mGira_spinning.gif" id="spinner">`;
+		return;
 	}
 
+	bikeListElement.innerHTML = "";
+
 	// get the bikes in the station
-	for (let bike of stationObj.bikeList) {
-		const bikeListElement = document.createElement("li");
-		bikeListElement.className = "bike-list-element";
+	for (let bike of bikeList) {
+		const bikeElement = document.createElement("li");
+		bikeElement.className = "bike-list-element";
 
-		// get the name of the dock in which the bike is
-		const dockObj = stationObj.dockList.find(obj => obj.code === bike.parent);
-
-		bikeListElement.innerHTML = `
-            <div id="battery" style="width: ${bike.name[0] === "E" ? `${bike.battery}%` : `0`}"></div>
-            <div id="content" onclick="openUnlockBikeCard('${stationSerialNumber}','${htmlEncode(
-			JSON.stringify(bike)
-		)}','${dockObj.serialNumber}')">
-				<img id="bikeIcon" src="assets/images/${bike.name[0] === "E" ? `ebike.png` : `classic.png`}">
+		bikeElement.innerHTML = `
+            <div id="battery" style="width: ${bike.type === "electric" ? `${bike.battery ?? 0}%` : `0`}"></div>
+            <div id="content" onclick="openUnlockBikeCard('${stationSerialNumber}','${htmlEncode(JSON.stringify(bike))}')">
+				<img id="bikeIcon" src="assets/images/${bike.type === "electric" ? `ebike.png` : `classic.png`}">
 				<div id="bikeInfo">
 					<div id="bikeName">${bike.name}</div>
-					<div id="bikeDock">Doca ${dockObj.name}</div>
-					${devMode ? `<div id="serialNum">Número de série: ${bike.serialNumber}</div>` : ""}
+					<div id="bikeDock">Doca ${bike.dockName}</div>
+					${devMode ? `<div id="serialNum">ID de comunicação: ${bike.serialNumber}</div>` : ""}
 				</div>
                 <i id="reserveBikeIcon" class="bi bi-arrow-bar-right"></i></div>
             </div>
         `.trim();
-		document.getElementById("bikeList").appendChild(bikeListElement);
+		bikeListElement.appendChild(bikeElement);
 	}
 
 	// if there are no bikes, put a message saying that
-	if (document.getElementById("bikeList").childElementCount === 0)
-		document.getElementById("bikeList").innerHTML = `<div id="noBike">Não há bicicletas na estação.</div>`;
+	if (bikeListElement.childElementCount === 0) bikeListElement.innerHTML = `<div id="noBike">Não há bicicletas na estação.</div>`;
 
+	// Unlisted-bike lookup disabled: VAIMOO's Firestore feed lists every dockable bike, so the legacy
+	// bikeSerialNumberMapping workaround isn't needed (same decision as gira-mais).
+	/*
 	// allow user to try to take bike not appearing in app
 	appendElementToElementFromHTML(
 		`
@@ -280,17 +260,16 @@ async function openBikeList(stationSerialNumber) {
 			<img src="assets/images/mGira_station_forbidden.png" alt="forbidden">
 		</div>
     `,
-		document.getElementById("bikeList")
+		bikeListElement
 	);
-
-	if (devMode && stationObj.assetStatus !== "active")
-		createCustomAlert(
-			"Esta funcionalidade só está disponível no modo de desenvolvimento.\nPor esse motivo, não podemos garantir que funcione corretamente.\nA partir deste momento, não nos responsabilizamos por quaisquer problemas que possam surgir.",
-			"⚠️ ATENÇÃO ⚠️"
-		);
+	*/
 }
 
 function hideBikeList() {
+	// Stop listening for bike updates
+	stopBikeListListener?.();
+	stopBikeListListener = null;
+
 	const bikeListMenu = document.getElementById("bikeMenu");
 	if (bikeListMenu) {
 		const nextTripCountdown = bikeListMenu.querySelector("#countdown");
@@ -299,49 +278,5 @@ function hideBikeList() {
 			if (nextTripCountdown) document.body.appendChild(nextTripCountdown);
 			bikeListMenu.remove();
 		}, 500); // remove element after animation
-	}
-}
-
-async function updateBikeList() {
-	// Make a batch query to speed up the request
-	let queryString = "query {";
-	let i = 0;
-
-	for (const station of stationsArray) {
-		queryString += ` station_${station.serialNumber}: getBikes(input: "${station.serialNumber}") { battery, code, name, kms, serialNumber, type, parent } `;
-		i += 1;
-	}
-
-	queryString += "}";
-
-	const response = await makePostRequest(
-		JSON.stringify({
-			query: queryString,
-		}),
-		user.accessToken
-	);
-
-	if (typeof response !== "undefined") {
-		// Flatten the resulting array
-		const allBikesList = Object.values(response.data).flat(1);
-
-		// get the bikes not in the bikeSerialNumberMapping
-		const missingBikes = allBikesList.map(bike => [bike.name, bike.serialNumber]);
-
-		// compact the missing bikes list
-		const newList = Object.fromEntries(
-			[...Object.entries(bikeSerialNumberMapping), ...missingBikes]
-				// Keep only the electric bikes and the classic bikes that don't have an electric one with the same number, and a secret third option
-				.filter(
-					([name], _, self) =>
-						name.startsWith("E") || !self.find(([b]) => b === name.replace("C", "E")) || !["E", "C"].includes(name[0])
-				)
-				.sort(([a], [b]) => Number(a.slice(1)) - Number(b.slice(1)))
-		);
-
-		console.log(newList);
-		return newList;
-	} else {
-		console.log("The request failed.");
 	}
 }

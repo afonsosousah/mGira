@@ -26,3 +26,12 @@ Basicamente é seguir a primeira parte [deste guia](https://developers.cloudflar
 
 A partir de agora todos os pedidos à EMEL que antes passavam pelo proxy publico seram feitos através deste.
 
+## Atualização para o novo sistema da GIRA (v0.3.0)
+
+Com a mudança da GIRA para o sistema da VAIMOO, o código do [proxy.js](./proxy.js) foi atualizado. É o mesmo código que corre no proxy por defeito da mGira. Se já tinhas um proxy configurado, repete os passos 3 e 4 com o código novo, caso contrário o início de sessão e os pedidos à API deixam de funcionar.
+
+O que mudou no proxy:
+
+- Passa a aceitar pedidos `GET` (a API da VAIMOO usa `GET` para o perfil, saldo, passe e histórico de viagens)
+- Só encaminha pedidos para `emel-consumerapp.vaimoo.com` e `login.emel.pt`
+- O websocket e o token da Firebase deixaram de ser necessários e foram removidos

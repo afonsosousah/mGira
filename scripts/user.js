@@ -1,5 +1,6 @@
 const TRIP_HISTORY_PAGE_SIZE = 10;
 let tokenRefreshed = false;
+let startupFunctionsRan = false;
 let minimumDistanceToStation = 50;
 let devMode = false;
 let tripHistory = null;
@@ -8,117 +9,59 @@ let bikeSerialNumberMapping;
 // Define the global user, where the variables will be stored
 let user = {};
 
-// Login to the emel API and get the tokens
+// Login to the EMEL/VAIMOO API and get the tokens
 async function login(event) {
 	event.preventDefault();
 
 	// Get values from form
 	const loginForm = document.getElementById("loginForm");
+	const email = loginForm.email.value;
+	const password = loginForm.password.value;
+
+	if (!email || !password) {
+		alert("Por favor preencha os campos de email e password!");
+		return;
+	}
 
 	// Show loading animation
 	const loginCard = document.getElementById("loginCard");
 	loginCard.innerHTML = `<img src="assets/images/mGira_spinning.gif" id="spinner">`;
 
-	// Do the login request
-	const responseReq = await fetch(GIRA_AUTH_ENDPOINT, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			Provider: "EmailPassword",
-			CredentialsEmailPassword: {
-				email: loginForm.email.value,
-				password: loginForm.password.value,
-			},
-		}),
-	});
-
-	const response = await responseReq.json();
-
-	// Handle login errors
-	if (responseReq.status === 400) {
-		if (Object.hasOwn(response, "statusDescription")) {
-			if (
-				response.statusDescription.includes("The Email field is required.") ||
-				response.statusDescription.includes("The Password field is required.")
-			) {
-				alert("Por favor preencha os campos de email e password!");
-				document.getElementById("loginMenu")?.remove();
-				openLoginMenu();
-				return;
-			}
-		}
-	}
-
-	if (response.error) {
-		if (response.error.message === "Invalid credentials.") {
-			alert("Credenciais inválidas.");
-			document.getElementById("loginMenu")?.remove();
-			openLoginMenu();
-			return;
-		}
-	}
-
-	if (response.data) {
-		// Store the received tokens
-		user.accessToken = response.data.accessToken;
-		user.refreshToken = response.data.refreshToken;
-		user.expiration = response.data.expiration;
-		await fetchFirebaseToken(user.accessToken);
-
-		/* Run the startup functions */
-		await runStartupFunctions();
-
-		// Set the cookie expiry to 1 year after today.
-		const refreshTokenExpiryDate = new Date();
-		refreshTokenExpiryDate.setFullYear(refreshTokenExpiryDate.getFullYear() + 1);
-
-		// Store refreshToken cookie (stay logged in)
-		createCookie("refreshToken", user.refreshToken, refreshTokenExpiryDate);
-
-		// Set the cookie expiry to 2 minutes after now.
-		const accessTokenExpiryDate = new Date();
-		accessTokenExpiryDate.setMinutes(accessTokenExpiryDate.getMinutes() + 2);
-
-		// Store accessToken cookie (for quick refreshes)
-		createCookie("accessToken", user.accessToken, accessTokenExpiryDate);
-
+	// Do the login requests
+	let session;
+	try {
+		session = await loginWithEmel(email, password);
+	} catch (error) {
+		console.error("Login failed", error);
 		document.getElementById("loginMenu")?.remove();
-		tokenRefreshed = true;
-	} else {
-		alert("Login failed!");
+		openLoginMenu();
+		if (error instanceof InvalidCredentialsError) alert("Credenciais inválidas.");
+		else showApiError(error, "Não foi possível iniciar sessão.");
+		return;
 	}
-}
 
-async function fetchFirebaseToken(accessToken) {
-	const res = await makeProxyRequest(FIREBASE_TOKEN_URL, {
-			headers: {
-				"User-Agent": `mGira ${currentVersion}`,
-				"X-Gira-Token": accessToken,
-			},
-			method: "POST",
-		}),
-		token = await res.text();
-	if (!res.ok) {
-		console.error("Error fetching encrypted token: ", token);
-		// alert("Erro ao obter o token de verificação do dispositivo. A app pode não funcionar corretamente.");
-		return null;
-	}
-	const { exp } = getJWTPayload(token);
-	createCookie("firebaseToken", token, new Date(exp * 1000)); // 30 days
-	user.firebaseToken = token;
-	return token;
+	// Store the received tokens
+	storeSession(session);
+	setUserName([session.user.firstName, session.user.lastName].filter(Boolean).join(" ") || session.user.userName || email);
+	user.email = session.user.email ?? email;
+
+	document.getElementById("loginMenu")?.remove();
+	tokenRefreshed = true;
+
+	/* Run the startup functions */
+	await runStartupFunctions();
 }
 
 function getJWTPayload(token) {
 	// Decode the JWT token and get the payload
-	const payload = token.split(".")[1];
+	const payload = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
 	const decodedPayload = atob(payload);
 	return JSON.parse(decodedPayload);
 }
 
 async function runStartupFunctions() {
+	startupFunctionsRan = true;
+
 	// Check if update info should be shown
 	showUpdateInfoIfNeeded();
 
@@ -128,9 +71,16 @@ async function runStartupFunctions() {
 	// Start rotation of location dot
 	// startLocationDotRotation();
 
-	// Start WebSocket connection. This also loads the stations once they're sent
-	startWSConnection();
+	// Show the initials right away, before the user information loads
+	loadCachedUserName();
 
+	// Start syncing the stations and the active trip. This also loads the stations once they're received
+	startBackendSync();
+
+	// Unlisted-bike lookup disabled: VAIMOO's Firestore feed lists every dockable bike, so the legacy
+	// bikeSerialNumberMapping workaround isn't needed (same decision as gira-mais).
+	// If the feature is removed for good, assets/bikeSerialNumberMapping.json can be deleted too.
+	/*
 	// Attempt to fetch bikes from github
 	let bikeMappingRes = await fetch(
 		"https://raw.githubusercontent.com/afonsosousah/mGira/refs/heads/main/assets/bikeSerialNumberMapping.json"
@@ -141,57 +91,75 @@ async function runStartupFunctions() {
 		bikeMappingRes = await fetch("assets/bikeSerialNumberMapping.json");
 	}
 	bikeSerialNumberMapping = await bikeMappingRes.json();
-
-	// Show any messages from EMEL
-	await validateLogin();
+	*/
 
 	// Get all user details
-	await getUserInformation();
+	await getUserInformation().catch(error => console.error("Could not load the user information", error));
 }
 
-async function validateLogin() {
-	const response = await makePostRequest(
-		JSON.stringify({
-			query: `mutation { 
-				validateLogin(in: { 
-					language: "pt",
-					userAgent: "Gira/3.4.3 (Android 34)",
-					firebaseToken: "cwEUfibvTHCRZ6z3R1l3B8"
-				}) { messages { code text } } 
-			}`,
-		}),
-		user.accessToken
-	);
-
-	for (const message of response?.data?.validateLogin?.messages ?? []) {
-		createCustomAlert(message.text, `<i class="bi bi-info-circle"></i>`);
+// Sets the user name, caches it (so the initials show right away on the next app open) and updates the initials
+function setUserName(name) {
+	if (!name) return;
+	user.name = name;
+	try {
+		localStorage.setItem("userName", name);
+	} catch {
+		// storage unavailable, the name will be fetched again next time
 	}
+	updateUserInitials();
 }
 
-// Gets all the user information
+function loadCachedUserName() {
+	try {
+		user.name ??= localStorage.getItem("userName") ?? undefined;
+	} catch {
+		// storage unavailable
+	}
+	updateUserInitials();
+}
+
+// Update user image based on user details
+function updateUserInitials() {
+	document.getElementById("userInitials").innerText = user.name ? getUserInitials(user.name) : "";
+}
+
+// Gets all the user information.
+// Each request can fail on its own; whatever loaded is still used.
 async function getUserInformation() {
-	// get the general information (without using the proxy)
-	let response = await makeGetRequest(GIRA_USER_ENDPOINT, user.accessToken);
-	if (typeof response !== "undefined") user = { ...user, ...response.data };
+	const [vaimooUser, credit, subscriptions, lastTrips] = await Promise.allSettled([
+		getVaimooUser(),
+		getRemainingCredit(),
+		getSubscriptionUsage(),
+		getTripHistory(1, 1),
+	]);
 
-	// Update user image based on user details
-	document.getElementById("userInitials").innerText = getUserInitials(user.name);
+	const failures = [vaimooUser, credit, subscriptions, lastTrips].filter(result => result.status === "rejected");
+	for (const failure of failures) console.error("Could not load part of the user information", failure.reason);
+	// Nothing loaded, let the caller show the error
+	if (failures.length === 4) throw failures[0].reason;
 
-	// Make batch query for Gira client information, activeUserSubscriptions and tripHistory to speed up request
-	response = await makePostRequest(
-		JSON.stringify({
-			query: `query {
-			client { code, type, balance, paypalReference, bonus, numberNavegante }
-			activeUserSubscriptions { code, cost, expirationDate, name, nameEnglish, subscriptionCost, subscriptionPeriod, subscriptionStatus, type, active }
-			tripHistory(pageInput: { _pageNum: 1, _pageSize: 1 }) { startDate, endDate }
-		}`,
-		}),
-		user.accessToken
-	);
-	user = { ...user, ...response.data.client[0] };
-	user.activeUserSubscriptions = response.data.activeUserSubscriptions;
+	if (vaimooUser.status === "fulfilled") {
+		const value = vaimooUser.value;
+		setUserName([value.firstName, value.lastName].filter(Boolean).join(" ") || value.userName || value.email);
+		user.email = value.email ?? user.email;
+	}
 
-	countdownFromLatestTrip(response.data.tripHistory[0]);
+	if (credit.status === "fulfilled") user.balance = credit.value.remainingCredit;
+
+	if (subscriptions.status === "fulfilled") {
+		const isExpired = subscription =>
+			subscription.isExpired ?? new Date(subscription.expirationDate).getTime() <= Date.now();
+		user.activeUserSubscriptions = (subscriptions.value ?? [])
+			.filter(subscription => !isExpired(subscription))
+			.map(subscription => ({
+				name: subscription.currentSubscription.name,
+				type: subscription.currentSubscription.membershipType ?? subscription.currentSubscription.name,
+				expirationDate: subscription.expirationDate,
+				active: true,
+			}));
+	}
+
+	if (lastTrips.status === "fulfilled" && lastTrips.value[0]) countdownFromLatestTrip(lastTrips.value[0]);
 
 	return user;
 }
@@ -200,13 +168,8 @@ async function countdownFromLatestTrip(lastTrip) {
 	// If the countdown is already active, do nothing
 	if (document.getElementById("countdown")) return;
 	// Get the latest trip from the trip history if not given
-	lastTrip ??= await makePostRequest(
-		JSON.stringify({
-			query:
-				"query { tripHistory(pageInput: { _pageNum: 1, _pageSize: 1 }) { bikeName bikeType bonus code cost endDate endLocation rating startDate startLocation usedPoints } }",
-		}),
-		user.accessToken
-	).then(r => r.data.tripHistory[0]);
+	lastTrip ??= (await getTripHistory(1, 1))[0];
+	if (!lastTrip?.endDate) return;
 
 	const lastTripEndDate = Date.parse(lastTrip.endDate);
 	// The timer only matters if the trip was longer than 90s
@@ -217,16 +180,21 @@ async function countdownFromLatestTrip(lastTrip) {
 
 // get tripHistory
 async function getTripHistory(pageNum = 1, pageSize = TRIP_HISTORY_PAGE_SIZE) {
-	response = await makePostRequest(
-		JSON.stringify({
-			operationName: "tripHistory",
-			variables: { in: { _pageNum: pageNum, _pageSize: pageSize } },
-			query:
-				"query tripHistory($in: PageInput) { tripHistory(pageInput: $in) { bikeName bikeType bonus code cost endDate endLocation rating startDate startLocation usedPoints }}",
-		}),
-		user.accessToken
-	);
-	return response.data.tripHistory;
+	const response = await getTrips(pageNum, pageSize);
+	return (response?.data ?? []).map(mapTrip);
+}
+
+// get the whole tripHistory, page by page
+async function getFullTripHistory() {
+	const pageSize = 100;
+	const trips = [];
+	for (let pageNum = 1; ; pageNum++) {
+		const response = await getTrips(pageNum, pageSize);
+		const page = response?.data ?? [];
+		trips.push(...page.map(mapTrip));
+		if (page.length === 0 || pageNum >= (response.totalPages ?? pageNum)) break;
+	}
+	return trips;
 }
 
 // Open the login menu element and populate it
@@ -237,11 +205,18 @@ function openLoginMenu() {
 	// delete cookies
 	deleteCookie("refreshToken");
 	deleteCookie("accessToken");
-	deleteCookie("firebaseToken");
+	deleteCookie("userId");
 
 	// delete user object
 	user = {};
-	if (ws) ws.close();
+	try {
+		localStorage.removeItem("userName");
+	} catch {
+		// storage unavailable
+	}
+	updateUserInitials();
+	cancelTokenRefresh();
+	stopBackendSync();
 
 	let menu = document.createElement("div");
 	menu.className = "login-menu";
@@ -291,7 +266,18 @@ async function openUserSettings() {
 	let userObj = user; // get from global variable
 
 	// Get all the user information, if it isn't available yet
-	if (!userObj.activeUserSubscriptions) userObj = await getUserInformation();
+	if (!userObj.activeUserSubscriptions) {
+		try {
+			userObj = await getUserInformation();
+		} catch (error) {
+			// The settings page may have been closed or reopened (e.g. after changing the proxy) in the meantime
+			if (!document.body.contains(settingsElement)) return;
+			hideUserSettings(false);
+			showApiError(error, "Não foi possível obter as informações do utilizador.");
+			return;
+		}
+		if (!document.body.contains(settingsElement)) return;
+	}
 
 	// Get subscription expiration
 	const subscriptionExpiration = new Date(userObj.activeUserSubscriptions?.[0]?.expirationDate ?? 0);
@@ -304,18 +290,14 @@ async function openUserSettings() {
             <img id="footer" src="assets/images/gira_footer_white.svg" alt="backImage">
 			<div id="bottomCard"></div>
             <div id="userImage">
-				<div id="userInitialsSettings">${getUserInitials(userObj.name)}</div>
+				<div id="userInitialsSettings">${userObj.name ? getUserInitials(userObj.name) : ""}</div>
 			</div>
         </div>
-        <div id="userName">${userObj.name}</div>
+        <div id="userName">${userObj.name ?? ""}</div>
         <div id="balanceAndBonusContainer">
             <div id="balanceContainer">
                 <div id="balanceLabel">Saldo</div>
-                <div id="balance">${parseFloat(userObj.balance).toFixed(2)}€</div>
-            </div>
-            <div id="bonusContainer">
-                <div id="bonusLabel">Bónus</div>
-                <div id="bonus">${userObj.bonus}</div>
+                <div id="balance">${userObj.balance != null ? `${parseFloat(userObj.balance).toFixed(2)}€` : "—"}</div>
             </div>
         </div>
         <div id="subscriptionContainer">
@@ -324,7 +306,12 @@ async function openUserSettings() {
 				${
 					userObj.activeUserSubscriptions?.length > 0
 						? `
-							<div id="subscriptionName">Passe ${toPascalCase(userObj.activeUserSubscriptions[0].type)}</div>
+							<div id="subscriptionName">${
+								// VAIMOO names already include "Passe" (e.g. "Passe Anual")
+								/^passe\b/i.test(userObj.activeUserSubscriptions[0].name)
+									? userObj.activeUserSubscriptions[0].name
+									: `Passe ${toPascalCase(userObj.activeUserSubscriptions[0].name)}`
+							}</div>
 							<div id="subscriptionValidity">Válido até ${subscriptionExpiration.toLocaleDateString("pt")}</div>
 						`
 						: `
@@ -378,25 +365,12 @@ async function openUserSettings() {
     `.trim();
 
 	document.getElementById("setProxyButton").addEventListener("click", () => {
-		// Set the cookie expiry to 1 year after today.
-		const expiryDate = new Date();
-		expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-
-		// Store customProxy cookie
-		proxyURL = document.getElementById("proxyUrlInput").value;
-		createCookie("customProxy", encodeURI(proxyURL), expiryDate);
-
-		alert("O proxy foi definido.", `<i class="bi bi-info-circle"></i>`);
+		if (setCustomProxy(document.getElementById("proxyUrlInput").value))
+			alert(proxyURL ? "O proxy foi definido." : "O proxy foi redefinido.", `<i class="bi bi-info-circle"></i>`);
 	});
 
 	document.getElementById("resetProxyButton").addEventListener("click", () => {
-		// Delete customProxy cookie
-		proxyURL = null;
-		deleteCookie("customProxy");
-
-		// Update input
-		document.getElementById("proxyUrlInput").value = proxyURL;
-
+		resetCustomProxy();
 		alert("O proxy foi redefinido.", `<i class="bi bi-info-circle"></i>`);
 	});
 
@@ -461,27 +435,72 @@ function refreshUserInformation() {
 	openUserSettings();
 }
 
+// Sets a user defined proxy, returns a success boolean.
+// An empty value (or "Padrão") resets to the default proxy.
+function setCustomProxy(value) {
+	const input = (value ?? "").trim();
+	if (!input || input === "Padrão") {
+		resetCustomProxy();
+		return true;
+	}
+
+	let url;
+	try {
+		url = new URL(input);
+	} catch {
+		alert("O URL do proxy não é válido.");
+		return false;
+	}
+	if (!["https:", "http:"].includes(url.protocol)) {
+		alert("O URL do proxy tem de começar por https://");
+		return false;
+	}
+
+	// Set the cookie expiry to 1 year after today.
+	const expiryDate = new Date();
+	expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+
+	// Store customProxy cookie
+	proxyURL = url.toString();
+	createCookie("customProxy", encodeURI(proxyURL), expiryDate);
+	onProxyChanged();
+	return true;
+}
+
+function resetCustomProxy() {
+	// Delete customProxy cookie
+	proxyURL = null;
+	deleteCookie("customProxy");
+	onProxyChanged();
+}
+
+function onProxyChanged() {
+	// Update the input on the settings page, if it is showing
+	const proxyUrlInput = document.getElementById("proxyUrlInput");
+	if (proxyUrlInput) proxyUrlInput.value = proxyURL ?? "Padrão";
+
+	// If the settings page was still loading (or failed) with the previous proxy, load it again
+	if (user.accessToken && document.getElementById("userSettings") && !user.activeUserSubscriptions) refreshUserInformation();
+}
+
 function openSetProxyPrompt() {
 	createCustomTextPrompt(
 		"Por favor defina um novo proxy.",
 		() => {
-			// Set the cookie expiry to 1 year after today.
-			const expiryDate = new Date();
-			expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-
-			// Store customProxy cookie
-			proxyURL = document.getElementById("proxyUrlInput").value;
-			createCookie("customProxy", encodeURI(proxyURL), expiryDate);
+			if (setCustomProxy(document.getElementById("customTextPromptInput").value))
+				alert("O proxy foi definido.", `<i class="bi bi-info-circle"></i>`);
 		},
 		() => {
-			// Delete customProxy cookie
-			proxyURL = null;
-			deleteCookie("customProxy");
-			openLoginMenu();
+			resetCustomProxy();
+			alert("O proxy foi redefinido.", `<i class="bi bi-info-circle"></i>`);
 		},
 		"Definir",
 		"Padrão"
 	);
+
+	// Show the current proxy in the prompt
+	const input = document.getElementById("customTextPromptInput");
+	if (input && proxyURL) input.value = proxyURL;
 }
 
 function getUserInitials(username) {
@@ -515,9 +534,16 @@ async function openTripHistory() {
 		`;
 
 	// Get user's trip history
-	const tripHistory = await getTripHistory();
+	let tripHistory;
+	try {
+		tripHistory = await getTripHistory();
+	} catch (error) {
+		hideTripHistory();
+		showApiError(error, "Não foi possível obter o histórico de viagens.");
+		return;
+	}
 
-	if (document.querySelectorAll("#tripHistory").length === 0) hideTripHistory();
+	if (document.querySelectorAll("#tripHistory").length === 0) return;
 
 	// Create element
 	menu.innerHTML = `
@@ -562,7 +588,7 @@ function downloadTripHistory() {
 		"Deseja descarregar o seu histórico de viagens completo?\n⚠️ Nota: isto pode demorar algum tempo.",
 		async () => {
 			document.getElementById("alertBox").innerHTML = `<img src="assets/images/mGira_spinning.gif" id="spinner">`; // Show spinner
-			downloadObjectAsJson(await getTripHistory(1, 10_000), "tripHistory");
+			downloadObjectAsJson(await getFullTripHistory(), "tripHistory");
 		},
 		() => null
 	);
@@ -617,8 +643,8 @@ function addTripsToDOM(tripHistory) {
 					${formattedCost}€
 				</div>
 				<div id="points">
-					<i class="bi bi-piggy-bank"></i>
-					${trip.bonus - trip.usedPoints} pontos
+					<i class="bi bi-signpost-split"></i>
+					${formatDistance(trip.distanceMeters)}
 				</div>
             </div>
 			<div id="tripStations">
@@ -672,9 +698,15 @@ async function openStatisticsMenu() {
 		`;
 
 	// Get user's trip history
-	tripHistory = await getTripHistory(1, 10_000);
+	try {
+		tripHistory = await getFullTripHistory();
+	} catch (error) {
+		hideStatisticsMenu();
+		showApiError(error, "Não foi possível obter o histórico de viagens.");
+		return;
+	}
 
-	if (document.querySelectorAll("#statisticsMenu").length === 0) hideStatisticsMenu();
+	if (document.querySelectorAll("#statisticsMenu").length === 0) return;
 
 	// set background back to black
 	menu.style.backgroundColor = "var(--black)";
@@ -764,14 +796,18 @@ function updateStatisticsChart() {
 		numberOfDays = 30;
 	} else if (period === "lastYear") numberOfDays = 365;
 	else if (period === "total") {
-		// Start from the day the user account was activated
-		let timeFromActivated = Date.now() - Date.parse(user.dateActivate);
+		// Start from the day of the first trip
+		const firstTripDate = Math.min(
+			...tripHistory.map(trip => Date.parse(trip.startDate)).filter(Number.isFinite),
+			Date.now()
+		);
+		let timeFromActivated = Date.now() - firstTripDate;
 
 		// Convert the milliseconds to days
 		const days = timeFromActivated / (24 * 1000 * 60 * 60);
 		const absoluteDays = Math.floor(days);
 
-		numberOfDays = absoluteDays;
+		numberOfDays = absoluteDays + 1; // include the day of the first trip
 	}
 
 	let startDate = new Date(new Date().setDate(new Date().getDate() - (numberOfDays - 1)));
@@ -811,9 +847,7 @@ function updateStatisticsChart() {
 		for (const trip of dayTrips) {
 			let tripTime = Date.parse(trip.endDate) - Date.parse(trip.startDate);
 			trip.riddenTime = tripTime;
-			// Calculate an estimate for trip distance (assuming an avg speed of 15km/h)
-			const speed = 15 / (3600 * 1000); // convert km/h to km/ms
-			trip.distance = Math.round(tripTime * speed * 1000) / 1000; // milliseconds * km in 1 millisecond (and round to 3 decimal places)
+			trip.distance = (trip.distanceMeters ?? 0) / 1000;
 		}
 
 		// Create the new object

@@ -4,125 +4,55 @@ let ratedTripsList = [];
 let finishedTripsList = [];
 let tripBeingRated = false;
 
-// reserves the bike and returns a success boolean
-async function reserveBike(serialNumber) {
-	const response = await makePostRequest(
-		JSON.stringify({
-			operationName: "reserveBike",
-			variables: { input: serialNumber },
-			query: "mutation reserveBike($input: String) {reserveBike(input: $input)}",
-		}),
-		user.accessToken
-	);
-	if (typeof response !== "undefined") return response.data.reserveBike;
+// Sends the trip rating to VAIMOO, returns a success boolean
+async function rateTripAPI(tripCode, bikeName, tripRating, tripComment) {
+	const tripId = Number(tripCode);
+	if (!Number.isInteger(tripId) || tripId <= 0) return false;
+
+	try {
+		const details = await getTripDetails(tripId);
+		// Same payload as the official Gira Android app
+		await submitTripFeedback({
+			createDate: vaimooLocalTimestamp(new Date()),
+			osVersion: "Android",
+			appVersion: "1.0.0",
+			rating: tripRating,
+			comment: [tripComment ?? ""],
+			reportType: "Opinion",
+			vehicleVisualId: bikeName,
+			geoFenceId: details?.endStation?.stationId ?? null,
+			tripId,
+		});
+		return true;
+	} catch (error) {
+		console.error("Could not rate the trip", error);
+		return false;
+	}
 }
 
-// cancels the bike reserve and returns a success boolean
-async function cancelBikeReserve() {
-	const response = await makePostRequest(
-		JSON.stringify({
-			operationName: "cancelBikeReserve",
-			variables: {},
-			query: "mutation cancelBikeReserve {cancelBikeReserve}",
-		}),
-		user.accessToken
+// Shows the trip overlay (on top of the map, while on a trip)
+function showTripOverlay(bikeName) {
+	document.getElementById("tripOverlay")?.remove(); // remove the trip overlay if it is showing
+	appendElementToBodyFromHTML(
+		`
+		<div class="trip-overlay" id="tripOverlay">
+			<span id="onTripText">Em viagem</span>
+			<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
+			<span id="tripBike">${bikeName}</span>
+			<span id="tripCost">0.00€</span>
+			<span id="tripTime">00:00:00</span>
+			<a id="callAssistance" href="tel:211163125"><i class="bi bi-exclamation-triangle"></i></a>
+			<img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
+		<div>
+		`.trim()
 	);
-	if (typeof response !== "undefined") return response.data.cancelBikeReserve;
 }
 
-// starts a trip and returns a success boolean
-async function startTrip() {
-	const response = await makePostRequest(
-		JSON.stringify({
-			operationName: "startTrip",
-			variables: {},
-			query: "mutation startTrip {startTrip}",
-		}),
-		user.accessToken
-	);
-	if (typeof response !== "undefined") return response.data.startTrip;
-}
+async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON) {
+	// get station object
+	const stationObj = lastStationObj;
 
-// returns an int or float of the active trip cost
-async function getActiveTripCost() {
-	const response = await makePostRequest(
-		JSON.stringify({
-			operationName: "activeTripCost",
-			variables: {},
-			query: "query activeTripCost {activeTripCost}",
-		}),
-		user.accessToken
-	);
-	return response.data.activeTripCost;
-}
-
-// returns the activeTrip object
-async function getActiveTrip() {
-	const response = await makePostRequest(
-		JSON.stringify({
-			operationName: "activeTrip",
-			variables: {},
-			query: "query activeTrip {activeTrip {code, startDate, endDate, cost, client, tripStatus, version}}",
-		}),
-		user.accessToken
-	);
-	return response.data.activeTrip;
-}
-
-// returns success boolean
-async function rateTripAPI(tripCode, tripRating, tripComment) {
-	const response = await makePostRequest(
-		JSON.stringify({
-			operationName: "rateTrip",
-			variables: {
-				in: {
-					code: tripCode,
-					rating: tripRating,
-					description: tripComment,
-					attachment: { bytes: null, fileName: `img_${tripCode}.png`, mimeType: "image/png" },
-				},
-			},
-			query: "mutation rateTrip($in: RateTrip_In) { rateTrip(in: $in) }",
-		}),
-		user.accessToken
-	);
-	return response.data.rateTrip;
-}
-
-// returns int? (0 for success)
-async function tripPayWithNoPoints(tripCode) {
-	const response = await makePostRequest(
-		JSON.stringify({
-			operationName: "tripPayWithNoPoints",
-			variables: { input: tripCode },
-			query: "mutation tripPayWithNoPoints($input: String) { tripPayWithNoPoints(input: $input) }",
-		}),
-		user.accessToken
-	);
-	return response.data.tripPayWithNoPoints;
-}
-
-// returns int? (0 for success)
-async function tripPayWithPoints(tripCode) {
-	const response = await makePostRequest(
-		JSON.stringify({
-			operationName: "tripPayWithPoints",
-			variables: { input: tripCode },
-			query: "mutation tripPayWithPoints($input: String) { tripPayWithPoints(input: $input) }",
-		}),
-		user.accessToken
-	);
-	return response.data.tripPayWithPoints;
-}
-
-async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNumber, unregistered = false) {
-	let stationObj;
-
-	if (lastStationObj !== null && !unregistered) {
-		// get station object
-		//stationObj = stationsArray.find(obj => obj.serialNumber === stationSerialNumber);
-		stationObj = lastStationObj;
-
+	if (stationObj) {
 		// check if the app has access to the user location
 		if (!pos) {
 			alert("A aplicação não sabe a sua localização!");
@@ -137,117 +67,41 @@ async function openUnlockBikeCard(stationSerialNumber, bikeObjJSON, dockSerialNu
 	}
 
 	// get bike object
-	let bikeObj;
+	const bikeObj = JSON.parse(bikeObjJSON);
 
-	if (!unregistered) {
-		bikeObj = JSON.parse(bikeObjJSON);
-	} else {
-		bikeObj = JSON.parse(bikeObjJSON);
-		bikeObj.battery = "?";
-		stationObj = { name: "Bicicleta não registada" };
-	}
-
-	// get dock object
-	let dockObj;
-
-	if (!unregistered && stationObj.dockList) {
-		dockObj = stationObj.dockList.find(obj => obj.serialNumber === dockSerialNumber);
-	} else {
-		dockObj = { name: "?" };
-	}
-
-	// Create card element and show spinner
+	// There are no reservations anymore, the bike is unlocked right away when the slider is used
+	document.getElementById("unlockBikeCard")?.remove();
 	const card = document.createElement("div");
 	card.className = "bike-reserve";
 	card.id = "unlockBikeCard";
 	card.innerHTML = `
-		<div id="bikeReserveCard">
-			<div id="backButton" onclick="closeUnlockBikeCard()"><i class="bi bi-arrow-90deg-left"></i></div>
-			<img src="assets/images/mGira_spinning.gif" id="spinner">
-		</div>
-	`.trim();
-	document.body.appendChild(card);
-
-	// reserve the bike
-	if (!(await reserveBike(bikeObj.serialNumber))) {
-		card.remove();
-		alert("Ocorreu um erro ao reservar a bicicleta.");
-		return;
-	}
-	const reserveTimerDurationMs = 30_000,
-		endReserveTime = Date.now() + reserveTimerDurationMs;
-
-	// Populate card element
-	card.innerHTML = `
-        <div id="bikeReserveCard">			
+        <div id="bikeReserveCard">
 			<div id="backButton" onclick="closeUnlockBikeCard()"><i class="bi bi-arrow-90deg-left"></i></div>
 			<div id="textContent">
 				<div id="bikeName">${bikeObj.name}</div>
-				<div id="bikeDock">Doca ${dockObj.name}</div>
-				<div id="bikeBattery">${bikeObj.name[0] === "E" ? `${bikeObj.battery}%` : ``}</div>
+				<div id="bikeDock">Doca ${bikeObj.dockName ?? "?"}</div>
+				<div id="bikeBattery">${bikeObj.type === "electric" ? `${bikeObj.battery ?? "?"}%` : ``}</div>
 			</div>
-			<div class="timer animatable" id="reserveDuration">
-				<svg>
-					<circle class="base" cx="50%" cy="50%" r="7dvh"/>
-					<circle class="progress" cx="50%" cy="50%" r="7dvh" pathLength="1" />
-					<text x="50%" y="50%" text-anchor="middle"><tspan id="timeLeft"></tspan></text>
-					<text x="50%" y="65%" text-anchor="middle">segundos</text>
-				</svg>
-			</div>
-			<input type="range" name="unlockSlider" id="unlockSlider" onchange="startBikeTrip(event, '${
+			<input type="range" name="unlockSlider" id="unlockSlider" onchange="startBikeTrip(event, '${htmlEncode(
 				bikeObj.name
-			}');" min="0" max="100" value="0">
+			)}', '${htmlEncode(bikeObj.serialNumber)}');" min="0" max="100" value="0">
 			<img src="assets/images/gira_footer.svg" id="footer" alt="footer">
         </div>
     `.trim();
-
-	// Run the timer (30 seconds)
-	const timerElement = document.getElementById("reserveDuration");
-	const timerText = timerElement.querySelector("#timeLeft");
-	const timerCircle = timerElement.querySelector("svg > circle.progress");
-	timerCircle.style.strokeDashoffset = getCurrentTimerProgress(endReserveTime, reserveTimerDurationMs);
-
-	let countdownHandler = async function () {
-		if (!document.getElementById("unlockBikeCard")) clearInterval(countdownTimer);
-		const currentProgress = getCurrentTimerProgress(endReserveTime, reserveTimerDurationMs),
-			timeRemaining = Math.round(((1 - Math.abs(currentProgress)) * reserveTimerDurationMs) / 1000);
-		if (timeRemaining >= 0) {
-			timerCircle.style.strokeDashoffset = currentProgress;
-			timerText.innerHTML = timeRemaining;
-		} else {
-			clearInterval(countdownTimer);
-			timerElement.classList.remove("animatable");
-			// No time left, cancel the reservation if the user didn't start the trip
-			if (tripEnded) {
-				// Cancel the bike reserve after the countdown
-				console.log("The reserve was cancelled.");
-				if (typeof (await cancelBikeReserve()) === "undefined") {
-					alert("Ocorreu um erro ao cancelar a reserva da bicicleta");
-					return;
-				}
-
-				// hide the unlock card if it is showing
-				if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
-			}
-		}
-	};
-
-	countdownHandler(); // call once to start the timer immediately
-	let countdownTimer = setInterval(countdownHandler, 1000);
+	document.body.appendChild(card);
 
 	// If there is navigation going, make the card still appear
 	if (navigationActive) card.style.zIndex = 99;
 }
 
-async function closeUnlockBikeCard() {
-	console.log("The reserve was cancelled.");
-	if (typeof (await cancelBikeReserve()) === "undefined") {
-		alert("Ocorreu um erro ao cancelar a reserva da bicicleta");
-		return;
-	}
-	document.getElementById("unlockBikeCard").remove();
+function closeUnlockBikeCard() {
+	document.getElementById("unlockBikeCard")?.remove();
 }
 
+// Unlisted-bike lookup disabled: VAIMOO's Firestore feed lists every dockable bike, so the legacy
+// bikeSerialNumberMapping workaround isn't needed (same decision as gira-mais).
+// If this is ever re-enabled, look the bike up with window.vaimooFirestore.findBike(visualId) instead of the mapping.
+/*
 function openTakeUnregisteredBikeMenu(stationSerialNumber) {
 	if (document.getElementById("takeUnregisteredBike")) return;
 	// get station object
@@ -309,66 +163,55 @@ function takeUnregisteredBike() {
 		document.getElementById("takeUnregisteredBike")?.remove();
 	}
 }
+*/
 
 // Handles the range input value changed event, and starts the bike trip if the slider is all the way to the right
-async function startBikeTrip(event, bikeName) {
-	if (event.target.value === "100") {
-		// Show the bike leaving dock animation in the card
-		let bikeReserveCardElem = document.getElementById("bikeReserveCard");
-		if (bikeReserveCardElem) {
-			bikeReserveCardElem.innerHTML = `
-				<div id="backButton" onclick="document.getElementById('unlockBikeCard').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
-				<img src="assets/images/mGira_leaving_dock.gif" id="bikeLeavingDock" alt="bike leaving dock animation">
-				<img src="assets/images/gira_footer.svg" id="footer" alt="footer">`;
+async function startBikeTrip(event, bikeName, communicationId) {
+	if (event.target.value !== "100") return;
+
+	// Show the bike leaving dock animation in the card
+	let bikeReserveCardElem = document.getElementById("bikeReserveCard");
+	if (bikeReserveCardElem) {
+		bikeReserveCardElem.innerHTML = `
+			<div id="backButton" onclick="closeUnlockBikeCard()"><i class="bi bi-arrow-90deg-left"></i></div>
+			<img src="assets/images/mGira_leaving_dock.gif" id="bikeLeavingDock" alt="bike leaving dock animation">
+			<img src="assets/images/gira_footer.svg" id="footer" alt="footer">`;
+	}
+
+	const unlockTime = Date.now();
+	const animationEnd = unlockTime + 3000;
+
+	// Unlock the bike, which starts the trip
+	try {
+		await quickStartTrip(communicationId);
+	} catch (error) {
+		let started = false;
+		if (error instanceof VaimooNetworkError) {
+			// The unlock is not retried, so the connection may have dropped after VAIMOO started the trip
+			started = Boolean(await refreshTripStatus("quick-start-network-error"));
 		}
-
-		// start the trip
-		if (typeof (await startTrip()) === "undefined") {
-			// Alert the user that an error occured
-			alert("Ocorreu um erro ao iniciar a viagem.");
-
+		if (!started) {
 			// hide the unlock card if it is showing
-			if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
-
+			closeUnlockBikeCard();
+			showApiError(error, "Ocorreu um erro ao iniciar a viagem.");
 			return;
 		}
-
-		// Only hide card with animation after 2 seconds
-		setTimeout(() => {
-			// hide the unlock card if it is showing
-			if (document.querySelector("#unlockBikeCard")) document.querySelector("#unlockBikeCard").remove();
-
-			// hide the station menu if it is showing
-			if (document.querySelector("#stationMenu")) hideStationMenu();
-
-			// hide bike list if it is showing
-			if (document.querySelector("#bikeMenu")) document.querySelector("#bikeMenu").remove();
-
-			const oldTrip = document.getElementById("tripOverlay");
-			if (oldTrip) oldTrip.remove(); // remove the trip overlay if it is showing
-			// show the trip overlay
-			appendElementToBodyFromHTML(
-				`
-				<div class="trip-overlay" id="tripOverlay">
-					<span id="onTripText">Em viagem</span>
-					<img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
-					<span id="tripBike">${bikeName}</span>
-					<span id="tripCost">0.00€</span>
-					<span id="tripTime">00:00:00</span>
-					<a id="callAssistance" href="tel:211163125"><i class="bi bi-exclamation-triangle"></i></a>
-					<img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
-				<div>
-			`.trim()
-			);
-
-			// Change map dots to available docks
-			loadStationMarkersFromArray(stationsArray, true);
-
-			// start the trip timer
-			tripEnded = false;
-			tripTimer(Date.now(), true);
-		}, 3000);
 	}
+
+	// Only hide card with animation after it has played
+	setTimeout(() => {
+		// hide the unlock card if it is showing
+		closeUnlockBikeCard();
+
+		// hide the station menu if it is showing
+		if (document.querySelector("#stationMenu")) hideStationMenu();
+
+		// hide bike list if it is showing
+		if (document.querySelector("#bikeMenu")) hideBikeList();
+
+		// Show the trip overlay and wait for VAIMOO to confirm the trip (unless it already did)
+		if (!localTrip?.confirmed) startLocalTrip(bikeName, unlockTime);
+	}, Math.max(0, animationEnd - Date.now()));
 }
 
 async function tripTimer(startTime, isStarting) {
@@ -377,50 +220,36 @@ async function tripTimer(startTime, isStarting) {
 		clearTimeout(tripTimerCode); // clear the previous timer if it exists
 		tripTimerCode = null;
 	}
-	// Update only is trip has not ended, and websocket is connected
-	if (!tripEnded && ws?.readyState === WebSocket.OPEN) {
+	// Update only if trip has not ended
+	if (!tripEnded) {
 		// Calculate elapsed time
 		const elapsedTime = Date.now() - startTime;
 
 		// Update timer on trip overlay
-		if (document.querySelector("#tripTime")) {
-			for (let element of document.querySelectorAll("#tripTime")) {
-				element.innerHTML = parseMillisecondsIntoTripTime(elapsedTime);
-			}
+		for (let element of document.querySelectorAll("#tripTime")) {
+			element.innerHTML = parseMillisecondsIntoTripTime(elapsedTime);
 		}
 
 		// Update cost on trip overlay
-		if (document.querySelector("#tripCost") && activeTripObj) {
-			let cost = 0;
+		// Set the cost based on values on the website (API doesn't return the cost)
+		let cost = 0;
+		const numberOf45MinPeriods = Math.floor(elapsedTime / (45 * 60 * 1000));
+		if (numberOf45MinPeriods === 1) cost = 1;
+		else if (numberOf45MinPeriods > 1) cost = 2 * numberOf45MinPeriods;
 
-			// Set the cost based on values on the website (API doesn't return the cost)
-			const numberOf45MinPeriods = Math.floor(elapsedTime / (45 * 60 * 1000));
-			if (numberOf45MinPeriods === 1) cost = 1;
-			else if (numberOf45MinPeriods > 1) cost = 2 * numberOf45MinPeriods;
-
-			// Update the element
-			if (cost) {
-				for (let element of document.querySelectorAll("#tripCost")) {
-					element.innerHTML = parseFloat(cost).toFixed(2) + "€";
-				}
+		// Update the element
+		if (cost) {
+			for (let element of document.querySelectorAll("#tripCost")) {
+				element.innerHTML = parseFloat(cost).toFixed(2) + "€";
 			}
 		}
 		tripTimerCode = setTimeout(() => tripTimer(startTime), 1000);
-	} else if (ws?.readyState !== WebSocket.OPEN) {
-		console.log("WebSocket has disconnected...");
-		setTimeout(() => tripTimer(startTime), 1000);
 	} else {
 		console.log("Trip has ended...");
 		tripTimerCode = null;
 
 		// Hide trip overlay if it is showing
 		if (document.querySelector("#tripOverlay")) document.querySelector("#tripOverlay").remove();
-
-		// Cancel the bike reserve
-		if (typeof (await cancelBikeReserve()) === "undefined") {
-			alert("Ocorreu um erro ao cancelar a reserva da bicicleta");
-			return;
-		}
 	}
 }
 
@@ -441,11 +270,11 @@ function openRateTripMenu(tripObj) {
 	appendElementToBodyFromHTML(`
     <div class="rate-trip-menu" id="rateTripMenu">
         <div id="rateTripMenuCard">
-            <div id="backButton" onclick="document.getElementById('rateTripMenu').remove()"><i class="bi bi-arrow-90deg-left"></i></div>
+            <div id="backButton" onclick="closeRateTripMenu('${tripObj.code}')"><i class="bi bi-arrow-90deg-left"></i></div>
 			<div id="tripInfo">
 				<div id="bikeName">
 					<img id="bikeIcon" src="assets/images/mGira_bike.png">
-					${tripObj.bike}
+					${tripObj.bikeName}
 				</div>
 				<div id="time">
 					<i class="bi bi-clock"></i>
@@ -454,10 +283,6 @@ function openRateTripMenu(tripObj) {
 				<div id="cost">
 					<i class="bi bi-cash-coin"></i>
 					${parseFloat(tripObj.cost).toFixed(2)}€
-				</div>
-				<div id="points">
-					<i class="bi bi-piggy-bank"></i>
-					${tripObj.tripPoints ?? 0} pontos
 				</div>
             </div>
             <img src="assets/images/mGira_station.png" alt="station" id="stationImg">
@@ -476,13 +301,25 @@ function openRateTripMenu(tripObj) {
 					<label for="star1" class="star">&#9733;</label>
 				</form>
 			</div>
-            <div id="sendButton" onclick="rateTrip('${tripObj.code}',${tripObj.cost})">Enviar</div>
+            <div id="sendButton" onclick="rateTrip('${tripObj.code}','${htmlEncode(tripObj.bikeName)}')">Enviar</div>
         </div>
     </div>
     `);
 }
 
-async function rateTrip(tripCode, tripCost) {
+// Marks the trip as rated, so the rating is not prompted again
+function markTripRated(tripCode) {
+	ratedTripsList.push(tripCode);
+	customCreateCookie("lastRatedTrip", tripCode);
+}
+
+function closeRateTripMenu(tripCode) {
+	markTripRated(tripCode);
+	document.getElementById("rateTripMenu")?.remove();
+	tripBeingRated = false;
+}
+
+async function rateTrip(tripCode, bikeName) {
 	// Get the selected input for the stars
 	const starsInput = document.querySelector(`input[type="radio"]:checked`);
 	const tripRating = Number(starsInput?.value);
@@ -492,9 +329,19 @@ async function rateTrip(tripCode, tripCost) {
 	// Could not get rating
 	if (!starsInput) {
 		alert("Não foi possível obter a classificação.");
-		tripBeingRated = false;
 		return;
 	}
+
+	const sendRating = async comment => {
+		if (await rateTripAPI(tripCode, bikeName, tripRating, comment)) {
+			markTripRated(tripCode); // store that this trip was already rated, to not prompt again
+			alert("Agradecemos o feedback!", `<i class="bi bi-heart"></i>`); // Thank the user for the feedback
+		} else {
+			alert("Não foi possível avaliar a viagem."); // Error
+		}
+		rateTripMenu?.remove(); // Hide rate trip menu
+		tripBeingRated = false;
+	};
 
 	// if the rating is 3 stars or less, prompt the user to comment on the trip
 	if (tripRating <= 3) {
@@ -506,67 +353,15 @@ async function rateTrip(tripCode, tripCost) {
 		`.trim();
 
 		// Send button handler
-		document.querySelector("#rateTripMenuCard #sendButton").addEventListener("click", async () => {
-			let comment = document.getElementById("commentTextarea").value;
-			let success = await rateTripAPI(tripCode, tripRating, comment);
-			if (success) {
-				ratedTripsList.push(tripCode); // store that this trip was already rated, to not prompt again
-				payTrip(tripCode, tripCost); // Pay the trip after rating it
-				alert("Agradecemos o feedback!", `<i class="bi bi-heart"></i>`); // Thank the user for the feedback
-			} else {
-				alert("Não foi possível avaliar a viagem."); // Error
-			}
-			rateTripMenu?.remove(); // Hide rate trip menu
-			tripBeingRated = false;
-		});
+		document
+			.querySelector("#rateTripMenuCard #sendButton")
+			.addEventListener("click", () => sendRating(document.getElementById("commentTextarea").value));
 
-		// Ignore button handler
-		document.querySelector("#rateTripMenuCard #ignoreButton").addEventListener("click", async () => {
-			// No handler
-			let success = await rateTripAPI(tripCode, tripRating, ""); // send empty comment if the user ignored
-			if (success) {
-				ratedTripsList.push(tripCode); // store that this trip was already rated, to not prompt again
-				payTrip(tripCode, tripCost); // Pay the trip after rating it
-				alert("Agradecemos o feedback!", `<i class="bi bi-heart"></i>`); // Thank the user for the feedback
-			} else {
-				alert("Não foi possível avaliar a viagem."); // Error
-			}
-			rateTripMenu?.remove(); // Hide rate trip menu
-			tripBeingRated = false;
-		});
+		// Ignore button handler, send empty comment if the user ignored
+		document.querySelector("#rateTripMenuCard #ignoreButton").addEventListener("click", () => sendRating(""));
 	} else {
-		let success = await rateTripAPI(tripCode, tripRating, ""); // send empty comment if the user gave a good rating
-		if (success) {
-			ratedTripsList.push(tripCode); // store that this trip was already rated, to not prompt again
-			payTrip(tripCode, tripCost); // Pay the trip after rating it
-			alert("Agradecemos o feedback!", `<i class="bi bi-heart"></i>`); // Thank the user for the feedback
-		} else {
-			alert("Não foi possível avaliar a viagem.");
-		}
-		rateTripMenu?.remove(); // Hide rate trip menu
-		tripBeingRated = false;
-	}
-}
-
-async function payTrip(tripCode, tripCost) {
-	// Allow the user to select if he wants to use points to pay the trip
-	if (tripCost !== 0) {
-		createCustomYesNoPrompt(
-			`Deseja pagar a viagem com ${tripCost * 500} pontos?`,
-			async () => {
-				if ((await tripPayWithPoints(tripCode)) !== tripCost * 500)
-					// the success response is the number of points paid
-					alert("Não foi possível pagar a viagem.");
-			},
-			async () => {
-				if ((await tripPayWithNoPoints(tripCode)) !== 0)
-					// the success response is a 0
-					alert("Não foi possível pagar a viagem.");
-			}
-		);
-	} else {
-		// If the trip cost 0, then just pay with no points
-		if ((await tripPayWithNoPoints(tripCode)) !== 0) alert("Não foi possível pagar a viagem.");
+		// send empty comment if the user gave a good rating
+		await sendRating("");
 	}
 }
 
