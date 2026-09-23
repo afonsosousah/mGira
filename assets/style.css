@@ -1026,16 +1026,6 @@ input:-webkit-autofill:active {
 	z-index: 0;
 	opacity: 0.05;
 }
-#reserveDuration {
-	position: absolute;
-	bottom: 13dvh;
-	left: calc(50vw - 8dvh);
-	z-index: 1;
-}
-#reserveDuration > svg {
-	width: 16dvh;
-	height: 16dvh;
-}
 .timer > svg > circle {
 	transform: rotate(90deg) scale(-1, 1);
 	transform-origin: center center;
@@ -1059,12 +1049,6 @@ input:-webkit-autofill:active {
 }
 .timer.animatable > svg > circle.progress {
 	transition: stroke-dashoffset 1s linear;
-}
-#reserveDuration > svg > text {
-	font-size: 1.5rem;
-}
-#reserveDuration > svg > text + text {
-	font-size: 0.8rem;
 }
 #bikeReserveCard #bikeLeavingDock {
 	width: 70%;
@@ -1284,9 +1268,8 @@ input:-webkit-autofill:active {
 	gap: 2vh;
 	margin-top: 5vh;
 }
-.user-settings #balanceAndBonusContainer #balanceContainer,
-.user-settings #balanceAndBonusContainer #bonusContainer {
-	/* full width like the other cards, now that there is no bonus container next to it */
+.user-settings #balanceAndBonusContainer #balanceContainer {
+	/* full width like the other cards */
 	width: calc(85vw + 2vh);
 	height: 100%;
 	color: var(--green);
@@ -1297,13 +1280,11 @@ input:-webkit-autofill:active {
 	/*outline: 1px solid var(--green);*/
 	box-shadow: 0px 1px 6px 0px var(--green), 0px 0px 5px 0px var(--shadow-green) inset;
 }
-.user-settings #balanceAndBonusContainer #balanceContainer #balanceLabel,
-.user-settings #balanceAndBonusContainer #bonusContainer #bonusLabel {
+.user-settings #balanceAndBonusContainer #balanceContainer #balanceLabel {
 	position: absolute;
 	top: 8%;
 }
-.user-settings #balanceAndBonusContainer #balanceContainer #balance,
-.user-settings #balanceAndBonusContainer #bonusContainer #bonus {
+.user-settings #balanceAndBonusContainer #balanceContainer #balance {
 	position: absolute;
 	bottom: 20%;
 	font-size: 1.5rem;
@@ -1898,8 +1879,7 @@ input:-webkit-autofill:active {
 #rateTripMenuCard #tripInfo #bikeName,
 #rateTripMenuCard #tripInfo #date,
 #rateTripMenuCard #tripInfo #time,
-#rateTripMenuCard #tripInfo #cost,
-#rateTripMenuCard #tripInfo #points {
+#rateTripMenuCard #tripInfo #cost {
 	color: var(--black);
 	font-size: 1rem;
 	display: flex;
@@ -2013,138 +1993,6 @@ input:-webkit-autofill:active {
 	font-weight: 600;
 	margin-left: -4dvh;
 	font-size: 1.1rem;
-}
-/* #endregion */
-
-/* #region Take unregistered bike */
-#openTakeUnregisteredBikeButton {
-	background-color: var(--black);
-	color: var(--white);
-	border-radius: 30px;
-	padding: 2vh;
-	position: relative;
-	margin-bottom: 10px;
-	cursor: pointer;
-	text-align: center;
-	height: 15vh;
-	margin: 2vh 0;
-	flex-shrink: 0;
-	width: calc(90vw - 4vh - env(safe-area-inset-left) - env(safe-area-inset-right));
-	box-shadow: 0px 1px 6px 0px var(--black);
-	margin-left: env(safe-area-inset-left);
-	margin-right: env(safe-area-inset-right);
-}
-#openTakeUnregisteredBikeButton #upperText {
-	position: absolute;
-	top: 2vh;
-	left: 3vh;
-	text-align: left;
-}
-#openTakeUnregisteredBikeButton #lowerText {
-	position: absolute;
-	bottom: 2vh;
-	left: 3vh;
-	text-align: left;
-	font-weight: bold;
-	font-size: 1.15rem;
-}
-#openTakeUnregisteredBikeButton img {
-	position: absolute;
-	bottom: 2vh;
-	right: 2vh;
-	height: 13vh;
-	object-fit: contain;
-}
-#takeUnregisteredBike {
-	z-index: 5;
-	position: absolute;
-	bottom: 2vh;
-	left: 5%;
-	width: 90%;
-	height: 20%;
-	background-color: var(--white);
-	border-radius: 20px;
-	box-shadow: 5px 5px 15px 0px var(--shadow-black);
-}
-#takeUnregisteredBike #unregisteredBikeNameInputContainer {
-	background-color: rgb(255, 255, 255);
-	width: 90%;
-	height: 30%;
-	position: absolute;
-	z-index: 2;
-	left: 5%;
-	top: 15%;
-	outline: 1px solid var(--green);
-	border-radius: 999px;
-	display: flex;
-	align-items: center;
-	color: var(--green);
-	border: none;
-	font-size: 0.9rem;
-}
-#takeUnregisteredBike #unregisteredBikeNameSelect {
-	background-color: rgb(255, 255, 255);
-	display: flex;
-	color: var(--green);
-	border: none;
-	font-size: 0.9rem;
-	padding-left: 5%;
-}
-/* Hide Arrows */
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-	-webkit-appearance: none;
-	margin: 0;
-}
-/* Firefox */
-input[type="number"] {
-	-moz-appearance: textfield;
-}
-#takeUnregisteredBike #unregisteredBikeNameInput {
-	background-color: rgb(255, 255, 255);
-	width: 100%;
-	height: 100%;
-	border-radius: 999px;
-	display: flex;
-	align-items: center;
-	padding-left: 0.5rem;
-	color: var(--green);
-	border: none;
-	font-size: 0.9rem;
-}
-#takeUnregisteredBike #unregisteredBikeNameInput:focus {
-	outline: none;
-}
-#takeUnregisteredBike #cancelButton {
-	background-color: var(--black);
-	width: 30%;
-	height: 28%;
-	position: absolute;
-	z-index: 2;
-	left: 5%;
-	bottom: 15%;
-	border-radius: 999px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: white;
-	font-size: 0.9rem;
-}
-#takeUnregisteredBike #takeUnregisteredBikeButton {
-	background-color: var(--green);
-	width: 55%;
-	height: 30%;
-	position: absolute;
-	z-index: 2;
-	right: 5%;
-	bottom: 15%;
-	border-radius: 999px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: white;
-	font-size: 0.9rem;
 }
 /* #endregion */
 
@@ -2893,18 +2741,6 @@ body > #countdown {
 		height: 14dvw;
 		object-position: center top;
 	}
-	#reserveDuration {
-		bottom: 13dvw;
-		left: calc(50vw - 8vw);
-	}
-	#reserveDuration > svg {
-		width: 16vw;
-		height: 16vw;
-	}
-	#reserveDuration > svg > circle {
-		stroke-width: 1.5vw;
-		r: 7.25vw;
-	}
 	#bikeReserveCard #bikeLeavingDock {
 		width: 60%;
 		aspect-ratio: 1/1;
@@ -2981,8 +2817,7 @@ body > #countdown {
 		gap: 2vw;
 		margin-top: 5vw;
 	}
-	.user-settings #balanceAndBonusContainer #balanceContainer,
-	.user-settings #balanceAndBonusContainer #bonusContainer {
+	.user-settings #balanceAndBonusContainer #balanceContainer {
 		width: calc(50vw + 2vw);
 	}
 	.user-settings #subscriptionContainer {
@@ -3132,31 +2967,6 @@ body > #countdown {
 		height: 6vw;
 		right: 1.5vw;
 		bottom: 1.5vw;
-	}
-	/* #endregion */
-
-	/* #region Take unregistered bike */
-	#openTakeUnregisteredBikeButton {
-		padding: 2vw;
-		height: 15vw;
-		margin: 2vw 0;
-		/*width: calc(90vw - 4vw);*/
-	}
-	#openTakeUnregisteredBikeButton #upperText {
-		top: 2vw;
-		left: 3vw;
-	}
-	#openTakeUnregisteredBikeButton #lowerText {
-		bottom: 2vw;
-		left: 3vw;
-	}
-	#openTakeUnregisteredBikeButton img {
-		bottom: 2vw;
-		right: 2vw;
-		height: 13vw;
-	}
-	#takeUnregisteredBike {
-		height: 40%;
 	}
 	/* #endregion */
 
