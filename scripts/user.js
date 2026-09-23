@@ -1,5 +1,6 @@
 const TRIP_HISTORY_PAGE_SIZE = 10;
 let tokenRefreshed = false;
+let startupFunctionsRan = false;
 let minimumDistanceToStation = 50;
 let devMode = false;
 let tripHistory = null;
@@ -59,6 +60,8 @@ function getJWTPayload(token) {
 }
 
 async function runStartupFunctions() {
+	startupFunctionsRan = true;
+
 	// Check if update info should be shown
 	showUpdateInfoIfNeeded();
 

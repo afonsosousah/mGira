@@ -20,7 +20,32 @@ class VaimooApiError extends Error {
 		this.body = body;
 		// VAIMOO's numeric responseStatus.errorCode, which is what the official app switches on
 		this.code = typeof body?.responseStatus?.errorCode === "number" ? body.responseStatus.errorCode : null;
+		// All codes in the response, the nested ones first (they are the more specific ones)
+		this.codes = [
+			...(Array.isArray(body?.responseStatus?.errors) ? body.responseStatus.errors.map(error => error?.errorCode) : []),
+			this.code,
+		].filter(code => typeof code === "number" && code !== 0);
 		this.messages = vaimooErrorMessages(body, message);
+	}
+}
+
+// Most VAIMOO errors are .NET exception names, e.g.
+// "Exception of type 'Vaimoo.Application.Exceptions.Bike.BikeNotFoundException' was thrown."
+// Turns them into words ("Bike Not Found"), for matching and for showing them to the user.
+function humanizeVaimooErrorMessage(message) {
+	const match = /([A-Za-z]+)Exception\b/.exec(message ?? "");
+	if (!match || !/Exception/.test(message)) return message;
+	return match[1].replace(/([a-z0-9])([A-Z])/g, "$1 $2").replace(/([A-Z])([A-Z][a-z])/g, "$1 $2");
+}
+
+// Some messages are JSON encoded, e.g. '{"error":"Code not found, already used, or expired."}'
+function unwrapErrorMessage(message) {
+	if (typeof message !== "string" || !message.trim().startsWith("{")) return message;
+	try {
+		const parsed = JSON.parse(message);
+		return parsed?.error ?? parsed?.message ?? message;
+	} catch {
+		return message;
 	}
 }
 
@@ -52,6 +77,10 @@ function messagesFromErrorList(errors) {
 
 // VAIMOO wraps failures as { responseStatus: { errorCode, message, errors: [{ errorCode, message }] } }
 function vaimooErrorMessages(body, fallback) {
+	return findVaimooErrorMessages(body, fallback).map(unwrapErrorMessage);
+}
+
+function findVaimooErrorMessages(body, fallback) {
 	if (typeof body === "string" && body) return [body];
 	if (!body || typeof body !== "object") return [fallback];
 	const nested = messagesFromErrorList(body.responseStatus?.errors);

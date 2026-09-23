@@ -121,8 +121,12 @@ async function initMap() {
 	} else {
 		try {
 			await tokenRefresh();
-		} catch {
-			// tokenRefresh already opened the login menu
+		} catch (error) {
+			// If the session was rejected, tokenRefresh already opened the login menu.
+			// Otherwise it keeps retrying, and loads the app once it succeeds.
+			if (!isRejectedRefreshToken(error)) {
+				alert("Não foi possível comunicar com a EMEL. Verifique a sua ligação ou o proxy.");
+			}
 			return;
 		}
 		if (!user.accessToken) return;

@@ -38,6 +38,11 @@ function cancelTokenRefresh() {
 	tokenRefreshTimeout = null;
 }
 
+// The server rejected the refresh token itself (expired, already used or invalid)
+function isRejectedRefreshToken(error) {
+	return error instanceof VaimooApiError && (error.status === 400 || error.status === 401);
+}
+
 // Refreshes current user accessToken, using refreshToken
 async function tokenRefresh() {
 	tokenRefreshed = false;
@@ -55,6 +60,7 @@ async function tokenRefresh() {
 	tokenPromise = new Promise(async (resolve, reject) => {
 		// Try to refresh token with retries...
 		const numberOfTries = 3;
+		let lastError;
 
 		for (let currentTry = 0; currentTry < numberOfTries; currentTry++) {
 			try {
@@ -64,8 +70,9 @@ async function tokenRefresh() {
 				// Hide login menu if it is showing
 				if (document.querySelector(".login-menu")) document.querySelector(".login-menu").remove();
 
-				// Make sure the stations and trip are being synced
-				startBackendSync();
+				// Make sure the app is loaded (the startup may have failed while offline) and synced
+				if (!startupFunctionsRan) runStartupFunctions();
+				else startBackendSync();
 
 				// Set that the token has been refreshed successfully
 				tokenRefreshed = true;
@@ -74,15 +81,24 @@ async function tokenRefresh() {
 				return;
 			} catch (error) {
 				console.error("Token refresh failed", error);
+				lastError = error;
 				// A rejected refresh token will not become valid by retrying
-				if (error instanceof VaimooApiError && (error.status === 400 || error.status === 401)) break;
+				if (isRejectedRefreshToken(error)) break;
 				await delay(2000);
 			}
 		}
 
-		// Could not refresh the token, prompt for new login
-		openLoginMenu();
-		reject();
+		if (isRejectedRefreshToken(lastError)) {
+			// The session is no longer valid, prompt for new login
+			openLoginMenu();
+		} else {
+			// Offline, the proxy is down or the server failed: keep the session and try again later,
+			// instead of logging the user out because of a connection problem
+			console.warn("Could not refresh the token, retrying in 30 seconds");
+			cancelTokenRefresh();
+			tokenRefreshTimeout = setTimeout(() => tokenRefresh().catch(() => null), 30_000);
+		}
+		reject(lastError);
 	}).finally(() => {
 		tokenPromise = null;
 	});
