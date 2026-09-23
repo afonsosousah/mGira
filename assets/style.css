@@ -1286,7 +1286,8 @@ input:-webkit-autofill:active {
 }
 .user-settings #balanceAndBonusContainer #balanceContainer,
 .user-settings #balanceAndBonusContainer #bonusContainer {
-	width: 42.5%;
+	/* full width like the other cards, now that there is no bonus container next to it */
+	width: calc(85vw + 2vh);
 	height: 100%;
 	color: var(--green);
 	border-radius: 25px;
@@ -1373,6 +1374,7 @@ input:-webkit-autofill:active {
 }
 .user-settings #issueButton {
 	background-color: var(--dark-gray);
+	box-shadow: 0px 1px 6px 0px var(--dark-gray);
 }
 .user-settings #statisticsMenuButton i,
 .user-settings #tripHistoryButton i,
@@ -2981,7 +2983,7 @@ body > #countdown {
 	}
 	.user-settings #balanceAndBonusContainer #balanceContainer,
 	.user-settings #balanceAndBonusContainer #bonusContainer {
-		width: 25%;
+		width: calc(50vw + 2vw);
 	}
 	.user-settings #subscriptionContainer {
 		height: 12vw;

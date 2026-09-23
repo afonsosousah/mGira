@@ -158,7 +158,7 @@ function deleteCookie(name) {
 }
 
 function getStationsDiff(newStationsArray, oldStationsArray = null) {
-	oldStationsArray ?? stationsArray;
+	oldStationsArray ??= stationsArray;
 
 	for (const newStation of newStationsArray) {
 		// Get previous station state
@@ -245,40 +245,8 @@ function startFakeTrip() {
 	// Create fake start date
 	const startDate = new Date(Date.now() - tripMs);
 
-	// Create fake trip object
-	activeTripObj = {
-		code: "Q1BWYJLB1R",
-		bike: "E0000",
-		startDate: startDate.toISOString(),
-		endDate: null,
-		cost: null,
-		finished: false,
-		canPayWithMoney: null,
-		canUsePoints: null,
-		clientPoints: null,
-		tripPoints: null,
-		canceled: false,
-		period: "other",
-		periodTime: "312",
-		error: 0,
-	};
-
-	const oldTrip = document.getElementById("tripOverlay");
-	if (oldTrip) oldTrip.remove(); // remove the trip overlay if it is showing
 	// Append the trip overlay
-	appendElementToBodyFromHTML(
-		`
-	  <div class="trip-overlay" id="tripOverlay">
-		  <span id="onTripText">Em viagem</span>
-		  <img src="assets/images/mGira_riding.gif" alt="bike" id="bikeLogo">
-		  <span id="tripBike">${activeTripObj.bike}</span>
-		  <span id="tripCost">0.00€</span>
-		  <span id="tripTime">00:00:00</span>
-		  <a id="callAssistance" href="tel:211163125"><i class="bi bi-exclamation-triangle"></i></a>
-		  <img src="assets/images/gira_footer_white.svg" alt="footer" id="footer">
-	  <div>
-	  `.trim()
-	);
+	showTripOverlay("E0000");
 
 	// Update the station markers
 	loadStationMarkersFromArray(stationsArray, true);
@@ -291,7 +259,7 @@ function startFakeTrip() {
 	// Set the trip ended flag and start timer
 	onFakeTrip = true;
 	tripEnded = false;
-	tripTimer(Date.parse(activeTripObj.startDate), true);
+	tripTimer(startDate.getTime(), true);
 }
 
 function endFakeTrip() {
@@ -397,20 +365,12 @@ function openFakeRateTripMenu() {
 
 	// Create fake trip object
 	const tripObj = {
-		code: "Q1BWYJLB1R",
-		bike: "E0000",
+		code: "0",
+		bikeName: "E0000",
 		startDate: startDate.toISOString(),
 		endDate: endDate.toISOString(),
 		cost: 0,
-		finished: true,
-		canPayWithMoney: null,
-		canUsePoints: null,
-		clientPoints: null,
-		tripPoints: null,
-		canceled: false,
-		period: "other",
-		periodTime: "312",
-		error: 0,
+		distanceMeters: 0,
 	};
 
 	openRateTripMenu(tripObj);

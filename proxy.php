@@ -45,9 +45,8 @@ define('CSAJAX_DEBUG', true);
  * A set of valid cross domain requests
  */
 $valid_requests = array(
-    'api-auth.emel.pt',
-    'apigira.emel.pt',
-    'opendata.emel.pt'
+    'login.emel.pt',
+    'emel-consumerapp.vaimoo.com'
 );
 
 /**
@@ -71,10 +70,14 @@ foreach ($_SERVER as $key => $value) {
         $headername = str_replace(' ', '-', ucwords(strtolower($headername)));
         if (
             !in_array($headername, array('Host', 'X-Proxy-Url', 'X-Authorization'))
-            && in_array($headername, array('Content-Type', 'Content-Length'))
+            && in_array($headername, array(
+                'Content-Type', 'Content-Length', 'Accept', 'Accept-Language',
+                // Headers required by the VAIMOO API
+                'Appid', 'Refreshtoken', 'No-Refresh'
+            ))
         ) {
             $request_headers[] = "$headername: $value";
-        } else if ($headername == 'X-Authorization') {
+        } else if ($headername == 'X-Authorization' && $value !== '') {
             $request_headers[] = "Authorization: $value";
             //csajax_debug_message("Authorization header modified correctly!");
         }
@@ -103,7 +106,9 @@ if ('GET' == $request_method) {
 if (isset($_REQUEST['csurl'])) {
     $request_url = urldecode($_REQUEST['csurl']);
 } elseif (isset($_SERVER['HTTP_X_PROXY_URL'])) {
-    $request_url = urldecode($_SERVER['HTTP_X_PROXY_URL']);
+    // Not decoded: the URL is already encoded, and decoding it would break encoded
+    // query parameters (like the JSON `query` parameter of VAIMOO's trip history)
+    $request_url = $_SERVER['HTTP_X_PROXY_URL'];
 } else {
     header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
     header('Status: 404 Not Found');
